@@ -89,7 +89,20 @@ public class MainActivity extends ComponentActivity {
                 .build();
 
         webView = new WebView(this);
-        setContentView(webView);
+        final android.widget.FrameLayout root = new android.widget.FrameLayout(this);
+        root.setBackgroundColor(0xFF0C1F1D);
+        root.addView(webView, new android.widget.FrameLayout.LayoutParams(-1, -1));
+        root.setOnApplyWindowInsetsListener((v, insets) -> {
+            int l = insets.getSystemWindowInsetLeft(), t = insets.getSystemWindowInsetTop();
+            int r = insets.getSystemWindowInsetRight(), b = insets.getSystemWindowInsetBottom();
+            if (Build.VERSION.SDK_INT >= 30) {
+                android.graphics.Insets i = insets.getInsets(android.view.WindowInsets.Type.systemBars() | android.view.WindowInsets.Type.displayCutout() | android.view.WindowInsets.Type.ime());
+                l = i.left; t = i.top; r = i.right; b = i.bottom;
+            }
+            v.setPadding(l, t, r, b);
+            return insets;
+        });
+        setContentView(root);
 
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
