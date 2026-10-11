@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg class="downloadable-icon" xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024" fill="none">
+        <defs>
+          <linearGradient id="bg" x1="121" y1="74" x2="901" y2="950" gradientUnits="userSpaceOnUse"><stop stop-color="#123E3B"/><stop offset=".52" stop-color="#062F2E"/><stop offset="1" stop-color="#011E20"/></linearGradient>
+          <linearGradient id="phone" x1="263" y1="160" x2="712" y2="812" gradientUnits="userSpaceOnUse"><stop stop-color="#E9F3E2"/><stop offset=".55" stop-color="#BBDCC6"/><stop offset="1" stop-color="#78B79F"/></linearGradient>
+          <linearGradient id="screen" x1="357" y1="228" x2="632" y2="698" gradientUnits="userSpaceOnUse"><stop stop-color="#F4F5DF"/><stop offset="1" stop-color="#D7EED7"/></linearGradient>
+          <linearGradient id="mint" x1="425" y1="574" x2="602" y2="351" gradientUnits="userSpaceOnUse"><stop stop-color="#5BB297"/><stop offset="1" stop-color="#BFE7C7"/></linearGradient>
+          <radialGradient id="glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(286 224) rotate(47) scale(612)"><stop stop-color="#64B89D" stop-opacity=".26"/><stop offset="1" stop-color="#64B89D" stop-opacity="0"/></radialGradient>
+          <filter id="shadow" x="183" y="113" width="624" height="748" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feDropShadow dx="0" dy="28" stdDeviation="26" flood-color="#000E12" flood-opacity=".58"/></filter>
+          <filter id="badgeShadow" x="624" y="426" width="285" height="285" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feDropShadow dx="0" dy="20" stdDeviation="18" flood-color="#000E12" flood-opacity=".48"/></filter>
+          <clipPath id="round"><rect width="1024" height="1024" rx="218"/></clipPath>
+        </defs>
+        <g clip-path="url(#round)">
+          <rect width="1024" height="1024" fill="url(#bg)"/><rect width="1024" height="1024" fill="url(#glow)"/>
+          <path d="M-26 804C159 688 324 676 502 737C704 806 865 795 1050 679V1058H-26V804Z" fill="#001C1E" fill-opacity=".28"/>
+          <path d="M-26 880C163 756 338 755 515 812C712 875 873 853 1056 742" stroke="#7CC5AA" stroke-opacity=".14" stroke-width="8"/>
+          <rect x="34" y="34" width="956" height="956" rx="190" stroke="#D5F0DD" stroke-opacity=".13" stroke-width="4"/>
+          <g transform="rotate(-9 498 483)" filter="url(#shadow)">
+            <rect x="257" y="127" width="455" height="714" rx="76" fill="#0C2527"/><rect x="273" y="143" width="423" height="682" rx="61" fill="url(#phone)"/><rect x="302" y="195" width="365" height="562" rx="34" fill="url(#screen)"/>
+            <rect x="433" y="163" width="104" height="18" rx="9" fill="#12383A" fill-opacity=".78"/><circle cx="576" cy="172" r="8" fill="#B6D9BB"/><rect x="430" y="784" width="108" height="11" rx="5.5" fill="#EAF5E2" fill-opacity=".74"/>
+            <path d="M349 315C349 298 363 284 380 284H590C607 284 621 298 621 315V347H349V315Z" fill="#0C5550" fill-opacity=".92"/><circle cx="379" cy="316" r="10" fill="#86CDAE"/><path d="M411 316H569" stroke="#D6EED4" stroke-opacity=".9" stroke-width="11" stroke-linecap="round"/>
+            <rect x="366" y="425" width="47" height="135" rx="18" fill="url(#mint)"/><rect x="432" y="378" width="47" height="182" rx="18" fill="url(#mint)"/><rect x="498" y="329" width="47" height="231" rx="18" fill="url(#mint)"/><rect x="564" y="278" width="47" height="282" rx="18" fill="url(#mint)"/>
+            <path d="M360 579H617" stroke="#79B99D" stroke-width="7" stroke-linecap="round"/><path d="M378 445V538M444 398V538M510 349V538M576 298V538" stroke="#F3F8E8" stroke-opacity=".48" stroke-width="6" stroke-linecap="round"/>
+            <path d="M361 635H575" stroke="#6E9B8C" stroke-opacity=".7" stroke-width="10" stroke-linecap="round"/><path d="M361 674H535" stroke="#6E9B8C" stroke-opacity=".46" stroke-width="10" stroke-linecap="round"/><path d="M361 713H487" stroke="#6E9B8C" stroke-opacity=".32" stroke-width="10" stroke-linecap="round"/>
+          </g>
+          <g filter="url(#badgeShadow)"><circle cx="766" cy="563" r="119" fill="#0A4C46"/><circle cx="766" cy="563" r="102" fill="#176D60" stroke="#BEE8C8" stroke-opacity=".34" stroke-width="5"/><path d="M716 563L750 597L820 519" stroke="#E8F3DD" stroke-width="25" stroke-linecap="round" stroke-linejoin="round"/><path d="M739 635C757 642 778 643 797 636" stroke="#75C3A5" stroke-opacity=".7" stroke-width="7" stroke-linecap="round"/></g>
+          <circle cx="831" cy="303" r="9" fill="#C6A66C" fill-opacity=".72"/><circle cx="870" cy="341" r="5" fill="#C6A66C" fill-opacity=".36"/>
+        </g>
+      </svg>

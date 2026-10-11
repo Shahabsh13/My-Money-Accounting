@@ -1,0 +1,47 @@
+.hesabno-transaction-day-header {
+   margin-inline: 0 !important;
+   padding: .55rem .75rem !important;
+   border: 0 !important;
+   border-radius: .9rem !important;
+   background: #cde3de !important;
+   box-shadow: none !important;
+ }
+ .hesabno-transaction-day-header .hesabno-transaction-day-date {
+   color: #edf7f8 !important;
+   font-weight: 800 !important;
+   letter-spacing: .01em;
+ }
+  .hesabno-transaction-day-header .hesabno-transaction-day-count {
+    display: none !important;
+    padding: .2rem .5rem !important;
+   border: 1px solid #496574 !important;
+   border-radius: .55rem !important;
+   background: rgba(148, 163, 184, .14) !important;
+   color: #cfe0e5 !important;
+   font-weight: 800 !important;
+ }
+ .hesabno-transaction-day-header .hesabno-transaction-day-total {
+   padding: .2rem .55rem !important;
+   border-radius: .6rem !important;
+   font-weight: 900 !important;
+ }
+ html[data-theme="dark"] main .hesabno-transaction-day-header {
+   border: 0 !important;
+   background-color: rgba(255,255,255,.055) !important;
+   background-image: none !important;
+   box-shadow: none !important;
+ }
+ html[data-theme="light"] main .hesabno-transaction-day-header {
+   border: 0 !important;
+   background-color: #cde3de !important;
+   background-image: none !important;
+   box-shadow: none !important;
+ }
+ html[data-theme="light"] .hesabno-transaction-day-header .hesabno-transaction-day-date {
+   color: #24454c !important;
+ }
+ html[data-theme="light"] .hesabno-transaction-day-header .hesabno-transaction-day-count {
+   border-color: #b6d2d2 !important;
+   background: #deeeee !important;
+   color: #46656a !important;
+ }

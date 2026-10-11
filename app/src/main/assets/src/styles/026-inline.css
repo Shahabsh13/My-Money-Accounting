@@ -1,0 +1,164 @@
+/* Calm light palette. */
+html[data-theme="light"] body,
+html[data-theme="light"] #root,
+html[data-theme="light"] #root > div,
+html[data-theme="light"] #root > div > div,
+html[data-theme="light"] main {
+  background-color: #e8eff3 !important;
+  background-image: none !important;
+  color: #17212b !important;
+}
+html[data-theme="light"] [class~="bg-stone-950"] {
+  background-color: #e1e9ee !important;
+}
+html[data-theme="light"] [class~="bg-stone-900"],
+html[data-theme="light"] [class*="bg-stone-900/"] {
+  background-color: #f5f8fa !important;
+}
+html[data-theme="light"] [class~="bg-stone-850"],
+html[data-theme="light"] [class*="bg-stone-850/"] {
+  background-color: #edf2f5 !important;
+}
+html[data-theme="light"] [class~="bg-stone-800"],
+html[data-theme="light"] [class*="bg-stone-800/"] {
+  background-color: #eaf0f3 !important;
+}
+html[data-theme="light"] [class~="bg-stone-750"],
+html[data-theme="light"] [class*="bg-stone-750/"] {
+  background-color: #dce6ec !important;
+}
+html[data-theme="light"] [class*="border-stone-"] {
+  border-color: #c8d5de !important;
+}
+html[data-theme="light"] .text-stone-100 { color: #17212b !important; }
+html[data-theme="light"] .text-stone-200 { color: #2d3a45 !important; }
+html[data-theme="light"] .text-stone-300 { color: #4b5a68 !important; }
+html[data-theme="light"] .text-stone-400 { color: #667684 !important; }
+html[data-theme="light"] .text-stone-500 { color: #8796a3 !important; }
+html[data-theme="light"] .text-stone-600 { color: #a8b5bf !important; }
+html[data-theme="light"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+html[data-theme="light"] select,
+html[data-theme="light"] textarea {
+  color: #17212b !important;
+  background-color: #f8fafb !important;
+  border-color: #c3d1db !important;
+}
+html[data-theme="light"] input::placeholder,
+html[data-theme="light"] textarea::placeholder {
+  color: #8796a3 !important;
+}
+html[data-theme="light"] input:focus,
+html[data-theme="light"] textarea:focus,
+html[data-theme="light"] select:focus {
+  border-color: #5ba98c !important;
+  box-shadow: 0 0 0 1px #5ba98c !important;
+}
+html[data-theme="light"] .sticky,
+html[data-theme="light"] nav.fixed {
+  background-color: #e8eff3e8 !important;
+  border-color: #c8d5de !important;
+  box-shadow: 0 4px 14px #526b7a16 !important;
+}
+html[data-theme="light"] nav.fixed button {
+  background-color: #f4f8fa !important;
+  border-color: #cbd8e1 !important;
+  color: #667684 !important;
+}
+html[data-theme="light"] nav.fixed button.text-emerald-400 {
+  background-color: #dcefe7 !important;
+  border-color: #86bfa8 !important;
+  color: #167257 !important;
+}
+
+html[data-theme="light"] .dashboard-hero-card {
+  background: #2b806b !important;
+  border-color: #6ab39b !important;
+  box-shadow: 0 8px 18px #2b806b2b !important;
+}
+html[data-theme="light"] .dashboard-action-btn {
+  box-shadow: 0 2px 6px #526b7a14 !important;
+}
+html[data-theme="light"] .dashboard-action-btn.action-income {
+  background-color: #e3f1eb !important;
+  border-color: #9bcfba !important;
+}
+html[data-theme="light"] .dashboard-action-btn.action-income .btn-label { color: #167257 !important; }
+html[data-theme="light"] .dashboard-action-btn.action-expense {
+  background-color: #f7e8e9 !important;
+  border-color: #e2b4ba !important;
+}
+html[data-theme="light"] .dashboard-action-btn.action-expense .btn-label { color: #b23a4b !important; }
+html[data-theme="light"] .dashboard-action-btn.action-transfer {
+  background-color: #e8f1f6 !important;
+  border-color: #b6ccd9 !important;
+}
+html[data-theme="light"] .dashboard-action-btn.action-transfer .btn-label { color: #2e6786 !important; }
+html[data-theme="light"] .dashboard-action-btn.action-checks {
+  background-color: #f5efe0 !important;
+  border-color: #d9c28c !important;
+}
+html[data-theme="light"] .dashboard-action-btn.action-checks .btn-label { color: #986f14 !important; }
+
+html[data-theme="light"] .text-emerald-400,
+html[data-theme="light"] .text-emerald-300 { color: #19785e !important; }
+html[data-theme="light"] .text-rose-400,
+html[data-theme="light"] .text-rose-300 { color: #b23a4b !important; }
+html[data-theme="light"] .text-sky-400,
+html[data-theme="light"] .text-sky-300 { color: #2e6786 !important; }
+html[data-theme="light"] .text-amber-400,
+html[data-theme="light"] .text-amber-300 { color: #986f14 !important; }
+html[data-theme="light"] .text-purple-400,
+html[data-theme="light"] .text-purple-300,
+html[data-theme="light"] .text-violet-400 { color: #695085 !important; }
+html[data-theme="light"] .text-teal-400,
+html[data-theme="light"] .text-teal-300 { color: #2a6e68 !important; }
+html[data-theme="light"] .text-orange-400,
+html[data-theme="light"] .text-orange-300 { color: #9b5c22 !important; }
+html[data-theme="light"] .text-indigo-400,
+html[data-theme="light"] .text-indigo-300 { color: #5b5b93 !important; }
+html[data-theme="light"] .text-blue-400,
+html[data-theme="light"] .text-blue-300 { color: #2e5d92 !important; }
+html[data-theme="light"] [class*="bg-emerald-500/"] {
+  color: #167257 !important;
+  background-color: #e3f1eb !important;
+  border-color: #9bcfba !important;
+}
+html[data-theme="light"] [class*="bg-rose-500/"] {
+  color: #b23a4b !important;
+  background-color: #f7e8e9 !important;
+  border-color: #e2b4ba !important;
+}
+html[data-theme="light"] [class*="bg-sky-500/"] {
+  color: #2e6786 !important;
+  background-color: #e8f1f6 !important;
+  border-color: #b6ccd9 !important;
+}
+html[data-theme="light"] [class*="bg-amber-500/"] {
+  color: #986f14 !important;
+  background-color: #f5efe0 !important;
+  border-color: #d9c28c !important;
+}
+html[data-theme="light"] [class*="bg-purple-500/"] {
+  color: #695085 !important;
+  background-color: #eeeaf4 !important;
+  border-color: #c9badb !important;
+}
+html[data-theme="light"] [class*="bg-teal-500/"] {
+  color: #2a6e68 !important;
+  background-color: #e6f1f0 !important;
+  border-color: #b2d4d0 !important;
+}
+html[data-theme="light"] [class*="bg-orange-500/"] {
+  color: #9b5c22 !important;
+  background-color: #f8eee6 !important;
+  border-color: #e0c2a7 !important;
+}
+html[data-theme="light"] button[class~="bg-amber-500"] {
+  background-color: #b48a35 !important;
+  border-color: #a17a2f !important;
+  color: #fff !important;
+}
+html[data-theme="light"] button[class~="bg-purple-600"] {
+  background-color: #79618f !important;
+  color: #fff !important;
+}

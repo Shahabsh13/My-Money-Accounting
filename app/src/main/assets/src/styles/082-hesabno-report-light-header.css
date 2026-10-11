@@ -1,0 +1,7 @@
+/* Keep the report heading readable on the dark blue header in light mode. */
+html[data-theme="light"] main > div.bg-gradient-to-r h1.text-white {
+  color: #f8fbff !important;
+}
+html[data-theme="light"] main > div.bg-gradient-to-r p[class*="text-sky-200"] {
+  color: #d9f3ff !important;
+}

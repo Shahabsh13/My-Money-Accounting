@@ -1,0 +1,10 @@
+/* فرم تعریف حساب بانکی: نوار «انصراف» و «ثبت و ذخیره» پایین کادر فرم بماند.
+   کادر فرم خودش اسکرول می‌شود و نوار دکمه‌ها فرزند مستقیم آن است. */
+div[class*="max-h-[94vh]"] > div[class*="pt-3"][class*="border-t"] {
+  position: sticky;
+  bottom: 0;
+  z-index: 20;
+  background-color: inherit;
+  padding-bottom: max(4px, env(safe-area-inset-bottom));
+  margin-top: 0;
+}

@@ -1,0 +1,25 @@
+/* کادر مبلغ تراکنش: برچسب درست بالای کادر، و عدد با اندازهٔ مناسب */
+section:has(input.text-3xl[inputmode="numeric"]) {
+  padding-top: 16px !important;
+  padding-bottom: 16px !important;
+  min-height: 0;
+}
+section:has(input.text-3xl[inputmode="numeric"]) > :first-child {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+section:has(input.text-3xl[inputmode="numeric"]) > div.flex:has(input) {
+  min-height: 60px;
+  align-items: center;
+}
+section:has(input.text-3xl[inputmode="numeric"]) > :first-child {
+  min-height: 0 !important;
+  height: auto !important;
+}
+input.text-3xl[inputmode="numeric"] {
+  font-size: 2.1rem !important;
+  line-height: 1.25 !important;
+  height: 60px !important;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}

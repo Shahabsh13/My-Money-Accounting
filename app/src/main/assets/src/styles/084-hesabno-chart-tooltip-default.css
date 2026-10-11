@@ -1,0 +1,4 @@
+/* Simple-report chart tooltips are positioned by the selected point. */
+main [class*="overflow-visible"][class*="justify-between"] > button > div.absolute > div.absolute.whitespace-nowrap {
+  align-items: center !important;
+}

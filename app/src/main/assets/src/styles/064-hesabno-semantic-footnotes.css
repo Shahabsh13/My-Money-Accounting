@@ -1,0 +1,171 @@
+:root {
+ --footnote-amber-bg:#fff7e8; --footnote-amber-fg:#8a5c16; --footnote-amber-border:#e7c995;
+ --footnote-purple-bg:#f3e8ff; --footnote-purple-fg:#5b21b6; --footnote-purple-border:#c4b5fd;
+ --footnote-red-bg:#fff1f2; --footnote-red-fg:#9f3844; --footnote-red-border:#f0c2c7;
+ --footnote-neutral-bg:#edf3f6; --footnote-neutral-fg:#405c6a; --footnote-neutral-border:#d2dde4;
+ --footnote-green-bg:#ecfdf5; --footnote-green-fg:#065f46; --footnote-green-border:#a7f3d0;
+}
+html[data-theme="dark"] {
+ --footnote-amber-bg:#332b20; --footnote-amber-fg:#f2c77c; --footnote-amber-border:#6c5637;
+ --footnote-purple-bg:#2e1a47; --footnote-purple-fg:#e9d5ff; --footnote-purple-border:#7450a5;
+ --footnote-red-bg:#342327; --footnote-red-fg:#f0b1ba; --footnote-red-border:#70464d;
+ --footnote-neutral-bg:#26333b; --footnote-neutral-fg:#d0dbe0; --footnote-neutral-border:#45545f;
+ --footnote-green-bg:#12382e; --footnote-green-fg:#a7f3d0; --footnote-green-border:#346655;
+}
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="refund"],
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="refund"] button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="refund"]:hover,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="refund"]:hover button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="refund"]:active,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="refund"]:active button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="refund"]:focus,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="refund"]:focus button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="refund"]:focus-visible,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="refund"]:focus-visible button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="correction"],
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="correction"] button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="correction"]:hover,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="correction"]:hover button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="correction"]:active,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="correction"]:active button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="correction"]:focus,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="correction"]:focus button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="correction"]:focus-visible,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="correction"]:focus-visible button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-check],
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-check] button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-check]:hover,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-check]:hover button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-check]:active,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-check]:active button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-check]:focus,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-check]:focus button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-check]:focus-visible,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-check]:focus-visible button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-reversal],
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-reversal] button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-reversal]:hover,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-reversal]:hover button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-reversal]:active,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-reversal]:active button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-reversal]:focus,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-reversal]:focus button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-reversal]:focus-visible,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-reversal]:focus-visible button {
+ color:var(--footnote-amber-fg)!important; background:var(--footnote-amber-bg)!important; border-color:var(--footnote-amber-border)!important; box-shadow:none!important; -webkit-tap-highlight-color:transparent;
+}
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="refund"] svg, html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="refund"] button svg,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="correction"] svg, html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="correction"] button svg,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-check] svg, html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-check] button svg,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-reversal] svg, html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-reversal] button svg {color:var(--footnote-amber-fg)!important;}
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="check-correction"],
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="check-correction"] button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="check-correction"]:hover,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="check-correction"]:hover button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="check-correction"]:active,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="check-correction"]:active button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="check-correction"]:focus,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="check-correction"]:focus button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="check-correction"]:focus-visible,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="check-correction"]:focus-visible button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-check-correction-link],
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-check-correction-link] button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-check-correction-link]:hover,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-check-correction-link]:hover button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-check-correction-link]:active,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-check-correction-link]:active button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-check-correction-link]:focus,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-check-correction-link]:focus button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-check-correction-link]:focus-visible,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-check-correction-link]:focus-visible button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-compound-meta],
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-compound-meta] button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-compound-meta]:hover,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-compound-meta]:hover button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-compound-meta]:active,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-compound-meta]:active button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-compound-meta]:focus,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-compound-meta]:focus button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-compound-meta]:focus-visible,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-compound-meta]:focus-visible button {
+ color:var(--footnote-purple-fg)!important; background:var(--footnote-purple-bg)!important; border-color:var(--footnote-purple-border)!important; box-shadow:none!important; -webkit-tap-highlight-color:transparent;
+}
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="check-correction"] svg, html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="check-correction"] button svg,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-check-correction-link] svg, html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-check-correction-link] button svg,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-compound-meta] svg, html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-compound-meta] button svg {color:var(--footnote-purple-fg)!important;}
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="corrected"],
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="corrected"] button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="corrected"]:hover,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="corrected"]:hover button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="corrected"]:active,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="corrected"]:active button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="corrected"]:focus,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="corrected"]:focus button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="corrected"]:focus-visible,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="corrected"]:focus-visible button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-reversed],
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-reversed] button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-reversed]:hover,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-reversed]:hover button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-reversed]:active,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-reversed]:active button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-reversed]:focus,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-reversed]:focus button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-reversed]:focus-visible,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-reversed]:focus-visible button {
+ color:var(--footnote-red-fg)!important; background:var(--footnote-red-bg)!important; border-color:var(--footnote-red-border)!important; box-shadow:none!important; -webkit-tap-highlight-color:transparent;
+}
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="corrected"] svg, html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="corrected"] button svg,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-reversed] svg, html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-reversed] button svg {color:var(--footnote-red-fg)!important;}
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] .hesabno-tx-project-chip,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] .hesabno-tx-project-chip button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] .hesabno-tx-project-chip:hover,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] .hesabno-tx-project-chip:hover button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] .hesabno-tx-project-chip:active,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] .hesabno-tx-project-chip:active button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] .hesabno-tx-project-chip:focus,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] .hesabno-tx-project-chip:focus button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] .hesabno-tx-project-chip:focus-visible,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] .hesabno-tx-project-chip:focus-visible button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] .hesabno-tx-family-chip,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] .hesabno-tx-family-chip button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] .hesabno-tx-family-chip:hover,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] .hesabno-tx-family-chip:hover button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] .hesabno-tx-family-chip:active,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] .hesabno-tx-family-chip:active button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] .hesabno-tx-family-chip:focus,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] .hesabno-tx-family-chip:focus button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] .hesabno-tx-family-chip:focus-visible,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] .hesabno-tx-family-chip:focus-visible button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-family],
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-family] button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-family]:hover,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-family]:hover button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-family]:active,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-family]:active button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-family]:focus,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-family]:focus button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-family]:focus-visible,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-family]:focus-visible button {
+ color:var(--footnote-neutral-fg)!important; background:var(--footnote-neutral-bg)!important; border-color:var(--footnote-neutral-border)!important; box-shadow:none!important; -webkit-tap-highlight-color:transparent;
+}
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] .hesabno-tx-project-chip svg, html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] .hesabno-tx-project-chip button svg,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] .hesabno-tx-family-chip svg, html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] .hesabno-tx-family-chip button svg,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-family] svg, html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-period-family] button svg {color:var(--footnote-neutral-fg)!important;}
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="attachment"],
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="attachment"] button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="attachment"]:hover,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="attachment"]:hover button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="attachment"]:active,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="attachment"]:active button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="attachment"]:focus,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="attachment"]:focus button,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="attachment"]:focus-visible,
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="attachment"]:focus-visible button {
+ color:var(--footnote-green-fg)!important; background:var(--footnote-green-bg)!important; border-color:var(--footnote-green-border)!important; box-shadow:none!important; -webkit-tap-highlight-color:transparent;
+}
+html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="attachment"] svg, html[data-theme] article[id^="tx-card-"][id^="tx-card-"][id^="tx-card-"] [data-hesabno-footnote-kind="attachment"] button svg {color:var(--footnote-green-fg)!important;}
+html[data-theme] article[id^="tx-card-"] :is([data-hesabno-footnote-kind], [data-hesabno-check-correction-link], [data-hesabno-footnote-kind] button):focus-visible {outline:2px solid currentColor!important;outline-offset:2px!important;}
+html article[id^="tx-card-"] :is([data-hesabno-footnote-kind], [data-hesabno-footnote-kind] *, [data-hesabno-check-correction-link]) {
+  transition-property: none !important;
+}

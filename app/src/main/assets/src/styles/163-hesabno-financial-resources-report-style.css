@@ -1,0 +1,38 @@
+[data-hesabno-financial-header] { gap: .5rem; }
+    [data-hesabno-financial-header] > div:first-child { min-width: 0; }
+    [data-hesabno-financial-title] { white-space: nowrap; }
+    [data-hesabno-financial-current] { white-space: nowrap; flex: 0 0 auto; }
+    [data-hesabno-period-badge], [data-hesabno-period-subtitle] { display: none !important; }
+    [data-hesabno-resources-summary] {
+      display: grid !important;
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      gap: .5rem !important;
+    }
+    [data-hesabno-resources-summary] > div { min-width: 0; }
+    [data-hesabno-summary-balance] { grid-column: 1 / -1; }
+    [data-hesabno-resources-summary] p[data-hesabno-money-ltr] {
+      max-width: none !important;
+      overflow: visible !important;
+      text-overflow: clip !important;
+      white-space: nowrap !important;
+      font-size: clamp(11px, 3vw, 14px) !important;
+      letter-spacing: -.035em;
+    }
+    [data-hesabno-resources-summary] [data-hesabno-summary-label] { white-space: nowrap; }
+    .hesabno-report-bank-heading { white-space: normal; }
+    .hesabno-report-bank-logo {
+      background-color: #fff !important;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: contain;
+      border-color: transparent !important;
+      color: transparent !important;
+      font-size: 0 !important;
+      overflow: hidden;
+      padding: 4px;
+    }
+    @media (min-width: 640px) {
+      [data-hesabno-resources-summary] { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+      [data-hesabno-summary-balance] { grid-column: auto; }
+      [data-hesabno-resources-summary] p[data-hesabno-money-ltr] { font-size: 14px !important; }
+    }

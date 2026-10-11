@@ -1,0 +1,18 @@
+html[data-theme="light"] body,
+html[data-theme="light"] #root,
+html[data-theme="light"] #root > div,
+html[data-theme="light"] #root > div > div { background-color: #edf2f5 !important; }
+html[data-theme="light"] main, html[data-theme="light"] main[class*="bg-stone-900"] { background-color: #dfe8ee !important; background-image: none !important; }
+html[data-theme="light"] [class~="bg-stone-950"] { background-color: #d9e3e9 !important; }
+html[data-theme="light"] [class~="bg-stone-900"],
+html[data-theme="light"] [class*="bg-stone-900/"] { background-color: #eef3f6 !important; }
+html[data-theme="light"] [class~="bg-stone-850"],
+html[data-theme="light"] [class*="bg-stone-850/"] { background-color: #e6edf1 !important; }
+html[data-theme="light"] [class~="bg-stone-800"],
+html[data-theme="light"] [class*="bg-stone-800/"] { background-color: #e1e8ed !important; }
+html[data-theme="light"] [class~="bg-stone-750"],
+html[data-theme="light"] [class*="bg-stone-750/"] { background-color: #d5e0e6 !important; }
+html[data-theme="light"] .text-stone-100 { color: #26343e !important; }
+html[data-theme="light"] .text-stone-200 { color: #374650 !important; }
+html[data-theme="light"] main h1.text-white { color: #2d3b45 !important; }
+html[data-theme="light"] nav.fixed { background-color: #e5edf1 !important; }

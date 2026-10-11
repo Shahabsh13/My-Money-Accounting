@@ -1,0 +1,6 @@
+/* Dark quick access card framing. */
+html[data-theme="dark"] main section button[class*="w-20"][class*="rounded-2xl"] {
+  border-width: 1px !important;
+  border-style: solid !important;
+  box-shadow: 0 2px 8px #0000002e !important;
+}

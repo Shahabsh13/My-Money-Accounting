@@ -1,0 +1,140 @@
+.hesabno-account-statement-panel .hesabno-statement-header-hidden-cell { display: none !important; }
+    .hesabno-account-statement-panel .hesabno-statement-sticky-date {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      flex: 0 0 auto;
+      width: calc(100% - 1rem);
+      max-width: 40.5rem;
+      min-height: 2.25rem;
+      padding: .35rem .7rem;
+      margin: .35rem auto;
+      border: 1px solid #405a66;
+      border-radius: .75rem;
+      background: linear-gradient(135deg, #1d303a, #263b45);
+      box-shadow: 0 3px 10px rgba(0, 0, 0, .16);
+      color: #f1f7f8;
+      direction: ltr;
+      font: 800 .75rem/1.2 Vazirmatn, system-ui, sans-serif;
+      font-variant-numeric: tabular-nums;
+    }
+    .hesabno-account-statement-panel .hesabno-statement-counterparty {
+      display: flex;
+      align-items: center;
+      gap: .55rem;
+      min-width: 0;
+      padding: .3rem .25rem .05rem;
+      border-top: 0;
+    }
+    .hesabno-account-statement-panel .hesabno-statement-counterparty-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 2rem;
+      width: 2rem;
+      height: 2rem;
+      overflow: hidden;
+      border: 1px solid #4a626d;
+      border-radius: .75rem;
+      background: #253943;
+      font-size: .95rem;
+      line-height: 1;
+    }
+    .hesabno-account-statement-panel .hesabno-statement-counterparty-icon img {
+      width: 100%;
+      height: 100%;
+      padding: .15rem;
+      object-fit: contain;
+    }
+    .hesabno-account-statement-panel .hesabno-statement-counterparty-name {
+      min-width: 0;
+      overflow: hidden;
+      color: #edf5f7;
+      font-size: .7rem;
+      font-weight: 800;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .hesabno-account-statement-panel .hesabno-statement-description {
+      display: flex;
+      align-items: baseline;
+      gap: .4rem;
+      min-width: 0;
+      padding: .32rem .55rem;
+      border: 1px solid #344955;
+      border-radius: .55rem;
+      background: #1b2932;
+      color: #dce8eb;
+      font-size: .65rem;
+    }
+    .hesabno-account-statement-panel .hesabno-statement-description-label {
+      flex: 0 0 auto;
+      color: #9db4bd;
+      font-weight: 800;
+    }
+    .hesabno-account-statement-panel .hesabno-statement-description-value {
+      min-width: 0;
+      overflow: hidden;
+      color: #f1f6f7;
+      font-weight: 650;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .hesabno-account-statement-panel .hesabno-statement-meta-chip {
+      display: inline-flex !important;
+      align-items: center;
+      gap: .25rem;
+      padding: .14rem .42rem !important;
+      border-radius: 4px !important;
+      font-size: .62rem !important;
+      font-weight: 800 !important;
+      line-height: 1.35;
+    }
+    .hesabno-account-statement-panel .hesabno-statement-project-chip,
+    .hesabno-account-statement-panel .hesabno-statement-family-chip {
+      border: 1px solid rgba(148, 163, 184, .2) !important;
+      background: rgba(100, 116, 139, .10) !important;
+      color: #cbd5e1 !important;
+    }
+    html[data-theme="light"] .hesabno-account-statement-panel .hesabno-statement-sticky-date,
+    html.theme-light .hesabno-account-statement-panel .hesabno-statement-sticky-date {
+      border-color: #b3cbd5;
+      background: linear-gradient(135deg, #f5fafc, #e8f2f6);
+      box-shadow: 0 3px 10px rgba(42, 77, 91, .1);
+      color: #244450;
+    }
+    html[data-theme="light"] .hesabno-account-statement-panel .hesabno-statement-counterparty,
+    html.theme-light .hesabno-account-statement-panel .hesabno-statement-counterparty {
+      border-top-color: #d4e0e5;
+    }
+    html[data-theme="light"] .hesabno-account-statement-panel .hesabno-statement-counterparty-icon,
+    html.theme-light .hesabno-account-statement-panel .hesabno-statement-counterparty-icon {
+      border-color: #c7d6dd;
+      background: #f1f6f8;
+    }
+    html[data-theme="light"] .hesabno-account-statement-panel .hesabno-statement-counterparty-name,
+    html.theme-light .hesabno-account-statement-panel .hesabno-statement-counterparty-name {
+      color: #243f4c;
+    }
+    html[data-theme="light"] .hesabno-account-statement-panel .hesabno-statement-description,
+    html.theme-light .hesabno-account-statement-panel .hesabno-statement-description {
+      border-color: #d0dfe5;
+      background: #f4f8fa;
+      color: #365361;
+    }
+    html[data-theme="light"] .hesabno-account-statement-panel .hesabno-statement-description-label,
+    html.theme-light .hesabno-account-statement-panel .hesabno-statement-description-label {
+      color: #607b87;
+    }
+    html[data-theme="light"] .hesabno-account-statement-panel .hesabno-statement-description-value,
+    html.theme-light .hesabno-account-statement-panel .hesabno-statement-description-value {
+      color: #253f4b;
+    }
+    html[data-theme="light"] .hesabno-account-statement-panel .hesabno-statement-project-chip,
+    html.theme-light .hesabno-account-statement-panel .hesabno-statement-project-chip {
+      border-color: #cbd5e1 !important;
+      background: #f1f5f9 !important;
+      color: #475569 !important;
+    }

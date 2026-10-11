@@ -1,0 +1,41 @@
+/* Transaction row clarity. */
+article[id^="tx-card-"] > div > div > span:nth-child(2) {
+  border-width: 1px !important;
+  border-style: solid !important;
+  box-shadow: 0 1px 2px #0f172a1a !important;
+}
+html[data-theme="light"] article[id^="tx-card-"] > div > div > span:nth-child(2) {
+  background-color: #fff7ed !important;
+  border-color: #fdba74 !important;
+  color: #b45309 !important;
+}
+html[data-theme="dark"] article[id^="tx-card-"] > div > div > span:nth-child(2) {
+  background-color: #2b2117 !important;
+  border-color: #92400e !important;
+  color: #fbbf24 !important;
+}
+article[id^="tx-card-"] span[title*="کارمزد"] {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: fit-content !important;
+  white-space: nowrap !important;
+  padding: 1px 5px !important;
+  border-radius: 4px !important;
+  line-height: 1.35 !important;
+  letter-spacing: 0 !important;
+}
+html[data-theme="light"] article[id^="tx-card-"] span[title*="کارمزد"] {
+  background-color: #fff7ed !important;
+  border: 1px solid #fdba74 !important;
+  color: #b45309 !important;
+}
+html[data-theme="dark"] article[id^="tx-card-"] span[title*="کارمزد"] {
+  background-color: #3b2f1a !important;
+  border: 1px solid #92400e !important;
+  color: #fbbf24 !important;
+}
+article[id^="tx-card-"] > div > div > div:last-child {
+  min-width: 5.7rem !important;
+  row-gap: 2px !important;
+}

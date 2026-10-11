@@ -1,0 +1,3 @@
+.hesabno-category-report-account-icon { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; flex: 0 0 auto; font-size: 14px; line-height: 1; }
+    .hesabno-category-report-account-icon img { width: 100%; height: 100%; object-fit: contain; }
+    [data-hesabno-category-report-detail-items-duplicate="true"] { display: none !important; }

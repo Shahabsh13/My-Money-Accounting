@@ -1,0 +1,40 @@
+/* Keep validation copy inside the field it describes. */
+main > form.px-4.pt-4.space-y-4 section:has(#field-party) > div:not(:first-child):has(> label + button + p) {
+  display: grid !important;
+  grid-template-columns: max-content minmax(0, 1fr) !important;
+  align-items: center !important;
+  column-gap: 0.5rem !important;
+  position: relative !important;
+}
+main > form.px-4.pt-4.space-y-4 section:has(#field-party) > div:not(:first-child):has(> label + button + p) > label {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  margin: 0 !important;
+  white-space: nowrap !important;
+}
+main > form.px-4.pt-4.space-y-4 section:has(#field-party) > div:not(:first-child):has(> label + button + p) > button {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+main > form.px-4.pt-4.space-y-4 section:has(#field-party) > div:not(:first-child):has(> label + button + p) > p {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  align-self: stretch !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 0.75rem !important;
+  display: flex !important;
+  align-items: center !important;
+  color: #fda4af !important;
+  font-size: 11px !important;
+  line-height: 1.45 !important;
+  text-align: right !important;
+  pointer-events: none !important;
+  overflow: hidden !important;
+  z-index: 2 !important;
+}
+main > form.px-4.pt-4.space-y-4 section:has(#field-party) > div:not(:first-child):has(> label + button + p) > button > * {
+  visibility: hidden !important;
+}

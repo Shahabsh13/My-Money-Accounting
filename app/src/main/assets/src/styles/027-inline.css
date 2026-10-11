@@ -1,0 +1,15 @@
+/* Calm solid semantic colors. */
+html[data-theme="light"] [class~="bg-emerald-500"] {
+  background-color: #2b8a73 !important;
+  color: #ffffff !important;
+}
+html[data-theme="light"] [class~="bg-emerald-600"] {
+  background-color: #277c68 !important;
+  color: #ffffff !important;
+}
+html[data-theme="light"] [class~="bg-amber-400"],
+html[data-theme="light"] [class~="bg-amber-500"] {
+  background-color: #b48a35 !important;
+  border-color: #a17a2f !important;
+  color: #ffffff !important;
+}

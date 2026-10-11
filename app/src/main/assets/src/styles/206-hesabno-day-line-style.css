@@ -1,0 +1,10 @@
+main div.sticky:has(> div > .hesabno-transaction-day-date), main div.sticky.hesabno-transaction-day-header, main div.sticky.hesabno-day-line{border:0!important;box-shadow:none!important;display:flex!important;align-items:center!important;gap:10px!important;padding:8px 12px!important;backdrop-filter:none!important;border-radius:.9rem!important}
+main div.sticky:has(> div > .hesabno-transaction-day-date) .hesabno-transaction-day-count, main div.sticky.hesabno-transaction-day-header .hesabno-transaction-day-count, main div.sticky.hesabno-day-line .hesabno-transaction-day-count, main div.sticky:has(> div > .hesabno-transaction-day-date) .hesabno-transaction-day-total, main div.sticky.hesabno-transaction-day-header .hesabno-transaction-day-total, main div.sticky.hesabno-day-line .hesabno-transaction-day-total{display:none!important}
+main div.sticky:has(> div > .hesabno-transaction-day-date) .hesabno-transaction-day-date, main div.sticky.hesabno-transaction-day-header .hesabno-transaction-day-date, main div.sticky.hesabno-day-line .hesabno-transaction-day-date{font-weight:700!important;font-size:13px!important;color:#64748b!important;white-space:nowrap!important;background:none!important;padding:0!important}
+.hesabno-day-rule{flex:1 1 auto;height:1px;background:rgba(100,116,139,.35);min-width:20px}
+.hesabno-day-balance{font-size:12px;font-weight:700;white-space:nowrap;color:#a16207}
+.hesabno-day-balance.neg{color:#dc2626}
+html[data-theme="dark"] main div.sticky:has(> div > .hesabno-transaction-day-date) .hesabno-transaction-day-date, html[data-theme="dark"] main div.sticky.hesabno-transaction-day-header .hesabno-transaction-day-date, html[data-theme="dark"] main div.sticky.hesabno-day-line .hesabno-transaction-day-date{color:#cbd5e1!important}
+html[data-theme="dark"] .hesabno-day-rule{background:rgba(148,163,184,.34)}
+html[data-theme="dark"] .hesabno-day-balance{color:#fbbf24}
+html[data-theme="dark"] .hesabno-day-balance.neg{color:#f87171}

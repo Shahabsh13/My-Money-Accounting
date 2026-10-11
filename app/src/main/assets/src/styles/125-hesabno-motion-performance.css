@@ -1,0 +1,53 @@
+:root {
+      --hesabno-motion-ease: cubic-bezier(.22, .75, .25, 1);
+      --hesabno-motion-fast: 260ms;
+      --hesabno-motion-normal: 320ms;
+      --hesabno-motion-card: 340ms;
+    }
+    #root .transition,
+    #root [class*="transition-"] {
+      transition-timing-function: var(--hesabno-motion-ease) !important;
+    }
+    #root .transition,
+    #root [class~="transition-colors"] {
+      transition-duration: var(--hesabno-motion-fast) !important;
+    }
+    #root [class~="transition-transform"] {
+      transition-duration: var(--hesabno-motion-normal) !important;
+      transition-property: transform !important;
+    }
+    #root [class~="transition-all"] {
+      transition-duration: var(--hesabno-motion-card) !important;
+      transition-property: opacity, transform, background-color, border-color, color, box-shadow !important;
+    }
+    #root [class*="animate-in"] {
+      animation-duration: 460ms !important;
+      animation-timing-function: var(--hesabno-motion-ease) !important;
+    }
+    main.hesabno-page-exit-down,
+    .hesabno-tab-shell,
+    .hesabno-overlay-motion,
+    .hesabno-dialog-motion,
+    .hesabno-toast-motion,
+    .hesabno-feedback-pop,
+    .hesabno-full-page-side-open,
+    .hesabno-full-page-side-exit {
+      animation-timing-function: var(--hesabno-motion-ease) !important;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #root .transition,
+      #root [class*="transition-"],
+      #root [class*="animate-in"],
+      main.hesabno-page-exit-down,
+      .hesabno-tab-shell,
+      .hesabno-overlay-motion,
+      .hesabno-dialog-motion,
+      .hesabno-toast-motion,
+      .hesabno-feedback-pop,
+      .hesabno-full-page-side-open,
+      .hesabno-full-page-side-exit {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
+    }

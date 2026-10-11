@@ -1,0 +1,25 @@
+.hesabno-more-category-heading { display: block; margin: 16px 4px 7px; padding: 0 !important; color: #82939e; font-size: 10px; font-weight: 900; letter-spacing: .02em; background: transparent !important; border: 0 !important; box-shadow: none !important; }
+html[data-theme="light"] [class*="divide-y"][class*="divide-stone-"] > .hesabno-more-category-heading,
+html[data-theme="dark"] [class*="divide-y"][class*="divide-stone-"] > .hesabno-more-category-heading { background: transparent !important; border-top: 0 !important; border-bottom: 0 !important; }
+html[data-theme="light"] main div[class*="divide-y"][class*="divide-stone-700/40"] { padding: 0 !important; overflow: visible !important; border: 0 !important; border-radius: 0 !important; background: transparent !important; box-shadow: none !important; }
+html[data-theme="light"] main div[class*="divide-y"][class*="divide-stone-700/40"] > button[class*="text-right"] { width: 100% !important; margin: 4px 0 !important; border: 1px solid #b5c6d0 !important; border-radius: 14px !important; background: #f8fbfd !important; box-shadow: 0 1px 3px rgba(74, 99, 115, .1) !important; }
+html[data-theme="light"] main div[class*="divide-y"][class*="divide-stone-700/40"] > button[class*="text-right"]:hover { border-color: #829aaa !important; background: #f1f7fa !important; }
+.hesabno-reset-warning { display: inline-flex; margin-bottom: 4px; border: 1px solid #f08b8b; border-radius: 7px; padding: 2px 6px; color: #ffd1d1; background: rgba(190, 42, 55, .22); font-size: 8px; font-weight: 900; }
+html[data-theme="light"] main [class*="bg-rose-950/20"] { border-color: #f1a6a6 !important; background: #fff1f2 !important; }
+html[data-theme="light"] main [class*="bg-rose-950/20"] h4 { color: #a61b2b !important; }
+html[data-theme="light"] main [class*="bg-rose-950/20"] p { color: #7f303a !important; }
+html[data-theme="light"] main [class*="bg-rose-950/20"] button { background: #dc2626 !important; color: #ffffff !important; }
+html[data-theme="light"] .hesabno-reset-warning { border-color: #f1a6a6; color: #a61b2b; background: #ffe0e3; }
+.hesabno-undo-toast { position: fixed; top: 72px; left: 50%; z-index: 80; display: flex; align-items: center; gap: 10px; width: max-content; max-width: calc(100vw - 28px); transform: translateX(-50%); border: 1px solid #50616c; border-radius: 15px; padding: 9px 10px 9px 12px; color: #e8f1f3; background: #26333b; box-shadow: 0 12px 28px rgba(10, 20, 26, .25); font-size: 11px; }
+.hesabno-undo-toast button { border: 1px solid #63cdb9; border-radius: 9px; padding: 5px 8px; color: #12352f; background: #77d9c5; font-size: 10px; font-weight: 900; cursor: pointer; white-space: nowrap; }
+.hesabno-health-card { margin-top: 12px; border: 1px solid #46535e; border-radius: 16px; padding: 12px; background: #28323b; }
+.hesabno-health-card strong { display: block; color: #e7f0f2; font-size: 12px; }
+.hesabno-health-card p { margin: 5px 0 9px; color: #9eabb5; font-size: 10px; line-height: 1.8; }
+.hesabno-health-card button { border: 1px solid #51b6a5; border-radius: 10px; padding: 7px 10px; color: #bffff2; background: rgba(73, 184, 170, .15); font-size: 10px; font-weight: 800; cursor: pointer; }
+.hesabno-health-card [data-health-result] { margin-right: 7px; color: #9fe4d6; }
+html.theme-light .hesabno-more-category-heading { color: #607887; }
+html.theme-light .hesabno-undo-toast { border-color: #b8ccd5; color: #28414d; background: #f7fbfc; }
+html.theme-light .hesabno-health-card { border-color: #bdced8; background: #f2f8fa; }
+html.theme-light .hesabno-health-card strong { color: #263746; }
+html.theme-light .hesabno-health-card p { color: #607887; }
+html.theme-light .hesabno-health-card button { color: #176b60; background: #d9f2ed; }

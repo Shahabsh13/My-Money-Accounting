@@ -1,0 +1,31 @@
+#root main [data-hesabno-summary-header="true"] h1 {
+      flex-wrap: nowrap !important;
+      white-space: nowrap !important;
+    }
+    #root main [data-hesabno-summary-change-account="true"] {
+      flex: 0 0 auto !important;
+      flex-wrap: nowrap !important;
+      white-space: nowrap !important;
+      font-size: 9px !important;
+      line-height: 1.2 !important;
+      padding: 3px 6px !important;
+    }
+    #root main [data-hesabno-summary-change-account="true"] > span {
+      white-space: nowrap !important;
+    }
+    .hesabno-summary-account-icon {
+      flex: 0 0 auto;
+      font-size: 13px;
+      line-height: 1;
+    }
+    .hesabno-summary-account-name {
+      display: block;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    #root main [data-hesabno-summary-statement-rows="true"] {
+      border-radius: 14px !important;
+      overflow: hidden !important;
+    }

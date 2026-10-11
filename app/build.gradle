@@ -1,0 +1,81 @@
+plugins {
+    id 'com.android.application'
+}
+
+// کلید امضای release از فایل keystore.properties خوانده می‌شود (این فایل داخل پروژه نیست؛ راهنما: README-BUILD.md)
+def keystoreProps = new Properties()
+def keystorePropsFile = rootProject.file('keystore.properties')
+if (keystorePropsFile.exists()) {
+    try {
+        keystorePropsFile.withInputStream { keystoreProps.load(it) }
+    } catch (Exception e) {
+        throw new GradleException("فایل keystore.properties خراب است: ${e.message}")
+    }
+}
+def hasReleaseKey = keystorePropsFile.exists()
+
+// شماره و نام نسخه از version.properties خوانده می‌شود؛
+// برای هر آپدیت روی گوشی، versionCode را یک واحد زیاد کنید.
+def versionProps = new Properties()
+def versionPropsFile = rootProject.file('version.properties')
+if (versionPropsFile.exists()) {
+    versionPropsFile.withInputStream { versionProps.load(it) }
+}
+def appVersionCode = versionProps.getProperty('versionCode', '1').toString().toInteger()
+def appVersionName = versionProps.getProperty('versionName', '1.0.0').toString()
+
+android {
+    namespace 'com.maymoney.app'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId "com.maymoney.app"
+        minSdk 24
+        targetSdk 35
+        versionCode appVersionCode
+        versionName appVersionName
+    }
+
+    signingConfigs {
+        release {
+            if (hasReleaseKey) {
+                storeFile rootProject.file(keystoreProps['storeFile'])
+                storePassword keystoreProps['storePassword']
+                keyAlias keystoreProps['keyAlias']
+                keyPassword keystoreProps['keyPassword']
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            if (hasReleaseKey) {
+                signingConfig signingConfigs.release
+            }
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation 'androidx.webkit:webkit:1.11.0'
+    implementation 'androidx.activity:activity:1.9.3'
+}
+
+// منبع‌های جاوااسکریپت/جاوا حاوی متن فارسی‌اند؛ کامپایل همیشه با UTF-8
+tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
+
+// رفع تداخل نسخه‌های kotlin-stdlib (jdk7/jdk8 قدیمی با نسخه‌ی جدید)
+dependencies {
+    constraints {
+        implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22'
+        implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22'
+    }
+}

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AppTheme" parent="android:Theme.Material.NoActionBar">
+        <item name="android:statusBarColor">#0C1F1D</item>
+        <item name="android:navigationBarColor">#0C1F1D</item>
+        <item name="android:windowBackground">#0C1F1D</item>
+        <!-- برنامه تیره است؛ آیکون‌های نوار وضعیت روشن باشند -->
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+</resources>

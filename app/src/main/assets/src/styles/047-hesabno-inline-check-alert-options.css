@@ -1,0 +1,5 @@
+.hesabno-check-options { display: grid; gap: 8px; }
+.hesabno-check-option { width: 100%; padding: 12px; border: 1px solid #39414d; border-radius: 14px; background: #252a32; color: #cbd5e1; text-align: right; font-size: 12px; font-weight: 700; cursor: pointer; transition: background-color .18s ease, border-color .18s ease, color .18s ease; }
+.hesabno-check-option[data-active="true"] { background: rgba(249, 115, 22, .16); border-color: #f97316; color: #f8fafc; }
+html[data-theme="light"] .hesabno-check-option { border-color: #b7c8d4; background: #eef3f6; color: #536979; }
+html[data-theme="light"] .hesabno-check-option[data-active="true"] { background: #fff1e8; border-color: #f97316; color: #8a3b12; }

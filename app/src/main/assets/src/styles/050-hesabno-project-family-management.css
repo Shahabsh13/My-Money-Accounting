@@ -1,0 +1,60 @@
+#hesabno-project-family-page { position: fixed; inset: 0; z-index: 60; display: flex; justify-content: center; background: rgba(10, 15, 20, .72); backdrop-filter: blur(4px); direction: rtl; }
+#hesabno-project-family-page .hpf-shell { width: 100%; max-width: 448px; min-height: 100%; overflow-y: auto; background: #20262d; color: #e6edf2; box-shadow: 0 0 36px rgba(0, 0, 0, .28); }
+#hesabno-project-family-page .hpf-header { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-bottom: 1px solid #3b4650; background: #252d35; }
+#hesabno-project-family-page .hpf-back, #hesabno-project-family-page .hpf-close { width: 38px; height: 38px; border: 1px solid #46535e; border-radius: 14px; color: #cbd5dc; background: #303a43; font-size: 20px; cursor: pointer; }
+#hesabno-project-family-page .hpf-header h1 { margin: 0; font-size: 15px; font-weight: 900; }
+#hesabno-project-family-page .hpf-header p { margin: 3px 0 0; color: #9eabb5; font-size: 10px; }
+#hesabno-project-family-page .hpf-content { padding: 16px; padding-bottom: 32px; }
+#hesabno-project-family-page .hpf-tabs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5px; padding: 5px; border: 1px solid #46535e; border-radius: 18px; background: #2a333c; }
+#hesabno-project-family-page .hpf-tab { min-height: 42px; border: 0; border-radius: 13px; color: #aebbc4; background: transparent; font-size: 12px; font-weight: 800; cursor: pointer; }
+#hesabno-project-family-page .hpf-tab[data-active="true"] { color: #17222a; background: #dff1f3; box-shadow: 0 2px 8px rgba(0, 0, 0, .18); }
+#hesabno-project-family-page .hpf-panel { margin-top: 14px; padding: 14px; border: 1px solid #46535e; border-radius: 20px; background: #28323b; }
+#hesabno-project-family-page .hpf-panel-title { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
+#hesabno-project-family-page .hpf-panel-title strong { font-size: 13px; }
+#hesabno-project-family-page .hpf-count { color: #93a4af; font-size: 10px; }
+#hesabno-project-family-page .hpf-add-button { display: flex; align-items: center; justify-content: center; gap: 7px; width: 100%; border: 1px solid #3f9f91; border-radius: 13px; padding: 11px; color: #c9fff5; background: rgba(62, 170, 151, .16); font-size: 12px; font-weight: 900; cursor: pointer; }
+#hesabno-project-family-page .hpf-status { min-height: 0; margin-top: 0; color: #f5b98b; font-size: 10px; }
+#hesabno-project-family-page .hpf-status:not(:empty) { min-height: 18px; margin-top: 9px; }
+#hesabno-project-family-page .hpf-list { display: grid; gap: 8px; margin-top: 10px; }
+#hesabno-project-family-page .hpf-item { display: flex; align-items: center; gap: 9px; padding: 11px; border: 1px solid #43515b; border-radius: 15px; background: #222b33; }
+#hesabno-project-family-page .hpf-item-icon { display: grid; place-items: center; width: 35px; height: 35px; flex: 0 0 35px; border-radius: 12px; background: #33414a; font-size: 19px; }
+#hesabno-project-family-page .hpf-item-main { min-width: 0; flex: 1; }
+#hesabno-project-family-page .hpf-item-name { overflow: hidden; color: #edf4f5; font-size: 12px; font-weight: 800; text-overflow: ellipsis; white-space: nowrap; }
+#hesabno-project-family-page .hpf-item-description { overflow: hidden; margin-top: 3px; color: #91a2ad; font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
+#hesabno-project-family-page .hpf-used { display: inline-flex; margin-top: 4px; border: 1px solid #b77a45; border-radius: 7px; padding: 2px 5px; color: #f6c28e; font-size: 8px; }
+#hesabno-project-family-page .hpf-item-actions { display: flex; flex-direction: column; gap: 5px; }
+#hesabno-project-family-page .hpf-action { border: 1px solid #485660; border-radius: 9px; padding: 6px 8px; color: #bdcbd2; background: #303b44; font-size: 10px; cursor: pointer; white-space: nowrap; }
+#hesabno-project-family-page .hpf-action.danger { color: #ffb2ac; }
+#hesabno-project-family-page .hpf-action:disabled { cursor: not-allowed; opacity: .55; }
+#hesabno-project-family-page .hpf-empty { border: 1px dashed #43515b; border-radius: 14px; padding: 16px 8px; color: #9cabb4; background: transparent; text-align: center; font-size: 11px; }
+#hesabno-project-family-page .hpf-modal-layer { position: fixed; inset: 0; z-index: 2; display: flex; align-items: center; justify-content: center; padding: 16px; background: rgba(9, 14, 18, .7); backdrop-filter: blur(5px); }
+#hesabno-project-family-page .hpf-modal { width: 100%; max-width: 390px; max-height: calc(100vh - 32px); overflow-y: auto; border: 1px solid #4a5964; border-radius: 22px; padding: 16px; background: #27323a; box-shadow: 0 18px 46px rgba(0, 0, 0, .35); }
+#hesabno-project-family-page .hpf-modal-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 14px; }
+#hesabno-project-family-page .hpf-modal-header strong { font-size: 14px; }
+#hesabno-project-family-page .hpf-field { display: grid; gap: 6px; margin-top: 12px; }
+#hesabno-project-family-page .hpf-field label { color: #b7c6ce; font-size: 10px; font-weight: 800; }
+#hesabno-project-family-page input, #hesabno-project-family-page textarea { width: 100%; border: 1px solid #4b5964; border-radius: 12px; padding: 10px 11px; outline: none; color: #ecf3f5; background: #202830; font: inherit; font-size: 12px; box-sizing: border-box; }
+#hesabno-project-family-page textarea { min-height: 66px; resize: vertical; }
+#hesabno-project-family-page input:focus, #hesabno-project-family-page textarea:focus { border-color: #49b8aa; box-shadow: 0 0 0 3px rgba(73, 184, 170, .12); }
+#hesabno-project-family-page .hpf-icons { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 7px; }
+#hesabno-project-family-page .hpf-icon { display: grid; place-items: center; min-height: 38px; border: 1px solid #485761; border-radius: 11px; background: #303b44; font-size: 20px; cursor: pointer; }
+#hesabno-project-family-page .hpf-icon[data-active="true"] { border-color: #55cbb7; background: rgba(73, 184, 170, .22); box-shadow: 0 0 0 2px rgba(73, 184, 170, .15); }
+#hesabno-project-family-page .hpf-modal-status { min-height: 18px; margin-top: 8px; color: #ffb48f; font-size: 10px; }
+#hesabno-project-family-page .hpf-modal-submit { width: 100%; margin-top: 10px; border: 0; border-radius: 13px; padding: 12px; color: #102522; background: #56c8b3; font-size: 12px; font-weight: 900; cursor: pointer; }
+html[data-theme="light"] #hesabno-project-family-page { background: rgba(42, 61, 72, .3); }
+html[data-theme="light"] #hesabno-project-family-page .hpf-shell { background: #edf4f7; color: #263746; }
+html[data-theme="light"] #hesabno-project-family-page .hpf-header { border-color: #c0d0d9; background: #f7fbfc; }
+html[data-theme="light"] #hesabno-project-family-page .hpf-back, html[data-theme="light"] #hesabno-project-family-page .hpf-close { border-color: #bdced8; color: #526a79; background: #e6eff3; }
+html[data-theme="light"] #hesabno-project-family-page .hpf-header p, html[data-theme="light"] #hesabno-project-family-page .hpf-count, html[data-theme="light"] #hesabno-project-family-page .hpf-item-description { color: #657b89; }
+html[data-theme="light"] #hesabno-project-family-page .hpf-tabs { border-color: #bdced8; background: #dfe9ee; }
+html[data-theme="light"] #hesabno-project-family-page .hpf-tab { color: #587080; }
+html[data-theme="light"] #hesabno-project-family-page .hpf-tab[data-active="true"] { color: #24404d; background: #ffffff; }
+html[data-theme="light"] #hesabno-project-family-page .hpf-panel, html[data-theme="light"] #hesabno-project-family-page .hpf-modal { border-color: #bdced8; background: #f7fbfc; }
+html[data-theme="light"] #hesabno-project-family-page .hpf-add-button { border-color: #53a999; color: #176b60; background: #d9f2ed; box-shadow: 0 2px 7px rgba(45, 139, 120, .12); }
+html[data-theme="light"] #hesabno-project-family-page input, html[data-theme="light"] #hesabno-project-family-page textarea { border-color: #bdced8; color: #263746; background: #ffffff; }
+html[data-theme="light"] #hesabno-project-family-page .hpf-item { border-color: #c4d4dc; background: #ffffff; }
+html[data-theme="light"] #hesabno-project-family-page .hpf-item-icon { background: #e3edf1; }
+html[data-theme="light"] #hesabno-project-family-page .hpf-item-name, html[data-theme="light"] #hesabno-project-family-page .hpf-modal-header strong { color: #263746; }
+html[data-theme="light"] #hesabno-project-family-page .hpf-action, html[data-theme="light"] #hesabno-project-family-page .hpf-icon { border-color: #bdced8; color: #4b6878; background: #edf4f7; }
+html[data-theme="light"] #hesabno-project-family-page .hpf-icon[data-active="true"] { border-color: #2caa95; background: #d8f2ed; }
+html[data-theme="light"] #hesabno-project-family-page .hpf-empty { border-color: #c4d4dc; color: #657b89; }

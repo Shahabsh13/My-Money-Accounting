@@ -1,0 +1,229 @@
+/* Fixed dashboard cards: keep the primary check and bank-SMS actions visible. */
+main.hesabno-dashboard-main,
+main.hesabno-dashboard-main * {
+  font-family: "Vazirmatn", "IRANSans", system-ui, sans-serif !important;
+}
+main.hesabno-dashboard-main .hesabno-dashboard-action-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+main.hesabno-dashboard-main .hesabno-dashboard-check-action-hidden,
+main.hesabno-dashboard-main .hesabno-dashboard-legacy-widget-hidden {
+  display: none !important;
+}
+.hesabno-fixed-dashboard-widgets {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .75rem;
+  margin-top: .75rem;
+}
+.hesabno-fixed-dashboard-card {
+  width: 100%;
+  min-width: 0;
+  padding: .85rem .9rem;
+  border: 1px solid #2b414b;
+  border-radius: 1.25rem;
+  background: linear-gradient(145deg, #14232b, #101a21);
+  color: #e2edf1;
+  text-align: right;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, .18);
+  cursor: pointer;
+  transition: border-color .16s ease, background-color .16s ease, transform .16s ease, box-shadow .16s ease;
+}
+.hesabno-fixed-dashboard-card:hover { border-color: #4a6974; box-shadow: 0 10px 22px rgba(0, 0, 0, .24); }
+.hesabno-fixed-dashboard-card:active { transform: scale(.99); }
+.hesabno-fixed-dashboard-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem;
+  padding-bottom: .55rem;
+  border-bottom: 1px solid rgba(148, 163, 184, .16);
+  font-size: .82rem;
+  font-weight: 900;
+}
+.hesabno-fixed-dashboard-card-title { display: inline-flex; align-items: center; gap: .45rem; }
+.hesabno-fixed-dashboard-card-arrow { color: #91a8b3; font-size: 1.25rem; line-height: 1; }
+.hesabno-fixed-dashboard-card-badge {
+  min-width: 1.55rem;
+  height: 1.55rem;
+  padding-inline: .35rem;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .72rem;
+  font-weight: 900;
+}
+.hesabno-fixed-dashboard-check-row,
+.hesabno-fixed-dashboard-sms-row {
+  display: flex;
+  direction: ltr;
+  align-items: center;
+  gap: .55rem;
+  min-width: 0;
+  padding-top: .62rem;
+  font-size: .72rem;
+  font-weight: 700;
+}
+.hesabno-fixed-dashboard-check-row > span:nth-child(2),
+.hesabno-fixed-dashboard-sms-row > span:nth-child(2) { min-width: 0; flex: 1; direction: rtl; text-align: right; color: #b8c8cf; }
+.hesabno-fixed-dashboard-check-row:nth-child(2) .hesabno-fixed-dashboard-card-badge { background: #7a3452; color: #ffd9e5; }
+.hesabno-fixed-dashboard-check-row:nth-child(3) .hesabno-fixed-dashboard-card-badge { background: #8b571b; color: #ffe6b0; }
+.hesabno-fixed-dashboard-check-row:nth-child(4) .hesabno-fixed-dashboard-card-badge { background: #176d59; color: #c4f7e4; }
+.hesabno-fixed-dashboard-sms-row:nth-child(2) .hesabno-fixed-dashboard-card-badge { background: #7a3452; color: #ffd9e5; }
+.hesabno-fixed-dashboard-sms-row:nth-child(3) .hesabno-fixed-dashboard-card-badge { background: #8b571b; color: #ffe6b0; }
+.hesabno-fixed-dashboard-sms-row:nth-child(4) .hesabno-fixed-dashboard-card-badge { background: #176d59; color: #c4f7e4; }
+html[data-theme="light"] .hesabno-fixed-dashboard-card {
+  border-color: #bdccd5;
+  background: linear-gradient(145deg, #f5f9fb, #e8eff3);
+  color: #263746;
+  box-shadow: 0 6px 16px rgba(74, 99, 115, .12);
+}
+html[data-theme="light"] .hesabno-fixed-dashboard-card:hover { border-color: #8fa9b7; }
+html[data-theme="light"] .hesabno-fixed-dashboard-card-header { border-bottom-color: #cbd8e1; }
+html[data-theme="light"] .hesabno-fixed-dashboard-card-arrow { color: #6e8491; }
+html[data-theme="light"] .hesabno-fixed-dashboard-check-row > span:nth-child(2),
+html[data-theme="light"] .hesabno-fixed-dashboard-sms-row > span:nth-child(2) { color: #526875; }
+html[data-theme="light"] .hesabno-fixed-dashboard-check-row:nth-child(2) .hesabno-fixed-dashboard-card-badge { background: #f1dce5; color: #8a3658; }
+html[data-theme="light"] .hesabno-fixed-dashboard-check-row:nth-child(3) .hesabno-fixed-dashboard-card-badge { background: #f5e6c9; color: #8b5a19; }
+html[data-theme="light"] .hesabno-fixed-dashboard-check-row:nth-child(4) .hesabno-fixed-dashboard-card-badge { background: #d6eee6; color: #19745d; }
+html[data-theme="light"] .hesabno-fixed-dashboard-sms-row:nth-child(2) .hesabno-fixed-dashboard-card-badge { background: #f1dce5; color: #8a3658; }
+html[data-theme="light"] .hesabno-fixed-dashboard-sms-row:nth-child(3) .hesabno-fixed-dashboard-card-badge { background: #f5e6c9; color: #8b5a19; }
+html[data-theme="light"] .hesabno-fixed-dashboard-sms-row:nth-child(4) .hesabno-fixed-dashboard-card-badge { background: #d6eee6; color: #19745d; }
+html[data-theme="light"] .hesabno-balance-kind { color: #b9d9cb !important; }
+html[data-theme="dark"] .hesabno-balance-kind { color: #9ac8b6 !important; }
+.hesabno-balance-kind {
+  display: block !important;
+  margin-top: .12rem;
+  font-size: .68rem !important;
+  line-height: 1.4 !important;
+  font-weight: 600 !important;
+  white-space: nowrap;
+}
+.hesabno-balance-source { display: none !important; }
+.hesabno-dashboard-panel {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(2, 8, 23, .45);
+  backdrop-filter: blur(14px) saturate(.72);
+  font-family: "Vazirmatn", system-ui, sans-serif;
+}
+body .fixed.inset-0 {
+  background-color: rgba(2, 8, 23, .45) !important;
+  backdrop-filter: blur(14px) saturate(.72) !important;
+}
+.hesabno-dashboard-panel-card {
+  width: min(100%, 30rem);
+  max-height: min(86vh, 42rem);
+  overflow: auto;
+  padding: 1rem;
+  border: 1px solid #334b56;
+  border-radius: 1.5rem;
+  background: linear-gradient(145deg, #14232b, #101a21);
+  color: #e2edf1;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, .4);
+}
+.hesabno-dashboard-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  padding-bottom: .75rem;
+  border-bottom: 1px solid rgba(148, 163, 184, .16);
+}
+.hesabno-dashboard-panel-title { font-size: .95rem; font-weight: 900; }
+.hesabno-dashboard-panel-subtitle { margin-top: .2rem; color: #9bb0b9; font-size: .7rem; }
+.hesabno-dashboard-panel-close {
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid #405762;
+  border-radius: .75rem;
+  color: #b9cbd2;
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.hesabno-dashboard-panel-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  margin-top: .65rem;
+  padding: .75rem;
+  border: 1px solid rgba(148, 163, 184, .16);
+  border-radius: 1rem;
+  color: #c2d1d7;
+  font-size: .75rem;
+  font-weight: 700;
+}
+.hesabno-dashboard-panel-row.hesabno-dashboard-panel-clickable {
+  width: 100%;
+  background: transparent;
+  text-align: right;
+  font: inherit;
+  cursor: pointer;
+}
+.hesabno-dashboard-panel-row.hesabno-dashboard-panel-clickable:hover { border-color: #5b8794; background: rgba(71, 112, 126, .16); }
+.hesabno-dashboard-panel-number { color: #67d1ab; font-weight: 900; }
+.hesabno-dashboard-panel-empty { padding: 1.5rem .5rem .5rem; color: #9bb0b9; text-align: center; font-size: .75rem; }
+.hesabno-dashboard-panel-list { display: grid; gap: .5rem; margin-top: .7rem; }
+.hesabno-dashboard-panel-item {
+  width: 100%;
+  padding: .7rem .75rem;
+  border: 1px solid rgba(148, 163, 184, .18);
+  border-radius: .9rem;
+  color: #c2d1d7;
+  text-align: right;
+  font-size: .72rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+.hesabno-dashboard-check-item { display: grid; gap: .3rem; text-align: right; }
+.hesabno-dashboard-check-item-top,
+.hesabno-dashboard-check-item-bottom { display: flex; align-items: center; justify-content: space-between; gap: .6rem; }
+.hesabno-dashboard-check-item-top { color: #d6e5e9; }
+.hesabno-dashboard-check-item-bottom { color: #91a9b3; font-size: .68rem; font-weight: 700; }
+.hesabno-dashboard-check-item-direction { color: #67d1ab; font-size: .65rem; }
+.hesabno-dashboard-panel-item:hover { border-color: #5b8794; background: rgba(71, 112, 126, .16); }
+.hesabno-dashboard-panel-actions { display: flex; align-items: center; gap: .35rem; }
+.hesabno-dashboard-panel-back,
+.hesabno-dashboard-panel-close { width: 2rem; height: 2rem; border: 1px solid #405762; border-radius: .75rem; background: transparent; color: #c2d1d7; font-size: 1.2rem; line-height: 1; cursor: pointer; }
+.hesabno-dashboard-panel-back[hidden],
+.hesabno-dashboard-panel-close[hidden] { display: none; }
+.hesabno-dashboard-panel-link { width: 100%; margin-top: .8rem; padding: .7rem .75rem; border: 1px solid rgba(180, 125, 20, .35); border-radius: .9rem; background: rgba(245, 190, 55, .12); color: #9b6b12; font-size: .75rem; font-weight: 900; cursor: pointer; }
+@keyframes hesabno-check-focus-pulse { 0%, 100% { box-shadow: 0 0 0 2px rgba(245, 190, 55, .22), 0 0 0 7px rgba(245, 190, 55, .08); } 50% { box-shadow: 0 0 0 3px rgba(245, 190, 55, .5), 0 0 0 10px rgba(245, 190, 55, .12); } }
+article.hesabno-focused-check-card { border-color: #d7a63c !important; outline: 2px solid rgba(215, 166, 60, .45); animation: hesabno-check-focus-pulse 1.6s ease-in-out 3; scroll-margin-top: 5.5rem; }
+.hesabno-dashboard-panel-detail { display: grid; gap: .55rem; margin-top: .8rem; }
+html[data-theme="light"] body .fixed.inset-0 {
+  background-color: rgba(15, 23, 42, .6) !important;
+}
+html[data-theme="light"] .hesabno-dashboard-panel-card {
+  border-color: #bdccd5;
+  background: linear-gradient(145deg, #f5f9fb, #e8eff3);
+  color: #263746;
+  box-shadow: 0 20px 50px rgba(74, 99, 115, .22);
+}
+html[data-theme="light"] .hesabno-dashboard-panel-header { border-bottom-color: #cbd8e1; }
+html[data-theme="light"] .hesabno-dashboard-panel-subtitle,
+html[data-theme="light"] .hesabno-dashboard-panel-empty { color: #667d89; }
+html[data-theme="light"] .hesabno-dashboard-panel-close { border-color: #bdccd5; color: #526875; }
+html[data-theme="light"] .hesabno-dashboard-panel-back { border-color: #bdccd5; color: #526875; }
+html[data-theme="light"] .hesabno-dashboard-panel-row { border-color: #cbd8e1; color: #526875; }
+html[data-theme="light"] .hesabno-dashboard-panel-row.hesabno-dashboard-panel-clickable:hover { background: rgba(148, 163, 184, .12); }
+html[data-theme="light"] .hesabno-dashboard-panel-item { border-color: #cbd8e1; color: #526875; }
+html[data-theme="light"] .hesabno-dashboard-check-item-top { color: #526875; }
+html[data-theme="light"] .hesabno-dashboard-check-item-bottom { color: #708690; }
+html[data-theme="light"] .hesabno-dashboard-check-item-direction { color: #168f70; }
+.hesabno-unified-number-font,
+.hesabno-dashboard-panel-number,
+.hesabno-dashboard-check-item-top strong,
+.hesabno-dashboard-check-item-bottom > span,
+.hesabno-simple-report-amount {
+  font-family: "IRANSans", "IRANSansFaNum", "Vazirmatn", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-variant-numeric: tabular-nums !important;
+}

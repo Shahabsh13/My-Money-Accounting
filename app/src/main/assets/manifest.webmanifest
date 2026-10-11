@@ -1,0 +1,15 @@
+{
+  "name": "My Money",
+  "short_name": "My Money",
+  "lang": "fa",
+  "dir": "rtl",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0c1f1d",
+  "theme_color": "#0c1f1d",
+  "icons": [
+    { "src": "assets/icon/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "assets/icon/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "assets/icon/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

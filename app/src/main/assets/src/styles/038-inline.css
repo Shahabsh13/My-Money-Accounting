@@ -1,0 +1,25 @@
+/* Light advanced report catalog cards. */
+html[data-theme="light"] main div[class*="divide-y"][class*="border-stone-700/60"] {
+  padding: 4px !important;
+  background: #e3edf2 !important;
+  border: 1px solid #aebfc9 !important;
+}
+html[data-theme="light"] main div[class*="divide-y"][class*="border-stone-700/60"] > button[class*="text-right"] {
+  width: calc(100% - 12px) !important;
+  margin: 3px 6px !important;
+  border-style: solid !important;
+  border-width: 1px !important;
+  border-color: #b5c6d0 !important;
+  border-radius: 14px !important;
+  background: #f8fbfd !important;
+  box-shadow: 0 1px 3px rgba(74, 99, 115, 0.1) !important;
+}
+html[data-theme="light"] main div[class*="divide-y"][class*="border-stone-700/60"] > button[class*="text-right"]:hover {
+  border-color: #829aaa !important;
+  background: #f1f7fa !important;
+  box-shadow: 0 2px 5px rgba(74, 99, 115, 0.14) !important;
+}
+html[data-theme="light"] main div[class*="divide-y"][class*="border-stone-700/60"] > button[class*="text-right"]:active {
+  border-color: #6f8999 !important;
+  background: #eaf3f7 !important;
+}

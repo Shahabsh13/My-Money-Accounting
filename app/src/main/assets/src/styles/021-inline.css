@@ -1,0 +1,29 @@
+/* Smooth transaction light surfaces. */
+html[data-theme="light"] body:has(article[id^="tx-card-"]),
+html[data-theme="light"] #root:has(article[id^="tx-card-"]),
+html[data-theme="light"] #root:has(article[id^="tx-card-"]) > div,
+html[data-theme="light"] #root:has(article[id^="tx-card-"]) > div > div,
+html[data-theme="light"] #root:has(article[id^="tx-card-"]) main {
+  background-color: #e7eff5 !important;
+  background-image: none !important;
+}
+html[data-theme="light"] main:has(article[id^="tx-card-"]) > div.sticky {
+  background-color: #e7eff5 !important;
+  background-image: none !important;
+  backdrop-filter: none !important;
+  border-bottom-color: #cbd8e2 !important;
+  box-shadow: none !important;
+}
+html[data-theme="light"] main:has(article[id^="tx-card-"]) input[placeholder*="جستجو"] {
+  background-color: #f8fbfd !important;
+  border-color: #c5d3de !important;
+}
+html[data-theme="light"] main:has(article[id^="tx-card-"]) > div.sticky.top-0 > div.flex.items-center.gap-1.5 {
+  background-color: #f1f6f9 !important;
+  border-color: #c5d3de !important;
+}
+html[data-theme="light"] nav.fixed:has(button) {
+  background-color: #e7eff5 !important;
+  border-color: #cbd8e2 !important;
+  box-shadow: 0 -8px 24px #64748b18 !important;
+}

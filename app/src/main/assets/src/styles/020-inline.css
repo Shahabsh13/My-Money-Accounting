@@ -1,0 +1,31 @@
+/* Expanded transaction actions. */
+html[data-theme="light"] article[id^="tx-card-"] > div:last-child > div:last-child > button:nth-child(1):not([data-hesabno-footnote-kind]):not([data-hesabno-footnote-kind] *):not([data-hesabno-check-correction-link]):not(.hesabno-tx-reversal-chip) {
+  background-color: #e8f8ef !important;
+  border: 1px solid #86efac !important;
+  color: #047857 !important;
+  box-shadow: 0 1px 2px #1665341a !important;
+}
+html[data-theme="light"] article[id^="tx-card-"] > div:last-child > div:last-child > button:nth-child(1):not([data-hesabno-footnote-kind]):not([data-hesabno-footnote-kind] *):not([data-hesabno-check-correction-link]):not(.hesabno-tx-reversal-chip):hover {
+  background-color: #d1fae5 !important;
+  border-color: #34d399 !important;
+}
+html[data-theme="light"] article[id^="tx-card-"] > div:last-child > div:last-child > button:nth-child(2):not([data-hesabno-footnote-kind]):not([data-hesabno-footnote-kind] *):not([data-hesabno-check-correction-link]):not(.hesabno-tx-reversal-chip) {
+  background-color: #fff7ed !important;
+  border: 1px solid #fdba74 !important;
+  color: #b45309 !important;
+  box-shadow: 0 1px 2px #9a34121a !important;
+}
+html[data-theme="light"] article[id^="tx-card-"] > div:last-child > div:last-child > button:nth-child(2):not([data-hesabno-footnote-kind]):not([data-hesabno-footnote-kind] *):not([data-hesabno-check-correction-link]):not(.hesabno-tx-reversal-chip):hover {
+  background-color: #ffedd5 !important;
+  border-color: #f59e0b !important;
+}
+html[data-theme="light"] article[id^="tx-card-"] > div:last-child > div:last-child > button:nth-child(3):not([data-hesabno-footnote-kind]):not([data-hesabno-footnote-kind] *):not([data-hesabno-check-correction-link]):not(.hesabno-tx-reversal-chip) {
+  background-color: #fff1f2 !important;
+  border: 1px solid #fda4af !important;
+  color: #be123c !important;
+  box-shadow: 0 1px 2px #9f12391a !important;
+}
+html[data-theme="light"] article[id^="tx-card-"] > div:last-child > div:last-child > button:nth-child(3):not([data-hesabno-footnote-kind]):not([data-hesabno-footnote-kind] *):not([data-hesabno-check-correction-link]):not(.hesabno-tx-reversal-chip):hover {
+  background-color: #ffe4e6 !important;
+  border-color: #fb7185 !important;
+}

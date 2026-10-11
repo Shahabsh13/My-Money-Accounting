@@ -1,0 +1,3 @@
+.hesabno-tab-shell { animation: hesabnoTabShellIn 260ms cubic-bezier(.22,.75,.25,1) both; }
+@keyframes hesabnoTabShellIn { from { opacity: 0; transform: translate3d(14px, 0, 0) scale(.995); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .hesabno-tab-shell { animation: none !important; } }

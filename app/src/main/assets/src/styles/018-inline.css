@@ -1,0 +1,31 @@
+/* Custom toggle contrast. */
+html[data-theme="light"] button.w-10.h-6.rounded-full.p-1[class~="bg-stone-700"] {
+  background-color: #cbd5e1 !important;
+  border: 1px solid #94a3b8 !important;
+}
+html[data-theme="light"] button.w-10.h-6.rounded-full.p-1[class~="bg-stone-700"] > span[class~="bg-stone-950"] {
+  background-color: #ffffff !important;
+  border: 1px solid #64748b !important;
+  box-shadow: 0 1px 3px #47556955 !important;
+}
+html[data-theme="dark"] button.w-10.h-6.rounded-full.p-1[class~="bg-stone-700"] {
+  background-color: #374151 !important;
+  border: 1px solid #64748b !important;
+}
+html[data-theme="dark"] button.w-10.h-6.rounded-full.p-1[class~="bg-stone-700"] > span[class~="bg-stone-950"] {
+  background-color: #0b111a !important;
+  border: 1px solid #94a3b8 !important;
+  box-shadow: 0 1px 3px #00000066 !important;
+}
+html[data-theme="light"] button.w-10.h-6.rounded-full.p-1[class~="bg-emerald-500"] {
+  background-color: #059669 !important;
+  border: 1px solid #047857 !important;
+}
+html[data-theme="dark"] button.w-10.h-6.rounded-full.p-1[class~="bg-emerald-500"] {
+  background-color: #10b981 !important;
+  border: 1px solid #34d399 !important;
+}
+html button.w-10.h-6.rounded-full.p-1:focus-visible {
+  outline: 2px solid #38bdf8 !important;
+  outline-offset: 2px !important;
+}

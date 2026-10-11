@@ -1,0 +1,128 @@
+/* ── حرکت‌ها: لایه‌های ۲۱۰ (تمام‌صفحه)، ۲۱۵ (تب خانه)، ۲۱۶ (خروج) در یک فایل ── */
+/* Large selection/form overlays open as full-page screens (not floating panels). */
+.hesabno-fullpage-layer {
+  --hesabno-page-bg: #0c0a09;
+  position: fixed !important;
+  inset: 0 !important;
+  top: 0 !important; right: 0 !important; bottom: 0 !important; left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  align-items: stretch !important;
+  justify-content: stretch !important;
+  border-radius: 0 !important;
+  background-color: var(--hesabno-page-bg) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  overflow: hidden !important;
+}
+html[data-theme="light"] .hesabno-fullpage-layer { --hesabno-page-bg: #eef3f6; }
+.hesabno-fullpage-layer > * {
+  width: 100% !important;
+  max-width: none !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  max-height: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+html body .hesabno-fullpage-layer.fixed.inset-0 { background-color: var(--hesabno-page-bg) !important; }
+html[data-theme="light"] body .hesabno-fullpage-layer.fixed.inset-0 { background-color: #eef3f6 !important; }
+
+/* Bank-account form: the footer («ثبت و ذخیره بانک») always sits at the bottom of the screen. */
+.hesabno-fullpage-layer > .hesabno-bank-form-page { display: flex !important; flex-direction: column !important; }
+.hesabno-bank-form-page > :nth-child(2) { flex: 1 1 auto !important; min-height: 0 !important; overflow-y: auto !important; }
+.hesabno-bank-form-page > :last-child { margin-top: auto !important; position: sticky !important; bottom: 0 !important; }
+
+/* لایه ۲۱۵: انتقال نرم بین تب «خانه» و بقیه‌ی تب‌ها.
+   نوار بالای خانه (۵۶px) فقط در خانه هست. این لایه جابه‌جایی را با transform جبران می‌کند
+   تا محتوا در همان فریم اول سر جای قبلی بماند و بعد نرم حرکت کند. */
+
+@keyframes hesabnoHomeMainIn {
+  from { transform: translate3d(0, -56px, 0); }
+  to   { transform: translate3d(0, 0, 0); }
+}
+@keyframes hesabnoLeaveHomeMainIn {
+  from { transform: translate3d(0, 56px, 0); }
+  to   { transform: translate3d(0, 0, 0); }
+}
+@keyframes hesabnoHomeHeaderIn {
+  from { opacity: 0; transform: translate3d(0, -8px, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+main.hesabno-tab-enter-home {
+  animation: hesabnoHomeMainIn 280ms cubic-bezier(.22, .75, .25, 1) both !important;
+  will-change: transform;
+}
+main.hesabno-tab-leave-home {
+  animation: hesabnoLeaveHomeMainIn 280ms cubic-bezier(.22, .75, .25, 1) both !important;
+  will-change: transform;
+}
+header.hesabno-home-header-enter {
+  animation: hesabnoHomeHeaderIn 220ms cubic-bezier(.22, .75, .25, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  main.hesabno-tab-enter-home,
+  main.hesabno-tab-leave-home,
+  header.hesabno-home-header-enter { animation: none !important; }
+}
+
+/* فاصله‌ی بالای محتوا در خانه با بقیه‌ی تب‌ها یکسان است (۱rem)، تا هنگام جابه‌جایی اختلاف ۴px دیده نشود. */
+main.hesabno-dashboard-main { padding-top: 1rem !important; }
+
+/* لایه ۲۱۶: کپی خروج صفحه‌ی تمام‌صفحه (فقط نمایشی). */
+@keyframes hesabnoFullpageExit {
+  from { opacity: 1; transform: translate3d(0, 0, 0); }
+  to   { opacity: 0; transform: translate3d(0, 18px, 0); }
+}
+.hesabno-fullpage-ghost {
+  position: fixed !important;
+  top: 0 !important; right: 0 !important; bottom: 0 !important; left: 0 !important;
+  width: 100% !important; height: 100% !important;
+  max-width: none !important; max-height: none !important;
+  margin: 0 !important; z-index: 60 !important;
+  pointer-events: none !important;
+  background-color: var(--hesabno-page-bg, #0c0a09) !important;
+  backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+  overflow: hidden !important;
+  animation: hesabnoFullpageExit 240ms cubic-bezier(.55, .05, .68, .19) both !important;
+  will-change: opacity, transform;
+}
+html[data-theme="light"] .hesabno-fullpage-ghost { --hesabno-page-bg: #eef3f6; background-color: #eef3f6 !important; }
+.hesabno-fullpage-ghost button, .hesabno-fullpage-ghost input, .hesabno-fullpage-ghost select,
+.hesabno-fullpage-ghost textarea, .hesabno-fullpage-ghost a { pointer-events: none !important; }
+@media (prefers-reduced-motion: reduce) { .hesabno-fullpage-ghost { animation: none !important; } }
+
+/* پاپ‌آپ کوچک: فقط محو شدن (بدون تغییر پس‌زمینه‌ی خود پاپ‌آپ). */
+@keyframes hesabnoOverlayExit {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+.hesabno-overlay-ghost {
+  position: fixed !important;
+  top: 0 !important; right: 0 !important; bottom: 0 !important; left: 0 !important;
+  z-index: 60 !important;
+  pointer-events: none !important;
+  animation: hesabnoOverlayExit 180ms ease-in both !important;
+  will-change: opacity;
+}
+.hesabno-overlay-ghost * { pointer-events: none !important; }
+@media (prefers-reduced-motion: reduce) { .hesabno-overlay-ghost { animation: none !important; } }
+
+/* اعلان بالای صفحه (toast): کپی خروج، محو و کمی به بالا. */
+@keyframes hesabnoToastExit {
+  from { opacity: 1; transform: translate3d(0, 0, 0); }
+  to   { opacity: 0; transform: translate3d(0, -8px, 0); }
+}
+.hesabno-toast-ghost {
+  animation: hesabnoToastExit 200ms ease-in both !important;
+  pointer-events: none !important;
+  will-change: opacity, transform;
+}
+@media (prefers-reduced-motion: reduce) { .hesabno-toast-ghost { animation: none !important; } }

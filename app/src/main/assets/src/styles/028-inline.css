@@ -1,0 +1,21 @@
+/* Calm remaining solid colors. */
+html[data-theme="light"] [class~="bg-rose-500"] {
+  background-color: #c75c6c !important;
+  border-color: #b64f5f !important;
+  color: #ffffff !important;
+}
+html[data-theme="light"] [class~="bg-sky-500"] {
+  background-color: #5c90ac !important;
+  border-color: #4f829d !important;
+  color: #ffffff !important;
+}
+html[data-theme="light"] [class~="bg-purple-500"] {
+  background-color: #79618f !important;
+  border-color: #6c5482 !important;
+  color: #ffffff !important;
+}
+html[data-theme="light"] [class~="bg-teal-500"] {
+  background-color: #3b8b83 !important;
+  border-color: #327b74 !important;
+  color: #ffffff !important;
+}

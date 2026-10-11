@@ -1,0 +1,14 @@
+/* Keep document catalog pickers centered and clearly read-only. */
+.hesabno-catalog-picker-overlay {
+  align-items: center !important;
+}
+.hesabno-catalog-picker-overlay > div {
+  max-height: min(80vh, 34rem) !important;
+}
+.hesabno-catalog-empty {
+  padding: 1.1rem .9rem;
+  color: #94a3b8;
+  font-size: .75rem;
+  text-align: center;
+  line-height: 1.8;
+}
