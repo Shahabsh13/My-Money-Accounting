@@ -802,6 +802,9 @@ Error generating stack: `+h.message+`
   const addBreakdown=transaction=>{
     const totals=Cs(transaction,s),reverse=!!transaction.isReversal;
     if(transaction.isCompound){
+      const checkStatus=String(transaction.check&&transaction.check.status||"").trim().toLowerCase();
+      const checkPrincipalCanceled=!!transaction.check&&(transaction.check.debtCanceled===true||["bounced","refunded","returned","returned_check","dishonored"].includes(checkStatus)||/برگشت|مسترد|returned|refund|bounc|dishonor/i.test(checkStatus));
+      if(checkPrincipalCanceled){if(totals.fee)add(expenseCategories,transaction.feeAccount||"هزینه کارمزد و بهره",totals.fee);return;}
       for(const leg of reverse?(transaction.compoundDestinations||[]):(transaction.compoundSources||[]))if(leg&&leg.account&&k0(leg.account,s)==="income")add(incomeCategories,leg.account,(Number(leg.amount)||0)*(reverse?-1:1));
       for(const leg of reverse?(transaction.compoundSources||[]):(transaction.compoundDestinations||[]))if(leg&&leg.account&&k0(leg.account,s)==="expense")add(expenseCategories,leg.account,(Number(leg.amount)||0)*(reverse?-1:1));
       if(totals.fee)add(expenseCategories,transaction.feeAccount||"هزینه کارمزد و بهره",totals.fee);
