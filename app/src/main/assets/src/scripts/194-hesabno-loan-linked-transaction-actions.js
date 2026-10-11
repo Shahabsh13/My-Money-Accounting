@@ -7,8 +7,20 @@
         return Array.isArray(value) ? value : [];
       } catch (error) { return []; }
     };
-    var isLoanLinked = function (transaction) {
-      return !!(transaction && (transaction.isLoanTransaction || transaction.loanId != null || transaction.installmentId != null));
+    var isLoanLinked = function (transaction, loans, installments) {
+      if (!transaction) return false;
+      if (transaction.isLoanTransaction || transaction.loanId != null || transaction.installmentId != null) return true;
+      var transactionId = String(transaction.id);
+      var installmentList = Array.isArray(installments) ? installments : readArray("hesabno:installments");
+      var loanList = Array.isArray(loans) ? loans : readArray("hesabno:loans");
+      if (installmentList.some(function (item) {
+        return item && item.transactionId != null && String(item.transactionId) === transactionId;
+      })) return true;
+      var installment = installmentList.find(function (item) {
+        return item && item.id != null && transaction.installmentId != null && String(item.id) === String(transaction.installmentId);
+      });
+      var loanId = transaction.loanId != null ? transaction.loanId : installment && installment.loanId;
+      return loanId != null && loanList.some(function (loan) { return loan && String(loan.id) === String(loanId); });
     };
     var transactionFor = function (card, transactions) {
       var prefix = "tx-card-";
@@ -100,12 +112,14 @@
     };
     var update = function () {
       var transactions = readArray("hesabno:transactions");
+      var loans = readArray("hesabno:loans");
+      var installments = readArray("hesabno:installments");
       Array.from(document.querySelectorAll('article[id^="tx-card-"]')).forEach(function (card) {
         var transaction = transactionFor(card, transactions);
-        if (!isLoanLinked(transaction)) return;
+        if (!isLoanLinked(transaction, loans, installments)) return;
         card.dataset.hesabnoLoanLinkedTransaction = "true";
         var genericButtons = Array.from(card.querySelectorAll("button")).filter(function (button) {
-          return ["ویرایش", "اصلاحی", "حذف"].indexOf(clean(button.textContent)) !== -1;
+          return ["ویرایش", "اصلاحی", "حذف", "حذف تراکنش", "پاک کردن"].indexOf(clean(button.textContent)) !== -1;
         });
         if (!genericButtons.length) return;
         var container = genericButtons[0].parentElement;
@@ -140,7 +154,7 @@
       var card = button.closest('article[id^="tx-card-"]');
       if (!card) return;
       var transaction = transactionFor(card, readArray("hesabno:transactions"));
-      if (!isLoanLinked(transaction)) return;
+      if (!isLoanLinked(transaction, readArray("hesabno:loans"), readArray("hesabno:installments"))) return;
       if (button.getAttribute("data-hesabno-loan-manager-action") === "true") {
         event.preventDefault();
         event.stopPropagation();
@@ -148,7 +162,7 @@
         openLoanManager(transaction);
         return;
       }
-      if (["ویرایش", "اصلاحی", "حذف"].indexOf(clean(button.textContent)) !== -1) {
+      if (["ویرایش", "اصلاحی", "حذف", "حذف تراکنش", "پاک کردن"].indexOf(clean(button.textContent)) !== -1) {
         event.preventDefault();
         event.stopPropagation();
         event.stopImmediatePropagation();
