@@ -23,7 +23,7 @@
       });
     });
   };
-  var findLoanForDeleteButton = function (button) {
+  var findLoanForActionButton = function (button) {
     var loans = readArray("hesabno:loans");
     var node = button.parentElement;
     for (var depth = 0; node && depth < 10; depth += 1, node = node.parentElement) {
@@ -40,18 +40,27 @@
     var heading = clean(main && main.querySelector("h1") && main.querySelector("h1").textContent);
     return heading.indexOf("وام‌ها و تسهیلات") === 0 || heading.indexOf("خرید و اقساط") === 0;
   };
-  var isDeleteAction = function (button) {
+  var getActionType = function (button) {
     var label = clean(button.title || button.getAttribute("aria-label") || button.textContent);
-    return /(^|\s)حذف(\s|$)/.test(label) || label.indexOf("حذف وام") !== -1 || label.indexOf("حذف خرید") !== -1 || label.indexOf("حذف مورد") !== -1;
+    if (label.indexOf("ویرایش") !== -1 || label.indexOf("اصلاح") !== -1) return "edit";
+    if (/(^|\s)حذف(\s|$)/.test(label) || label.indexOf("حذف وام") !== -1 ||
+        label.indexOf("حذف خرید") !== -1 || label.indexOf("حذف مورد") !== -1) return "delete";
+    return "";
   };
   document.addEventListener("click", function (event) {
     var button = event.target && event.target.closest ? event.target.closest("button") : null;
-    if (!button || !isDeleteAction(button) || !isLoanOrPurchasePage(button)) return;
-    var loan = findLoanForDeleteButton(button);
+    if (!button || !isLoanOrPurchasePage(button)) return;
+    var actionType = getActionType(button);
+    if (!actionType) return;
+    var loan = findLoanForActionButton(button);
     if (!loan || !hasLinkedTransactions(loan)) return;
     event.preventDefault();
     event.stopPropagation();
     event.stopImmediatePropagation();
-    window.alert("این وام یا خرید اقساطی تراکنش ثبت‌شده دارد و قابل حذف نیست. ابتدا تراکنش‌های مرتبط را از بخش تراکنش‌ها حذف کنید.");
+    if (actionType === "edit") {
+      window.alert("این وام یا خرید اقساطی تراکنش ثبت‌شده دارد و تا زمانی که تراکنش‌های مرتبط وجود دارند، قابل ویرایش نیست. ابتدا تراکنش‌های مرتبط را از بخش تراکنش‌ها حذف کنید.");
+    } else {
+      window.alert("این وام یا خرید اقساطی تراکنش ثبت‌شده دارد و قابل حذف نیست. ابتدا تراکنش‌های مرتبط را از بخش تراکنش‌ها حذف کنید.");
+    }
   }, true);
 })();
