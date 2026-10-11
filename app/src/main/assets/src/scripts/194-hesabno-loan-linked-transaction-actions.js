@@ -14,6 +14,11 @@
       return item && String(item.loanId) === loanId;
     });
     var transactions = readArray("hesabno:transactions");
+    // A paid installment or a stored transactionId is also treated as linked,
+    // even if a transaction was removed or storage has not fully synchronized.
+    if (installments.some(function (installment) {
+      return installment.status === "paid" || installment.transactionId != null || installment.paidDate != null;
+    })) return true;
     return transactions.some(function (transaction) {
       if (!transaction) return false;
       if (transaction.loanId != null && String(transaction.loanId) === loanId) return true;
@@ -32,6 +37,20 @@
         return loan && loan.name && text.includes(clean(loan.name));
       });
       if (matches.length === 1) return matches[0];
+      if (matches.length > 1) {
+        var digits = function (value) {
+          return String(value == null ? "" : value)
+            .replace(/[۰-۹]/g, function (digit) { return String("۰۱۲۳۴۵۶۷۸۹".indexOf(digit)); })
+            .replace(/[٠-٩]/g, function (digit) { return String("٠١٢٣٤٥٦٧٨٩".indexOf(digit)); })
+            .replace(/[^0-9]/g, "");
+        };
+        var textDigits = digits(text);
+        var amountMatches = matches.filter(function (loan) {
+          var amountDigits = digits(loan.amount);
+          return amountDigits.length >= 4 && textDigits.indexOf(amountDigits) !== -1;
+        });
+        if (amountMatches.length === 1) return amountMatches[0];
+      }
     }
     return null;
   };
