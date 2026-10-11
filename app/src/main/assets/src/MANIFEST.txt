@@ -208,3 +208,4 @@
 208	script	src/scripts/208-hesabno-home-canceled-check-filter.js	4390 bytes
 209	style	src/styles/209-hesabno-hide-user-and-fast-tabs.css	372 bytes
 210	script	src/scripts/210-hesabno-user-section-guard.js	1494 bytes
+218	script	src/scripts/218-hesabno-hide-compound-correction-action.js	1537 bytes
