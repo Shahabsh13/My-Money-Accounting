@@ -15,7 +15,8 @@
      if (!changed) return;
      try {
        localStorage.setItem("hesabno:homeWidgets", JSON.stringify(config));
-       window.__hesabnoSoftReload();
+       // This script runs before the app mounts, so the sanitized settings are read on first render.
+       // Avoid a soft-reload loop when storage is volatile (for example, inside a sandboxed preview).
      } catch (error) {}
    };
    var hideOptions = function () {

@@ -18,21 +18,20 @@
       return accounts.some(function (account) { return account && account.name === name && account.system === true; });
     });
     if (get(key) === "done" && requiredAccountsReady) return;
-    var changed = false;
    var nextId = accounts.reduce(function (max, account) { return Math.max(max, Number(account && account.id) || 0); }, 0) + 1;
    var ensure = function (name, group, code) {
      var account = accounts.find(function (item) { return item && item.name === name; });
      if (account) {
-       if (account.system !== true) { account.system = true; changed = true; }
+       if (account.system !== true) account.system = true;
        return;
      }
      accounts.push({ id: nextId++, group: group, code: code, name: name, picture: group === "asset" ? "📄" : "🧾", parentId: null, active: true, pinned: false, system: true });
-     changed = true;
    };
    ensure("اسناد دریافتنی", "asset", "106");
    ensure("اسناد پرداختنی", "liability", "206");
     set("hesabno:accounts_v5", JSON.stringify(accounts));
     set("hesabno:accounts", JSON.stringify(accounts));
     set(key, "done");
-    if (changed) window.__hesabnoSoftReload();
+    // This migration runs before the app mounts on DOMContentLoaded; reloading is unnecessary
+    // and can loop forever when the preview only provides in-memory storage.
  })();
