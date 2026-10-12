@@ -23,6 +23,9 @@ permissions:
 jobs:
   build-debug-apk:
     runs-on: ubuntu-latest
+    env:
+      ANDROID_HOME: /usr/local/lib/android/sdk
+      ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -35,8 +38,10 @@ jobs:
 
       - name: Install Android SDK packages
         run: |
-          sdkmanager --licenses < /dev/null || true
-          sdkmanager --install 'platform-tools' 'platforms;android-35' 'build-tools;35.0.0'
+          SDKMANAGER="$(find "$ANDROID_HOME/cmdline-tools" -type f -name sdkmanager | head -n 1)"
+          test -n "$SDKMANAGER"
+          yes | "$SDKMANAGER" --licenses
+          "$SDKMANAGER" --install 'platform-tools' 'platforms;android-35' 'build-tools;35.0.0'
 
       - name: Build debug APK
         run: |
