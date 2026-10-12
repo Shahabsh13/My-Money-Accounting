@@ -67,6 +67,17 @@ test('existing installment-linked transaction locks parent loan', () => {
   assert.equal(result.event.defaultPrevented, true);
 });
 
+test('linked purchase transaction locks editing on the purchase-installments page', () => {
+  const result = setupLock({
+    loans: [{ id: 'purchase-1', name: 'خرید لپ‌تاپ', amount: 500000 }],
+    transactions: [{ id: 'tx-purchase', loanId: 'purchase-1', amount: 500000 }],
+    heading: 'خرید و اقساط',
+    cardText: 'خرید لپ‌تاپ 500000',
+  });
+  assert.equal(result.event.defaultPrevented, true);
+  assert.equal(result.alerts.length, 1);
+});
+
 test('stale paid status and transactionId do not lock parent after transaction is deleted', () => {
   const result = setupLock({
     loans: [{ id: 'loan-1', name: 'وام خودرو', amount: 100000 }],
