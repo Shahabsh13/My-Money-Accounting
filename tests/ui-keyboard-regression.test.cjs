@@ -10,9 +10,9 @@ const geometrySource = fs.readFileSync(path.join(root, 'app/src/main/assets/src/
 
 async function settleAndClose(dom) { await Promise.resolve(); await Promise.resolve(); await Promise.resolve(); }
 
-function mount() {
+function mount(options = {}) {
   const dom = new JSDOM(`<!doctype html><html><body><div id="root"><div><main><div id="dashboard" style="padding-top: 12px"></div><div class="grow flex flex-col" id="page-content" style="padding-top: 84px" data-hesabno-header-pad="84"><label for="amount">مبلغ تراکنش</label><input id="amount" placeholder="مبلغ" value="" /><input id="ordinary" placeholder="نام شخص" /></div></main></div></div></body></html>`, { url: 'https://app.test/', runScripts: 'outside-only', pretendToBeVisual: true });
-  dom.window.PointerEvent = dom.window.MouseEvent; // jsdom lacks PointerEvent by default; emulate modern Android WebView support.
+  if (!options.legacyTouch) dom.window.PointerEvent = dom.window.MouseEvent; // jsdom lacks PointerEvent by default; emulate modern Android WebView support.
   dom.window.requestAnimationFrame = callback => { callback(); return 1; };
   dom.window.setTimeout = callback => { callback(); return 1; };
   dom.window.eval(keypadSource);
@@ -30,6 +30,16 @@ test('amount pointerdown is canceled before native focus while the custom keypad
   assert.notEqual(window.document.activeElement, input);
   assert.equal(input.readOnly, true);
   assert.equal(input.getAttribute('inputmode'), 'none');
+  await settleAndClose(dom);
+});
+
+
+test('legacy WebView touchstart fallback suppresses native focus and opens the custom keypad', async () => {
+  const dom = mount({ legacyTouch: true }); const { window } = dom; const input = window.document.getElementById('amount');
+  const event = new window.Event('touchstart', { bubbles: true, cancelable: true }); input.dispatchEvent(event);
+  assert.equal(event.defaultPrevented, true);
+  assert.equal(window.document.getElementById('hesabno-amount-keyboard').hidden, false);
+  assert.equal(input.readOnly, true);
   await settleAndClose(dom);
 });
 
