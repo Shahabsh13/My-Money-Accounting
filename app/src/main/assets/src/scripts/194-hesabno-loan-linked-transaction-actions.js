@@ -14,11 +14,9 @@
       return item && String(item.loanId) === loanId;
     });
     var transactions = readArray("hesabno:transactions");
-    // A paid installment or a stored transactionId is also treated as linked,
-    // even if a transaction was removed or storage has not fully synchronized.
-    if (installments.some(function (installment) {
-      return installment.status === "paid" || installment.transactionId != null || installment.paidDate != null;
-    })) return true;
+    // Lock the parent only while an actual transaction record exists.
+    // A stale paid status, paidDate, or transactionId must not keep the parent
+    // locked after the linked transaction has been independently deleted.
     return transactions.some(function (transaction) {
       if (!transaction) return false;
       if (transaction.loanId != null && String(transaction.loanId) === loanId) return true;
