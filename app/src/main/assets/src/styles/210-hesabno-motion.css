@@ -20,7 +20,7 @@
   overflow: hidden !important;
 }
 html[data-theme="light"] .hesabno-fullpage-layer { --hesabno-page-bg: #eef3f6; }
-.hesabno-fullpage-layer > * {
+.hesabno-fullpage-layer > :first-child {
   width: 100% !important;
   max-width: none !important;
   height: 100% !important;
@@ -38,42 +38,8 @@ html[data-theme="light"] body .hesabno-fullpage-layer.fixed.inset-0 { background
 .hesabno-bank-form-page > :nth-child(2) { flex: 1 1 auto !important; min-height: 0 !important; overflow-y: auto !important; }
 .hesabno-bank-form-page > :last-child { margin-top: auto !important; position: sticky !important; bottom: 0 !important; }
 
-/* لایه ۲۱۵: انتقال نرم بین تب «خانه» و بقیه‌ی تب‌ها.
-   نوار بالای خانه (۵۶px) فقط در خانه هست. این لایه جابه‌جایی را با transform جبران می‌کند
-   تا محتوا در همان فریم اول سر جای قبلی بماند و بعد نرم حرکت کند. */
-
-@keyframes hesabnoHomeMainIn {
-  from { transform: translate3d(0, -56px, 0); }
-  to   { transform: translate3d(0, 0, 0); }
-}
-@keyframes hesabnoLeaveHomeMainIn {
-  from { transform: translate3d(0, 56px, 0); }
-  to   { transform: translate3d(0, 0, 0); }
-}
-@keyframes hesabnoHomeHeaderIn {
-  from { opacity: 0; transform: translate3d(0, -8px, 0); }
-  to   { opacity: 1; transform: translate3d(0, 0, 0); }
-}
-
-main.hesabno-tab-enter-home {
-  animation: hesabnoHomeMainIn 280ms cubic-bezier(.22, .75, .25, 1) both !important;
-  will-change: transform;
-}
-main.hesabno-tab-leave-home {
-  animation: hesabnoLeaveHomeMainIn 280ms cubic-bezier(.22, .75, .25, 1) both !important;
-  will-change: transform;
-}
-header.hesabno-home-header-enter {
-  animation: hesabnoHomeHeaderIn 220ms cubic-bezier(.22, .75, .25, 1) both;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  main.hesabno-tab-enter-home,
-  main.hesabno-tab-leave-home,
-  header.hesabno-home-header-enter { animation: none !important; }
-}
-
-/* فاصله‌ی بالای محتوا در خانه با بقیه‌ی تب‌ها یکسان است (۱rem)، تا هنگام جابه‌جایی اختلاف ۴px دیده نشود. */
+/* جابه‌جایی بین خانه و تب‌ها عمداً بدون انیمیشن است تا از پرش/لرزش جلوگیری شود. */
+/* فاصله‌ی بالای محتوا در خانه با بقیه‌ی تب‌ها یکسان است. */
 main.hesabno-dashboard-main { padding-top: 1rem !important; }
 
 /* لایه ۲۱۶: کپی خروج صفحه‌ی تمام‌صفحه (فقط نمایشی). */

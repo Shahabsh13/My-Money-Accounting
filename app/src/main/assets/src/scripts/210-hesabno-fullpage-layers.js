@@ -6,7 +6,10 @@
     if (!panel) return false;
     var rect = panel.getBoundingClientRect();
     if (rect.height >= window.innerHeight * 0.55) return true;
-    var cls = String(panel.className || '') + ' ' + String(overlay.className || '');
+    // Inspect only the inner panel. The overlay itself may already be a full-screen
+    // page (for example, the account statement has h-full and a header as its first child).
+    // Including overlay.className here incorrectly promotes that page to a panel overlay.
+    var cls = String(panel.className || '');
     return /h-\[9[0-9]vh\]|h-\[8[0-9]vh\]|h-full|h-screen|min-h-screen/.test(cls);
   }
   function apply() {
