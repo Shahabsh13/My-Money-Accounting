@@ -53,13 +53,21 @@
   }
   apply();
 
-  // The amount keypad is custom. Prevent the browser's default focus action on
-  // money inputs, which can open Android's native IME alongside the custom keypad.
-  // The numeric-keyboard handler has already marked money inputs and opened its panel.
+  // Money fields use the custom amount keypad. Cancel the native pointer focus
+  // action before WebView can ask Android to display its IME.
   document.addEventListener('pointerdown', function (event) {
     var target = event.target;
     var input = target && target.closest ? target.closest('input') : null;
-    if (!input || input.getAttribute('data-hesabno-amount-keyboard-field') !== 'true') return;
-    if (event.cancelable) event.preventDefault();
+    if (input && input.getAttribute('data-hesabno-amount-keyboard-field') === 'true') {
+      if (event.cancelable) event.preventDefault();
+      return;
+    }
+
+    // The keypad's own read-only display is not an editable field. Do not let it
+    // take focus (and potentially open Gboard); keypad buttons still receive clicks.
+    var keypadControl = target && target.closest
+      ? target.closest('#hesabno-amount-keyboard button, #hesabno-amount-keyboard input[data-hkap-value]')
+      : null;
+    if (keypadControl && event.cancelable) event.preventDefault();
   }, true);
 })();
