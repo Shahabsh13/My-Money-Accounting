@@ -20,6 +20,9 @@
       .replace(/[٠-٩]/g, function (d) { return String(d.charCodeAt(0) - 1632); });
   }
   function clean(v) { return String(v || "").replace(/\s+/g, " ").trim(); }
+  function faDigits(v) {
+    return String(v == null ? "" : v).replace(/\d/g, function (d) { return "۰۱۲۳۴۵۶۷۸۹"[d]; });
+  }
 
   // Already set up (flag, or a stored profile that already has a name) -> nothing to do.
   var existing = null;
