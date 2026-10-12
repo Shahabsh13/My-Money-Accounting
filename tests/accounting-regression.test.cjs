@@ -29,6 +29,11 @@ function loadProductionFunction(name, endMarker, globals = {}) {
 
 const accountBalance = loadProductionFunction('Nr', ',v9=');
 const reportTotals = loadProductionFunction('Cs', ',Nr=');
+const moneyInput = loadProductionFunction('Ot', ',Zn=', {
+  St: value => String(value).replace(/[۰-۹]/g, digit => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit))).replace(/[٬,]/g, ''),
+  uk: () => ',',
+  te: value => value,
+});
 
 function equalFields(actual, expected) {
   for (const [key, value] of Object.entries(expected)) assert.equal(actual[key], value, key);
@@ -94,6 +99,13 @@ test('compound expense report uses expense destination legs only', () => {
     compoundDestinations: [{ account: 'Office costs', amount: 3000 }],
   }, accounts);
   equalFields(totals, { income: 0, expense: 3000, fee: 0 });
+});
+
+test('money input rejects an explicit negative sign instead of silently converting it to a positive amount', () => {
+  assert.equal(moneyInput('-100'), '');
+  assert.equal(moneyInput('−100'), '');
+  assert.equal(moneyInput('100'), '100');
+  assert.equal(moneyInput('1,000'), '1,000');
 });
 
 test('production transaction form rejects zero and negative transaction amounts', () => {
