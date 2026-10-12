@@ -768,14 +768,12 @@ Error generating stack: `+h.message+`
     for(const item of t.compoundSources||[]){
       if(!item||!item.account)continue;
       const amount=Number(item.amount)||0,group=k0(item.account,s);
-      if(t.isReversal){if(group==="expense")a-=amount;}
-      else if(group==="income")n+=amount;
+      if(group==="income")n+=(t.isReversal?-1:1)*amount;
     }
     for(const item of t.compoundDestinations||[]){
       if(!item||!item.account)continue;
       const amount=Number(item.amount)||0,group=k0(item.account,s);
-      if(t.isReversal){if(group==="income")n-=amount;}
-      else if(group==="expense")a+=amount;
+      if(group==="expense")a+=(t.isReversal?-1:1)*amount;
     }
     return{income:n,expense:a,fee:o*l};
   }
@@ -805,8 +803,8 @@ Error generating stack: `+h.message+`
       const checkStatus=String(transaction.check&&transaction.check.status||"").trim().toLowerCase();
       const checkPrincipalCanceled=!!transaction.check&&(transaction.check.debtCanceled===true||["bounced","refunded","returned","returned_check","dishonored"].includes(checkStatus)||/برگشت|مسترد|returned|refund|bounc|dishonor/i.test(checkStatus));
       if(checkPrincipalCanceled){if(totals.fee)add(expenseCategories,transaction.feeAccount||"هزینه کارمزد و بهره",totals.fee);return;}
-      for(const leg of reverse?(transaction.compoundDestinations||[]):(transaction.compoundSources||[]))if(leg&&leg.account&&k0(leg.account,s)==="income")add(incomeCategories,leg.account,(Number(leg.amount)||0)*(reverse?-1:1));
-      for(const leg of reverse?(transaction.compoundSources||[]):(transaction.compoundDestinations||[]))if(leg&&leg.account&&k0(leg.account,s)==="expense")add(expenseCategories,leg.account,(Number(leg.amount)||0)*(reverse?-1:1));
+      for(const leg of transaction.compoundSources||[])if(leg&&leg.account&&k0(leg.account,s)==="income")add(incomeCategories,leg.account,(Number(leg.amount)||0)*(reverse?-1:1));
+      for(const leg of transaction.compoundDestinations||[])if(leg&&leg.account&&k0(leg.account,s)==="expense")add(expenseCategories,leg.account,(Number(leg.amount)||0)*(reverse?-1:1));
       if(totals.fee)add(expenseCategories,transaction.feeAccount||"هزینه کارمزد و بهره",totals.fee);
       return;
     }
