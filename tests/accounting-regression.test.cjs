@@ -7,6 +7,18 @@ const vm = require('node:vm');
 const root = path.resolve(__dirname, '..');
 const bundle = fs.readFileSync(path.join(root, 'app/src/main/assets/src/scripts/067-inline.js'), 'utf8');
 
+function loadFromPrefix(prefix, endMarker, globals = {}) {
+  const start = bundle.indexOf(prefix);
+  assert.notEqual(start, -1, `production prefix ${prefix} exists`);
+  const assignmentOffset = prefix.indexOf('=');
+  const end = bundle.indexOf(endMarker, start + prefix.length);
+  assert.notEqual(end, -1, `end marker for ${prefix} exists`);
+  const expression = bundle.slice(start + assignmentOffset + 1, end);
+  const context = { ...globals };
+  vm.runInNewContext(`globalThis.__tested = (${expression});`, context);
+  return context.__tested;
+}
+
 function loadProductionFunction(name, endMarker, globals = {}) {
   const marker = `${name}=`;
   const start = bundle.indexOf(marker);
@@ -27,8 +39,13 @@ function loadProductionFunction(name, endMarker, globals = {}) {
   return context.__tested;
 }
 
-const accountBalance = loadProductionFunction('Nr', ',v9=');
-const reportTotals = loadProductionFunction('Cs', ',Nr=');
+const accountTree = loadFromPrefix('gl=t=>', ',tl=', { sN: new WeakMap() });
+const accountLookup = loadFromPrefix('tl=(t,s)=>', ',k0=', { gl: accountTree });
+const accountGroup = loadFromPrefix('k0=(t,s)=>', ',ch=', { tl: accountLookup });
+const isPersonAccount = loadFromPrefix('ch=(t,s)=>', ',nN=', { tl: accountLookup });
+const isDescendantAccount = loadFromPrefix('rN=(t,s,n)=>', ',Cs=', { gl: accountTree });
+const accountBalance = loadProductionFunction('Nr', ',v9=', { gl: accountTree, rN: isDescendantAccount });
+const reportTotals = loadProductionFunction('Cs', ',Nr=', { k0: accountGroup, ch: isPersonAccount });
 const moneyInput = loadProductionFunction('Ot', ',Zn=', {
   St: value => String(value).replace(/[۰-۹]/g, digit => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit))).replace(/[٬,]/g, ''),
   uk: () => ',',
@@ -54,6 +71,18 @@ test('bank balance reconciles opening balance, income, expense and transfer', ()
   equalFields(bankResult, { balance: 1330, initialBalance: 1000, totalDebits: 500, totalCredits: 170, transactionCount: 3, entriesCount: 3 });
   equalFields(cashResult, { balance: 250, initialBalance: 200, totalDebits: 50, totalCredits: 0, transactionCount: 1, entriesCount: 1 });
   assert.equal(bankResult.balance + cashResult.balance, 1580, 'transfers conserve total liquid funds');
+});
+
+test('parent account balance includes transactions and opening balances from child accounts', () => {
+  const parent = { id: 'assets', name: 'Assets', group: 'asset', parentId: null };
+  const bank = { id: 'bank', name: 'Main Bank', group: 'bank', parentId: 'assets', initialBalance: 1000 };
+  const cash = { id: 'cash', name: 'Cash', group: 'cash', parentId: 'assets', initialBalance: 250 };
+  const accounts = [parent, bank, cash];
+  const transactions = [{ id: 'i1', type: 'income', account: 'Main Bank', amount: 400 }];
+  const parentResult = accountBalance(parent, accounts, transactions);
+  assert.equal(parentResult.initialBalance, 1250);
+  assert.equal(parentResult.balance, 1650);
+  assert.equal(parentResult.transactionCount, 1);
 });
 
 test('balanced compound document moves value between accounts without changing combined balance', () => {
