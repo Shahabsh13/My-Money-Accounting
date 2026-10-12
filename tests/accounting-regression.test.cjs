@@ -34,6 +34,7 @@ const moneyInput = loadProductionFunction('Ot', ',Zn=', {
   uk: () => ',',
   te: value => value,
 });
+const displayMoney = loadProductionFunction('F0', ';let fk=', { uk: () => ',', te: value => value });
 
 function equalFields(actual, expected) {
   for (const [key, value] of Object.entries(expected)) assert.equal(actual[key], value, key);
@@ -106,6 +107,45 @@ test('money input rejects an explicit negative sign instead of silently converti
   assert.equal(moneyInput('−100'), '');
   assert.equal(moneyInput('100'), '100');
   assert.equal(moneyInput('1,000'), '1,000');
+});
+
+test('money display rounds half units consistently and preserves the sign', () => {
+  assert.equal(displayMoney(1.49), '1');
+  assert.equal(displayMoney(1.5), '2');
+  assert.equal(displayMoney(-1.5), '-2');
+  assert.equal(displayMoney(1234.5), '1,235');
+});
+
+test('separate legitimate transactions with the same date and amount are both counted', () => {
+  const bank = { id: 'bank', name: 'Main Bank', group: 'bank', initialBalance: 0 };
+  const transactions = [
+    { id: 'income-1', date: '1405/07/01', type: 'income', account: 'Main Bank', amount: 1000 },
+    { id: 'income-2', date: '1405/07/01', type: 'income', account: 'Main Bank', amount: 1000 },
+  ];
+  const result = accountBalance(bank, [bank], transactions);
+  assert.equal(result.balance, 2000);
+  assert.equal(result.transactionCount, 2);
+});
+
+test('profit/loss totals reconcile across ordinary and compound documents', () => {
+  const accounts = [
+    { id: 'sales', name: 'Sales', group: 'income' },
+    { id: 'office', name: 'Office costs', group: 'expense' },
+    { id: 'bank', name: 'Main Bank', group: 'bank' },
+  ];
+  const transactions = [
+    { type: 'income', category: 'Sales', amount: 12000 },
+    { type: 'expense', category: 'Office costs', amount: 4500 },
+    { type: 'expense', isCompound: true, compoundSources: [{ account: 'Main Bank', amount: 3000 }], compoundDestinations: [{ account: 'Office costs', amount: 3000 }] },
+  ];
+  const totals = transactions.map(transaction => reportTotals(transaction, accounts)).reduce((sum, row) => ({
+    income: sum.income + row.income,
+    expense: sum.expense + row.expense,
+    fee: sum.fee + row.fee,
+  }), { income: 0, expense: 0, fee: 0 });
+  assert.equal(totals.income, 12000);
+  assert.equal(totals.expense, 7500);
+  assert.equal(totals.income - totals.expense, 4500);
 });
 
 test('production transaction form rejects zero and negative transaction amounts', () => {
