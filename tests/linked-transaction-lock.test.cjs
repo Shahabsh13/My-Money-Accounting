@@ -6,6 +6,7 @@ const vm = require('node:vm');
 
 const root = path.resolve(__dirname, '..');
 const lockScript = fs.readFileSync(path.join(root, 'app/src/main/assets/src/scripts/194-hesabno-loan-linked-transaction-actions.js'), 'utf8');
+const linkedDocumentScript = fs.readFileSync(path.join(root, 'app/src/main/assets/src/scripts/201-hesabno-linked-document-lock.js'), 'utf8');
 const correctionScript = fs.readFileSync(path.join(root, 'app/src/main/assets/src/scripts/218-hesabno-hide-compound-correction-action.js'), 'utf8');
 
 function setupLock({ loans, installments = [], transactions = [], heading = 'وام‌ها و تسهیلات', cardText = 'وام خودرو 100000', action = 'ویرایش' }) {
@@ -15,7 +16,7 @@ function setupLock({ loans, installments = [], transactions = [], heading = 'و�
     'hesabno:installments': installments,
     'hesabno:transactions': transactions,
   };
-  let clickHandler;
+  const clickHandlers = [];
   const main = { querySelector: () => ({ textContent: heading }) };
   const card = { innerText: cardText, textContent: cardText, parentElement: main };
   const button = {
@@ -23,12 +24,17 @@ function setupLock({ loans, installments = [], transactions = [], heading = 'و�
     getAttribute: name => name === 'aria-label' ? null : null,
     closest: selector => selector === 'main' ? main : selector === 'button' ? button : null,
   };
-  const document = { addEventListener: (name, fn) => { if (name === 'click') clickHandler = fn; } };
+  const document = { body: null, querySelectorAll: () => [], querySelector: () => null, addEventListener: (name, fn) => { if (name === 'click') clickHandlers.push(fn); } };
   const window = {
     __safeGet: key => Object.prototype.hasOwnProperty.call(data, key) ? JSON.stringify(data[key]) : null,
     alert: message => alerts.push(message),
+    addEventListener() {}, setTimeout() {},
   };
-  vm.runInNewContext(lockScript, { window, document, localStorage: { getItem: key => window.__safeGet(key) } });
+  const localStorage = { getItem: key => window.__safeGet(key), setItem() {} };
+  const sessionStorage = { getItem: () => null, removeItem() {} };
+  class MutationObserver { observe() {} }
+  vm.runInNewContext(linkedDocumentScript, { window, document, localStorage, sessionStorage, MutationObserver });
+  vm.runInNewContext(lockScript, { window, document, localStorage });
   const event = {
     target: { closest: selector => selector === 'button' ? button : null },
     defaultPrevented: false, stopped: false,
@@ -36,7 +42,7 @@ function setupLock({ loans, installments = [], transactions = [], heading = 'و�
     stopPropagation() { this.stopped = true; },
     stopImmediatePropagation() { this.stopped = true; },
   };
-  clickHandler(event);
+  for (const handler of clickHandlers) handler(event);
   return { event, alerts, button };
 }
 
