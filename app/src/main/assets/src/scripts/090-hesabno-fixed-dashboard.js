@@ -274,6 +274,7 @@
     var numberFont = '"IRANSans", "IRANSansFaNum", "Vazirmatn", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
     var setNumberFont = function (node) {
       node.classList.add("hesabno-unified-number-font");
+      if (node.style.getPropertyValue("font-family").indexOf("IRANSans") !== -1) return;
       node.style.setProperty("font-family", numberFont, "important");
       node.style.setProperty("font-variant-numeric", "tabular-nums", "important");
     };
@@ -282,8 +283,10 @@
       if (numericValue.test(text)) setNumberFont(node);
       else {
         node.classList.remove("hesabno-unified-number-font");
-        node.style.setProperty("font-family", dashboardFont, "important");
-        node.style.setProperty("font-variant-numeric", "normal", "important");
+        if (node.style.getPropertyValue("font-family").indexOf("Vazirmatn") === -1) {
+          node.style.setProperty("font-family", dashboardFont, "important");
+          node.style.setProperty("font-variant-numeric", "normal", "important");
+        }
       }
     });
     var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, function (node) {
@@ -318,6 +321,7 @@
     main.style.setProperty("font-family", dashboardFont, "important");
     main.querySelectorAll("*").forEach(function (node) {
       if (node.classList.contains("hesabno-unified-number-font")) return;
+      if (node.style.getPropertyValue("font-family").indexOf("Vazirmatn") !== -1) return;
       node.style.setProperty("font-family", dashboardFont, "important");
     });
     var heroSub = hero.querySelector(".hero-sub");
@@ -365,7 +369,14 @@
       if (dashboardObserver && document.body) dashboardObserver.observe(document.body, { childList: true, subtree: true });
     }
   };
-  dashboardObserver = new MutationObserver(enhance);
+  var motionQueued = false;
+  function scheduleDashboardEnhance() {
+    if (motionQueued) return;
+    motionQueued = true;
+    // همه‌ی تغییرات همان burst را قبل از paint در یک پاس جمع می‌کند.
+    Promise.resolve().then(function () { motionQueued = false; enhance(); });
+  }
+  dashboardObserver = new MutationObserver(scheduleDashboardEnhance);
   if (document.body) dashboardObserver.observe(document.body, { childList: true, subtree: true });
   enhance();
   document.addEventListener("click", function (event) {
