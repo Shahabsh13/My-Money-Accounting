@@ -27,7 +27,7 @@
   }
   function isMoneyInput(input) {
     if (!input || input.tagName !== "INPUT" || input.disabled) return false;
-    if (input.closest && input.closest("[" + UI_MARK + '=\"true\"]')) return false;
+    if (input.closest && input.closest("[data-hesabno-amount-keyboard-ui='true']")) return false;
     if (input.getAttribute(FIELD_MARK) === "true") return true;
     var type = (input.getAttribute("type") || "text").toLowerCase();
     if (SKIP_TYPES.indexOf(type) !== -1 || input.readOnly) return false;
@@ -111,7 +111,7 @@
   function confirmAmount() { if (!activeInput) return; var input = activeInput; var digits = currentDigits(input); setAmount(digits, true); hideKeyboard(true); }
   function handleKey(event) { if (!panel || panel.hidden || !activeInput || event.ctrlKey || event.metaKey || event.altKey) return; if (event.target !== activeInput && !(panel.contains && panel.contains(event.target))) return; var key = toAscii(event.key || ""); if (/^\d$/.test(key)) { event.preventDefault(); appendDigits(key); } else if (key === "Backspace") { event.preventDefault(); removeDigit(); } else if (key === "Delete") { event.preventDefault(); setAmount(""); } else if (key === "Enter") { event.preventDefault(); confirmAmount(); } else if (key === "Escape") { event.preventDefault(); hideKeyboard(true); } }
   function apply() {
-    document.querySelectorAll("input").forEach(function (input) { if (input.closest && input.closest("[" + UI_MARK + '=\"true\"]')) return; var type = (input.getAttribute("type") || "text").toLowerCase(); if (SKIP_TYPES.indexOf(type) !== -1 || input.disabled) return; var money = input.getAttribute(FIELD_MARK) === "true" || isMoneyInput(input); if (money) { markMoneyInput(input); return; } if (input.getAttribute("inputmode") === "numeric") return; var numeric = type === "number" || type === "tel" || input.getAttribute("dir") === "ltr" || NUMERIC_HINTS.test(inputHints(input)); if (!numeric || /جستجو|search/i.test(inputHints(input))) return; input.setAttribute("inputmode", "numeric"); });
+    document.querySelectorAll("input").forEach(function (input) { if (input.closest && input.closest("[data-hesabno-amount-keyboard-ui='true']")) return; var type = (input.getAttribute("type") || "text").toLowerCase(); if (SKIP_TYPES.indexOf(type) !== -1 || input.disabled) return; var money = input.getAttribute(FIELD_MARK) === "true" || isMoneyInput(input); if (money) { markMoneyInput(input); return; } if (input.getAttribute("inputmode") === "numeric") return; var numeric = type === "number" || type === "tel" || input.getAttribute("dir") === "ltr" || NUMERIC_HINTS.test(inputHints(input)); if (!numeric || /جستجو|search/i.test(inputHints(input))) return; input.setAttribute("inputmode", "numeric"); });
     if (panel && !panel.hidden && (!activeInput || !activeInput.isConnected)) hideKeyboard(false);
   }
   function scheduleApply() { if (applyQueued) return; applyQueued = true; window.requestAnimationFrame(function () { applyQueued = false; apply(); }); }
