@@ -52,4 +52,14 @@
     });
   }
   apply();
+
+  // The amount keypad is custom. Prevent the browser's default focus action on
+  // money inputs, which can open Android's native IME alongside the custom keypad.
+  // The numeric-keyboard handler has already marked money inputs and opened its panel.
+  document.addEventListener('pointerdown', function (event) {
+    var target = event.target;
+    var input = target && target.closest ? target.closest('input') : null;
+    if (!input || input.getAttribute('data-hesabno-amount-keyboard-field') !== 'true') return;
+    if (event.cancelable) event.preventDefault();
+  }, true);
 })();
