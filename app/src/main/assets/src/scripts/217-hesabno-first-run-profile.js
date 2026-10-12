@@ -131,24 +131,24 @@
     if (read(key) === "1") { done(); return; }
     var slides = [
       {
-        t: "شروع ساده و سریع",
-        b: "در چند قدم کوتاه با بخش‌های اصلی مای مانی آشنا شو.",
-        mock: '<div class="mock"><div class="m-title"><span>داشبورد</span><span class="m-badge">امروز</span></div><div class="greet">سلام علی 👋</div><div class="summary"><div class="cell"><div class="lbl">موجودی کل</div><div class="val pos">۱۲٬۵۶۰٬۰۰۰</div></div><div class="cell"><div class="lbl">درآمد این ماه</div><div class="val pos">۴٬۲۰۰٬۰۰۰</div></div><div class="cell"><div class="lbl">هزینه این ماه</div><div class="val neg">۱٬۹۸۰٬۰۰۰</div></div></div><div class="row"><div class="r-l"><span class="dot" style="background:#34d399"></span><div><div>مانده حساب‌ها همگام شد</div><div class="sub">آخرین به‌روزرسانی: امروز</div></div></div><span class="amt pos">✓</span></div></div>'
+        t: "خانه و داشبورد",
+        b: "موجودی کل، درآمد و هزینهی ماهانه و نمودارها را در یک نگاه ببین.",
+        img: "src/images/intro-home.png"
       },
       {
-        t: "حساب‌ها و مانده‌ها",
-        b: "حساب‌های بانکی، صندوق و مانده‌ها را یک‌جا مدیریت کن.",
-        mock: '<div class="mock"><div class="m-title"><span>حساب‌ها</span><span class="m-badge">۳ حساب</span></div><div class="row"><div class="r-l"><span class="dot" style="background:#2dd4bf"></span><div><div>بانک ملت — کارت</div><div class="sub">•••• ۱۲۳۴</div></div></div><span class="amt">۱۲٬۵۰۰٬۰۰۰</span></div><div class="row"><div class="r-l"><span class="dot" style="background:#60a5fa"></span><div><div>بانک صادرات — پس‌انداز</div><div class="sub">•••• ۸۸۲۱</div></div></div><span class="amt">۳٬۲۰۰٬۰۰۰</span></div><div class="row"><div class="r-l"><span class="dot" style="background:#fbbf24"></span><div><div>صندوق — نقدی</div><div class="sub">مغازه</div></div></div><span class="amt">۸۵۰٬۰۰۰</span></div></div>'
+        t: "تراکنش‌ها و اسناد",
+        b: "هر دریافت و پرداخت را با مبلغ، سرفصل، حساب و شرح ثبت کن.",
+        img: "src/images/intro-transactions.png"
       },
       {
-        t: "ثبت تراکنش‌ها",
-        b: "دریافت، پرداخت و انتقال وجه را سریع و منظم ثبت کن.",
-        mock: '<div class="mock"><div class="m-title"><span>تراکنش‌های اخیر</span><span class="m-badge">امروز</span></div><div class="row"><div class="r-l"><span class="dot" style="background:#34d399"></span><div><div>دریافت از آقای احمدی</div><div class="sub">فاکتور فروش • ۱۰:۲۴</div></div></div><span class="amt pos">+۲٬۵۰۰٬۰۰۰</span></div><div class="row"><div class="r-l"><span class="dot" style="background:#fbbf24"></span><div><div>پرداخت اجاره دفتر</div><div class="sub">هزینه ثابت • دیروز</div></div></div><span class="amt neg">−۱٬۸۰۰٬۰۰۰</span></div><div class="row"><div class="r-l"><span class="dot" style="background:#fb7185"></span><div><div>خرید لوازم اداری</div><div class="sub">هزینه جاری • ۲ روز پیش</div></div></div><span class="amt neg">−۳۲۰٬۰۰۰</span></div></div>'
+        t: "گزارش‌ها و تحلیل",
+        b: "مقایسهی ماهانه و توزیع هزینه‌ها و درآمدها را دنبال کن.",
+        img: "src/images/intro-reports.png"
       },
       {
-        t: "گزارش‌های روشن",
-        b: "با گزارش‌ها و سوابق، وضعیت مالی خودت را بهتر دنبال کن.",
-        mock: '<div class="mock"><div class="m-title"><span>گزارش هزینه‌ها</span><span class="m-badge">۱۴۰۳</span></div><div class="bars"><div class="b" style="height:42%"></div><div class="b" style="height:68%"></div><div class="b" style="height:54%"></div><div class="b hi" style="height:88%"></div><div class="b" style="height:63%"></div></div><div class="xaxis"><span>فرو</span><span>ارد</span><span>خرد</span><span>تیر</span><span>مرد</span></div><div class="row" style="justify-content:center"><span class="sub">مجموع هزینه‌ها: </span><span class="amt neg">۹٬۴۵۰٬۰۰۰</span></div></div>'
+        t: "بیشتر و حساب‌ها",
+        b: "سرفصل‌ها، بانک‌ها، چک‌ها، وام، اقساط و بودجه را مدیریت کن.",
+        img: "src/images/intro-more.png"
       }
     ];
     var current = 0;
@@ -161,37 +161,11 @@
       "#hesabno-intro-tour *{box-sizing:border-box}" +
       "#hesabno-intro-tour .intro-card{width:100%;max-width:420px;padding:22px;border:1px solid #294349;border-radius:26px;background:linear-gradient(145deg,#12252b,#0b171c);box-shadow:0 24px 70px #0008;animation:introCardIn .5s cubic-bezier(.22,.75,.25,1) both}" +
       "@keyframes introCardIn{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:none}}" +
-      "#hesabno-intro-tour .intro-art{position:relative;overflow:hidden;height:190px;display:flex;align-items:center;margin:8px 0 20px;border:1px solid #294349;border-radius:20px;background:linear-gradient(160deg,#122a30,#0b171c);padding:10px 12px}" +
+      "#hesabno-intro-tour .intro-art{position:relative;overflow:hidden;height:250px;display:flex;align-items:center;margin:8px 0 20px;border:1px solid #294349;border-radius:20px;background:linear-gradient(160deg,#122a30,#0b171c);padding:8px}" +
       "#hesabno-intro-tour .intro-art::after{content:'';position:absolute;z-index:5;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.07) 50%,transparent 65%);transform:translateX(-120%);animation:introSheen 5.4s ease-in-out infinite}" +
       "@keyframes introSheen{0%{transform:translateX(-120%)}45%,100%{transform:translateX(120%)}}" +
-      "#hesabno-intro-tour .mock{position:relative;z-index:2;width:100%;display:flex;flex-direction:column;gap:8px;color:#dbe9e7;animation:mockIn .45s cubic-bezier(.22,.75,.25,1) both}" +
-      "@keyframes mockIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}" +
-      "#hesabno-intro-tour .m-title{display:flex;align-items:center;justify-content:space-between;font-size:11.5px;font-weight:800;color:#eafaf6}" +
-      "#hesabno-intro-tour .m-badge{font-size:9px;color:#7f9d9c;background:#12262b;border:1px solid #244047;border-radius:8px;padding:2px 7px}" +
-      "#hesabno-intro-tour .greet{font-size:11px;color:#a6bfbe}" +
-      "#hesabno-intro-tour .summary{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}" +
-      "#hesabno-intro-tour .cell{background:#0f2127;border:1px solid #1d373d;border-radius:10px;padding:7px 8px}" +
-      "#hesabno-intro-tour .lbl{font-size:8.5px;color:#7f9d9c}" +
-      "#hesabno-intro-tour .val{font-size:11px;font-weight:800;margin-top:3px;font-variant-numeric:tabular-nums}" +
-      "#hesabno-intro-tour .row{display:flex;align-items:center;justify-content:space-between;gap:8px;background:#0f2127;border:1px solid #1d373d;border-radius:10px;padding:7px 9px}" +
-      "#hesabno-intro-tour .r-l{display:flex;align-items:center;gap:8px;min-width:0}" +
-      "#hesabno-intro-tour .r-l>div{min-width:0}" +
-      "#hesabno-intro-tour .r-l>div>div:first-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:10.5px}" +
-      "#hesabno-intro-tour .dot{width:8px;height:8px;border-radius:50%;flex:0 0 auto}" +
-      "#hesabno-intro-tour .amt{font-weight:800;font-size:10.5px;font-variant-numeric:tabular-nums;white-space:nowrap}" +
-      "#hesabno-intro-tour .sub{font-size:8.5px;color:#7f9d9c;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}" +
-      "#hesabno-intro-tour .pos{color:#34d399}" +
-      "#hesabno-intro-tour .neg{color:#fbbf24}" +
-      "#hesabno-intro-tour .bars{display:flex;align-items:flex-end;gap:6px;height:62px;padding:0 4px}" +
-      "#hesabno-intro-tour .bars .b{flex:1;border-radius:5px 5px 0 0;background:linear-gradient(180deg,#2dd4bf,#0d9488);transform-origin:bottom;animation:barUp .6s cubic-bezier(.22,.75,.25,1) both}" +
-      "#hesabno-intro-tour .bars .b.hi{background:linear-gradient(180deg,#6ee7b7,#14b8a6)}" +
-      "#hesabno-intro-tour .bars .b:nth-child(2){animation-delay:.05s}" +
-      "#hesabno-intro-tour .bars .b:nth-child(3){animation-delay:.1s}" +
-      "#hesabno-intro-tour .bars .b:nth-child(4){animation-delay:.15s}" +
-      "#hesabno-intro-tour .bars .b:nth-child(5){animation-delay:.2s}" +
-      "@keyframes barUp{from{transform:scaleY(0)}to{transform:scaleY(1)}}" +
-      "#hesabno-intro-tour .xaxis{display:flex;gap:6px;font-size:8px;color:#6f8f8d}" +
-      "#hesabno-intro-tour .xaxis span{flex:1;text-align:center}" +
+      "#hesabno-intro-tour .intro-shot{position:relative;z-index:2;width:100%;height:100%;object-fit:cover;object-position:top center;display:block;border-radius:12px;animation:mockIn .45s cubic-bezier(.22,.75,.25,1) both}" +
+      "@keyframes mockIn{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}" +
       "#hesabno-intro-tour .intro-kicker{color:#5eead4;font-size:11px;font-weight:800}" +
       "#hesabno-intro-tour .intro-copy{animation:introCopyIn .42s cubic-bezier(.22,.75,.25,1) both}" +
       "@keyframes introCopyIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}" +
@@ -210,7 +184,7 @@
       "#hesabno-intro-tour .intro-dots{display:flex;gap:5px;align-items:center}" +
       "#hesabno-intro-tour .intro-dots span{width:6px;height:6px;border-radius:9px;background:#385052;transition:all .3s ease}" +
       "#hesabno-intro-tour .intro-dots span.active{width:18px;background:#34d399}" +
-      "@media(max-height:620px){#hesabno-intro-tour .intro-art{height:150px;margin:6px 0 12px}#hesabno-intro-tour .intro-card{padding:16px}#hesabno-intro-tour .bars{height:46px}}" +
+      "@media(max-height:620px){#hesabno-intro-tour .intro-art{height:190px;margin:6px 0 12px}#hesabno-intro-tour .intro-card{padding:16px}}" +
       "@media(prefers-reduced-motion:reduce){#hesabno-intro-tour *,#hesabno-intro-tour *::before,#hesabno-intro-tour *::after{animation:none!important;transition:none!important}}";
     document.head.appendChild(style);
     var card = document.createElement("section"); card.className = "intro-card"; card.setAttribute("role", "dialog"); card.setAttribute("aria-modal", "true"); card.setAttribute("aria-label", "معرفی برنامه");
@@ -222,7 +196,7 @@
       step.textContent = faDigits(current + 1) + " از " + faDigits(slides.length);
       title.textContent = slides[current].t;
       body.textContent = slides[current].b;
-      art.innerHTML = slides[current].mock;
+      art.innerHTML = '<img class="intro-shot" src="' + slides[current].img + '" alt="">';
       dots.innerHTML = slides.map(function (_, i) { return '<span class="' + (i === current ? 'active' : '') + '"></span>'; }).join('');
       next.textContent = current === slides.length - 1 ? "شروع کنیم ←" : "بعدی ←";
       copy.style.animation = "none"; void copy.offsetWidth; copy.style.animation = "";
