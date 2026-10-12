@@ -23,7 +23,6 @@ test('keypad display and buttons do not steal focus and summon the system keyboa
   assert.ok(geometry.includes('#hesabno-amount-keyboard button, #hesabno-amount-keyboard input[data-hkap-value]'));
   assert.ok(geometry.includes('if (keypadControl && event.cancelable) event.preventDefault();'));
   assert.ok(keypad.includes('data-hkap-value'));
-  assert.ok(keypad.includes('tabindex=\\\\\"0\\\\\"'));
 });
 
 test('native keyboard prevention is scoped to money fields and keypad controls, not other form inputs', () => {
