@@ -5,6 +5,7 @@ const path = require('node:path');
 
 const root = path.resolve(__dirname, '..');
 const html = fs.readFileSync(path.join(root, 'app/src/main/assets/index.html'), 'utf8');
+const coreBundle = fs.readFileSync(path.join(root, 'app/src/main/assets/src/scripts/067-inline.js'), 'utf8');
 const externalScripts = [...html.matchAll(/<script\b([^>]*)>/gi)]
   .map(match => ({ attributes: match[1], index: match.index }))
   .filter(script => /\bsrc\s*=/i.test(script.attributes));
@@ -39,4 +40,8 @@ test('deferred scripts preserve the core and UI-fix execution order', () => {
   assert.ok(positions.every(index => index >= 0), 'all critical scripts should remain included');
   assert.deepEqual(positions, [...positions].sort((a, b) => a - b),
     'defer must retain the existing script order relied on by patches and UI fixes');
+});
+
+test('React app mounting waits for DOMContentLoaded after deferred patch scripts execute', () => {
+  assert.match(coreBundle, /document\\.readyState==="loading"\\|\\|document\\.readyState==="interactive"\\?document\\.addEventListener\\("DOMContentLoaded",q4\\):q4\\(\\);/);
 });
