@@ -1,0 +1,19 @@
+{
+  "name": "my-money-accounting-tests",
+  "version": "1.0.0",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "node --test tests/*.test.cjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "DOM and accounting regression tests for My Money Accounting",
+  "private": true,
+  "devDependencies": {
+    "jsdom": "^26.1.0"
+  }
+}

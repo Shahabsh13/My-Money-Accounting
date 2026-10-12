@@ -1,21 +1,6 @@
 name: Build debug APK
 
 on:
-  push:
-    branches:
-      - build/debug-apk-workflow
-  pull_request:
-    branches:
-      - main
-    paths:
-      - 'app/**'
-      - 'tests/**'
-      - 'gradle/**'
-      - '*.gradle'
-      - 'gradlew*'
-      - 'settings.gradle'
-      - 'version.properties'
-      - '.github/workflows/build-debug-apk.yml'
   workflow_dispatch:
 
 permissions:
@@ -36,8 +21,11 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Run accounting regression tests
-        run: node --test tests/*.test.cjs
+      - name: Install test dependencies
+        run: npm ci
+
+      - name: Run accounting and UI regression tests
+        run: npm test
 
       - name: Set up Java 17
         uses: actions/setup-java@v4

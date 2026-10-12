@@ -82,7 +82,7 @@
       <div class=\"hkap-shell\">\
         <div class=\"hkap-top\">\
           <div class=\"hkap-display\" aria-live=\"polite\">\
-            <div style=\"min-width:0\"><span class=\"hkap-label\">مبلغ</span><input type=\"text\" class=\"hkap-value\" data-hkap-value value=\"۰\" readonly inputmode=\"none\" tabindex=\"0\" aria-label=\"مبلغ واردشده\" autocomplete=\"off\" /></div>\
+            <div style=\"min-width:0\"><span class=\"hkap-label\">مبلغ</span><input type=\"text\" class=\"hkap-value\" data-hkap-value value=\"۰\" readonly inputmode=\"none\" tabindex=\"-1\" aria-label=\"مبلغ واردشده\" autocomplete=\"off\" /></div>\
             <span class=\"hkap-currency\" data-hkap-currency>ریال</span>\
           </div>\
           <button type=\"button\" class=\"hkap-close\" data-hkap-action=\"close\" aria-label=\"بستن صفحه‌کلید\" title=\"بستن\">×</button>\
@@ -96,7 +96,8 @@
       </div>\
     ";
     valueDisplay = panel.querySelector("[data-hkap-value]"); currencyDisplay = panel.querySelector("[data-hkap-currency]");
-    panel.addEventListener("mousedown", function (event) { if (event.target && event.target.closest && event.target.closest("button")) event.preventDefault(); });
+    panel.addEventListener("pointerdown", function (event) { if (event.target && event.target.closest && event.target.closest("button, input[data-hkap-value]")) event.preventDefault(); });
+    panel.addEventListener("mousedown", function (event) { if (event.target && event.target.closest && event.target.closest("button, input[data-hkap-value]")) event.preventDefault(); });
     panel.addEventListener("click", function (event) { var button = event.target && event.target.closest ? event.target.closest("[data-hkap-action]") : null; if (!button || !activeInput) return; var action = button.getAttribute("data-hkap-action"); if (action === "digit") appendDigits(button.getAttribute("data-value") || ""); else if (action === "backspace") removeDigit(); else if (action === "clear") setAmount(""); else if (action === "confirm") confirmAmount(); else if (action === "close") hideKeyboard(true); });
     document.body.appendChild(panel);
   }
@@ -117,10 +118,10 @@
   function scheduleApply() { if (applyQueued) return; applyQueued = true; window.requestAnimationFrame(function () { applyQueued = false; apply(); }); }
   function handleFocusIn(event) { var target = event.target; if (panel && panel.contains(target)) return; if (target && target.tagName === "INPUT" && (target.getAttribute(FIELD_MARK) === "true" || isMoneyInput(target))) activateInput(target, true); else if (panel && !panel.hidden) hideKeyboard(false); }
   function handleFocusOut(event) { if (!activeInput || event.target !== activeInput) return; var previous = activeInput; window.setTimeout(function () { if (activeInput !== previous) return; if (panel && panel.contains(document.activeElement)) return; if (document.activeElement && document.activeElement.tagName === "INPUT" && (document.activeElement.getAttribute(FIELD_MARK) === "true" || isMoneyInput(document.activeElement))) return; hideKeyboard(false); }, 0); }
-  function handlePointerDown(event) { var target = event.target; if (panel && panel.contains(target)) return; var input = target && target.closest ? target.closest("input") : null; if (input && (input.getAttribute(FIELD_MARK) === "true" || isMoneyInput(input))) { activateInput(input, true); return; } if (panel && !panel.hidden) hideKeyboard(false); }
+  function handlePointerDown(event) { var target = event.target; if (panel && panel.contains(target)) return; var input = target && target.closest ? target.closest("input") : null; if (input && (input.getAttribute(FIELD_MARK) === "true" || isMoneyInput(input))) { if (event.cancelable) event.preventDefault(); activateInput(input, true); return; } if (panel && !panel.hidden) hideKeyboard(false); }
   function start() {
     ensurePanel(); apply(); [300, 1000].forEach(function (delay) { window.setTimeout(apply, delay); });
-    document.addEventListener("focusin", handleFocusIn, true); document.addEventListener("focusout", handleFocusOut, true); document.addEventListener("pointerdown", handlePointerDown, true); document.addEventListener("mousedown", handlePointerDown, true); document.addEventListener("keydown", handleKey, true);
+    document.addEventListener("focusin", handleFocusIn, true); document.addEventListener("focusout", handleFocusOut, true); document.addEventListener("pointerdown", handlePointerDown, true); if (!window.PointerEvent) document.addEventListener("touchstart", handlePointerDown, { capture: true, passive: false }); document.addEventListener("mousedown", handlePointerDown, true); document.addEventListener("keydown", handleKey, true);
     document.addEventListener("input", function (event) { if (event.target === activeInput) refreshDisplay(); }, true);
     window.addEventListener("storage", function (event) { if (!event.key || event.key === "hesabno:currency") refreshDisplay(); });
     if (document.body) new MutationObserver(scheduleApply).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["placeholder", "aria-label", "aria-labelledby", "name", "id", "dir", "inputmode", "readonly"] });
