@@ -45,3 +45,19 @@ test('deferred scripts preserve the core and UI-fix execution order', () => {
 test('React app mounting waits for DOMContentLoaded after deferred patch scripts execute', () => {
   assert.match(coreBundle, /document\\.readyState==="loading"\\|\\|document\\.readyState==="interactive"\\?document\\.addEventListener\\("DOMContentLoaded",q4\\):q4\\(\\);/);
 });
+
+test('trial-balance report filters loan-linked transactions once per report, not once per account', () => {
+  const start = coreBundle.indexOf('const balanceTransactions=re.end?t.filter');
+  assert.notEqual(start, -1, 'trial-balance calculation exists');
+  const end = coreBundle.indexOf('const J=s.filter', start);
+  assert.notEqual(end, -1, 'trial-balance account loop has a bounded section');
+  const calculation = coreBundle.slice(start, end);
+  const loopStart = calculation.indexOf('s.forEach($e=>{');
+  assert.notEqual(loopStart, -1, 'account balance loop exists');
+  const setup = calculation.slice(0, loopStart);
+  const loop = calculation.slice(loopStart);
+  assert.ok(setup.includes('nonLoanTransactions=hasIncomeExpenseAccounts?K.filter(Te=>Te.loanId==null&&Te.installmentId==null):K'));
+  assert.ok(setup.includes('nonLoanBalanceTransactions=hasIncomeExpenseAccounts?balanceTransactions.filter(Te=>Te.loanId==null&&Te.installmentId==null):balanceTransactions'));
+  assert.equal(loop.includes('K.filter(Te=>Te.loanId==null'), false);
+  assert.equal(loop.includes('balanceTransactions.filter(Te=>Te.loanId==null'), false);
+});
