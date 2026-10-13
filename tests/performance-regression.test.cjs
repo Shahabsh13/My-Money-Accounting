@@ -6,9 +6,19 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const html = fs.readFileSync(path.join(root, 'app/src/main/assets/index.html'), 'utf8');
 const coreBundle = fs.readFileSync(path.join(root, 'app/src/main/assets/src/scripts/067-inline.js'), 'utf8');
+const perfGuard = fs.readFileSync(path.join(root, 'app/src/main/assets/src/scripts/001-hesabno-perf-guard.js'), 'utf8');
 const externalScripts = [...html.matchAll(/<script\b([^>]*)>/gi)]
   .map(match => ({ attributes: match[1], index: match.index }))
   .filter(script => /\bsrc\s*=/i.test(script.attributes));
+
+test('global performance guard preserves native DOM and timer scheduling', () => {
+  assert.doesNotMatch(perfGuard, /window\\.MutationObserver\\s*=/,
+    'UI observers must run on the browser native schedule');
+  assert.doesNotMatch(perfGuard, /window\\.setInterval\\s*=/,
+    'global interval timing must not delay page enhancements');
+  assert.doesNotMatch(perfGuard, /setTimeout\\(flush,\\s*80\\)/,
+    'DOM mutation batches must not be delayed by the performance guard');
+});
 
 function srcOf(script) {
   const match = script.attributes.match(/\bsrc\s*=\s*(["'])(.*?)\1/i);
