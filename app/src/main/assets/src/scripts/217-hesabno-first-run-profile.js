@@ -31,9 +31,10 @@
 
   function build() {
     var css = {
-      position: "fixed", inset: "0", zIndex: "2147483646", background: "#0b1220",
-      display: "flex", alignItems: "center", justifyContent: "center", padding: "20px",
-      fontFamily: "Vazirmatn, system-ui, sans-serif", direction: "rtl", color: "#f1f5f9", overflowY: "auto"
+      position: "fixed", inset: "0", zIndex: "2147483646",
+      background: "radial-gradient(ellipse at 18% 12%,rgba(16,185,129,.20),transparent 38%),radial-gradient(ellipse at 88% 86%,rgba(45,212,191,.12),transparent 34%),linear-gradient(145deg,#071b1b 0%,#0b2527 52%,#101a2b 100%)",
+      display: "flex", alignItems: "center", justifyContent: "center", padding: "16px",
+      fontFamily: "Vazirmatn, system-ui, sans-serif", direction: "rtl", color: "#f1f5f9", overflowY: "auto", boxSizing: "border-box"
     };
     var overlay = document.createElement("div");
     overlay.id = "hesabno-first-run";
@@ -41,26 +42,50 @@
 
     var card = document.createElement("form");
     card.setAttribute("novalidate", "novalidate");
-    card.style.cssText = "width:100%;max-width:380px;background:#111827;border:1px solid #1f2937;border-radius:24px;padding:24px;box-shadow:0 20px 50px rgba(0,0,0,.45)";
+    card.style.cssText = "position:relative;isolation:isolate;overflow:hidden;width:100%;max-width:400px;box-sizing:border-box;background:linear-gradient(155deg,rgba(20,43,45,.97),rgba(13,27,39,.98));border:1px solid rgba(110,231,183,.22);border-radius:28px;padding:clamp(20px,5vw,28px);box-shadow:0 28px 80px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.05)";
+    var glow = document.createElement("div");
+    glow.setAttribute("aria-hidden", "true");
+    glow.style.cssText = "position:absolute;z-index:-1;left:-54px;top:-66px;width:170px;height:170px;border-radius:50%;background:rgba(16,185,129,.11);filter:blur(10px);pointer-events:none";
+    card.appendChild(glow);
 
+    var brand = document.createElement("div");
+    brand.style.cssText = "display:flex;align-items:center;gap:10px;margin-bottom:22px";
+    var mark = document.createElement("div");
+    mark.style.cssText = "width:48px;height:48px;flex:0 0 48px;display:grid;place-items:center;border-radius:17px;background:linear-gradient(145deg,#1a6658,#123e3b);border:1px solid rgba(110,231,183,.32);box-shadow:0 8px 24px rgba(16,185,129,.14)";
+    mark.innerHTML = '<svg viewBox="0 0 48 48" width="32" height="32" fill="none" aria-hidden="true"><rect x="8" y="7" width="25" height="34" rx="6" stroke="#d1fae5" stroke-width="2" transform="rotate(-7 8 7)"/><path d="M15 18h12M15 23h8M16 31v-4m6 4v-8m6 8v-12" stroke="#6ee7b7" stroke-width="2.6" stroke-linecap="round"/><circle cx="34" cy="31" r="10" fill="#34d399" stroke="#0d3833" stroke-width="2"/><path d="m29.5 31 3 3 6-6.5" stroke="#073b31" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    var brandText = document.createElement("div");
+    brandText.style.cssText = "min-width:0";
+    var brandName = document.createElement("div");
+    brandName.textContent = "MY MONEY";
+    brandName.style.cssText = "font-size:11px;font-weight:900;letter-spacing:2px;color:#6ee7b7";
+    var brandCaption = document.createElement("div");
+    brandCaption.textContent = "مدیریت مالی، ساده‌تر";
+    brandCaption.style.cssText = "font-size:12px;color:#a7c5c1;margin-top:3px";
+    brandText.appendChild(brandName); brandText.appendChild(brandCaption); brand.appendChild(mark); brand.appendChild(brandText);
+
+    var step = document.createElement("div");
+    step.textContent = "شروع کار  ·  مرحله ۱ از ۱";
+    step.style.cssText = "display:inline-flex;align-items:center;margin:0 0 10px;padding:6px 10px;border:1px solid rgba(110,231,183,.18);border-radius:999px;background:rgba(16,185,129,.08);font-size:11px;font-weight:700;color:#86efc6";
     var title = document.createElement("h1");
-    title.textContent = "خوش آمدید";
-    title.style.cssText = "margin:0 0 6px;font-size:20px;font-weight:800;color:#f8fafc";
+    title.textContent = "به حساب‌وکتابت خوش آمدی";
+    title.style.cssText = "margin:0 0 8px;font-size:clamp(20px,5.3vw,24px);line-height:1.65;font-weight:900;letter-spacing:-.4px;color:#f0fdfa";
     var sub = document.createElement("p");
-    sub.textContent = "برای شروع، اطلاعات خود را وارد کنید. نام شما در داشبورد نمایش داده می‌شود.";
-    sub.style.cssText = "margin:0 0 18px;font-size:12.5px;line-height:1.7;color:#94a3b8";
+    sub.textContent = "اول خودت را معرفی کن؛ بعد از این، برنامه با نام خودت از تو استقبال می‌کند.";
+    sub.style.cssText = "margin:0 0 22px;font-size:13px;line-height:1.95;color:#a8c1c0";
 
     function field(id, label, placeholder, required, type) {
       var wrap = document.createElement("div");
-      wrap.style.cssText = "margin-bottom:14px";
+      wrap.style.cssText = "margin-bottom:13px";
       var lb = document.createElement("label");
       lb.htmlFor = id;
       lb.textContent = label + (required ? " *" : " (اختیاری)");
-      lb.style.cssText = "display:block;margin-bottom:6px;font-size:12.5px;font-weight:700;color:#cbd5e1";
+      lb.style.cssText = "display:block;margin-bottom:7px;font-size:12.5px;font-weight:750;color:#d5e9e5";
       var input = document.createElement("input");
       input.id = id; input.name = id; input.type = type || "text";
-      input.placeholder = placeholder; input.autocomplete = "off";
-      input.style.cssText = "width:100%;box-sizing:border-box;padding:12px 14px;border-radius:14px;border:1px solid #334155;background:#0f172a;color:#f8fafc;font-size:15px;outline:none;font-family:inherit";
+      input.placeholder = placeholder; input.autocomplete = id.indexOf("mobile") >= 0 ? "tel" : "given-name";
+      input.style.cssText = "width:100%;box-sizing:border-box;padding:14px 15px;border-radius:15px;border:1px solid #345052;background:rgba(5,20,27,.64);color:#f0fdfa;font-size:15px;outline:none;font-family:inherit;transition:border-color .18s,box-shadow .18s,background .18s";
+      input.addEventListener("focus", function () { input.style.borderColor = "#34d399"; input.style.boxShadow = "0 0 0 3px rgba(52,211,153,.12)"; input.style.background = "rgba(5,20,27,.92)"; });
+      input.addEventListener("blur", function () { input.style.borderColor = "#345052"; input.style.boxShadow = "none"; input.style.background = "rgba(5,20,27,.64)"; });
       var err = document.createElement("div");
       err.style.cssText = "min-height:16px;margin-top:4px;font-size:11.5px;color:#f87171";
       wrap.appendChild(lb); wrap.appendChild(input); wrap.appendChild(err);
@@ -74,11 +99,22 @@
     var submit = document.createElement("button");
     submit.type = "submit";
     submit.textContent = "ورود به برنامه";
-    submit.style.cssText = "width:100%;margin-top:6px;padding:13px;border:0;border-radius:14px;background:#10b981;color:#052e1b;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit";
+    submit.style.cssText = "display:flex;align-items:center;justify-content:center;gap:10px;width:100%;margin-top:8px;padding:15px;border:1px solid rgba(167,243,208,.38);border-radius:16px;background:linear-gradient(100deg,#6ee7b7 0%,#34d399 55%,#2dd4bf 100%);color:#073b31;font-size:15px;font-weight:900;cursor:pointer;font-family:inherit;box-shadow:0 10px 25px rgba(16,185,129,.17);transition:transform .15s,filter .15s";
+    submit.innerHTML = 'ورود به برنامه <span aria-hidden="true" style="font-size:20px;line-height:1">←</span>';
+    submit.addEventListener("pointerdown", function () { submit.style.transform = "scale(.985)"; });
+    submit.addEventListener("pointerup", function () { submit.style.transform = "scale(1)"; });
+    submit.addEventListener("pointerleave", function () { submit.style.transform = "scale(1)"; });
+    var privacy = document.createElement("p");
+    privacy.textContent = "اطلاعاتت فقط برای شخصی‌سازی تجربه‌ی داخل برنامه استفاده می‌شود.";
+    privacy.style.cssText = "display:flex;align-items:flex-start;gap:7px;margin:15px 2px 0;font-size:10.5px;line-height:1.8;color:#87a6a3";
+    var lock = document.createElement("span");
+    lock.innerHTML = '<svg viewBox="0 0 20 20" width="15" height="15" fill="none" aria-hidden="true"><rect x="4" y="8" width="12" height="9" rx="2" stroke="#6ee7b7" stroke-width="1.5"/><path d="M7 8V6a3 3 0 0 1 6 0v2" stroke="#6ee7b7" stroke-width="1.5" stroke-linecap="round"/></svg>';
+    lock.style.cssText = "display:inline-flex;flex:0 0 auto;margin-top:2px";
+    privacy.appendChild(lock); privacy.appendChild(document.createTextNode(privacy.textContent));
 
-    card.appendChild(title); card.appendChild(sub);
+    card.appendChild(brand); card.appendChild(step); card.appendChild(title); card.appendChild(sub);
     card.appendChild(first.wrap); card.appendChild(last.wrap); card.appendChild(mobile.wrap);
-    card.appendChild(submit);
+    card.appendChild(submit); card.appendChild(privacy);
     overlay.appendChild(card);
 
     function validate() {
