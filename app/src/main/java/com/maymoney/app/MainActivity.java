@@ -347,12 +347,20 @@ public class MainActivity extends ComponentActivity {
 
         AnimatedStartupLogoView(android.content.Context context) {
             super(context);
-            setLayerType(android.view.View.LAYER_TYPE_SOFTWARE, null);
             motion = android.animation.ValueAnimator.ofFloat(0f, 1f);
             motion.setDuration(1250L);
             motion.setRepeatCount(android.animation.ValueAnimator.INFINITE);
             motion.addUpdateListener(a -> { phase = (float) a.getAnimatedValue(); invalidate(); });
-            motion.start();
+        }
+
+        @Override protected void onAttachedToWindow() {
+            super.onAttachedToWindow();
+            if (!motion.isStarted()) motion.start();
+        }
+
+        @Override protected void onDetachedFromWindow() {
+            motion.cancel();
+            super.onDetachedFromWindow();
         }
 
         @Override protected void onDraw(android.graphics.Canvas canvas) {
