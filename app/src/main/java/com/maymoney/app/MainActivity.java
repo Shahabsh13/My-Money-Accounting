@@ -323,10 +323,8 @@ public class MainActivity extends ComponentActivity {
         emblem.addView(outerRing, new android.widget.FrameLayout.LayoutParams(dp(154), dp(154), android.view.Gravity.CENTER));
         emblem.addView(innerRing, new android.widget.FrameLayout.LayoutParams(dp(118), dp(118), android.view.Gravity.CENTER));
 
-        android.widget.ImageView icon = new android.widget.ImageView(this);
-        icon.setImageResource(com.maymoney.app.R.mipmap.ic_launcher);
-        icon.setScaleType(android.widget.ImageView.ScaleType.FIT_CENTER);
-        emblem.addView(icon, new android.widget.FrameLayout.LayoutParams(dp(88), dp(88), android.view.Gravity.CENTER));
+        AnimatedStartupLogoView icon = new AnimatedStartupLogoView(this);
+        emblem.addView(icon, new android.widget.FrameLayout.LayoutParams(dp(112), dp(112), android.view.Gravity.CENTER));
 
         android.widget.TextView title = new android.widget.TextView(this);
         title.setText("My Money");
@@ -339,6 +337,87 @@ public class MainActivity extends ComponentActivity {
         overlay.addView(title, titleParams);
 
         return overlay;
+    }
+
+    /** نسخه‌ی لایه‌ای آیکون برای اسپلش؛ نمودار و تیک مستقل از بدنه متحرک‌اند. */
+    private final class AnimatedStartupLogoView extends android.view.View {
+        private final android.graphics.Paint paint = new android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG);
+        private float phase;
+        private final android.animation.ValueAnimator motion;
+
+        AnimatedStartupLogoView(android.content.Context context) {
+            super(context);
+            setLayerType(android.view.View.LAYER_TYPE_SOFTWARE, null);
+            motion = android.animation.ValueAnimator.ofFloat(0f, 1f);
+            motion.setDuration(1250L);
+            motion.setRepeatCount(android.animation.ValueAnimator.INFINITE);
+            motion.addUpdateListener(a -> { phase = (float) a.getAnimatedValue(); invalidate(); });
+            motion.start();
+        }
+
+        @Override protected void onDraw(android.graphics.Canvas canvas) {
+            super.onDraw(canvas);
+            float scale = Math.min(getWidth(), getHeight()) / 192f;
+            canvas.save();
+            canvas.scale(scale, scale);
+            // پس‌زمینه‌ی سبز-آبی و خطوط ظریف هماهنگ با آیکون واقعی برنامه
+            paint.setShader(new android.graphics.LinearGradient(0, 0, 192, 192, 0xFF123E3B, 0xFF0B2928, android.graphics.Shader.TileMode.CLAMP));
+            canvas.drawRoundRect(5, 5, 187, 187, 42, 42, paint);
+            paint.setShader(null);
+            paint.setStyle(android.graphics.Paint.Style.STROKE);
+            paint.setStrokeWidth(1.5f);
+            paint.setColor(0xFF245A54);
+            canvas.drawRoundRect(12, 12, 180, 180, 38, 38, paint);
+            paint.setStyle(android.graphics.Paint.Style.FILL);
+
+            // گوشی کمی کج؛ حرکت آرام بدنه جدا از نمودار
+            canvas.save();
+            canvas.rotate(-9f + (float)Math.sin(phase * Math.PI * 2) * 1.6f, 88, 91);
+            paint.setColor(0xFFBFE8D8);
+            canvas.drawRoundRect(39, 13, 137, 169, 13, 13, paint);
+            paint.setColor(0xFF173D3A);
+            canvas.drawRoundRect(44, 20, 132, 160, 7, 7, paint);
+            paint.setColor(0xFFE8F7EF);
+            canvas.drawRoundRect(48, 24, 128, 156, 4, 4, paint);
+            paint.setColor(0xFF244E49);
+            canvas.drawRoundRect(71, 17, 105, 20, 1.5f, 1.5f, paint);
+            canvas.drawRoundRect(56, 37, 112, 42, 2, 2, paint);
+            canvas.drawRoundRect(56, 46, 99, 50, 2, 2, paint);
+            // سه میله‌ی نمودار با ارتفاع‌های مستقل و موجی
+            float[] base = {104, 91, 77};
+            float[] heights = {27, 39, 51};
+            for (int i = 0; i < 3; i++) {
+                float bob = (float)Math.sin(phase * Math.PI * 2 + i * 1.35f) * 5f;
+                float top = base[i] - heights[i] - bob;
+                paint.setColor(i == 2 ? 0xFF2A8273 : 0xFF5BB89B);
+                canvas.drawRoundRect(57 + i * 18, top, 69 + i * 18, 124, 5, 5, paint);
+            }
+            canvas.restore();
+
+            // نشان تیک شناور با چرخش کوتاه و کنترل‌شده
+            canvas.save();
+            canvas.rotate((float)Math.sin(phase * Math.PI * 2) * 5f, 145, 123);
+            float lift = (float)Math.sin(phase * Math.PI * 2) * 2.2f;
+            paint.setColor(0xFF3A9D87);
+            canvas.drawCircle(145, 123 + lift, 29, paint);
+            paint.setColor(0xFFBFE8D8);
+            paint.setStyle(android.graphics.Paint.Style.STROKE);
+            paint.setStrokeWidth(2.5f);
+            canvas.drawCircle(145, 123 + lift, 25.5f, paint);
+            paint.setStyle(android.graphics.Paint.Style.STROKE);
+            paint.setStrokeCap(android.graphics.Paint.Cap.ROUND);
+            paint.setStrokeJoin(android.graphics.Paint.Join.ROUND);
+            paint.setStrokeWidth(6f);
+            paint.setColor(android.graphics.Color.WHITE);
+            android.graphics.Path check = new android.graphics.Path();
+            check.moveTo(133, 123 + lift);
+            check.lineTo(141, 131 + lift);
+            check.lineTo(157, 114 + lift);
+            canvas.drawPath(check, paint);
+            paint.setStyle(android.graphics.Paint.Style.FILL);
+            canvas.restore();
+            canvas.restore();
+        }
     }
 
     private android.view.View createSplashRing(int color, int strokeWidth) {
@@ -385,11 +464,11 @@ public class MainActivity extends ComponentActivity {
             sx.start(); sy.start(); alpha.start();
         }
         if (emblemIcon != null) {
-            android.animation.ObjectAnimator scaleX = android.animation.ObjectAnimator.ofFloat(emblemIcon, android.view.View.SCALE_X, 0.88f, 1.04f, 0.96f, 1f);
-            android.animation.ObjectAnimator scaleY = android.animation.ObjectAnimator.ofFloat(emblemIcon, android.view.View.SCALE_Y, 0.88f, 1.04f, 0.96f, 1f);
-            android.animation.ObjectAnimator rotation = android.animation.ObjectAnimator.ofFloat(emblemIcon, android.view.View.ROTATION, 0f, -5f, 5f, 0f);
+            android.animation.ObjectAnimator scaleX = android.animation.ObjectAnimator.ofFloat(emblemIcon, android.view.View.SCALE_X, 0.96f, 1.02f, 0.98f, 1f);
+            android.animation.ObjectAnimator scaleY = android.animation.ObjectAnimator.ofFloat(emblemIcon, android.view.View.SCALE_Y, 0.96f, 1.02f, 0.98f, 1f);
+            android.animation.ObjectAnimator rotation = android.animation.ObjectAnimator.ofFloat(emblemIcon, android.view.View.ROTATION, 0f, -2.5f, 2.5f, 0f);
             for (android.animation.ObjectAnimator animator : new android.animation.ObjectAnimator[]{scaleX, scaleY, rotation}) {
-                animator.setDuration(1400L);
+                animator.setDuration(1900L);
                 animator.setRepeatCount(android.animation.ValueAnimator.INFINITE);
             }
             scaleX.start(); scaleY.start(); rotation.start();
