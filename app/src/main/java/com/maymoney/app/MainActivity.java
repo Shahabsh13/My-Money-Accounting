@@ -358,9 +358,11 @@ public class MainActivity extends ComponentActivity {
 
     private void startStartupSplashAnimation() {
         if (startupSplash == null) return;
-        android.view.View outer = ((android.widget.FrameLayout) startupSplash).getChildAt(0);
-        android.view.View inner = ((android.widget.FrameLayout) startupSplash).getChildAt(1);
-        android.view.View emblemIcon = ((android.widget.FrameLayout) startupSplash).getChildAt(2);
+        android.widget.FrameLayout emblem = (android.widget.FrameLayout) ((android.widget.FrameLayout) startupSplash).getChildAt(0);
+        if (emblem == null) return;
+        android.view.View outer = emblem.getChildAt(0);
+        android.view.View inner = emblem.getChildAt(1);
+        android.view.View emblemIcon = emblem.getChildAt(2);
         if (outer != null) {
             android.animation.ObjectAnimator sx = android.animation.ObjectAnimator.ofFloat(outer, android.view.View.SCALE_X, 0.72f, 1.22f);
             android.animation.ObjectAnimator sy = android.animation.ObjectAnimator.ofFloat(outer, android.view.View.SCALE_Y, 0.72f, 1.22f);
