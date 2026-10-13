@@ -64,16 +64,43 @@
     return true;
   };
   window.__hesabnoNavigateBack = function () {
+    var nav = root.querySelector("nav.fixed");
+    if (nav) {
+      var buttons = Array.from(nav.querySelectorAll("button"));
+      var active = buttons.find(function (button) {
+        return String(button.className || "").includes("text-emerald-400");
+      });
+      var activeLabel = clean(active && active.textContent);
+      var homeButton = buttons.find(function (button) { return clean(button.textContent) === labels.home; });
+      if (activeLabel && activeLabel !== labels.home && homeButton) {
+        window.clearTimeout(pendingTimer);
+        stack.length = 0;
+        holdBackNavigation("home");
+        stack.length = 0;
+        last = "home";
+        pending = "home";
+        homeButton.click();
+        return true;
+      }
+      if (activeLabel === labels.home) {
+        window.clearTimeout(pendingTimer);
+        stack.length = 0;
+        pending = "";
+        navigatingBack = false;
+        last = "home";
+        return false;
+      }
+    }
     var target = stack[stack.length - 1];
     var label = labels[target];
     if (!target || !label) return false;
-    var nav = root.querySelector("nav.fixed");
-    var button = nav && Array.from(nav.querySelectorAll("button")).find(function (item) { return clean(item.textContent) === label; });
-    if (!button) return false;
+    var fallbackNav = root.querySelector("nav.fixed");
+    var fallbackButton = fallbackNav && Array.from(fallbackNav.querySelectorAll("button")).find(function (item) { return clean(item.textContent) === label; });
+    if (!fallbackButton) return false;
     holdBackNavigation(target);
     stack.pop();
     pending = target;
-    button.click();
+    fallbackButton.click();
     return true;
   };
   sync();

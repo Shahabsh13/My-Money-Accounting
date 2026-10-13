@@ -7,6 +7,8 @@ const root = path.resolve(__dirname, '..');
 const html = fs.readFileSync(path.join(root, 'app/src/main/assets/index.html'), 'utf8');
 const coreBundle = fs.readFileSync(path.join(root, 'app/src/main/assets/src/scripts/067-inline.js'), 'utf8');
 const perfGuard = fs.readFileSync(path.join(root, 'app/src/main/assets/src/scripts/001-hesabno-perf-guard.js'), 'utf8');
+const navigationHistory = fs.readFileSync(path.join(root, 'app/src/main/assets/src/scripts/073-hesabno-navigation-history.js'), 'utf8');
+const pageMotionStyles = fs.readFileSync(path.join(root, 'app/src/main/assets/src/styles/043-hesabno-page-open-close-motion.css'), 'utf8');
 const externalScripts = [...html.matchAll(/<script\b([^>]*)>/gi)]
   .map(match => ({ attributes: match[1], index: match.index }))
   .filter(script => /\bsrc\s*=/i.test(script.attributes));
@@ -18,6 +20,18 @@ test('global performance guard preserves native DOM and timer scheduling', () =>
     'global interval timing must not delay page enhancements');
   assert.doesNotMatch(perfGuard, /setTimeout\(flush,\s*80\)/,
     'DOM mutation batches must not be delayed by the performance guard');
+});
+
+test('hardware back returns non-dashboard tabs home and dashboard back has no tab history', () => {
+  assert.match(navigationHistory, /activeLabel && activeLabel !== labels\.home && homeButton/);
+  assert.match(navigationHistory, /homeButton\.click\(\)/);
+  assert.match(navigationHistory, /if \(activeLabel === labels\.home\) \{[\s\S]*?stack\.length = 0[\s\S]*?return false;/);
+});
+
+test('page entry classes cannot animate content into position after render', () => {
+  assert.match(pageMotionStyles, /main\.hesabno-page-open-up,[\s\S]*?animation: none !important/);
+  assert.match(pageMotionStyles, /transform: none !important/);
+  assert.match(pageMotionStyles, /opacity: 1 !important/);
 });
 
 function srcOf(script) {
