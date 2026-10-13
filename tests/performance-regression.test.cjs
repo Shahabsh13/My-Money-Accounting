@@ -22,10 +22,18 @@ test('global performance guard preserves native DOM and timer scheduling', () =>
     'DOM mutation batches must not be delayed by the performance guard');
 });
 
-test('hardware back returns non-dashboard tabs home and dashboard back has no tab history', () => {
-  assert.match(navigationHistory, /activeLabel && activeLabel !== labels\.home && homeButton/);
+test('hardware back returns primary tabs home but respects inner-page back first', () => {
+  assert.match(navigationHistory, /var detailBackButton = function \(\)/,
+    'inner-page back button should be detected independently of the active tab');
+  assert.match(navigationHistory, /var back = detailBackButton\(\);[\s\S]*?return "detail:"/,
+    'inner-page state must be detected before reading the active primary tab');
+  assert.match(navigationHistory, /var detailBack = detailBackButton\(\);\s*if \(detailBack\) \{\s*holdBackNavigation\("\");\s*detailBack\.click\(\);\s*return true;/,
+    'Back inside a subpage should click that page’s own back button first');
+  assert.match(navigationHistory, /activeLabel && activeLabel !== labels\.home && homeButton/,
+    'Back on a primary non-dashboard tab should return to dashboard');
   assert.match(navigationHistory, /homeButton\.click\(\)/);
-  assert.match(navigationHistory, /if \(activeLabel === labels\.home\) \{[\s\S]*?stack\.length = 0[\s\S]*?return false;/);
+  assert.match(navigationHistory, /if \(activeLabel === labels\.home\) \{[\s\S]*?stack\.length = 0[\s\S]*?return false;/,
+    'Back on the dashboard should fall through to native exit confirmation');
 });
 
 test('page entry classes cannot animate content into position after render', () => {
