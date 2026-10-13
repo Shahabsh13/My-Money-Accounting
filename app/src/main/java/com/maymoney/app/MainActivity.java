@@ -51,14 +51,21 @@ public class MainActivity extends ComponentActivity {
     // اگر برنامه‌ی وب بتواند برگشت درون‌برنامه‌ای انجام دهد، خودش اعلام می‌کند (backHandled)؛
     // وگرنه از HnBridge.exitApp خروج از برنامه را می‌خواهد.
     private static final String BACK_JS =
-            "(function(){function done(){try{if(window.HnBridge)window.HnBridge.backHandled();}catch(e){}}"
-            + "try{var fr=document.getElementById('hesabno-first-run');"
-            + "if(fr){fr.parentNode.removeChild(fr);done();return;}}catch(e){}"
-            + "try{var h=window.__hesabnoNavigateBack;"
-            + "if(typeof h==='function'&&h()){done();return;}"
-            + "var b=document.querySelector('main button[aria-label=\"\\u0628\\u0627\\u0632\\u06af\\u0634\\u062a\"],main button[title=\"\\u0628\\u0627\\u0632\\u06af\\u0634\\u062a\"]');"
-            + "if(b){b.click();done();return;}}catch(e){}"
-            + "try{if(window.HnBridge)window.HnBridge.exitApp();}catch(e){}})();";
+            "(function(){\nvar handled=false;\nfunction done(){if(handled)return;handled=true;try{if(window.HnBridge)window.H"
+            + "nBridge.backHandled();}catch(e){}}\nfunction visible(el){if(!el||!el.getClientRects||!el.getClientRects().lengt"
+            + "h)return false;var s=window.getComputedStyle?window.getComputedStyle(el):null;return !s||(s.display!=='none'&&"
+            + "s.visibility!=='hidden'&&s.opacity!=='0');}\nfunction findBackButton(scope){if(!scope||!scope.querySelectorAll)"
+            + "return null;var labels=['بازگشت','برگشت','انصراف','بستن'];var list=scope.querySelectorAll('button,[role=\"butto"
+            + "n\"]');for(var i=list.length-1;i>=0;i--){var el=list[i];if(!visible(el))continue;var vals=[el.getAttribute('ari"
+            + "a-label'),el.getAttribute('title'),el.innerText,el.textContent];for(var j=0;j<vals.length;j++){var label=Strin"
+            + "g(vals[j]||'').replace(/\\s+/g,' ').trim();if(labels.indexOf(label)!==-1)return el;}}return null;}\ntry{var fr=d"
+            + "ocument.getElementById('hesabno-first-run');if(fr){fr.parentNode.removeChild(fr);done();return;}}catch(e){}\ntr"
+            + "y{var h=window.__hesabnoNavigateBack;if(typeof h==='function'&&h()){done();return;}}catch(e){}\ntry{var layers="
+            + "document.querySelectorAll('.hesabno-fullpage-layer,[role=\"dialog\"],[aria-modal=\"true\"]');for(var i=layers.leng"
+            + "th-1;i>=0;i--){if(!visible(layers[i]))continue;var lb=findBackButton(layers[i]);if(lb){lb.click();done();retur"
+            + "n;}}var b=findBackButton(document.querySelector('main')||document);if(b){b.click();done();return;}}catch(e){}\n"
+            + "try{var shouldExit=window.confirm('آیا می‌خواهید از برنامه خارج شوید؟');done();if(shouldExit&&window.HnBridge)"
+            + "window.HnBridge.exitApp();}catch(e){done();}\n})();";
 
     private WebView webView;
     private final Handler handler = new Handler(Looper.getMainLooper());
