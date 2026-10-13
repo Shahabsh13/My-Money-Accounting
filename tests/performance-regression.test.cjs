@@ -12,11 +12,11 @@ const externalScripts = [...html.matchAll(/<script\b([^>]*)>/gi)]
   .filter(script => /\bsrc\s*=/i.test(script.attributes));
 
 test('global performance guard preserves native DOM and timer scheduling', () => {
-  assert.doesNotMatch(perfGuard, /window\\.MutationObserver\\s*=/,
+  assert.doesNotMatch(perfGuard, /window\.MutationObserver\s*=/,
     'UI observers must run on the browser native schedule');
-  assert.doesNotMatch(perfGuard, /window\\.setInterval\\s*=/,
+  assert.doesNotMatch(perfGuard, /window\.setInterval\s*=/,
     'global interval timing must not delay page enhancements');
-  assert.doesNotMatch(perfGuard, /setTimeout\\(flush,\\s*80\\)/,
+  assert.doesNotMatch(perfGuard, /setTimeout\(flush,\s*80\)/,
     'DOM mutation batches must not be delayed by the performance guard');
 });
 
