@@ -70,6 +70,15 @@ public class MainActivity extends ComponentActivity {
     private WebView webView;
     private final Handler handler = new Handler(Looper.getMainLooper());
 
+    // نمایش کوتاه و پویا از آیکون در شروع هر بار اجرای تازه‌ی Activity
+    private android.view.View startupSplash;
+    private long startupSplashStartedAt;
+    private boolean startupPageLoaded;
+    private boolean startupSplashDismissScheduled;
+    private boolean startupSplashDismissed;
+    private static final long MIN_STARTUP_SPLASH_MS = 1350L;
+    private static final long MAX_STARTUP_SPLASH_MS = 8000L;
+
     // انتخاب فایل برای <input type="file">
     private ValueCallback<Uri[]> filePathCallback;
     private final ActivityResultLauncher<Intent> filePicker =
@@ -99,6 +108,9 @@ public class MainActivity extends ComponentActivity {
         final android.widget.FrameLayout root = new android.widget.FrameLayout(this);
         root.setBackgroundColor(0xFF0C1F1D);
         root.addView(webView, new android.widget.FrameLayout.LayoutParams(-1, -1));
+        startupSplash = createStartupSplash();
+        root.addView(startupSplash, new android.widget.FrameLayout.LayoutParams(-1, -1));
+        startupSplashStartedAt = android.os.SystemClock.uptimeMillis();
         root.setOnApplyWindowInsetsListener((v, insets) -> {
             int l = insets.getSystemWindowInsetLeft(), t = insets.getSystemWindowInsetTop();
             int r = insets.getSystemWindowInsetRight(), b = insets.getSystemWindowInsetBottom();
@@ -110,6 +122,10 @@ public class MainActivity extends ComponentActivity {
             return insets;
         });
         setContentView(root);
+        startStartupSplashAnimation();
+        handler.postDelayed(new Runnable() {
+            @Override public void run() { dismissStartupSplashWhenReady(true); }
+        }, MAX_STARTUP_SPLASH_MS);
 
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
@@ -221,6 +237,22 @@ public class MainActivity extends ComponentActivity {
 
         webView.setWebViewClient(new WebViewClient() {
             @Override
+            public void onPageFinished(WebView view, String url) {
+                if (startupSplash != null && !startupSplashDismissed) {
+                    startupPageLoaded = true;
+                    dismissStartupSplashWhenReady(false);
+                }
+            }
+
+            @Override
+            public void onReceivedError(WebView view, WebResourceRequest request, android.webkit.WebResourceError error) {
+                if (request != null && request.isForMainFrame() && startupSplash != null && !startupSplashDismissed) {
+                    startupPageLoaded = true;
+                    dismissStartupSplashWhenReady(false);
+                }
+            }
+
+            @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
                 return assetLoader.shouldInterceptRequest(request.getUrl());
             }
@@ -274,6 +306,116 @@ public class MainActivity extends ComponentActivity {
         } else {
             webView.loadUrl(START_URL);
         }
+    }
+
+    private android.view.View createStartupSplash() {
+        android.widget.FrameLayout overlay = new android.widget.FrameLayout(this);
+        overlay.setBackgroundColor(0xFF0C1F1D);
+        overlay.setClickable(true);
+        overlay.setFocusable(true);
+
+        android.widget.FrameLayout emblem = new android.widget.FrameLayout(this);
+        android.widget.FrameLayout.LayoutParams emblemParams = new android.widget.FrameLayout.LayoutParams(dp(190), dp(190), android.view.Gravity.CENTER);
+        overlay.addView(emblem, emblemParams);
+
+        android.view.View outerRing = createSplashRing(0xFF39D6A2, dp(2));
+        android.view.View innerRing = createSplashRing(0xFF7CE8C5, dp(1));
+        emblem.addView(outerRing, new android.widget.FrameLayout.LayoutParams(dp(154), dp(154), android.view.Gravity.CENTER));
+        emblem.addView(innerRing, new android.widget.FrameLayout.LayoutParams(dp(118), dp(118), android.view.Gravity.CENTER));
+
+        android.widget.ImageView icon = new android.widget.ImageView(this);
+        icon.setImageResource(com.maymoney.app.R.mipmap.ic_launcher);
+        icon.setScaleType(android.widget.ImageView.ScaleType.FIT_CENTER);
+        emblem.addView(icon, new android.widget.FrameLayout.LayoutParams(dp(88), dp(88), android.view.Gravity.CENTER));
+
+        android.widget.TextView title = new android.widget.TextView(this);
+        title.setText("My Money");
+        title.setTextColor(0xFFE6FFF5);
+        title.setTextSize(18);
+        title.setTypeface(null, android.graphics.Typeface.BOLD);
+        title.setGravity(android.view.Gravity.CENTER);
+        android.widget.FrameLayout.LayoutParams titleParams = new android.widget.FrameLayout.LayoutParams(-2, -2, android.view.Gravity.CENTER_HORIZONTAL | android.view.Gravity.CENTER_VERTICAL);
+        titleParams.topMargin = dp(145);
+        overlay.addView(title, titleParams);
+
+        return overlay;
+    }
+
+    private android.view.View createSplashRing(int color, int strokeWidth) {
+        android.view.View ring = new android.view.View(this);
+        android.graphics.drawable.GradientDrawable shape = new android.graphics.drawable.GradientDrawable();
+        shape.setShape(android.graphics.drawable.GradientDrawable.OVAL);
+        shape.setColor(android.graphics.Color.TRANSPARENT);
+        shape.setStroke(strokeWidth, color);
+        ring.setBackground(shape);
+        ring.setAlpha(0.72f);
+        return ring;
+    }
+
+    private int dp(float value) {
+        return (int) (value * getResources().getDisplayMetrics().density + 0.5f);
+    }
+
+    private void startStartupSplashAnimation() {
+        if (startupSplash == null) return;
+        android.view.View outer = ((android.widget.FrameLayout) startupSplash).getChildAt(0);
+        android.view.View inner = ((android.widget.FrameLayout) startupSplash).getChildAt(1);
+        android.view.View emblemIcon = ((android.widget.FrameLayout) startupSplash).getChildAt(2);
+        if (outer != null) {
+            android.animation.ObjectAnimator sx = android.animation.ObjectAnimator.ofFloat(outer, android.view.View.SCALE_X, 0.72f, 1.22f);
+            android.animation.ObjectAnimator sy = android.animation.ObjectAnimator.ofFloat(outer, android.view.View.SCALE_Y, 0.72f, 1.22f);
+            android.animation.ObjectAnimator alpha = android.animation.ObjectAnimator.ofFloat(outer, android.view.View.ALPHA, 0.72f, 0f);
+            for (android.animation.ObjectAnimator animator : new android.animation.ObjectAnimator[]{sx, sy, alpha}) {
+                animator.setDuration(1150L);
+                animator.setRepeatCount(android.animation.ValueAnimator.INFINITE);
+            }
+            sx.start(); sy.start(); alpha.start();
+        }
+        if (inner != null) {
+            android.animation.ObjectAnimator sx = android.animation.ObjectAnimator.ofFloat(inner, android.view.View.SCALE_X, 0.78f, 1.16f);
+            android.animation.ObjectAnimator sy = android.animation.ObjectAnimator.ofFloat(inner, android.view.View.SCALE_Y, 0.78f, 1.16f);
+            android.animation.ObjectAnimator alpha = android.animation.ObjectAnimator.ofFloat(inner, android.view.View.ALPHA, 0.72f, 0f);
+            for (android.animation.ObjectAnimator animator : new android.animation.ObjectAnimator[]{sx, sy, alpha}) {
+                animator.setDuration(1150L);
+                animator.setStartDelay(430L);
+                animator.setRepeatCount(android.animation.ValueAnimator.INFINITE);
+            }
+            sx.start(); sy.start(); alpha.start();
+        }
+        if (emblemIcon != null) {
+            android.animation.ObjectAnimator scaleX = android.animation.ObjectAnimator.ofFloat(emblemIcon, android.view.View.SCALE_X, 0.88f, 1.04f, 0.96f, 1f);
+            android.animation.ObjectAnimator scaleY = android.animation.ObjectAnimator.ofFloat(emblemIcon, android.view.View.SCALE_Y, 0.88f, 1.04f, 0.96f, 1f);
+            android.animation.ObjectAnimator rotation = android.animation.ObjectAnimator.ofFloat(emblemIcon, android.view.View.ROTATION, 0f, -5f, 5f, 0f);
+            for (android.animation.ObjectAnimator animator : new android.animation.ObjectAnimator[]{scaleX, scaleY, rotation}) {
+                animator.setDuration(1400L);
+                animator.setRepeatCount(android.animation.ValueAnimator.INFINITE);
+            }
+            scaleX.start(); scaleY.start(); rotation.start();
+        }
+    }
+
+    private void dismissStartupSplashWhenReady(boolean timeoutReached) {
+        if (startupSplash == null || startupSplashDismissed) return;
+        if (!startupPageLoaded && !timeoutReached) return;
+        if (startupSplashDismissScheduled) return;
+        startupSplashDismissScheduled = true;
+        long elapsed = android.os.SystemClock.uptimeMillis() - startupSplashStartedAt;
+        long remaining = Math.max(0L, MIN_STARTUP_SPLASH_MS - elapsed);
+        handler.postDelayed(new Runnable() {
+            @Override public void run() {
+                if (startupSplash == null || startupSplashDismissed) return;
+                startupSplashDismissed = true;
+                final android.view.View splash = startupSplash;
+                splash.animate().alpha(0f).setDuration(240L).withEndAction(new Runnable() {
+                    @Override public void run() {
+                        if (splash.getParent() instanceof android.view.ViewGroup) {
+                            ((android.view.ViewGroup) splash.getParent()).removeView(splash);
+                        }
+                        if (startupSplash == splash) startupSplash = null;
+                    }
+                }).start();
+            }
+        }, remaining);
     }
 
     @Override
