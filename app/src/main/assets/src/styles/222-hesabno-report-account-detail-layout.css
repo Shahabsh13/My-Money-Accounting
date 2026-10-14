@@ -1,0 +1,38 @@
+#root main [data-hesabno-report-account-detail-title] {
+  display: flex; align-items: center; justify-content: flex-start;
+  width: calc(100% - 2rem); max-width: 42rem; min-height: 3.25rem;
+  margin: 0 auto .65rem; color: var(--text-primary, #263b45);
+  font-size: 1.1rem; font-weight: 900; direction: rtl; text-align: right;
+}
+html[data-theme="light"] #root main [data-hesabno-report-account-detail-title] { color: #243f4c; }
+.hesabno-account-statement-panel[data-hesabno-report-account-detail="true"] {
+  width: 100%; max-width: 44rem; margin-inline: auto; padding: .35rem 0 1rem;
+  border: 1px solid #a8bdc8; border-radius: 1.35rem;
+  background: linear-gradient(145deg, #e9f2f6, #dfeaf0);
+  box-shadow: 0 5px 18px rgba(34, 61, 74, .10);
+}
+.hesabno-account-statement-panel[data-hesabno-report-account-detail="true"] > header,
+.hesabno-account-statement-panel[data-hesabno-report-account-detail="true"] > header + div,
+.hesabno-account-statement-panel[data-hesabno-report-account-detail="true"] .hesabno-statement-columns {
+  width: calc(100% - 1.1rem) !important; max-width: none !important;
+}
+.hesabno-account-statement-panel[data-hesabno-report-account-detail="true"] [data-hesabno-statement-card="true"] {
+  margin: .45rem auto !important; padding: .8rem .75rem !important;
+  border: 1px solid #b2c6d0 !important; border-radius: 1rem !important;
+  background: #f8fbfc !important; box-shadow: 0 3px 10px rgba(34, 61, 74, .09) !important;
+}
+.hesabno-account-statement-panel[data-hesabno-report-account-detail="true"] .hesabno-statement-counterparty-name { font-size: .83rem; }
+.hesabno-account-statement-panel[data-hesabno-report-account-detail="true"] .hesabno-statement-description { font-size: .72rem; }
+html[data-theme="dark"] .hesabno-account-statement-panel[data-hesabno-report-account-detail="true"] {
+  border-color: #405a66; background: linear-gradient(145deg, #1c2c36, #233842);
+}
+html[data-theme="dark"] .hesabno-account-statement-panel[data-hesabno-report-account-detail="true"] [data-hesabno-statement-card="true"] {
+  border-color: #405a66 !important; background: #1b2b35 !important;
+}
+@media (max-width: 420px) {
+  .hesabno-account-statement-panel[data-hesabno-report-account-detail="true"] > header,
+  .hesabno-account-statement-panel[data-hesabno-report-account-detail="true"] > header + div,
+  .hesabno-account-statement-panel[data-hesabno-report-account-detail="true"] .hesabno-statement-columns {
+    width: calc(100% - .75rem) !important;
+  }
+}
