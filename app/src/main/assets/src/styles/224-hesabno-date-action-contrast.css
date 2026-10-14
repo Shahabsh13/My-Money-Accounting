@@ -1,0 +1,9 @@
+html[data-theme="light"] article[id^="tx-card-"] button[data-hesabno-action-kind="edit"]{background:#e8f8ef!important;border:1px solid #86efac!important;color:#047857!important}
+html[data-theme="light"] article[id^="tx-card-"] button[data-hesabno-action-kind="correction"]{background:#fff7ed!important;border:1px solid #fdba74!important;color:#9a3412!important}
+html[data-theme="light"] article[id^="tx-card-"] button[data-hesabno-action-kind="delete"]{background:#fff1f2!important;border:1px solid #fda4af!important;color:#be123c!important}
+html[data-theme="dark"] article[id^="tx-card-"] button[data-hesabno-action-kind="edit"]{background:#123a2c!important;border:1px solid #267653!important;color:#a7f3d0!important}
+html[data-theme="dark"] article[id^="tx-card-"] button[data-hesabno-action-kind="correction"]{background:#422d16!important;border:1px solid #a16207!important;color:#fcd9a0!important}
+html[data-theme="dark"] article[id^="tx-card-"] button[data-hesabno-action-kind="delete"]{background:#451b24!important;border:1px solid #9f384b!important;color:#fecdd3!important}
+article[id^="tx-card-"] button[data-hesabno-action-kind]{border-radius:9px!important;font-weight:800!important}
+html[data-theme="light"] .hesabno-transaction-day-header .hesabno-transaction-day-date,html[data-theme="light"] [data-hesabno-period-date="true"],html[data-theme="light"] [data-hesabno-relative-date],html[data-theme="light"] .hesabno-statement-date-cell{color:#526875!important;opacity:1!important}
+html[data-theme="dark"] .hesabno-transaction-day-header .hesabno-transaction-day-date,html[data-theme="dark"] [data-hesabno-period-date="true"],html[data-theme="dark"] [data-hesabno-relative-date],html[data-theme="dark"] .hesabno-statement-date-cell{color:#b9cbd4!important;opacity:1!important}
