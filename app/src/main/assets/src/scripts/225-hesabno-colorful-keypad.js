@@ -60,12 +60,17 @@
       grid.setAttribute("data-hkap-redesign", "true");
     }
     var close = panel.querySelector(".hkap-close");
-    if (close) { close.textContent = "×"; close.setAttribute("aria-label", "بستن صفحه‌کلید"); }
+    if (close) { if (close.textContent !== "×") close.textContent = "×"; if (close.getAttribute("aria-label") !== "بستن صفحه‌کلید") close.setAttribute("aria-label", "بستن صفحه‌کلید"); }
     return true;
   }
   function start() {
     install();
-    new MutationObserver(function () { install(); }).observe(document.documentElement, { childList:true, subtree:true });
+    var queued = false;
+    new MutationObserver(function () {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(function () { queued = false; install(); });
+    }).observe(document.documentElement, { childList:true, subtree:true });
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start, {once:true}); else start();
 })();
