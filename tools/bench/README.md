@@ -8,7 +8,12 @@ npm ci                 # jsdom لازم است
 npm run bench          # خروجی JSON روی stdout: node tools/bench/bench.cjs > docs/bench-baseline.json
 npm run bench:churn    # نرخ تغییرات DOM و فریم‌ها پس از راه‌اندازی
 npm run bench:idle     # پروفایل «آشوب بیکاری»: چه کدی بی‌دلیل فریم/نوشتن ذخیره‌سازی می‌سازد
+npm run css:inventory  # سیاهه‌ی CSS: فایل‌ها، قاعده‌ها، !important، کد مرده (tools/bench/css-inventory.cjs)
 ```
+
+`css-parser.cjs` تجزیه‌گر مشترک CSS است (قاعده‌ها، اعلان‌ها، `!important` با مکان دقیق، at-rule‌های گروهی،
+وزن سلکتور) و هم `css-inventory.cjs` و هم ابزارهای `tools/css/` از آن استفاده می‌کنند.
+ابزارهای تغییردهنده‌ی CSS در `tools/css/` هستند.
 
 هر سه اسکریپت ریشه‌ی پروژه را از محل خودشان (`__dirname/../..`) می‌سازند و jsdom را از
 `node_modules` پروژه می‌خوانند، پس روی هر ماشین و هر مسیری اجرا می‌شوند. مسیر ریشه را می‌توان

@@ -1,5 +1,0 @@
-@keyframes hesabno-full-page-side-open { from { opacity: 0; transform: none; } to { opacity: 1; transform: none; } }
-@keyframes hesabno-full-page-side-exit { from { opacity: 1; transform: none; } to { opacity: 0; transform: none; } }
-.hesabno-full-page-side-open { animation: hesabno-full-page-side-open 220ms ease-out both; will-change: opacity; }
-.hesabno-full-page-side-exit { animation: hesabno-full-page-side-exit 180ms ease-in both; pointer-events: none; will-change: opacity; }
-@media (prefers-reduced-motion: reduce) { .hesabno-full-page-side-open, .hesabno-full-page-side-exit { animation: none !important; } }

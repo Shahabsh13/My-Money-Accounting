@@ -9,7 +9,10 @@
     "test": "node --test tests/*.test.cjs",
     "bench": "node tools/bench/bench.cjs",
     "bench:churn": "node tools/bench/churn.cjs",
-    "bench:idle": "node tools/bench/idle-profile.cjs"
+    "bench:idle": "node tools/bench/idle-profile.cjs",
+    "css:inventory": "node tools/bench/css-inventory.cjs",
+    "css:audit": "node tools/css/css-important-audit.cjs",
+    "css:bundles:check": "node tools/css/build-bundles.cjs --verify"
   },
   "keywords": [],
   "author": "",
