@@ -1,6 +1,6 @@
 {
   "root": "/home/user/My-Money-Accounting",
-  "at": "2026-10-16T20:28:30.725Z",
+  "at": "2026-10-16T20:40:43.512Z",
   "static": {
     "filesScanned": 136,
     "observers": 20,
@@ -256,8 +256,8 @@
       },
       {
         "file": "236-hesabno-shared-dom-observer.js",
-        "callbackBytes": 547,
-        "target": "target, options",
+        "callbackBytes": 49,
+        "target": null,
         "options": {},
         "disconnectCall": true,
         "setTimeoutInside": false,
@@ -266,12 +266,12 @@
     ]
   },
   "runtime": {
-    "observersCreated": 30,
-    "totalCalls": 322,
-    "bootCalls": 322,
+    "observersCreated": 22,
+    "totalCalls": 249,
+    "bootCalls": 249,
     "settleCalls": 0,
-    "totalRecords": 1987,
-    "settleMs": 5002,
+    "totalRecords": 1358,
+    "settleMs": 5003,
     "errors": [],
     "observers": [
       {
@@ -279,13 +279,19 @@
         "target": "HTML",
         "options": {
           "childList": true,
+          "subtree": true,
           "characterData": true,
-          "subtree": true
+          "attributes": true,
+          "attributeOldValue": true,
+          "attributeFilter": [
+            "class",
+            "data-theme"
+          ]
         },
-        "calls": 29,
-        "bootCalls": 29,
+        "calls": 41,
+        "bootCalls": 41,
         "settleCalls": 0,
-        "records": 53
+        "records": 206
       },
       {
         "createdFrom": "067-inline.js",
@@ -328,28 +334,21 @@
         "target": "BODY.bg-stone-900.text-stone-100.antialiased",
         "options": {
           "childList": true,
-          "subtree": true
-        },
-        "calls": 8,
-        "bootCalls": 8,
-        "settleCalls": 0,
-        "records": 24
-      },
-      {
-        "createdFrom": "236-hesabno-shared-dom-observer.js",
-        "target": "BODY.bg-stone-900.text-stone-100.antialiased",
-        "options": {
-          "childList": true,
           "subtree": true,
+          "characterData": true,
           "attributes": true,
           "attributeFilter": [
-            "class"
+            "class",
+            "data-theme",
+            "hidden",
+            "style",
+            "title"
           ]
         },
-        "calls": 16,
-        "bootCalls": 16,
+        "calls": 24,
+        "bootCalls": 24,
         "settleCalls": 0,
-        "records": 177
+        "records": 633
       },
       {
         "createdFrom": "236-hesabno-shared-dom-observer.js",
@@ -393,33 +392,6 @@
         "options": {
           "childList": true,
           "subtree": true
-        },
-        "calls": 7,
-        "bootCalls": 7,
-        "settleCalls": 0,
-        "records": 24
-      },
-      {
-        "createdFrom": "236-hesabno-shared-dom-observer.js",
-        "target": "HTML",
-        "options": {
-          "attributes": true,
-          "attributeFilter": [
-            "data-theme"
-          ]
-        },
-        "calls": 0,
-        "bootCalls": 0,
-        "settleCalls": 0,
-        "records": 0
-      },
-      {
-        "createdFrom": "236-hesabno-shared-dom-observer.js",
-        "target": "BODY.bg-stone-900.text-stone-100.antialiased",
-        "options": {
-          "childList": true,
-          "subtree": true,
-          "characterData": true
         },
         "calls": 7,
         "bootCalls": 7,
@@ -548,63 +520,16 @@
       },
       {
         "createdFrom": "236-hesabno-shared-dom-observer.js",
-        "target": "BODY.bg-stone-900.text-stone-100.antialiased",
-        "options": {
-          "childList": true,
-          "subtree": true,
-          "characterData": true,
-          "attributes": true,
-          "attributeFilter": [
-            "class"
-          ]
-        },
-        "calls": 16,
-        "bootCalls": 16,
-        "settleCalls": 0,
-        "records": 177
-      },
-      {
-        "createdFrom": "236-hesabno-shared-dom-observer.js",
         "target": "#document",
         "options": {
           "childList": true,
-          "characterData": true,
-          "subtree": true
+          "subtree": true,
+          "characterData": true
         },
         "calls": 12,
         "bootCalls": 12,
         "settleCalls": 0,
         "records": 34
-      },
-      {
-        "createdFrom": "236-hesabno-shared-dom-observer.js",
-        "target": "BODY.bg-stone-900.text-stone-100.antialiased",
-        "options": {
-          "childList": true,
-          "attributes": true,
-          "attributeFilter": [
-            "class",
-            "style",
-            "hidden"
-          ],
-          "subtree": true
-        },
-        "calls": 21,
-        "bootCalls": 21,
-        "settleCalls": 0,
-        "records": 634
-      },
-      {
-        "createdFrom": "236-hesabno-shared-dom-observer.js",
-        "target": "HTML",
-        "options": {
-          "childList": true,
-          "subtree": true
-        },
-        "calls": 8,
-        "bootCalls": 8,
-        "settleCalls": 0,
-        "records": 29
       },
       {
         "createdFrom": "208-hesabno-home-canceled-check-filter.js",
@@ -618,43 +543,6 @@
         "bootCalls": 7,
         "settleCalls": 0,
         "records": 24
-      },
-      {
-        "createdFrom": "236-hesabno-shared-dom-observer.js",
-        "target": "HTML",
-        "options": {
-          "childList": true,
-          "subtree": true,
-          "attributes": true,
-          "attributeOldValue": true,
-          "attributeFilter": [
-            "data-theme",
-            "class"
-          ]
-        },
-        "calls": 17,
-        "bootCalls": 17,
-        "settleCalls": 0,
-        "records": 182
-      },
-      {
-        "createdFrom": "236-hesabno-shared-dom-observer.js",
-        "target": "BODY.bg-stone-900.text-stone-100.antialiased",
-        "options": {
-          "childList": true,
-          "subtree": true,
-          "characterData": true,
-          "attributes": true,
-          "attributeFilter": [
-            "class",
-            "title",
-            "data-theme"
-          ]
-        },
-        "calls": 15,
-        "bootCalls": 15,
-        "settleCalls": 0,
-        "records": 172
       },
       {
         "createdFrom": "214-hesabno-numeric-keyboard.js",
@@ -672,10 +560,10 @@
             "dir"
           ]
         },
-        "calls": 11,
-        "bootCalls": 11,
+        "calls": 10,
+        "bootCalls": 10,
         "settleCalls": 0,
-        "records": 34
+        "records": 38
       },
       {
         "createdFrom": "225-hesabno-colorful-keypad.js",
@@ -693,18 +581,18 @@
     "duplicatedTargets": [
       [
         "BODY.bg-stone-900.text-stone-100.antialiased::{\"childList\":true,\"subtree\":true}",
-        10
+        9
       ],
       [
         "HTML::{\"childList\":true,\"subtree\":true}",
-        3
-      ],
-      [
-        "BODY.bg-stone-900.text-stone-100.antialiased::{\"childList\":true,\"subtree\":true,\"characterData\":true}",
-        3
+        2
       ],
       [
         "DIV#root::{\"childList\":true,\"subtree\":true}",
+        2
+      ],
+      [
+        "BODY.bg-stone-900.text-stone-100.antialiased::{\"childList\":true,\"subtree\":true,\"characterData\":true}",
         2
       ]
     ]

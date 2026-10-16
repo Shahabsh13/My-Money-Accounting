@@ -68,18 +68,21 @@ test('identical target and options share a single real observer', async (t) => {
   assert.deepEqual(calls, [...Array(25).keys()], 'همه‌ی ثبت‌کننده‌ها به ترتیب ثبت صدا زده می‌شوند');
 });
 
-test('key order and attributeFilter order do not split the shared observer', async (t) => {
+test('one observer per target, regardless of how many option profiles register', async (t) => {
   if (!JSDOM) return t.skip('jsdom در دسترس نیست');
   const { window, created, registry } = createHarness();
+  /* نسخه ۲: گزینه‌ها در یک observer مشترک گشاد می‌شوند و رخدادها برای هر ثبت فیلتر می‌شوند */
   registry.watch(window.document.body, { childList: true, subtree: true }, () => {});
   registry.watch(window.document.body, { subtree: true, childList: true }, () => {});
   registry.watch(window.document.body, { attributes: true, attributeFilter: ['class', 'data-x'] }, () => {});
   registry.watch(window.document.body, { attributes: true, attributeFilter: ['data-x', 'class'] }, () => {});
-  assert.equal(created.length, 2, 'دو پروفایل گزینه‌ها = دو observer');
+  assert.equal(created.length, 1, 'چهار پروفایل روی یک هدف = یک observer');
   assert.equal(registry.stats().handlers, 4);
+  assert.ok(registry.stats().widened >= 1, 'گشادکردن گزینه‌ها باید ثبت شود');
+  assert.equal(registry.stats().activeObservers, 1);
 });
 
-test('every handler of a shared observer receives the same records', async (t) => {
+test('every matching handler receives the same batch content', async (t) => {
   if (!JSDOM) return t.skip('jsdom در دسترس نیست');
   const { window, registry } = createHarness();
   const received = [];
@@ -88,7 +91,8 @@ test('every handler of a shared observer receives the same records', async (t) =
   addNode(window);
   await tick();
   assert.equal(received.length, 2);
-  assert.equal(received[0][1], received[1][1], 'فهرست رخدادها باید همان شیء مشترک باشد');
+  const summarize = (records) => records.map((record) => `${record.type}:${record.target === window.document.body ? 'body' : 'other'}`);
+  assert.deepEqual(summarize(received[0][1]), summarize(received[1][1]), 'محتوای دسته‌ی تحویلی برای هر دو ثبت یکسان است');
   assert.ok(received[0][1].length >= 1);
   assert.equal(received[0][1][0].type, 'childList');
 });
