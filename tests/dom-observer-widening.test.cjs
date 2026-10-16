@@ -273,10 +273,75 @@ test('registry version and API surface are in place', (t) => {
   if (!JSDOM) return t.skip('jsdom در دسترس نیست');
   const harness = createHarness();
   try {
-    assert.equal(harness.window.__hesabnoDom.version, 2);
+    assert.equal(harness.window.__hesabnoDom.version, 3);
     assert.equal(typeof harness.window.__hesabnoDom.watch, 'function');
     const invalid = harness.window.__hesabnoDom.watch(null, { childList: true }, () => {});
     assert.equal(invalid.active, false, 'هدف نامعتبر نباید ثبت شود');
     assert.equal(harness.stats().observers, 0);
+  } finally { harness.disconnectAll(); }
+});
+
+test('two structurally identical nodes do not share an observer', async (t) => {
+  if (!JSDOM) return t.skip('jsdom در دسترس نیست');
+  const harness = createHarness();
+  try {
+    /* دو <main> هم‌نام: نام گره یکسان است، ولی هدف دو ثبت متفاوت است */
+    const first = harness.document.createElement('main');
+    const second = harness.document.createElement('main');
+    harness.body.appendChild(first);
+    harness.body.appendChild(second);
+    await harness.settle();
+
+    const seen = { first: [], second: [] };
+    harness.window.__hesabnoDom.watch(first, { childList: true, subtree: true }, (records) => seen.first.push(canonical(records, harness.body)));
+    harness.window.__hesabnoDom.watch(second, { childList: true, subtree: true }, (records) => seen.second.push(canonical(records, harness.body)));
+    assert.equal(harness.stats().activeObservers, 2, 'هر گره observer خودش را دارد');
+    await harness.settle();
+
+    first.appendChild(harness.document.createElement('b'));
+    await harness.settle();
+    assert.equal(seen.first.length, 1);
+    assert.equal(seen.second.length, 0, 'گره دوم نباید رخداد گره اول را بگیرد');
+
+    second.appendChild(harness.document.createElement('i'));
+    await harness.settle();
+    assert.equal(seen.first.length, 1);
+    assert.equal(seen.second.length, 1);
+    assert.match(seen.second[0], /second|main/, 'رخداد گزارش‌شده مربوط به گره دوم است');
+  } finally { harness.disconnectAll(); }
+});
+
+test('facade.observe() after disconnect re-registers in the original order', async (t) => {
+  if (!JSDOM) return t.skip('jsdom در دسترس نیست');
+  const harness = createHarness();
+  try {
+    const order = [];
+    const first = harness.watchShared('first', harness.body, { childList: true, subtree: true });
+    harness.watchShared('second', harness.body, { childList: true, subtree: true });
+    harness.logs.shared.first.length = 0;
+    harness.logs.shared.second.length = 0;
+    harness.logs.independent.first = [];
+    harness.logs.independent.second = [];
+    await harness.settle();
+
+    first.disconnect();
+    const card = harness.rootNode.querySelector('.card');
+    card.appendChild(harness.document.createElement('em'));
+    await harness.settle();
+    assert.equal(harness.logs.shared.first.length, 0);
+    assert.equal(harness.logs.shared.second.length, 1);
+
+    /* دوباره وصل‌کردن (الگوی ۰۹۰): باید همان‌جا در ترتیب اجرا بماند */
+    first.observe(harness.body, { childList: true, subtree: true });
+    await harness.settle();
+    const marker = harness.document.createElement('u');
+    card.appendChild(marker);
+    await harness.settle();
+    assert.equal(harness.logs.shared.first.length, 1, 'پس از observe دوباره رخداد می‌گیرد');
+    assert.equal(harness.logs.shared.second.length, 2);
+    assert.equal(harness.stats().handlers, 2);
+
+    order.push(harness.logs.shared.first.length, harness.logs.shared.second.length);
+    assert.deepEqual(order, [1, 2]);
   } finally { harness.disconnectAll(); }
 });

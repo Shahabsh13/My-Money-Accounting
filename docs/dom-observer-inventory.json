@@ -1,24 +1,16 @@
 {
   "root": "/home/user/My-Money-Accounting",
-  "at": "2026-10-16T20:40:43.512Z",
+  "at": "2026-10-16T20:52:07.142Z",
   "static": {
     "filesScanned": 136,
-    "observers": 20,
+    "observers": 17,
     "byFile": [
       [
         "067-inline.js",
         2
       ],
       [
-        "069-hesabno-bank-usage-enhanced.js",
-        1
-      ],
-      [
         "076-hesabno-inline-check-alert-options-script.js",
-        1
-      ],
-      [
-        "090-hesabno-fixed-dashboard.js",
         1
       ],
       [
@@ -27,10 +19,6 @@
       ],
       [
         "110-hesabno-check-entry-policy.js",
-        1
-      ],
-      [
-        "114-hesabno-loan-manual-installments.js",
         1
       ],
       [
@@ -102,27 +90,9 @@
         "requestAnimationFrameInside": false
       },
       {
-        "file": "069-hesabno-bank-usage-enhanced.js",
-        "callbackBytes": 13,
-        "target": "document.body",
-        "options": {},
-        "disconnectCall": false,
-        "setTimeoutInside": false,
-        "requestAnimationFrameInside": false
-      },
-      {
         "file": "076-hesabno-inline-check-alert-options-script.js",
         "callbackBytes": 7,
         "target": null,
-        "options": {},
-        "disconnectCall": false,
-        "setTimeoutInside": false,
-        "requestAnimationFrameInside": false
-      },
-      {
-        "file": "090-hesabno-fixed-dashboard.js",
-        "callbackBytes": 26,
-        "target": "document.body",
         "options": {},
         "disconnectCall": false,
         "setTimeoutInside": false,
@@ -141,15 +111,6 @@
         "file": "110-hesabno-check-entry-policy.js",
         "callbackBytes": 14,
         "target": null,
-        "options": {},
-        "disconnectCall": false,
-        "setTimeoutInside": false,
-        "requestAnimationFrameInside": false
-      },
-      {
-        "file": "114-hesabno-loan-manual-installments.js",
-        "callbackBytes": 39,
-        "target": "main",
         "options": {},
         "disconnectCall": false,
         "setTimeoutInside": false,
@@ -266,12 +227,12 @@
     ]
   },
   "runtime": {
-    "observersCreated": 22,
-    "totalCalls": 249,
-    "bootCalls": 249,
+    "observersCreated": 20,
+    "totalCalls": 222,
+    "bootCalls": 222,
     "settleCalls": 0,
-    "totalRecords": 1358,
-    "settleMs": 5003,
+    "totalRecords": 1331,
+    "settleMs": 5001,
     "errors": [],
     "observers": [
       {
@@ -288,10 +249,10 @@
             "data-theme"
           ]
         },
-        "calls": 41,
-        "bootCalls": 41,
+        "calls": 35,
+        "bootCalls": 35,
         "settleCalls": 0,
-        "records": 206
+        "records": 213
       },
       {
         "createdFrom": "067-inline.js",
@@ -300,8 +261,8 @@
           "childList": true,
           "subtree": true
         },
-        "calls": 29,
-        "bootCalls": 29,
+        "calls": 28,
+        "bootCalls": 28,
         "settleCalls": 0,
         "records": 53
       },
@@ -312,22 +273,10 @@
           "childList": true,
           "subtree": true
         },
-        "calls": 29,
-        "bootCalls": 29,
+        "calls": 28,
+        "bootCalls": 28,
         "settleCalls": 0,
         "records": 53
-      },
-      {
-        "createdFrom": "069-hesabno-bank-usage-enhanced.js",
-        "target": "BODY.bg-stone-900.text-stone-100.antialiased",
-        "options": {
-          "childList": true,
-          "subtree": true
-        },
-        "calls": 7,
-        "bootCalls": 7,
-        "settleCalls": 0,
-        "records": 17
       },
       {
         "createdFrom": "236-hesabno-shared-dom-observer.js",
@@ -345,10 +294,10 @@
             "title"
           ]
         },
-        "calls": 24,
-        "bootCalls": 24,
+        "calls": 18,
+        "bootCalls": 18,
         "settleCalls": 0,
-        "records": 633
+        "records": 641
       },
       {
         "createdFrom": "236-hesabno-shared-dom-observer.js",
@@ -373,18 +322,6 @@
         "bootCalls": 5,
         "settleCalls": 0,
         "records": 15
-      },
-      {
-        "createdFrom": "090-hesabno-fixed-dashboard.js",
-        "target": "BODY.bg-stone-900.text-stone-100.antialiased",
-        "options": {
-          "childList": true,
-          "subtree": true
-        },
-        "calls": 6,
-        "bootCalls": 6,
-        "settleCalls": 0,
-        "records": 19
       },
       {
         "createdFrom": "096-hesabno-check-form-fix.js",
@@ -563,7 +500,7 @@
         "calls": 10,
         "bootCalls": 10,
         "settleCalls": 0,
-        "records": 38
+        "records": 32
       },
       {
         "createdFrom": "225-hesabno-colorful-keypad.js",
@@ -581,7 +518,7 @@
     "duplicatedTargets": [
       [
         "BODY.bg-stone-900.text-stone-100.antialiased::{\"childList\":true,\"subtree\":true}",
-        9
+        7
       ],
       [
         "HTML::{\"childList\":true,\"subtree\":true}",

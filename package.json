@@ -15,7 +15,8 @@
     "css:bundles:check": "node tools/css/build-bundles.cjs --verify",
     "bench:observers": "node tools/bench/observer-inventory.cjs",
     "bench:dom": "node tools/bench/dom-equivalence.cjs",
-    "observers:dry": "node tools/js/migrate-dom-observers.cjs"
+    "observers:dry": "node tools/js/migrate-dom-observers.cjs",
+    "bench:live": "node tools/bench/live-regression-probe.cjs"
   },
   "keywords": [],
   "author": "",

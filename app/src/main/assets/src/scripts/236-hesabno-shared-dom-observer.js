@@ -31,7 +31,7 @@
  */
 (function () {
   var existing = window.__hesabnoDom;
-  if (existing && existing.version >= 2 && typeof existing.watch === "function") return;
+  if (existing && existing.version >= 3 && typeof existing.watch === "function") return;
 
   var entries = Object.create(null);
   var counters = {
@@ -172,8 +172,19 @@
     entry.widenedOnce = true;
   };
 
+  /* کلید = شناسه‌ی یکتای خودِ گره (WeakMap)، نه نام آن. دو عنصر هم‌نام — مثل دو <main> که در
+     گذرهای برنامه ساخته و حذف می‌شوند — نباید observer مشترک بگیرند، وگرنه ثبت‌کننده‌ی دوم
+     رخدادهای گره اشتباه را می‌گرفت و رخدادهای گره خودش را از دست می‌داد. */
+  var nodeIds = new WeakMap();
+  var nextNodeId = 0;
+  var keyOf = function (target) {
+    var id = nodeIds.get(target);
+    if (!id) { nextNodeId += 1; id = nextNodeId; nodeIds.set(target, id); }
+    return id + "::" + describeTarget(target);
+  };
+
   var entryFor = function (target) {
-    var key = describeTarget(target) + "::" + (target && target.nodeType);
+    var key = keyOf(target);
     var entry = entries[key];
     if (entry) return entry;
     entry = entries[key] = { key: key, target: target, handlers: [], observer: null, signature: null, widenedOnce: false };
@@ -186,7 +197,7 @@
   var watch = function (target, options, handler) {
     if (typeof handler !== "function" || !target || typeof target.nodeType !== "number") return noop;
     var entry = entryFor(target);
-    var registration = { handler: handler, matcher: matcherOf(options), facade: null };
+    var registration = { handler: handler, matcher: matcherOf(options), facade: null, position: entry.handlers.length };
     registration.facade = {
       disconnect: function () {
         var index = entry.handlers.indexOf(registration);
@@ -203,6 +214,35 @@
         }
       },
       takeRecords: function () { return entry.observer.takeRecords(); },
+      /* الگوی «disconnect() و بعد observe() دوباره» که در چند اسکریپت وجود دارد:
+         ثبت قبلی را (در همان جای ترتیب اجرا) برمی‌گرداند یا به هدف جدید منتقل می‌کند. */
+      observe: function (nextTarget, nextOptions) {
+        if (!nextTarget || typeof nextTarget.nodeType !== "number") return;
+        registration.matcher = matcherOf(nextOptions);
+        if (nextTarget === entry.target) {
+          if (entry.handlers.indexOf(registration) === -1) {
+            entry.handlers.splice(registration.position, 0, registration);
+            counters.handlers += 1;   /* disconnect قبلی این ثبت را از شمارش کم کرده بود */
+          }
+          registration.facade.active = true;
+          widenIfNeeded(entry);
+          return;
+        }
+        var previousIndex = entry.handlers.indexOf(registration);
+        if (previousIndex > -1) entry.handlers.splice(previousIndex, 1);
+        if (entry.handlers.length === 0 && previousIndex > -1) {
+          try { entry.observer.disconnect(); } catch (error) {}
+          delete entries[entry.key];
+          counters.active -= 1;
+        }
+        var nextEntry = entryFor(nextTarget);
+        registration.position = nextEntry.handlers.length;
+        nextEntry.handlers.push(registration);
+        entry = nextEntry;
+        registration.facade.active = true;
+        registration.facade.target = describeTarget(nextTarget);
+        widenIfNeeded(entry);
+      },
       active: true,
       target: describeTarget(target),
     };
@@ -213,7 +253,7 @@
   };
 
   window.__hesabnoDom = {
-    version: 2,
+    version: 3,
     watch: watch,
     stats: function () {
       return {
