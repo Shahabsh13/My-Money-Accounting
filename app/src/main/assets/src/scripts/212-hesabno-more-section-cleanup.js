@@ -43,5 +43,5 @@
   run();
   document.addEventListener('click', function () { [0, 120, 400, 1000].forEach(function (d) { setTimeout(run, d); }); }, true);
   [300, 900, 2000].forEach(function (d) { setTimeout(run, d); });
-  if (document.body) new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true, characterData: true });
+  if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true, characterData: true }, schedule);
 })();

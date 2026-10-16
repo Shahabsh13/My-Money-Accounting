@@ -196,7 +196,10 @@
     var old = strip(r.oldValue);
     return cur === old;
   }
-  new MutationObserver(function (records) {
+  window.__hesabnoDom.watch(document.documentElement, {
+    childList: true, subtree: true, attributes: true, attributeOldValue: true,
+    attributeFilter: ["data-theme", "class"]
+  }, function (records) {
     var themeTouched = false, relevant = false;
     records.forEach(function (r) {
       if (r.type === "attributes" && r.attributeName === "data-theme") themeTouched = true;
@@ -205,9 +208,6 @@
     });
     if (themeTouched) themeChanged();
     else if (relevant) schedule();
-  }).observe(document.documentElement, {
-    childList: true, subtree: true, attributes: true, attributeOldValue: true,
-    attributeFilter: ["data-theme", "class"]
   });
   if (!document.getElementById("hn-theme-instant-style")) {
     var st = document.createElement("style");

@@ -62,5 +62,5 @@
       if (!text.includes("ثبت") && text !== "وام و تسهیلات" && text !== "خرید و اقساط") return;
       [80, 250, 500].forEach(function (delay) { window.setTimeout(sync, delay); });
     }, true);
-    if (document.body) new MutationObserver(schedule).observe(document.body, { childList: true, attributes: true, attributeFilter: ["class", "style", "hidden"], subtree: true });
+    if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, attributes: true, attributeFilter: ["class", "style", "hidden"], subtree: true }, schedule);
   })();

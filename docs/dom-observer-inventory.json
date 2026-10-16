@@ -1,0 +1,712 @@
+{
+  "root": "/home/user/My-Money-Accounting",
+  "at": "2026-10-16T20:28:30.725Z",
+  "static": {
+    "filesScanned": 136,
+    "observers": 20,
+    "byFile": [
+      [
+        "067-inline.js",
+        2
+      ],
+      [
+        "069-hesabno-bank-usage-enhanced.js",
+        1
+      ],
+      [
+        "076-hesabno-inline-check-alert-options-script.js",
+        1
+      ],
+      [
+        "090-hesabno-fixed-dashboard.js",
+        1
+      ],
+      [
+        "096-hesabno-check-form-fix.js",
+        1
+      ],
+      [
+        "110-hesabno-check-entry-policy.js",
+        1
+      ],
+      [
+        "114-hesabno-loan-manual-installments.js",
+        1
+      ],
+      [
+        "115-hesabno-check-status-and-due-date-fix.js",
+        1
+      ],
+      [
+        "135-hesabno-check-status-actions.js",
+        1
+      ],
+      [
+        "136-hesabno-check-fee-policy.js",
+        1
+      ],
+      [
+        "138-hesabno-check-card-status-colors.js",
+        1
+      ],
+      [
+        "140-hesabno-check-card-layout.js",
+        1
+      ],
+      [
+        "142-hesabno-check-settlement-date.js",
+        1
+      ],
+      [
+        "143-hesabno-check-status-lock.js",
+        1
+      ],
+      [
+        "146-hesabno-check-entry-layout.js",
+        1
+      ],
+      [
+        "208-hesabno-home-canceled-check-filter.js",
+        1
+      ],
+      [
+        "214-hesabno-numeric-keyboard.js",
+        1
+      ],
+      [
+        "225-hesabno-colorful-keypad.js",
+        1
+      ],
+      [
+        "236-hesabno-shared-dom-observer.js",
+        1
+      ]
+    ],
+    "findings": [
+      {
+        "file": "067-inline.js",
+        "callbackBytes": 125,
+        "target": null,
+        "options": {},
+        "disconnectCall": false,
+        "setTimeoutInside": false,
+        "requestAnimationFrameInside": false
+      },
+      {
+        "file": "067-inline.js",
+        "callbackBytes": 311,
+        "target": "document.documentElement",
+        "options": {},
+        "disconnectCall": false,
+        "setTimeoutInside": false,
+        "requestAnimationFrameInside": false
+      },
+      {
+        "file": "069-hesabno-bank-usage-enhanced.js",
+        "callbackBytes": 13,
+        "target": "document.body",
+        "options": {},
+        "disconnectCall": false,
+        "setTimeoutInside": false,
+        "requestAnimationFrameInside": false
+      },
+      {
+        "file": "076-hesabno-inline-check-alert-options-script.js",
+        "callbackBytes": 7,
+        "target": null,
+        "options": {},
+        "disconnectCall": false,
+        "setTimeoutInside": false,
+        "requestAnimationFrameInside": false
+      },
+      {
+        "file": "090-hesabno-fixed-dashboard.js",
+        "callbackBytes": 26,
+        "target": "document.body",
+        "options": {},
+        "disconnectCall": false,
+        "setTimeoutInside": false,
+        "requestAnimationFrameInside": false
+      },
+      {
+        "file": "096-hesabno-check-form-fix.js",
+        "callbackBytes": 9,
+        "target": null,
+        "options": {},
+        "disconnectCall": false,
+        "setTimeoutInside": false,
+        "requestAnimationFrameInside": false
+      },
+      {
+        "file": "110-hesabno-check-entry-policy.js",
+        "callbackBytes": 14,
+        "target": null,
+        "options": {},
+        "disconnectCall": false,
+        "setTimeoutInside": false,
+        "requestAnimationFrameInside": false
+      },
+      {
+        "file": "114-hesabno-loan-manual-installments.js",
+        "callbackBytes": 39,
+        "target": "main",
+        "options": {},
+        "disconnectCall": false,
+        "setTimeoutInside": false,
+        "requestAnimationFrameInside": false
+      },
+      {
+        "file": "115-hesabno-check-status-and-due-date-fix.js",
+        "callbackBytes": 10,
+        "target": null,
+        "options": {},
+        "disconnectCall": false,
+        "setTimeoutInside": false,
+        "requestAnimationFrameInside": false
+      },
+      {
+        "file": "135-hesabno-check-status-actions.js",
+        "callbackBytes": 6,
+        "target": null,
+        "options": {},
+        "disconnectCall": false,
+        "setTimeoutInside": false,
+        "requestAnimationFrameInside": false
+      },
+      {
+        "file": "136-hesabno-check-fee-policy.js",
+        "callbackBytes": 10,
+        "target": null,
+        "options": {},
+        "disconnectCall": false,
+        "setTimeoutInside": false,
+        "requestAnimationFrameInside": false
+      },
+      {
+        "file": "138-hesabno-check-card-status-colors.js",
+        "callbackBytes": 10,
+        "target": null,
+        "options": {},
+        "disconnectCall": false,
+        "setTimeoutInside": false,
+        "requestAnimationFrameInside": false
+      },
+      {
+        "file": "140-hesabno-check-card-layout.js",
+        "callbackBytes": 10,
+        "target": null,
+        "options": {},
+        "disconnectCall": false,
+        "setTimeoutInside": false,
+        "requestAnimationFrameInside": false
+      },
+      {
+        "file": "142-hesabno-check-settlement-date.js",
+        "callbackBytes": 10,
+        "target": null,
+        "options": {},
+        "disconnectCall": false,
+        "setTimeoutInside": false,
+        "requestAnimationFrameInside": false
+      },
+      {
+        "file": "143-hesabno-check-status-lock.js",
+        "callbackBytes": 10,
+        "target": null,
+        "options": {},
+        "disconnectCall": false,
+        "setTimeoutInside": false,
+        "requestAnimationFrameInside": false
+      },
+      {
+        "file": "146-hesabno-check-entry-layout.js",
+        "callbackBytes": 10,
+        "target": null,
+        "options": {},
+        "disconnectCall": false,
+        "setTimeoutInside": false,
+        "requestAnimationFrameInside": false
+      },
+      {
+        "file": "208-hesabno-home-canceled-check-filter.js",
+        "callbackBytes": 10,
+        "target": null,
+        "options": {},
+        "disconnectCall": false,
+        "setTimeoutInside": false,
+        "requestAnimationFrameInside": false
+      },
+      {
+        "file": "214-hesabno-numeric-keyboard.js",
+        "callbackBytes": 15,
+        "target": null,
+        "options": {},
+        "disconnectCall": false,
+        "setTimeoutInside": false,
+        "requestAnimationFrameInside": false
+      },
+      {
+        "file": "225-hesabno-colorful-keypad.js",
+        "callbackBytes": 312,
+        "target": "document.documentElement",
+        "options": {},
+        "disconnectCall": true,
+        "setTimeoutInside": false,
+        "requestAnimationFrameInside": true
+      },
+      {
+        "file": "236-hesabno-shared-dom-observer.js",
+        "callbackBytes": 547,
+        "target": "target, options",
+        "options": {},
+        "disconnectCall": true,
+        "setTimeoutInside": false,
+        "requestAnimationFrameInside": false
+      }
+    ]
+  },
+  "runtime": {
+    "observersCreated": 30,
+    "totalCalls": 322,
+    "bootCalls": 322,
+    "settleCalls": 0,
+    "totalRecords": 1987,
+    "settleMs": 5002,
+    "errors": [],
+    "observers": [
+      {
+        "createdFrom": "236-hesabno-shared-dom-observer.js",
+        "target": "HTML",
+        "options": {
+          "childList": true,
+          "characterData": true,
+          "subtree": true
+        },
+        "calls": 29,
+        "bootCalls": 29,
+        "settleCalls": 0,
+        "records": 53
+      },
+      {
+        "createdFrom": "067-inline.js",
+        "target": "#document",
+        "options": {
+          "childList": true,
+          "subtree": true
+        },
+        "calls": 29,
+        "bootCalls": 29,
+        "settleCalls": 0,
+        "records": 53
+      },
+      {
+        "createdFrom": "067-inline.js",
+        "target": "HTML",
+        "options": {
+          "childList": true,
+          "subtree": true
+        },
+        "calls": 29,
+        "bootCalls": 29,
+        "settleCalls": 0,
+        "records": 53
+      },
+      {
+        "createdFrom": "069-hesabno-bank-usage-enhanced.js",
+        "target": "BODY.bg-stone-900.text-stone-100.antialiased",
+        "options": {
+          "childList": true,
+          "subtree": true
+        },
+        "calls": 7,
+        "bootCalls": 7,
+        "settleCalls": 0,
+        "records": 17
+      },
+      {
+        "createdFrom": "236-hesabno-shared-dom-observer.js",
+        "target": "BODY.bg-stone-900.text-stone-100.antialiased",
+        "options": {
+          "childList": true,
+          "subtree": true
+        },
+        "calls": 8,
+        "bootCalls": 8,
+        "settleCalls": 0,
+        "records": 24
+      },
+      {
+        "createdFrom": "236-hesabno-shared-dom-observer.js",
+        "target": "BODY.bg-stone-900.text-stone-100.antialiased",
+        "options": {
+          "childList": true,
+          "subtree": true,
+          "attributes": true,
+          "attributeFilter": [
+            "class"
+          ]
+        },
+        "calls": 16,
+        "bootCalls": 16,
+        "settleCalls": 0,
+        "records": 177
+      },
+      {
+        "createdFrom": "236-hesabno-shared-dom-observer.js",
+        "target": "DIV#root",
+        "options": {
+          "childList": true,
+          "subtree": true
+        },
+        "calls": 5,
+        "bootCalls": 5,
+        "settleCalls": 0,
+        "records": 15
+      },
+      {
+        "createdFrom": "076-hesabno-inline-check-alert-options-script.js",
+        "target": "DIV#root",
+        "options": {
+          "childList": true,
+          "subtree": true
+        },
+        "calls": 5,
+        "bootCalls": 5,
+        "settleCalls": 0,
+        "records": 15
+      },
+      {
+        "createdFrom": "090-hesabno-fixed-dashboard.js",
+        "target": "BODY.bg-stone-900.text-stone-100.antialiased",
+        "options": {
+          "childList": true,
+          "subtree": true
+        },
+        "calls": 6,
+        "bootCalls": 6,
+        "settleCalls": 0,
+        "records": 19
+      },
+      {
+        "createdFrom": "096-hesabno-check-form-fix.js",
+        "target": "BODY.bg-stone-900.text-stone-100.antialiased",
+        "options": {
+          "childList": true,
+          "subtree": true
+        },
+        "calls": 7,
+        "bootCalls": 7,
+        "settleCalls": 0,
+        "records": 24
+      },
+      {
+        "createdFrom": "236-hesabno-shared-dom-observer.js",
+        "target": "HTML",
+        "options": {
+          "attributes": true,
+          "attributeFilter": [
+            "data-theme"
+          ]
+        },
+        "calls": 0,
+        "bootCalls": 0,
+        "settleCalls": 0,
+        "records": 0
+      },
+      {
+        "createdFrom": "236-hesabno-shared-dom-observer.js",
+        "target": "BODY.bg-stone-900.text-stone-100.antialiased",
+        "options": {
+          "childList": true,
+          "subtree": true,
+          "characterData": true
+        },
+        "calls": 7,
+        "bootCalls": 7,
+        "settleCalls": 0,
+        "records": 24
+      },
+      {
+        "createdFrom": "110-hesabno-check-entry-policy.js",
+        "target": "BODY.bg-stone-900.text-stone-100.antialiased",
+        "options": {
+          "childList": true,
+          "subtree": true
+        },
+        "calls": 7,
+        "bootCalls": 7,
+        "settleCalls": 0,
+        "records": 24
+      },
+      {
+        "createdFrom": "115-hesabno-check-status-and-due-date-fix.js",
+        "target": "BODY.bg-stone-900.text-stone-100.antialiased",
+        "options": {
+          "childList": true,
+          "subtree": true
+        },
+        "calls": 7,
+        "bootCalls": 7,
+        "settleCalls": 0,
+        "records": 24
+      },
+      {
+        "createdFrom": "135-hesabno-check-status-actions.js",
+        "target": "BODY.bg-stone-900.text-stone-100.antialiased",
+        "options": {
+          "childList": true,
+          "subtree": true
+        },
+        "calls": 7,
+        "bootCalls": 7,
+        "settleCalls": 0,
+        "records": 24
+      },
+      {
+        "createdFrom": "136-hesabno-check-fee-policy.js",
+        "target": "BODY.bg-stone-900.text-stone-100.antialiased",
+        "options": {
+          "childList": true,
+          "subtree": true
+        },
+        "calls": 7,
+        "bootCalls": 7,
+        "settleCalls": 0,
+        "records": 24
+      },
+      {
+        "createdFrom": "138-hesabno-check-card-status-colors.js",
+        "target": "BODY.bg-stone-900.text-stone-100.antialiased",
+        "options": {
+          "childList": true,
+          "subtree": true,
+          "characterData": true
+        },
+        "calls": 7,
+        "bootCalls": 7,
+        "settleCalls": 0,
+        "records": 24
+      },
+      {
+        "createdFrom": "140-hesabno-check-card-layout.js",
+        "target": "BODY.bg-stone-900.text-stone-100.antialiased",
+        "options": {
+          "childList": true,
+          "subtree": true,
+          "characterData": true,
+          "attributes": true,
+          "attributeFilter": [
+            "data-hesabno-check-status-card"
+          ]
+        },
+        "calls": 7,
+        "bootCalls": 7,
+        "settleCalls": 0,
+        "records": 24
+      },
+      {
+        "createdFrom": "142-hesabno-check-settlement-date.js",
+        "target": "BODY.bg-stone-900.text-stone-100.antialiased",
+        "options": {
+          "childList": true,
+          "subtree": true,
+          "characterData": true,
+          "attributes": true,
+          "attributeFilter": [
+            "data-hesabno-check-number",
+            "data-hesabno-check-card-layout"
+          ]
+        },
+        "calls": 7,
+        "bootCalls": 7,
+        "settleCalls": 0,
+        "records": 24
+      },
+      {
+        "createdFrom": "143-hesabno-check-status-lock.js",
+        "target": "BODY.bg-stone-900.text-stone-100.antialiased",
+        "options": {
+          "childList": true,
+          "subtree": true
+        },
+        "calls": 7,
+        "bootCalls": 7,
+        "settleCalls": 0,
+        "records": 24
+      },
+      {
+        "createdFrom": "146-hesabno-check-entry-layout.js",
+        "target": "BODY.bg-stone-900.text-stone-100.antialiased",
+        "options": {
+          "childList": true,
+          "subtree": true
+        },
+        "calls": 7,
+        "bootCalls": 7,
+        "settleCalls": 0,
+        "records": 24
+      },
+      {
+        "createdFrom": "236-hesabno-shared-dom-observer.js",
+        "target": "BODY.bg-stone-900.text-stone-100.antialiased",
+        "options": {
+          "childList": true,
+          "subtree": true,
+          "characterData": true,
+          "attributes": true,
+          "attributeFilter": [
+            "class"
+          ]
+        },
+        "calls": 16,
+        "bootCalls": 16,
+        "settleCalls": 0,
+        "records": 177
+      },
+      {
+        "createdFrom": "236-hesabno-shared-dom-observer.js",
+        "target": "#document",
+        "options": {
+          "childList": true,
+          "characterData": true,
+          "subtree": true
+        },
+        "calls": 12,
+        "bootCalls": 12,
+        "settleCalls": 0,
+        "records": 34
+      },
+      {
+        "createdFrom": "236-hesabno-shared-dom-observer.js",
+        "target": "BODY.bg-stone-900.text-stone-100.antialiased",
+        "options": {
+          "childList": true,
+          "attributes": true,
+          "attributeFilter": [
+            "class",
+            "style",
+            "hidden"
+          ],
+          "subtree": true
+        },
+        "calls": 21,
+        "bootCalls": 21,
+        "settleCalls": 0,
+        "records": 634
+      },
+      {
+        "createdFrom": "236-hesabno-shared-dom-observer.js",
+        "target": "HTML",
+        "options": {
+          "childList": true,
+          "subtree": true
+        },
+        "calls": 8,
+        "bootCalls": 8,
+        "settleCalls": 0,
+        "records": 29
+      },
+      {
+        "createdFrom": "208-hesabno-home-canceled-check-filter.js",
+        "target": "BODY.bg-stone-900.text-stone-100.antialiased",
+        "options": {
+          "childList": true,
+          "subtree": true,
+          "characterData": true
+        },
+        "calls": 7,
+        "bootCalls": 7,
+        "settleCalls": 0,
+        "records": 24
+      },
+      {
+        "createdFrom": "236-hesabno-shared-dom-observer.js",
+        "target": "HTML",
+        "options": {
+          "childList": true,
+          "subtree": true,
+          "attributes": true,
+          "attributeOldValue": true,
+          "attributeFilter": [
+            "data-theme",
+            "class"
+          ]
+        },
+        "calls": 17,
+        "bootCalls": 17,
+        "settleCalls": 0,
+        "records": 182
+      },
+      {
+        "createdFrom": "236-hesabno-shared-dom-observer.js",
+        "target": "BODY.bg-stone-900.text-stone-100.antialiased",
+        "options": {
+          "childList": true,
+          "subtree": true,
+          "characterData": true,
+          "attributes": true,
+          "attributeFilter": [
+            "class",
+            "title",
+            "data-theme"
+          ]
+        },
+        "calls": 15,
+        "bootCalls": 15,
+        "settleCalls": 0,
+        "records": 172
+      },
+      {
+        "createdFrom": "214-hesabno-numeric-keyboard.js",
+        "target": "BODY.bg-stone-900.text-stone-100.antialiased",
+        "options": {
+          "childList": true,
+          "subtree": true,
+          "attributes": true,
+          "attributeFilter": [
+            "placeholder",
+            "aria-label",
+            "aria-labelledby",
+            "name",
+            "id",
+            "dir"
+          ]
+        },
+        "calls": 11,
+        "bootCalls": 11,
+        "settleCalls": 0,
+        "records": 34
+      },
+      {
+        "createdFrom": "225-hesabno-colorful-keypad.js",
+        "target": "HTML",
+        "options": {
+          "childList": true,
+          "subtree": true
+        },
+        "calls": 4,
+        "bootCalls": 4,
+        "settleCalls": 0,
+        "records": 11
+      }
+    ],
+    "duplicatedTargets": [
+      [
+        "BODY.bg-stone-900.text-stone-100.antialiased::{\"childList\":true,\"subtree\":true}",
+        10
+      ],
+      [
+        "HTML::{\"childList\":true,\"subtree\":true}",
+        3
+      ],
+      [
+        "BODY.bg-stone-900.text-stone-100.antialiased::{\"childList\":true,\"subtree\":true,\"characterData\":true}",
+        3
+      ],
+      [
+        "DIV#root::{\"childList\":true,\"subtree\":true}",
+        2
+      ]
+    ]
+  }
+}

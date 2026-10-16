@@ -1,0 +1,21 @@
+{
+  "root": "/home/user/base-wt",
+  "at": "2026-10-16T20:27:17.336Z",
+  "hash": "acba24d75b9bf73725cf069b03babb94bce02427c7865181cf8d518f4112ed4e",
+  "counts": {
+    "elements": 641,
+    "headScripts": 14,
+    "headStylesheets": 7,
+    "classes": 1876,
+    "dataAttributes": 57,
+    "inlineStyles": 402,
+    "rootHtmlBytes": 77187,
+    "textHash": "b038383ae997e8400f76d103d6f9ffd4781b80bebcd7af01d503ddb7fb3a11b4"
+  },
+  "errors": [],
+  "ignoredClasses": [
+    "hesabno-home-header-enter"
+  ],
+  "strippedClasses": 0,
+  "normalizedStyleOrders": 8
+}

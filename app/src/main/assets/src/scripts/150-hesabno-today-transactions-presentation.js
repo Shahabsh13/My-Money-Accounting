@@ -63,6 +63,6 @@
         Promise.resolve().then(function () { queued = false; sync(); });
       };
       sync();
-      if (document.body) new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true, characterData: true });
+      if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true, characterData: true }, schedule);
       window.addEventListener("storage", schedule);
     })();

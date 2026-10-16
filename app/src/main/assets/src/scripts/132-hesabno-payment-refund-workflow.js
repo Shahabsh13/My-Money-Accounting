@@ -245,7 +245,7 @@
       openModal(button, item, null);
     }, true);
     syncCards();
-    if (document.body) new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true });
+    if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, schedule);
     var resume = "";
     try { resume = sessionStorage.getItem("hesabno:payment-refund-resume") || ""; sessionStorage.removeItem("hesabno:payment-refund-resume"); } catch (error) {}
     if (resume === "transactions") window.setTimeout(function () {

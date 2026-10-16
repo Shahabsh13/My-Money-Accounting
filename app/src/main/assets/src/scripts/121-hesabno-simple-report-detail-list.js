@@ -49,5 +49,5 @@
   };
   var queued = false;
   var schedule = function () { if (queued) return; queued = true; window.setTimeout(function(){queued=false;render();},0); };
-  render(); if (document.body) new MutationObserver(schedule).observe(document.body,{childList:true,subtree:true});
+  render(); if (document.body) window.__hesabnoDom.watch(document.body, {childList:true,subtree:true}, schedule);
 })();

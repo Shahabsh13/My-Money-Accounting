@@ -24,8 +24,7 @@
     main.classList.remove("hesabno-page-enter", "hesabno-content-swap");
     main.classList.add("hesabno-page-open-up");
   };
-  var observer = new MutationObserver(markPageOpen);
-  observer.observe(root, { childList: true, subtree: true });
+  var observer = window.__hesabnoDom.watch(root, { childList: true, subtree: true }, markPageOpen);
   document.addEventListener("click", function (event) {
     var button = event.target && event.target.closest ? event.target.closest("button") : null;
     if (!button || replaying) return;

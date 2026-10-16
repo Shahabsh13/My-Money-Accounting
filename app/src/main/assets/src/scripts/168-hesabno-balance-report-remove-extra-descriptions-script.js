@@ -28,5 +28,5 @@
       frame = requestAnimationFrame(function () { frame = 0; hideDescriptions(); });
     };
     hideDescriptions();
-    if (document.body) new MutationObserver(schedule).observe(document.body, { childList: true, characterData: true, subtree: true });
+    if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, characterData: true, subtree: true }, schedule);
   })();

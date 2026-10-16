@@ -87,5 +87,5 @@
     card.addEventListener("click", open); target.parentElement.insertBefore(card, target.nextSibling);
   };
   addCard();
-  if (document.body) new MutationObserver(addCard).observe(document.body, { childList: true, subtree: true });
+  if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, addCard);
 })();

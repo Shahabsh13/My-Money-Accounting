@@ -76,5 +76,5 @@
       window.setTimeout(function () { pending = false; sync(); }, 0);
     };
     sync();
-    if (document.body) new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true });
+    if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, schedule);
   })();

@@ -121,9 +121,9 @@
     // فقط تغییرات ساختاری (childList) تماشا می‌شود و نه attribute/style؛ وگرنه
     // نوشتن‌های خودِ همین لایه، observer را دوباره صف می‌کرد و یک حلقه‌ی
     // هر-فریمی می‌ساخت (ریشه‌ی مصرف CPU و هنگ‌شدن تست‌ها).
-    new MutationObserver(schedule).observe(document.body, {
+    window.__hesabnoDom.watch(document.body, {
       childList: true,
       subtree: true
-    });
+    }, schedule);
   }
 })();

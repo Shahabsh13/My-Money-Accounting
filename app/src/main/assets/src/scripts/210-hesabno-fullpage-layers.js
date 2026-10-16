@@ -27,6 +27,6 @@
   }
   apply();
   [120, 400, 900].forEach(function (d) { setTimeout(apply, d); });
-  if (document.body) new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true });
+  if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, schedule);
   document.addEventListener('click', function () { setTimeout(apply, 60); setTimeout(apply, 300); }, true);
 })();
