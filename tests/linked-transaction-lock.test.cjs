@@ -118,6 +118,8 @@ test('compound correction action is removed from a compound transaction card', (
   const document = { body: {}, querySelectorAll: selector => selector === 'article[id^="tx-card-"]' ? [article] : [] };
   const window = { __safeGet: key => JSON.stringify(data[key] || []), requestAnimationFrame: fn => fn() };
   class MutationObserver { observe() {} }
+  /* لایه‌ی مشترک observer در برنامه‌ی واقعی پیش از اسکریپت‌های این صفحه بارگذاری می‌شود */
+  vm.runInNewContext(domObserverRegistrySource, { window, MutationObserver, console });
   vm.runInNewContext(correctionScript, { window, document, localStorage: { getItem: key => window.__safeGet(key) }, MutationObserver });
   assert.equal(button.removed, true);
 });

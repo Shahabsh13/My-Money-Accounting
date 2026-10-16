@@ -1,7 +1,7 @@
 {
   "root": "/home/user/My-Money-Accounting",
-  "at": "2026-10-16T20:27:08.319Z",
-  "hash": "acba24d75b9bf73725cf069b03babb94bce02427c7865181cf8d518f4112ed4e",
+  "at": "2026-10-16T20:31:52.718Z",
+  "hash": "4d232c09b0232c84d63af91134a4a3e900aa3b189996ce1255e789294fd7469f",
   "counts": {
     "elements": 641,
     "headScripts": 15,
@@ -10,7 +10,7 @@
     "dataAttributes": 57,
     "inlineStyles": 402,
     "rootHtmlBytes": 77213,
-    "textHash": "b038383ae997e8400f76d103d6f9ffd4781b80bebcd7af01d503ddb7fb3a11b4"
+    "textHash": "f9df6c610af757fa0b8eb20c6770cfb6c435f7e28b1457eba1d657c0a9ddd16c"
   },
   "errors": [],
   "ignoredClasses": [
