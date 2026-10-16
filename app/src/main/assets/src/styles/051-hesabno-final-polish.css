@@ -1,4 +1,4 @@
-.hesabno-more-category-heading { display: block; margin: 16px 4px 7px; padding: 0 !important; color: #82939e; font-size: 10px; font-weight: 900; letter-spacing: .02em; background: transparent !important; border: 0 !important; box-shadow: none !important; }
+.hesabno-more-category-heading { display: block; margin: 16px 4px 7px; padding: 0 !important; color: #82939e; font-size: 10px; font-weight: 900; letter-spacing: normal !important; background: transparent !important; border: 0 !important; box-shadow: none !important; }
 html[data-theme="light"] [class*="divide-y"][class*="divide-stone-"] > .hesabno-more-category-heading,
 html[data-theme="dark"] [class*="divide-y"][class*="divide-stone-"] > .hesabno-more-category-heading { background: transparent !important; border-top: 0 !important; border-bottom: 0 !important; }
 html[data-theme="light"] main div[class*="divide-y"][class*="divide-stone-700/40"] { padding: 0 !important; overflow: visible !important; border: 0 !important; border-radius: 0 !important; background: transparent !important; box-shadow: none !important; }
