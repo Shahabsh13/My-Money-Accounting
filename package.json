@@ -12,7 +12,10 @@
     "bench:idle": "node tools/bench/idle-profile.cjs",
     "css:inventory": "node tools/bench/css-inventory.cjs",
     "css:audit": "node tools/css/css-important-audit.cjs",
-    "css:bundles:check": "node tools/css/build-bundles.cjs --verify"
+    "css:bundles:check": "node tools/css/build-bundles.cjs --verify",
+    "bench:observers": "node tools/bench/observer-inventory.cjs",
+    "bench:dom": "node tools/bench/dom-equivalence.cjs",
+    "observers:dry": "node tools/js/migrate-dom-observers.cjs"
   },
   "keywords": [],
   "author": "",

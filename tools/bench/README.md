@@ -9,7 +9,35 @@ npm run bench          # خروجی JSON روی stdout: node tools/bench/bench.c
 npm run bench:churn    # نرخ تغییرات DOM و فریم‌ها پس از راه‌اندازی
 npm run bench:idle     # پروفایل «آشوب بیکاری»: چه کدی بی‌دلیل فریم/نوشتن ذخیره‌سازی می‌سازد
 npm run css:inventory  # سیاهه‌ی CSS: فایل‌ها، قاعده‌ها، !important، کد مرده (tools/bench/css-inventory.cjs)
+npm run bench:observers # سیاهه‌ی MutationObserverها: ایستا + پویا، شلیک‌ها، خطاها (مرحله ۴)
+npm run bench:dom       # چکیده‌ی متعارف DOM برای اثبات «بی‌تغییر» بودن یک بازآرایی (مرحله ۴)
 ```
+
+## ابزارهای مرحله ۴ (observerها)
+
+```bash
+node tools/bench/observer-inventory.cjs                # JSON روی stdout + خلاصه‌ی فارسی روی stderr
+node tools/bench/observer-inventory.cjs --root=/path/to/other-tree
+node tools/bench/dom-equivalence.cjs --out /tmp/before.json
+node tools/bench/dom-equivalence.cjs --diff /tmp/before.json
+node tools/bench/dom-equivalence.cjs --ignore-class=hesabno-home-header-enter
+```
+
+* `observer-inventory.cjs` — دو لایه اندازه‌گیری: (۱) پویش ایستای همه‌ی اسکریپت‌ها برای
+  `new MutationObserver` با هدف/گزینه/attributeFilter، و (۲) ردیابی پویا با یک زیرکلاس
+  `MutationObserver` که در `beforeParse` تزریق می‌شود (پس observerهای بوت را هم می‌بیند) و
+  شمار فراخوانی/رخداد هر observer را می‌شمارد. اگر بدون `--json` اجرا شود، خلاصه‌ی خوانا می‌دهد.
+* `dom-equivalence.cjs` — چکیده‌ی `<body>` (تگ/id/کلاس‌ها/`data-*`/استایل درون‌خطی/متن هر عنصر) و
+  SHA-256 آن؛ `--diff` خروجی دو اجرا را عنصر‌به‌عنصر مقایسه می‌کند و در تفاوت، کد ۱ می‌دهد.
+  نرمال‌سازی‌های اختیاری و **مستند** آن: `--ignore-class=` برای کلاس‌های انیمیشنی که قاعده‌ی CSS
+  ندارند، و مرتب‌کردن اعلان‌های استایل درون‌خطی تنها وقتی هیچ شورت‌هندی در آن استایل نباشد
+  (تعداد موارد نرمال‌شده در خروجی JSON ثبت می‌شود تا چیزی پنهان نماند).
+* `local-server.cjs` — سرور موقت با ریشه‌ی همان درختی که سنجیده می‌شود. **همه‌ی ابزارها** (bench،
+  churn، idle، inventory، dom-equivalence) از این استفاده می‌کنند؛ پیش از این URL ثابت
+  `127.0.0.1:8080` بود و اگر سرور پیش‌نمایش زنده روی همان پورت بالا بود، ابزار اسکریپت‌ها را از
+  آن سرور می‌گرفت — یعنی می‌شد درخت دیگری را سنجید و نتیجه آلوده شود.
+* `tools/js/migrate-dom-observers.cjs` — ابزار تبدیل (نه ابزار سنجش): حالت خشک پیش‌فرض، `--apply`
+  برای نوشتن، فهرست ممنوعه‌ی نام‌محور (۰۶۷/۲۳۶/چک/کیبورد) و اعتبارسنجی سینتکس پیش از نوشتن.
 
 `css-parser.cjs` تجزیه‌گر مشترک CSS است (قاعده‌ها، اعلان‌ها، `!important` با مکان دقیق، at-rule‌های گروهی،
 وزن سلکتور) و هم `css-inventory.cjs` و هم ابزارهای `tools/css/` از آن استفاده می‌کنند.

@@ -1,12 +1,15 @@
 /* پروفایل «آشوب بیکاری»: چه کدی پس از راه‌اندازی، مدام فریم/نوشتن ذخیره‌سازی می‌سازد؟ */
 const fs = require('fs'); const path = require('path');
 const { JSDOM, VirtualConsole } = require('jsdom');
-const ASSETS = process.argv[2] || path.join(path.resolve(__dirname, '..', '..'), 'app/src/main/assets');
+const { serve } = require('./local-server.cjs');
+const __rootArg = (process.argv.find((value) => value.startsWith('--root=')) || '').split('=')[1];
+const ASSETS = path.join(__rootArg ? path.resolve(__rootArg) : (process.argv[2] && !process.argv[2].startsWith('--') ? path.resolve(process.argv[2]) : path.resolve(__dirname, '..', '..')), 'app/src/main/assets');
 (async () => {
   const vc = new VirtualConsole();
+  const server = await serve(ASSETS);
   const dom = await JSDOM.fromFile(path.join(ASSETS, 'index.html'), {
     runScripts: 'dangerously', resources: 'usable', pretendToBeVisual: true, virtualConsole: vc,
-    url: 'http://127.0.0.1:8080/index.html' });
+    url: server.url + '/index.html' });
   const w = dom.window;
   await new Promise(res => { const iv = setInterval(() => { const r = w.document.getElementById('root'); if (r && r.innerHTML.length > 2000) { clearInterval(iv); res(); } }, 25); });
   

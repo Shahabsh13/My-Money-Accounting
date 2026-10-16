@@ -1,8 +1,11 @@
 const path=require('path');
 const {JSDOM,VirtualConsole}=require('jsdom');
-const ASSETS=path.join(path.resolve(__dirname,'..','..'),'app/src/main/assets');
+const { serve } = require('./local-server.cjs');
+const __rootArg = (process.argv.find((value) => value.startsWith('--root=')) || '').split('=')[1];
+const ASSETS=path.join(__rootArg?path.resolve(__rootArg):path.resolve(__dirname,'..','..'),'app/src/main/assets');
 (async()=>{
-  const dom=await JSDOM.fromFile(path.join(ASSETS,'index.html'),{runScripts:'dangerously',resources:'usable',pretendToBeVisual:true,virtualConsole:new VirtualConsole(),url:'http://127.0.0.1:8080/index.html'});
+  const server=await serve(ASSETS);
+  const dom=await JSDOM.fromFile(path.join(ASSETS,'index.html'),{runScripts:'dangerously',resources:'usable',pretendToBeVisual:true,virtualConsole:new VirtualConsole(),url:server.url+'/index.html'});
   const w=dom.window;
   await new Promise(res=>{const iv=setInterval(()=>{const r=w.document.getElementById('root');if(r&&r.innerHTML.length>2000){clearInterval(iv);res();}},25);});
   const mo=new w.MutationObserver(()=>{mo.n++;});

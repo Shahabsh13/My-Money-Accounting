@@ -2,6 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const { domObserverRegistrySource } = require('./helpers/production-slices.cjs');
 const vm = require('node:vm');
 
 const root = path.resolve(__dirname, '..');
@@ -33,6 +34,8 @@ function setupLock({ loans, installments = [], transactions = [], heading = 'و�
   const localStorage = { getItem: key => window.__safeGet(key), setItem() {} };
   const sessionStorage = { getItem: () => null, removeItem() {} };
   class MutationObserver { observe() {} }
+  /* لایه‌ی مشترک observer: در برنامه‌ی واقعی پیش از این اسکریپت‌ها بارگذاری می‌شود */
+  vm.runInNewContext(domObserverRegistrySource, { window, MutationObserver, console });
   vm.runInNewContext(linkedDocumentScript, { window, document, localStorage, sessionStorage, MutationObserver });
   vm.runInNewContext(lockScript, { window, document, localStorage });
   const event = {

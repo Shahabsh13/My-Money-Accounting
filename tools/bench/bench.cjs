@@ -4,8 +4,10 @@
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
+const { serve } = require('./local-server.cjs');
+const __rootArg = (process.argv.find((value) => value.startsWith('--root=')) || '').split('=')[1];
 
-const ROOT = process.argv[2] || path.resolve(__dirname, '..', '..');
+const ROOT = __rootArg ? path.resolve(__rootArg) : (process.argv[2] && !process.argv[2].startsWith('--') ? path.resolve(process.argv[2]) : path.resolve(__dirname, '..', '..'));
 const ASSETS = path.join(ROOT, 'app/src/main/assets');
 /* jsdom از node_modules خود پروژه بارگذاری می‌شود؛ اگر نبود، میزسنج بدون بخش راه‌اندازی ادامه می‌دهد. */
 let JSDOM = null;
@@ -61,9 +63,10 @@ async function boot(runs = 3) {
     const vc = new VirtualConsole(); const errs = [];
     vc.on('jsdomError', e => { if (!/getContext/.test(String(e.message))) errs.push(String(e.message).slice(0, 120)); });
     const t0 = Date.now();
+    const server = await serve(ASSETS);
     const dom = await JSDOM.fromFile(path.join(ASSETS, 'index.html'), {
       runScripts: 'dangerously', resources: 'usable', pretendToBeVisual: true, virtualConsole: vc,
-      url: 'http://127.0.0.1:8080/index.html',
+      url: server.url + '/index.html',
     });
     const w = dom.window;
     let rafAfterBoot = 0; let bootedAt = 0;

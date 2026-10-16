@@ -14,6 +14,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const { installSharedDomObserver } = require('./helpers/production-slices.cjs');
 const { webcrypto } = require('node:crypto');
 const { JSDOM, VirtualConsole } = require('jsdom');
 
@@ -51,6 +52,7 @@ function createHarness({ confirmResult = true } = {}) {
   window.URL.revokeObjectURL = () => {};
   window.confirm = () => confirmResult;
 
+  installSharedDomObserver(window);
   window.eval(backupScript);
   return {
     window,

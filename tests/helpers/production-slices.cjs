@@ -72,4 +72,27 @@ function loadAccountingKernel() {
   };
 }
 
-module.exports = { bundle, bundlePath, loadFromPrefix, loadFromName, loadAccountingKernel };
+/*
+ * لایه‌ی مشترک MutationObserver (اسکریپت تولیدی ۲۳۶) برای هارنس‌هایی که فقط بخشی از اسکریپت‌های
+ * تولید را بارگذاری می‌کنند. در برنامه‌ی واقعی ۲۳۶ قبل از همه‌ی مصرف‌کننده‌ها در index.html
+ * بارگذاری می‌شود؛ هارنس آزمایش هم باید همان ترتیب را رعایت کند، وگرنه مصرف‌کننده‌ها با
+ * «__hesabnoDom تعریف نشده» می‌شکنند (که همان چیزی است که این تابع جلوی آن را می‌گیرد).
+ */
+const domObserverRegistryPath = path.join(__dirname, '..', '..', 'app/src/main/assets/src/scripts/236-hesabno-shared-dom-observer.js');
+const domObserverRegistrySource = fs.readFileSync(domObserverRegistryPath, 'utf8');
+
+function installSharedDomObserver(window) {
+  if (!window || window.__hesabnoDom) return window ? window.__hesabnoDom : null;
+  window.eval(domObserverRegistrySource);
+  return window.__hesabnoDom;
+}
+
+module.exports = {
+  bundle,
+  bundlePath,
+  loadFromPrefix,
+  loadFromName,
+  loadAccountingKernel,
+  domObserverRegistrySource,
+  installSharedDomObserver,
+};
