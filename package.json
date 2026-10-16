@@ -6,7 +6,10 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "node --test tests/*.test.cjs"
+    "test": "node --test tests/*.test.cjs",
+    "bench": "node tools/bench/bench.cjs",
+    "bench:churn": "node tools/bench/churn.cjs",
+    "bench:idle": "node tools/bench/idle-profile.cjs"
   },
   "keywords": [],
   "author": "",
