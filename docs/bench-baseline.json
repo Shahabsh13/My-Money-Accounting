@@ -1,0 +1,71 @@
+{
+  "root": "/home/user/My-Money-Accounting",
+  "at": "2026-10-16T19:24:07.325Z",
+  "static": {
+    "indexHtmlBytes": 21722,
+    "scriptTags": 135,
+    "externalScripts": 135,
+    "blockingScripts": 0,
+    "asyncScripts": 0,
+    "styleLinks": 99,
+    "preloads": 2,
+    "jsBytes": 3242774,
+    "cssBytes": 698432,
+    "assetBytes": 1738409,
+    "jsFiles": 135,
+    "cssFiles": 99
+  },
+  "parse": {
+    "files": 135,
+    "bytes": 3242774,
+    "ms": 119.490354
+  },
+  "scale": {
+    "1000": {
+      "jsonBytes": 310185,
+      "kb": 303,
+      "bytesPerRecord": 310,
+      "stringifyMs": 0.9,
+      "parseMs": 1.1,
+      "multipleOf5MB": 0.06
+    },
+    "10000": {
+      "jsonBytes": 3111758,
+      "kb": 3039,
+      "bytesPerRecord": 311,
+      "stringifyMs": 11.7,
+      "parseMs": 9.2,
+      "multipleOf5MB": 0.59
+    },
+    "50000": {
+      "jsonBytes": 15602835,
+      "kb": 15237,
+      "bytesPerRecord": 312,
+      "stringifyMs": 83.8,
+      "parseMs": 153.8,
+      "multipleOf5MB": 2.98
+    },
+    "100000": {
+      "jsonBytes": 31217194,
+      "kb": 30486,
+      "bytesPerRecord": 312,
+      "stringifyMs": 171.9,
+      "parseMs": 229.3,
+      "multipleOf5MB": 5.95
+    }
+  },
+  "boot": {
+    "bootMs": 1262,
+    "rootHtmlBytes": 77187,
+    "domNodes": 792,
+    "styleTags": 28,
+    "rafPerSecondAfterBoot": 31.5,
+    "errors": [],
+    "bootMsMedian": 1262,
+    "runs": [
+      1103,
+      1262,
+      1970
+    ]
+  }
+}
