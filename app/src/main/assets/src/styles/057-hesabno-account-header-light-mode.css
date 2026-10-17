@@ -1,8 +1,0 @@
-html[data-theme="light"] .bg-gradient-to-r.from-blue-900.via-sky-900.to-blue-950 [class~="text-sky-300"],
-html[data-theme="light"] .bg-gradient-to-r.from-blue-900.via-sky-900.to-blue-950 [class~="text-sky-200"] {
-  color: #e0f2fe !important;
-}
-
-html[data-theme="light"] .bg-gradient-to-r.from-blue-900.via-sky-900.to-blue-950 [class~="text-sky-200/80"] {
-  color: #cfeeff !important;
-}

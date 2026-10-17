@@ -1,5 +1,0 @@
-@keyframes hesabno-full-page-side-open { from { opacity: 0; transform: translate3d(0, 20px, 0); } to { opacity: 1; transform: translate3d(0, 0, 0); } }
-@keyframes hesabno-full-page-side-exit { from { opacity: 1; transform: translate3d(0, 0, 0); } to { opacity: 0.92; transform: translate3d(0, 20px, 0); } }
-.hesabno-full-page-side-open { animation: hesabno-full-page-side-open 320ms cubic-bezier(.22,.75,.25,1) both; will-change: opacity, transform; backface-visibility: hidden; }
-.hesabno-full-page-side-exit { animation: hesabno-full-page-side-exit 260ms cubic-bezier(.55,.05,.68,.19) both; pointer-events: none; will-change: opacity, transform; backface-visibility: hidden; }
-@media (prefers-reduced-motion: reduce) { .hesabno-full-page-side-open, .hesabno-full-page-side-exit { animation: none !important; } }

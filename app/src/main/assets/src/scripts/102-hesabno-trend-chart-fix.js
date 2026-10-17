@@ -48,7 +48,7 @@
     clampTooltips();
   };
   fix();
-  if (document.body) new MutationObserver(fix).observe(document.body, { childList: true, subtree: true });
+  if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, fix);
   window.addEventListener("resize", clampTooltips);
   document.addEventListener("click", function (event) {
     var button = event.target && event.target.closest ? event.target.closest("button") : null;

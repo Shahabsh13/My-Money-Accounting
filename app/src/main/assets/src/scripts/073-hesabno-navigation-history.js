@@ -8,7 +8,19 @@
   var navigatingBack = false;
   var clean = function (value) { return String(value || "").replace(/\s+/g, " ").trim(); };
   var labels = { home: "خانه", transactions: "تراکنش‌ها", reports: "گزارش‌ها", more: "بیشتر" };
+  var detailBackButton = function () {
+    var main = root.querySelector("main");
+    var back = main && main.querySelector('button[aria-label="بازگشت"], button[title="بازگشت"]');
+    if (back && typeof back.getClientRects === "function" && back.getClientRects().length) return back;
+    return null;
+  };
   var current = function () {
+    var back = detailBackButton();
+    if (back) {
+      var main = root.querySelector("main");
+      var heading = main && main.querySelector("h1, h2");
+      return "detail:" + clean(heading && heading.textContent);
+    }
     var nav = root.querySelector("nav.fixed");
     if (nav) {
       var active = Array.from(nav.querySelectorAll("button")).find(function (button) {
@@ -16,12 +28,6 @@
       });
       var activeLabel = clean(active && active.textContent);
       for (var key in labels) if (labels[key] === activeLabel) return key;
-    }
-    var main = root.querySelector("main");
-    var back = main && main.querySelector('button[aria-label="بازگشت"], button[title="بازگشت"]');
-    if (back) {
-      var heading = main.querySelector("h1, h2");
-      return "detail:" + clean(heading && heading.textContent);
     }
     return "home";
   };
@@ -64,18 +70,51 @@
     return true;
   };
   window.__hesabnoNavigateBack = function () {
+    var detailBack = detailBackButton();
+    if (detailBack) {
+      holdBackNavigation("");
+      detailBack.click();
+      return true;
+    }
+    var nav = root.querySelector("nav.fixed");
+    if (nav) {
+      var buttons = Array.from(nav.querySelectorAll("button"));
+      var active = buttons.find(function (button) {
+        return String(button.className || "").includes("text-emerald-400");
+      });
+      var activeLabel = clean(active && active.textContent);
+      var homeButton = buttons.find(function (button) { return clean(button.textContent) === labels.home; });
+      if (activeLabel && activeLabel !== labels.home && homeButton) {
+        window.clearTimeout(pendingTimer);
+        stack.length = 0;
+        holdBackNavigation("home");
+        stack.length = 0;
+        last = "home";
+        pending = "home";
+        homeButton.click();
+        return true;
+      }
+      if (activeLabel === labels.home) {
+        window.clearTimeout(pendingTimer);
+        stack.length = 0;
+        pending = "";
+        navigatingBack = false;
+        last = "home";
+        return false;
+      }
+    }
     var target = stack[stack.length - 1];
     var label = labels[target];
     if (!target || !label) return false;
-    var nav = root.querySelector("nav.fixed");
-    var button = nav && Array.from(nav.querySelectorAll("button")).find(function (item) { return clean(item.textContent) === label; });
-    if (!button) return false;
+    var fallbackNav = root.querySelector("nav.fixed");
+    var fallbackButton = fallbackNav && Array.from(fallbackNav.querySelectorAll("button")).find(function (item) { return clean(item.textContent) === label; });
+    if (!fallbackButton) return false;
     holdBackNavigation(target);
     stack.pop();
     pending = target;
-    button.click();
+    fallbackButton.click();
     return true;
   };
   sync();
-  if (document.body) new MutationObserver(function () { window.requestAnimationFrame(sync); }).observe(document.body, { childList: true, subtree: true });
+  if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, function () { window.requestAnimationFrame(sync); });
 })();

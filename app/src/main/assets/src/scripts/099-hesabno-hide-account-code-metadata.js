@@ -36,5 +36,5 @@
       });
     };
    hide();
-   if (document.body) new MutationObserver(hide).observe(document.body, { childList: true, subtree: true });
+   if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, hide);
  })();

@@ -58,7 +58,7 @@
       frame = requestAnimationFrame(function () { frame = 0; update(); });
     };
     update();
-    if (document.body) new MutationObserver(schedule).observe(document.body, { childList: true, characterData: true, subtree: true });
+    if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, characterData: true, subtree: true }, schedule);
     window.addEventListener("storage", function (event) {
       if (!event.key || event.key === "hesabno:accounts" || event.key === "hesabno:accounts_v5") schedule();
     });

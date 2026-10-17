@@ -21,5 +21,5 @@
       });
     };
     sync();
-     if (document.body) new MutationObserver(function () { window.setTimeout(sync, 0); }).observe(document.body, { childList: true, subtree: true });
+     if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, function () { window.setTimeout(sync, 0); });
   })();

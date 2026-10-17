@@ -1,5 +1,0 @@
-/* A small mobile-only type reduction keeps the dashboard compact without shrinking desktop text. */
-@media (max-width: 480px) {
-  html { font-size: 15px !important; }
-  body { font-size: 15px !important; }
-}

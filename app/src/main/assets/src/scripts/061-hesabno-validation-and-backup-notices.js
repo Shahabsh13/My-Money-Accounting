@@ -41,7 +41,7 @@
 
   var validationQueued = false;
   function sync() { updateValidationLinks(); }
-  new MutationObserver(function (records) {
+  window.__hesabnoDom.watch(document.documentElement, { childList: true, characterData: true, subtree: true }, function (records) {
     var relevant = records.some(function (record) {
       var target = record.target.nodeType === 1 ? record.target : record.target.parentElement;
       if (target && target.closest("form")) return true;
@@ -52,6 +52,6 @@
     if (!relevant || validationQueued) return;
     validationQueued = true;
     queueMicrotask(function () { validationQueued = false; sync(); });
-  }).observe(document.documentElement, { childList: true, characterData: true, subtree: true });
+  });
   sync();
 })();

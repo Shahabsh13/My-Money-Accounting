@@ -19,7 +19,7 @@
       frame = requestAnimationFrame(function () { frame = 0; fix(); });
     };
     fix();
-    if (document.documentElement) new MutationObserver(schedule).observe(document.documentElement, { childList: true, characterData: true, subtree: true });
+    if (document.documentElement) window.__hesabnoDom.watch(document.documentElement, { childList: true, characterData: true, subtree: true }, schedule);
     window.addEventListener("DOMContentLoaded", schedule, { once: true });
     window.addEventListener("load", schedule, { once: true });
     [0, 100, 300, 800, 1600].forEach(function (delay) { window.setTimeout(schedule, delay); });

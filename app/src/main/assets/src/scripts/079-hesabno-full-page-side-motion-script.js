@@ -17,8 +17,7 @@
     void next.offsetWidth;
     next.classList.add("hesabno-full-page-side-open");
   };
-  var observer = new MutationObserver(function () { requestAnimationFrame(markOpen); });
-  observer.observe(root, { childList: true, subtree: true });
+  var observer = window.__hesabnoDom.watch(root, { childList: true, subtree: true }, function () { requestAnimationFrame(markOpen); });
   document.addEventListener("click", function (event) {
     var button = event.target && event.target.closest ? event.target.closest('button[title="بازگشت"]') : null;
     if (!button || button.getAttribute("aria-label") || replaying) return;

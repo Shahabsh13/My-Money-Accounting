@@ -51,17 +51,33 @@ public class MainActivity extends ComponentActivity {
     // اگر برنامه‌ی وب بتواند برگشت درون‌برنامه‌ای انجام دهد، خودش اعلام می‌کند (backHandled)؛
     // وگرنه از HnBridge.exitApp خروج از برنامه را می‌خواهد.
     private static final String BACK_JS =
-            "(function(){function done(){try{if(window.HnBridge)window.HnBridge.backHandled();}catch(e){}}"
-            + "try{var fr=document.getElementById('hesabno-first-run');"
-            + "if(fr){fr.parentNode.removeChild(fr);done();return;}}catch(e){}"
-            + "try{var h=window.__hesabnoNavigateBack;"
-            + "if(typeof h==='function'&&h()){done();return;}"
-            + "var b=document.querySelector('main button[aria-label=\"\\u0628\\u0627\\u0632\\u06af\\u0634\\u062a\"],main button[title=\"\\u0628\\u0627\\u0632\\u06af\\u0634\\u062a\"]');"
-            + "if(b){b.click();done();return;}}catch(e){}"
-            + "try{if(window.HnBridge)window.HnBridge.exitApp();}catch(e){}})();";
+            "(function(){\nvar handled=false;\nfunction done(){if(handled)return;handled=true;try{if(window.HnBridge)window.H"
+            + "nBridge.backHandled();}catch(e){}}\nfunction visible(el){if(!el||!el.getClientRects||!el.getClientRects().lengt"
+            + "h)return false;var s=window.getComputedStyle?window.getComputedStyle(el):null;return !s||(s.display!=='none'&&"
+            + "s.visibility!=='hidden'&&s.opacity!=='0');}\nfunction findBackButton(scope){if(!scope||!scope.querySelectorAll)"
+            + "return null;var labels=['بازگشت','برگشت','انصراف','بستن'];var list=scope.querySelectorAll('button,[role=\"butto"
+            + "n\"]');for(var i=list.length-1;i>=0;i--){var el=list[i];if(!visible(el))continue;var vals=[el.getAttribute('ari"
+            + "a-label'),el.getAttribute('title'),el.innerText,el.textContent];for(var j=0;j<vals.length;j++){var label=Strin"
+            + "g(vals[j]||'').replace(/\\s+/g,' ').trim();if(labels.indexOf(label)!==-1)return el;}}return null;}\ntry{var fr=d"
+            + "ocument.getElementById('hesabno-first-run');if(fr){fr.parentNode.removeChild(fr);done();return;}}catch(e){}\ntr"
+            + "y{var h=window.__hesabnoNavigateBack;if(typeof h==='function'&&h()){done();return;}}catch(e){}\ntry{var layers="
+            + "document.querySelectorAll('.hesabno-fullpage-layer,[role=\"dialog\"],[aria-modal=\"true\"]');for(var i=layers.leng"
+            + "th-1;i>=0;i--){if(!visible(layers[i]))continue;var lb=findBackButton(layers[i]);if(lb){lb.click();done();retur"
+            + "n;}}var b=findBackButton(document.querySelector('main')||document);if(b){b.click();done();return;}}catch(e){}\n"
+            + "try{var shouldExit=window.confirm('آیا می‌خواهید از برنامه خارج شوید؟');done();if(shouldExit&&window.HnBridge)"
+            + "window.HnBridge.exitApp();}catch(e){done();}\n})();";
 
     private WebView webView;
     private final Handler handler = new Handler(Looper.getMainLooper());
+
+    // نمایش کوتاه و پویا از آیکون در شروع هر بار اجرای تازه‌ی Activity
+    private android.view.View startupSplash;
+    private long startupSplashStartedAt;
+    private boolean startupPageLoaded;
+    private boolean startupSplashDismissScheduled;
+    private boolean startupSplashDismissed;
+    private static final long MIN_STARTUP_SPLASH_MS = 1350L;
+    private static final long MAX_STARTUP_SPLASH_MS = 8000L;
 
     // انتخاب فایل برای <input type="file">
     private ValueCallback<Uri[]> filePathCallback;
@@ -92,6 +108,9 @@ public class MainActivity extends ComponentActivity {
         final android.widget.FrameLayout root = new android.widget.FrameLayout(this);
         root.setBackgroundColor(0xFF0C1F1D);
         root.addView(webView, new android.widget.FrameLayout.LayoutParams(-1, -1));
+        startupSplash = createStartupSplash();
+        root.addView(startupSplash, new android.widget.FrameLayout.LayoutParams(-1, -1));
+        startupSplashStartedAt = android.os.SystemClock.uptimeMillis();
         root.setOnApplyWindowInsetsListener((v, insets) -> {
             int l = insets.getSystemWindowInsetLeft(), t = insets.getSystemWindowInsetTop();
             int r = insets.getSystemWindowInsetRight(), b = insets.getSystemWindowInsetBottom();
@@ -103,6 +122,10 @@ public class MainActivity extends ComponentActivity {
             return insets;
         });
         setContentView(root);
+        startStartupSplashAnimation();
+        handler.postDelayed(new Runnable() {
+            @Override public void run() { dismissStartupSplashWhenReady(true); }
+        }, MAX_STARTUP_SPLASH_MS);
 
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
@@ -214,6 +237,22 @@ public class MainActivity extends ComponentActivity {
 
         webView.setWebViewClient(new WebViewClient() {
             @Override
+            public void onPageFinished(WebView view, String url) {
+                if (startupSplash != null && !startupSplashDismissed) {
+                    startupPageLoaded = true;
+                    dismissStartupSplashWhenReady(false);
+                }
+            }
+
+            @Override
+            public void onReceivedError(WebView view, WebResourceRequest request, android.webkit.WebResourceError error) {
+                if (request != null && request.isForMainFrame() && startupSplash != null && !startupSplashDismissed) {
+                    startupPageLoaded = true;
+                    dismissStartupSplashWhenReady(false);
+                }
+            }
+
+            @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
                 return assetLoader.shouldInterceptRequest(request.getUrl());
             }
@@ -267,6 +306,205 @@ public class MainActivity extends ComponentActivity {
         } else {
             webView.loadUrl(START_URL);
         }
+    }
+
+    private android.view.View createStartupSplash() {
+        android.widget.FrameLayout overlay = new android.widget.FrameLayout(this);
+        overlay.setBackgroundColor(0xFF0C1F1D);
+        overlay.setClickable(true);
+        overlay.setFocusable(true);
+
+        android.widget.FrameLayout emblem = new android.widget.FrameLayout(this);
+        android.widget.FrameLayout.LayoutParams emblemParams = new android.widget.FrameLayout.LayoutParams(dp(190), dp(190), android.view.Gravity.CENTER);
+        overlay.addView(emblem, emblemParams);
+
+        android.view.View outerRing = createSplashRing(0xFF39D6A2, dp(2));
+        android.view.View innerRing = createSplashRing(0xFF7CE8C5, dp(1));
+        emblem.addView(outerRing, new android.widget.FrameLayout.LayoutParams(dp(154), dp(154), android.view.Gravity.CENTER));
+        emblem.addView(innerRing, new android.widget.FrameLayout.LayoutParams(dp(118), dp(118), android.view.Gravity.CENTER));
+
+        AnimatedStartupLogoView icon = new AnimatedStartupLogoView(this);
+        emblem.addView(icon, new android.widget.FrameLayout.LayoutParams(dp(112), dp(112), android.view.Gravity.CENTER));
+
+        android.widget.TextView title = new android.widget.TextView(this);
+        title.setText("My Money");
+        title.setTextColor(0xFFE6FFF5);
+        title.setTextSize(18);
+        title.setTypeface(null, android.graphics.Typeface.BOLD);
+        title.setGravity(android.view.Gravity.CENTER);
+        android.widget.FrameLayout.LayoutParams titleParams = new android.widget.FrameLayout.LayoutParams(-2, -2, android.view.Gravity.CENTER_HORIZONTAL | android.view.Gravity.CENTER_VERTICAL);
+        titleParams.topMargin = dp(145);
+        overlay.addView(title, titleParams);
+
+        return overlay;
+    }
+
+    /** نسخه‌ی لایه‌ای آیکون برای اسپلش؛ نمودار و تیک مستقل از بدنه متحرک‌اند. */
+    private final class AnimatedStartupLogoView extends android.view.View {
+        private final android.graphics.Paint paint = new android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG);
+        private float phase;
+        private final android.animation.ValueAnimator motion;
+
+        AnimatedStartupLogoView(android.content.Context context) {
+            super(context);
+            motion = android.animation.ValueAnimator.ofFloat(0f, 1f);
+            motion.setDuration(1250L);
+            motion.setRepeatCount(android.animation.ValueAnimator.INFINITE);
+            motion.addUpdateListener(a -> { phase = (float) a.getAnimatedValue(); invalidate(); });
+        }
+
+        @Override protected void onAttachedToWindow() {
+            super.onAttachedToWindow();
+            if (!motion.isStarted()) motion.start();
+        }
+
+        @Override protected void onDetachedFromWindow() {
+            motion.cancel();
+            super.onDetachedFromWindow();
+        }
+
+        @Override protected void onDraw(android.graphics.Canvas canvas) {
+            super.onDraw(canvas);
+            float scale = Math.min(getWidth(), getHeight()) / 192f;
+            canvas.save();
+            canvas.scale(scale, scale);
+            // پس‌زمینه‌ی سبز-آبی و خطوط ظریف هماهنگ با آیکون واقعی برنامه
+            paint.setShader(new android.graphics.LinearGradient(0, 0, 192, 192, 0xFF123E3B, 0xFF0B2928, android.graphics.Shader.TileMode.CLAMP));
+            canvas.drawRoundRect(5, 5, 187, 187, 42, 42, paint);
+            paint.setShader(null);
+            paint.setStyle(android.graphics.Paint.Style.STROKE);
+            paint.setStrokeWidth(1.5f);
+            paint.setColor(0xFF245A54);
+            canvas.drawRoundRect(12, 12, 180, 180, 38, 38, paint);
+            paint.setStyle(android.graphics.Paint.Style.FILL);
+
+            // گوشی کمی کج؛ حرکت آرام بدنه جدا از نمودار
+            canvas.save();
+            canvas.rotate(-9f + (float)Math.sin(phase * Math.PI * 2) * 1.6f, 88, 91);
+            paint.setColor(0xFFBFE8D8);
+            canvas.drawRoundRect(39, 13, 137, 169, 13, 13, paint);
+            paint.setColor(0xFF173D3A);
+            canvas.drawRoundRect(44, 20, 132, 160, 7, 7, paint);
+            paint.setColor(0xFFE8F7EF);
+            canvas.drawRoundRect(48, 24, 128, 156, 4, 4, paint);
+            paint.setColor(0xFF244E49);
+            canvas.drawRoundRect(71, 17, 105, 20, 1.5f, 1.5f, paint);
+            canvas.drawRoundRect(56, 37, 112, 42, 2, 2, paint);
+            canvas.drawRoundRect(56, 46, 99, 50, 2, 2, paint);
+            // سه میله‌ی نمودار با ارتفاع‌های مستقل و موجی
+            float[] base = {104, 91, 77};
+            float[] heights = {27, 39, 51};
+            for (int i = 0; i < 3; i++) {
+                float bob = (float)Math.sin(phase * Math.PI * 2 + i * 1.35f) * 5f;
+                float top = base[i] - heights[i] - bob;
+                paint.setColor(i == 2 ? 0xFF2A8273 : 0xFF5BB89B);
+                canvas.drawRoundRect(57 + i * 18, top, 69 + i * 18, 124, 5, 5, paint);
+            }
+            canvas.restore();
+
+            // نشان تیک شناور با چرخش کوتاه و کنترل‌شده
+            canvas.save();
+            canvas.rotate((float)Math.sin(phase * Math.PI * 2) * 5f, 145, 123);
+            float lift = (float)Math.sin(phase * Math.PI * 2) * 2.2f;
+            paint.setColor(0xFF3A9D87);
+            canvas.drawCircle(145, 123 + lift, 29, paint);
+            paint.setColor(0xFFBFE8D8);
+            paint.setStyle(android.graphics.Paint.Style.STROKE);
+            paint.setStrokeWidth(2.5f);
+            canvas.drawCircle(145, 123 + lift, 25.5f, paint);
+            paint.setStyle(android.graphics.Paint.Style.STROKE);
+            paint.setStrokeCap(android.graphics.Paint.Cap.ROUND);
+            paint.setStrokeJoin(android.graphics.Paint.Join.ROUND);
+            paint.setStrokeWidth(6f);
+            paint.setColor(android.graphics.Color.WHITE);
+            android.graphics.Path check = new android.graphics.Path();
+            check.moveTo(133, 123 + lift);
+            check.lineTo(141, 131 + lift);
+            check.lineTo(157, 114 + lift);
+            canvas.drawPath(check, paint);
+            paint.setStyle(android.graphics.Paint.Style.FILL);
+            canvas.restore();
+            canvas.restore();
+        }
+    }
+
+    private android.view.View createSplashRing(int color, int strokeWidth) {
+        android.view.View ring = new android.view.View(this);
+        android.graphics.drawable.GradientDrawable shape = new android.graphics.drawable.GradientDrawable();
+        shape.setShape(android.graphics.drawable.GradientDrawable.OVAL);
+        shape.setColor(android.graphics.Color.TRANSPARENT);
+        shape.setStroke(strokeWidth, color);
+        ring.setBackground(shape);
+        ring.setAlpha(0.72f);
+        return ring;
+    }
+
+    private int dp(float value) {
+        return (int) (value * getResources().getDisplayMetrics().density + 0.5f);
+    }
+
+    private void startStartupSplashAnimation() {
+        if (startupSplash == null) return;
+        android.widget.FrameLayout emblem = (android.widget.FrameLayout) ((android.widget.FrameLayout) startupSplash).getChildAt(0);
+        if (emblem == null) return;
+        android.view.View outer = emblem.getChildAt(0);
+        android.view.View inner = emblem.getChildAt(1);
+        android.view.View emblemIcon = emblem.getChildAt(2);
+        if (outer != null) {
+            android.animation.ObjectAnimator sx = android.animation.ObjectAnimator.ofFloat(outer, android.view.View.SCALE_X, 0.72f, 1.22f);
+            android.animation.ObjectAnimator sy = android.animation.ObjectAnimator.ofFloat(outer, android.view.View.SCALE_Y, 0.72f, 1.22f);
+            android.animation.ObjectAnimator alpha = android.animation.ObjectAnimator.ofFloat(outer, android.view.View.ALPHA, 0.72f, 0f);
+            for (android.animation.ObjectAnimator animator : new android.animation.ObjectAnimator[]{sx, sy, alpha}) {
+                animator.setDuration(1150L);
+                animator.setRepeatCount(android.animation.ValueAnimator.INFINITE);
+            }
+            sx.start(); sy.start(); alpha.start();
+        }
+        if (inner != null) {
+            android.animation.ObjectAnimator sx = android.animation.ObjectAnimator.ofFloat(inner, android.view.View.SCALE_X, 0.78f, 1.16f);
+            android.animation.ObjectAnimator sy = android.animation.ObjectAnimator.ofFloat(inner, android.view.View.SCALE_Y, 0.78f, 1.16f);
+            android.animation.ObjectAnimator alpha = android.animation.ObjectAnimator.ofFloat(inner, android.view.View.ALPHA, 0.72f, 0f);
+            for (android.animation.ObjectAnimator animator : new android.animation.ObjectAnimator[]{sx, sy, alpha}) {
+                animator.setDuration(1150L);
+                animator.setStartDelay(430L);
+                animator.setRepeatCount(android.animation.ValueAnimator.INFINITE);
+            }
+            sx.start(); sy.start(); alpha.start();
+        }
+        if (emblemIcon != null) {
+            android.animation.ObjectAnimator scaleX = android.animation.ObjectAnimator.ofFloat(emblemIcon, android.view.View.SCALE_X, 0.96f, 1.02f, 0.98f, 1f);
+            android.animation.ObjectAnimator scaleY = android.animation.ObjectAnimator.ofFloat(emblemIcon, android.view.View.SCALE_Y, 0.96f, 1.02f, 0.98f, 1f);
+            android.animation.ObjectAnimator rotation = android.animation.ObjectAnimator.ofFloat(emblemIcon, android.view.View.ROTATION, 0f, -2.5f, 2.5f, 0f);
+            for (android.animation.ObjectAnimator animator : new android.animation.ObjectAnimator[]{scaleX, scaleY, rotation}) {
+                animator.setDuration(1900L);
+                animator.setRepeatCount(android.animation.ValueAnimator.INFINITE);
+            }
+            scaleX.start(); scaleY.start(); rotation.start();
+        }
+    }
+
+    private void dismissStartupSplashWhenReady(boolean timeoutReached) {
+        if (startupSplash == null || startupSplashDismissed) return;
+        if (!startupPageLoaded && !timeoutReached) return;
+        if (startupSplashDismissScheduled) return;
+        startupSplashDismissScheduled = true;
+        long elapsed = android.os.SystemClock.uptimeMillis() - startupSplashStartedAt;
+        long remaining = Math.max(0L, MIN_STARTUP_SPLASH_MS - elapsed);
+        handler.postDelayed(new Runnable() {
+            @Override public void run() {
+                if (startupSplash == null || startupSplashDismissed) return;
+                startupSplashDismissed = true;
+                final android.view.View splash = startupSplash;
+                splash.animate().alpha(0f).setDuration(240L).withEndAction(new Runnable() {
+                    @Override public void run() {
+                        if (splash.getParent() instanceof android.view.ViewGroup) {
+                            ((android.view.ViewGroup) splash.getParent()).removeView(splash);
+                        }
+                        if (startupSplash == splash) startupSplash = null;
+                    }
+                }).start();
+            }
+        }, remaining);
     }
 
     @Override

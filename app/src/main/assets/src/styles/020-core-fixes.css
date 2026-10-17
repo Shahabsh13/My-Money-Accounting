@@ -1,0 +1,911 @@
+/* بسته‌ی 020-core-fixes.css | لایه‌های اصلاحی هسته (چیدمان، موبایل، پیش‌فرض‌ها)
+   ادغام 27 فایل با همان ترتیب آبشار: 013-inline.css 014-inline.css 015-inline.css 016-inline.css 017-inline.css 018-inline.css 019-inline.css 020-inline.css 021-inline.css 022-inline.css 023-inline.css 026-inline.css 027-inline.css 028-inline.css 030-inline.css 031-inline.css 032-inline.css 033-inline.css 034-inline.css 035-inline.css 036-inline.css 037-inline.css 038-inline.css 039-inline.css 040-inline.css 041-hesabno-light-balance.css 042-hesabno-tab-motion.css */
+/* = 013-inline.css = */
+/* Light theme polish. */
+html[data-theme="light"] [class*="divide-stone-"] > * {
+  border-top-color: #e2e8f0 !important;
+  border-bottom-color: #e2e8f0 !important;
+}
+html[data-theme="light"] [class*="from-stone-"],
+html[data-theme="light"] [class*="via-stone-"],
+html[data-theme="light"] [class*="to-stone-"] {
+  background-image: none !important;
+  background-color: #ffffff !important;
+}
+/* = 014-inline.css = */
+/* Colored theme canvas. */
+html[data-theme="light"] body,
+html[data-theme="light"] #root,
+html[data-theme="light"] #root > div,
+html[data-theme="light"] main[class*="bg-stone-900"] {
+  background-color: #e3edf5 !important;
+  background-image: linear-gradient(180deg, #eaf2f7 0%, #dfeaf2 100%) !important;
+}
+html[data-theme="dark"] body,
+html[data-theme="dark"] #root,
+html[data-theme="dark"] #root > div,
+html[data-theme="dark"] main[class*="bg-stone-900"] {
+  background-color: #0b111a !important;
+}
+/* = 015-inline.css = */
+/* Light surface hierarchy. */
+html[data-theme="light"] [class*="border-stone-"] {
+  border-color: #d5e0ea !important;
+}
+html[data-theme="light"] [class*="divide-stone-"] > * {
+  background-color: #f8fbfd !important;
+  border-top: 1px solid #d5e0ea !important;
+  border-bottom: 0 !important;
+}
+html[data-theme="light"] [class*="divide-stone-"] > :first-child {
+  border-top: 0 !important;
+}
+html[data-theme="light"] [class*="divide-stone-"] > *:hover {
+  background-color: #eef6fa !important;
+}
+html[data-theme="light"] nav.fixed {
+  background-color: #ffffff !important;
+  border: 1px solid #d5e0ea !important;
+  box-shadow: 0 -8px 24px #64748b1c !important;
+}
+html[data-theme="light"] nav.fixed button {
+  background-color: #f8fbfd !important;
+  border: 1px solid #dce6ee !important;
+  color: #64748b !important;
+}
+html[data-theme="light"] nav.fixed button:hover {
+  background-color: #eef6fa !important;
+}
+html[data-theme="light"] nav.fixed button.text-emerald-400 {
+  background-color: #e5f8ef !important;
+  border-color: #86efac !important;
+  color: #047857 !important;
+}
+/* = 016-inline.css = */
+/* Quick access card framing. */
+html[data-theme="light"] main section button[class*="w-20"][class*="rounded-2xl"] {
+  border-width: 1px !important;
+  border-style: solid !important;
+  box-shadow: 0 2px 8px #64748b1c !important;
+}
+/* = 017-inline.css = */
+/* Dark quick access card framing. */
+html[data-theme="dark"] main section button[class*="w-20"][class*="rounded-2xl"] {
+  border-width: 1px !important;
+  border-style: solid !important;
+  box-shadow: 0 2px 8px #0000002e !important;
+}
+/* = 018-inline.css = */
+/* Custom toggle contrast. */
+html[data-theme="light"] button.w-10.h-6.rounded-full.p-1[class~="bg-stone-700"] {
+  background-color: #cbd5e1 !important;
+  border: 1px solid #94a3b8 !important;
+}
+html[data-theme="light"] button.w-10.h-6.rounded-full.p-1[class~="bg-stone-700"] > span[class~="bg-stone-950"] {
+  background-color: #ffffff !important;
+  border: 1px solid #64748b !important;
+  box-shadow: 0 1px 3px #47556955 !important;
+}
+html[data-theme="dark"] button.w-10.h-6.rounded-full.p-1[class~="bg-stone-700"] {
+  background-color: #374151 !important;
+  border: 1px solid #64748b !important;
+}
+html[data-theme="dark"] button.w-10.h-6.rounded-full.p-1[class~="bg-stone-700"] > span[class~="bg-stone-950"] {
+  background-color: #0b111a !important;
+  border: 1px solid #94a3b8 !important;
+  box-shadow: 0 1px 3px #00000066 !important;
+}
+html[data-theme="light"] button.w-10.h-6.rounded-full.p-1[class~="bg-emerald-500"] {
+  background-color: #059669 !important;
+  border: 1px solid #047857 !important;
+}
+html[data-theme="dark"] button.w-10.h-6.rounded-full.p-1[class~="bg-emerald-500"] {
+  background-color: #10b981 !important;
+  border: 1px solid #34d399 !important;
+}
+html button.w-10.h-6.rounded-full.p-1:focus-visible {
+  outline: 2px solid #38bdf8 !important;
+  outline-offset: 2px !important;
+}
+/* = 019-inline.css = */
+/* Transaction row clarity. */
+article[id^="tx-card-"] > div > div > span:nth-child(2) {
+  border-width: 1px !important;
+  border-style: solid !important;
+  box-shadow: 0 1px 2px #0f172a1a !important;
+}
+html[data-theme="light"] article[id^="tx-card-"] > div > div > span:nth-child(2) {
+  background-color: #fff7ed !important;
+  border-color: #fdba74 !important;
+  color: #b45309 !important;
+}
+html[data-theme="dark"] article[id^="tx-card-"] > div > div > span:nth-child(2) {
+  background-color: #2b2117 !important;
+  border-color: #92400e !important;
+  color: #fbbf24 !important;
+}
+article[id^="tx-card-"] span[title*="کارمزد"] {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: fit-content !important;
+  white-space: nowrap !important;
+  padding: 1px 5px !important;
+  border-radius: 4px !important;
+  line-height: 1.35 !important;
+  letter-spacing: 0 !important;
+}
+html[data-theme="light"] article[id^="tx-card-"] span[title*="کارمزد"] {
+  background-color: #fff7ed !important;
+  border: 1px solid #fdba74 !important;
+  color: #b45309 !important;
+}
+html[data-theme="dark"] article[id^="tx-card-"] span[title*="کارمزد"] {
+  background-color: #3b2f1a !important;
+  border: 1px solid #92400e !important;
+  color: #fbbf24 !important;
+}
+article[id^="tx-card-"] > div > div > div:last-child {
+  min-width: 5.7rem !important;
+  row-gap: 2px !important;
+}
+/* = 020-inline.css = */
+/* Expanded transaction actions. */
+html[data-theme="light"] article[id^="tx-card-"] > div:last-child > div:last-child > button:nth-child(1):not([data-hesabno-footnote-kind]):not([data-hesabno-footnote-kind] *):not([data-hesabno-check-correction-link]):not(.hesabno-tx-reversal-chip) {
+  background-color: #e8f8ef !important;
+  border: 1px solid #86efac !important;
+  color: #047857 !important;
+  box-shadow: 0 1px 2px #1665341a !important;
+}
+html[data-theme="light"] article[id^="tx-card-"] > div:last-child > div:last-child > button:nth-child(1):not([data-hesabno-footnote-kind]):not([data-hesabno-footnote-kind] *):not([data-hesabno-check-correction-link]):not(.hesabno-tx-reversal-chip):hover {
+  background-color: #d1fae5 !important;
+  border-color: #34d399 !important;
+}
+html[data-theme="light"] article[id^="tx-card-"] > div:last-child > div:last-child > button:nth-child(2):not([data-hesabno-footnote-kind]):not([data-hesabno-footnote-kind] *):not([data-hesabno-check-correction-link]):not(.hesabno-tx-reversal-chip) {
+  background-color: #fff7ed !important;
+  border: 1px solid #fdba74 !important;
+  color: #b45309 !important;
+  box-shadow: 0 1px 2px #9a34121a !important;
+}
+html[data-theme="light"] article[id^="tx-card-"] > div:last-child > div:last-child > button:nth-child(2):not([data-hesabno-footnote-kind]):not([data-hesabno-footnote-kind] *):not([data-hesabno-check-correction-link]):not(.hesabno-tx-reversal-chip):hover {
+  background-color: #ffedd5 !important;
+  border-color: #f59e0b !important;
+}
+html[data-theme="light"] article[id^="tx-card-"] > div:last-child > div:last-child > button:nth-child(3):not([data-hesabno-footnote-kind]):not([data-hesabno-footnote-kind] *):not([data-hesabno-check-correction-link]):not(.hesabno-tx-reversal-chip) {
+  background-color: #fff1f2 !important;
+  border: 1px solid #fda4af !important;
+  color: #be123c !important;
+  box-shadow: 0 1px 2px #9f12391a !important;
+}
+html[data-theme="light"] article[id^="tx-card-"] > div:last-child > div:last-child > button:nth-child(3):not([data-hesabno-footnote-kind]):not([data-hesabno-footnote-kind] *):not([data-hesabno-check-correction-link]):not(.hesabno-tx-reversal-chip):hover {
+  background-color: #ffe4e6 !important;
+  border-color: #fb7185 !important;
+}
+/* = 021-inline.css = */
+/* Smooth transaction light surfaces. */
+html[data-theme="light"] body:has(article[id^="tx-card-"]),
+html[data-theme="light"] #root:has(article[id^="tx-card-"]),
+html[data-theme="light"] #root:has(article[id^="tx-card-"]) > div,
+html[data-theme="light"] #root:has(article[id^="tx-card-"]) > div > div,
+html[data-theme="light"] #root:has(article[id^="tx-card-"]) main {
+  background-color: #e7eff5 !important;
+  background-image: none !important;
+}
+html[data-theme="light"] main:has(article[id^="tx-card-"]) > div.sticky {
+  background-color: #e7eff5 !important;
+  background-image: none !important;
+  backdrop-filter: none !important;
+  border-bottom-color: #cbd8e2 !important;
+  box-shadow: none !important;
+}
+html[data-theme="light"] main:has(article[id^="tx-card-"]) input[placeholder*="جستجو"] {
+  background-color: #f8fbfd !important;
+  border-color: #c5d3de !important;
+}
+html[data-theme="light"] main:has(article[id^="tx-card-"]) > div.sticky.top-0 > div.flex.items-center.gap-1.5 {
+  background-color: #f1f6f9 !important;
+  border-color: #c5d3de !important;
+}
+html[data-theme="light"] nav.fixed:has(button) {
+  background-color: #e7eff5 !important;
+  border-color: #cbd8e2 !important;
+  box-shadow: 0 -8px 24px #64748b18 !important;
+}
+/* = 022-inline.css = */
+/* Rounded transaction date bar. */
+html[data-theme="light"] main:has(article[id^="tx-card-"]) > div.sticky.z-10 {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding-left: 0.75rem !important;
+  padding-right: 0.75rem !important;
+  border: 1px solid #cbd8e2 !important;
+  border-radius: 1rem !important;
+}
+/* = 023-inline.css = */
+/* Rounded transaction date bar v2. */
+html[data-theme="light"] main:has(article[id^="tx-card-"]) div.sticky.z-10 {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding-left: 0.75rem !important;
+  padding-right: 0.75rem !important;
+  border: 1px solid #cbd8e2 !important;
+  border-radius: 1rem !important;
+}
+/* = 026-inline.css = */
+/* Calm light palette. */
+html[data-theme="light"] body,
+html[data-theme="light"] #root,
+html[data-theme="light"] #root > div,
+html[data-theme="light"] #root > div > div,
+html[data-theme="light"] main {
+  background-color: #e8eff3 !important;
+  background-image: none !important;
+  color: #17212b !important;
+}
+html[data-theme="light"] [class~="bg-stone-950"] {
+  background-color: #e1e9ee !important;
+}
+html[data-theme="light"] [class~="bg-stone-900"],
+html[data-theme="light"] [class*="bg-stone-900/"] {
+  background-color: #f5f8fa !important;
+}
+html[data-theme="light"] [class~="bg-stone-850"],
+html[data-theme="light"] [class*="bg-stone-850/"] {
+  background-color: #edf2f5 !important;
+}
+html[data-theme="light"] [class~="bg-stone-800"],
+html[data-theme="light"] [class*="bg-stone-800/"] {
+  background-color: #eaf0f3 !important;
+}
+html[data-theme="light"] [class~="bg-stone-750"],
+html[data-theme="light"] [class*="bg-stone-750/"] {
+  background-color: #dce6ec !important;
+}
+html[data-theme="light"] [class*="border-stone-"] {
+  border-color: #c8d5de !important;
+}
+html[data-theme="light"] .text-stone-100 { color: #17212b !important; }
+html[data-theme="light"] .text-stone-200 { color: #2d3a45 !important; }
+html[data-theme="light"] .text-stone-300 { color: #4b5a68 !important; }
+html[data-theme="light"] .text-stone-400 { color: #667684 !important; }
+html[data-theme="light"] .text-stone-500 { color: #8796a3 !important; }
+html[data-theme="light"] .text-stone-600 { color: #a8b5bf !important; }
+html[data-theme="light"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+html[data-theme="light"] select,
+html[data-theme="light"] textarea {
+  color: #17212b !important;
+  background-color: #f8fafb !important;
+  border-color: #c3d1db !important;
+}
+html[data-theme="light"] input::placeholder,
+html[data-theme="light"] textarea::placeholder {
+  color: #8796a3 !important;
+}
+html[data-theme="light"] input:focus,
+html[data-theme="light"] textarea:focus,
+html[data-theme="light"] select:focus {
+  border-color: #5ba98c !important;
+  box-shadow: 0 0 0 1px #5ba98c !important;
+}
+html[data-theme="light"] .sticky,
+html[data-theme="light"] nav.fixed {
+  background-color: #e8eff3e8 !important;
+  border-color: #c8d5de !important;
+  box-shadow: 0 4px 14px #526b7a16 !important;
+}
+html[data-theme="light"] nav.fixed button {
+  background-color: #f4f8fa !important;
+  border-color: #cbd8e1 !important;
+  color: #667684 !important;
+}
+html[data-theme="light"] nav.fixed button.text-emerald-400 {
+  background-color: #dcefe7 !important;
+  border-color: #86bfa8 !important;
+  color: #167257 !important;
+}
+
+html[data-theme="light"] .dashboard-hero-card {
+  background: #2b806b !important;
+  border-color: #6ab39b !important;
+  box-shadow: 0 8px 18px #2b806b2b !important;
+}
+html[data-theme="light"] .dashboard-action-btn {
+  box-shadow: 0 2px 6px #526b7a14 !important;
+}
+html[data-theme="light"] .dashboard-action-btn.action-income {
+  background-color: #e3f1eb !important;
+  border-color: #9bcfba !important;
+}
+html[data-theme="light"] .dashboard-action-btn.action-income .btn-label { color: #167257 !important; }
+html[data-theme="light"] .dashboard-action-btn.action-expense {
+  background-color: #f7e8e9 !important;
+  border-color: #e2b4ba !important;
+}
+html[data-theme="light"] .dashboard-action-btn.action-expense .btn-label { color: #b23a4b !important; }
+html[data-theme="light"] .dashboard-action-btn.action-transfer {
+  background-color: #e8f1f6 !important;
+  border-color: #b6ccd9 !important;
+}
+html[data-theme="light"] .dashboard-action-btn.action-transfer .btn-label { color: #2e6786 !important; }
+html[data-theme="light"] .dashboard-action-btn.action-checks {
+  background-color: #f5efe0 !important;
+  border-color: #d9c28c !important;
+}
+html[data-theme="light"] .dashboard-action-btn.action-checks .btn-label { color: #986f14 !important; }
+
+html[data-theme="light"] .text-emerald-400,
+html[data-theme="light"] .text-emerald-300 { color: #19785e !important; }
+html[data-theme="light"] .text-rose-400,
+html[data-theme="light"] .text-rose-300 { color: #b23a4b !important; }
+html[data-theme="light"] .text-sky-400,
+html[data-theme="light"] .text-sky-300 { color: #2e6786 !important; }
+html[data-theme="light"] .text-amber-400,
+html[data-theme="light"] .text-amber-300 { color: #986f14 !important; }
+html[data-theme="light"] .text-purple-400,
+html[data-theme="light"] .text-purple-300,
+html[data-theme="light"] .text-violet-400 { color: #695085 !important; }
+html[data-theme="light"] .text-teal-400,
+html[data-theme="light"] .text-teal-300 { color: #2a6e68 !important; }
+html[data-theme="light"] .text-orange-400,
+html[data-theme="light"] .text-orange-300 { color: #9b5c22 !important; }
+html[data-theme="light"] .text-indigo-400,
+html[data-theme="light"] .text-indigo-300 { color: #5b5b93 !important; }
+html[data-theme="light"] .text-blue-400,
+html[data-theme="light"] .text-blue-300 { color: #2e5d92 !important; }
+html[data-theme="light"] [class*="bg-emerald-500/"] {
+  color: #167257 !important;
+  background-color: #e3f1eb !important;
+  border-color: #9bcfba !important;
+}
+html[data-theme="light"] [class*="bg-rose-500/"] {
+  color: #b23a4b !important;
+  background-color: #f7e8e9 !important;
+  border-color: #e2b4ba !important;
+}
+html[data-theme="light"] [class*="bg-sky-500/"] {
+  color: #2e6786 !important;
+  background-color: #e8f1f6 !important;
+  border-color: #b6ccd9 !important;
+}
+html[data-theme="light"] [class*="bg-amber-500/"] {
+  color: #986f14 !important;
+  background-color: #f5efe0 !important;
+  border-color: #d9c28c !important;
+}
+html[data-theme="light"] [class*="bg-purple-500/"] {
+  color: #695085 !important;
+  background-color: #eeeaf4 !important;
+  border-color: #c9badb !important;
+}
+html[data-theme="light"] [class*="bg-teal-500/"] {
+  color: #2a6e68 !important;
+  background-color: #e6f1f0 !important;
+  border-color: #b2d4d0 !important;
+}
+html[data-theme="light"] [class*="bg-orange-500/"] {
+  color: #9b5c22 !important;
+  background-color: #f8eee6 !important;
+  border-color: #e0c2a7 !important;
+}
+html[data-theme="light"] button[class~="bg-amber-500"] {
+  background-color: #b48a35 !important;
+  border-color: #a17a2f !important;
+  color: #fff !important;
+}
+html[data-theme="light"] button[class~="bg-purple-600"] {
+  background-color: #79618f !important;
+  color: #fff !important;
+}
+/* = 027-inline.css = */
+/* Calm solid semantic colors. */
+html[data-theme="light"] [class~="bg-emerald-500"] {
+  background-color: #2b8a73 !important;
+  color: #ffffff !important;
+}
+html[data-theme="light"] [class~="bg-emerald-600"] {
+  background-color: #277c68 !important;
+  color: #ffffff !important;
+}
+html[data-theme="light"] [class~="bg-amber-400"],
+html[data-theme="light"] [class~="bg-amber-500"] {
+  background-color: #b48a35 !important;
+  border-color: #a17a2f !important;
+  color: #ffffff !important;
+}
+/* = 028-inline.css = */
+/* Calm remaining solid colors. */
+html[data-theme="light"] [class~="bg-rose-500"] {
+  background-color: #c75c6c !important;
+  border-color: #b64f5f !important;
+  color: #ffffff !important;
+}
+html[data-theme="light"] [class~="bg-sky-500"] {
+  background-color: #5c90ac !important;
+  border-color: #4f829d !important;
+  color: #ffffff !important;
+}
+html[data-theme="light"] [class~="bg-purple-500"] {
+  background-color: #79618f !important;
+  border-color: #6c5482 !important;
+  color: #ffffff !important;
+}
+html[data-theme="light"] [class~="bg-teal-500"] {
+  background-color: #3b8b83 !important;
+  border-color: #327b74 !important;
+  color: #ffffff !important;
+}
+/* = 030-inline.css = */
+/* Light theme colours for the dashboard hero card (single source). */
+html[data-theme="light"] .dashboard-hero-card .hero-expense-value {
+  color: #fff1f2 !important;
+}
+html[data-theme="light"] .dashboard-hero-card .group:hover .hero-expense-value {
+  color: #fb7185 !important;
+}
+html[data-theme="light"] .dashboard-hero-card .hero-expense-icon {
+  color: #c84f61 !important;
+  background-color: #f4d8dc !important;
+  border-color: #d99aa4 !important;
+}
+html[data-theme="light"] .dashboard-hero-card .hero-currency {
+  color: #c5d4ce !important;
+}
+html[data-theme="light"] .dashboard-hero-card .hero-currency[class~="text-rose-300/80"] {
+  color: #ffe4e6 !important;
+}
+html[data-theme="light"] .dashboard-hero-card .hero-currency[class~="text-emerald-300/80"] {
+  color: #a7d6c4 !important;
+}
+/* = 031-inline.css = */
+/* Keep loan registration overlays within the desktop app frame. */
+@media (min-width: 640px) {
+  main > .fixed.inset-0.z-50:has(input[placeholder="مبلغ قسط"]) {
+    position: absolute !important;
+    bottom: calc(32px + 4vh) !important;
+    height: auto !important;
+  }
+}
+/* = 032-inline.css = */
+/* Compact document form. */
+form:has(#field-amount-input) {
+  padding-top: 0.75rem !important;
+}
+form:has(#field-amount-input) > * + * {
+  margin-top: 0.65rem !important;
+}
+form:has(#field-amount-input) > div.space-y-4 > * + * {
+  margin-top: 0.65rem !important;
+}
+form:has(#field-amount-input) > div.grid.grid-cols-2 {
+  padding: 0.2rem !important;
+}
+form:has(#field-amount-input) > div.grid.grid-cols-2 > button {
+  padding-top: 0.5rem !important;
+  padding-bottom: 0.5rem !important;
+}
+form:has(#field-amount-input) > div:nth-child(2) {
+  padding-top: 0.25rem !important;
+  padding-bottom: 0.25rem !important;
+}
+form:has(#field-amount-input) > div:nth-child(3) {
+  padding: 0.2rem !important;
+}
+form:has(#field-amount-input) > div.space-y-4 > section {
+  padding: 0.75rem !important;
+}
+form:has(#field-amount-input) > div.space-y-4 > section:nth-child(2) > * + * {
+  margin-top: 0.55rem !important;
+}
+form:has(#field-amount-input) > div.space-y-4 > div > textarea {
+  min-height: 2.5rem !important;
+  height: 2.5rem !important;
+  padding-top: 0.45rem !important;
+  padding-bottom: 0.45rem !important;
+}
+form:has(#field-amount-input) > button:last-of-type {
+  padding-top: 0.7rem !important;
+  padding-bottom: 0.7rem !important;
+}
+form:has(#field-amount-input) > p {
+  margin-top: 0.35rem !important;
+}
+main > form.px-4.pt-4.space-y-4 > div[class*="bg-stone-850/"] { display: block !important; }
+main > form.px-4.pt-4.space-y-4 > button[class*="bg-stone-800/"] { display: flex !important; }
+main > form.px-4.pt-4 section:has(#field-party) > div:first-child { display: none !important; }
+main > form.px-4.pt-4 section:has(#field-party) { padding-top: 0.75rem !important; }
+main > form.px-4.pt-4.space-y-4 section:has(#field-party) > div:not(:first-child) {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+}
+main > form.px-4.pt-4.space-y-4 section:has(#field-party) > div:not(:first-child) > label {
+  flex: 0 0 auto !important;
+  margin: 0 !important;
+  white-space: nowrap !important;
+}
+main > form.px-4.pt-4.space-y-4 section:has(#field-party) > div:not(:first-child) > button {
+  flex: 1 1 auto !important;
+  width: auto !important;
+  min-width: 0 !important;
+  padding-top: 0.65rem !important;
+  padding-bottom: 0.65rem !important;
+}
+/* = 033-inline.css = */
+/* Prominent compound transaction badges. */
+article[id^="tx-card-"] span[class*="bg-violet-500/15"] {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.2rem !important;
+  padding: 2px 6px !important;
+  border-radius: 4px !important;
+  font-size: 9px !important;
+  line-height: 1.35 !important;
+  font-weight: 800 !important;
+  white-space: nowrap !important;
+}
+html[data-theme="light"] article[id^="tx-card-"] span[class*="bg-violet-500/15"] {
+  background-color: #eee7f2 !important;
+  border: 1px solid #b9a4c9 !important;
+  color: #624078 !important;
+  box-shadow: 0 1px 2px #6240781a !important;
+}
+html[data-theme="dark"] article[id^="tx-card-"] span[class*="bg-violet-500/15"] {
+  background-color: #2c2336 !important;
+  border: 1px solid #74588a !important;
+  color: #d8c0e6 !important;
+}
+/* = 034-inline.css = */
+/* Clear expanded compound method badge. */
+article[id^="tx-card-"] span[class~="text-violet-300"] {
+  display: inline-flex !important;
+  align-items: center !important;
+  padding: 2px 6px !important;
+  border-radius: 4px !important;
+  font-size: 9px !important;
+  line-height: 1.35 !important;
+  font-weight: 800 !important;
+}
+html[data-theme="light"] article[id^="tx-card-"] span[class~="text-violet-300"] {
+  background-color: #eee7f2 !important;
+  border-color: #b9a4c9 !important;
+  color: #624078 !important;
+}
+html[data-theme="dark"] article[id^="tx-card-"] span[class~="text-violet-300"] {
+  background-color: #2c2336 !important;
+  border-color: #74588a !important;
+  color: #d8c0e6 !important;
+}
+/* = 035-inline.css = */
+/* Strengthen dark theme surfaces across the app. */
+html[data-theme="dark"] {
+  --hesabno-dark-line: #46515f;
+  --hesabno-dark-line-strong: #596575;
+  --hesabno-dark-panel: #202833;
+  --hesabno-dark-card: #252c35;
+}
+
+/* Keep the hierarchy visible without making dark surfaces harsh. */
+html[data-theme="dark"] [class*="border-stone-700/60"] {
+  border-color: var(--hesabno-dark-line) !important;
+}
+html[data-theme="dark"] [class*="border-stone-700/70"] {
+  border-color: var(--hesabno-dark-line-strong) !important;
+}
+html[data-theme="dark"] [class*="border-stone-700/50"] {
+  border-color: #3f4a57 !important;
+}
+html[data-theme="dark"] [class*="divide-stone-700/40"] > * + * {
+  border-color: #3f4a57 !important;
+}
+
+/* The more menu and advanced report catalog use the same list-card pattern. */
+html[data-theme="dark"] main div[class*="divide-y"][class*="border-stone-700/60"] {
+  background: var(--hesabno-dark-panel) !important;
+  border-color: var(--hesabno-dark-line) !important;
+}
+html[data-theme="dark"] main div[class*="divide-y"][class*="border-stone-700/60"] > button[class*="text-right"] {
+  width: 100% !important;
+  margin: 3px 0 !important;
+  border: 1px solid var(--hesabno-dark-line) !important;
+  border-radius: 14px !important;
+  background: var(--hesabno-dark-card) !important;
+}
+html[data-theme="dark"] main div[class*="divide-y"][class*="border-stone-700/60"] > button[class*="text-right"]:hover {
+  background: #2e3743 !important;
+  border-color: var(--hesabno-dark-line-strong) !important;
+}
+html[data-theme="dark"] main div[class*="divide-y"][class*="border-stone-700/60"] > button[class*="text-right"]:active {
+  background: #343e4b !important;
+}
+
+/* Reinforce rounded dark panels elsewhere without changing the light theme. */
+html[data-theme="dark"] [class*="bg-stone-800/90"][class*="rounded"][class*="border"],
+html[data-theme="dark"] [class*="bg-stone-800/80"][class*="rounded"][class*="border"],
+html[data-theme="dark"] [class*="bg-stone-900/80"][class*="rounded"][class*="border"] {
+  border-color: var(--hesabno-dark-line) !important;
+}
+/* = 036-inline.css = */
+/* Shared bank identity and simple-report transaction cards. */
+.hesabno-bank-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  overflow: hidden;
+  margin-inline-end: 4px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 6px;
+  background: #e1f5fe;
+  vertical-align: middle;
+}
+.hesabno-bank-mark img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 2px;
+}
+html[data-theme="dark"] .hesabno-bank-mark {
+  border-color: rgba(148, 163, 184, 0.45);
+  background: #d9eef7;
+}
+
+.hesabno-report-transaction-card {
+  border: 1px solid #c8d5de !important;
+  border-radius: 24px !important;
+  background: #edf2f5 !important;
+}
+.hesabno-report-transaction-row {
+  margin-block: 6px !important;
+  padding: 10px 8px !important;
+  border: 1px solid #c8d5de !important;
+  border-radius: 14px !important;
+  background: #f8fbfd !important;
+}
+.hesabno-report-transaction-row:hover {
+  border-color: #9fb4c2 !important;
+  background: #f1f7fa !important;
+}
+.hesabno-report-bank-line {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 4px;
+  color: #526675;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1.4;
+}
+html[data-theme="dark"] .hesabno-report-transaction-card {
+  border-color: #46515f !important;
+  background: #202833 !important;
+}
+html[data-theme="dark"] .hesabno-report-transaction-row {
+  border-color: #46515f !important;
+  background: #252c35 !important;
+}
+html[data-theme="dark"] .hesabno-report-transaction-row:hover {
+  border-color: #596575 !important;
+  background: #2e3743 !important;
+}
+html[data-theme="dark"] .hesabno-report-bank-line {
+  color: #c4d0da;
+}
+/* = 037-inline.css = */
+/* Light report surfaces need a stronger card hierarchy than generic list rows. */
+html[data-theme="light"] main .hesabno-report-transaction-card {
+  border: 1px solid #aebfc9 !important;
+  background: #e3edf2 !important;
+  box-shadow: 0 3px 10px rgba(74, 99, 115, 0.12) !important;
+}
+html[data-theme="light"] main .hesabno-report-transaction-card .hesabno-report-transaction-row {
+  border-style: solid !important;
+  border-width: 1px !important;
+  border-color: #aebfc9 !important;
+  background: #f8fbfd !important;
+  box-shadow: 0 1px 3px rgba(74, 99, 115, 0.12) !important;
+}
+html[data-theme="light"] main .hesabno-report-transaction-card .hesabno-report-transaction-row:hover {
+  border-color: #7f9aaa !important;
+  background: #f1f7fa !important;
+}
+
+/* Report mode tabs are a segmented control, not plain text on the page. */
+html[data-theme="light"] .hesabno-report-mode-tabs {
+  gap: 4px !important;
+  padding: 4px !important;
+  background: #e3edf2 !important;
+  border: 1px solid #aebfc9 !important;
+  box-shadow: 0 2px 6px rgba(74, 99, 115, 0.12) !important;
+}
+html[data-theme="light"] .hesabno-report-mode-tabs > button {
+  border: 1px solid #c3d2db !important;
+  background: #f8fbfd !important;
+  color: #536a78 !important;
+}
+html[data-theme="light"] .hesabno-report-mode-tabs > button[class*="bg-amber-400"] {
+  border-color: #c18f2d !important;
+  background: #f5c453 !important;
+  color: #503800 !important;
+  box-shadow: 0 1px 3px rgba(120, 83, 10, 0.18) !important;
+}
+
+html[data-theme="dark"] .hesabno-report-mode-tabs {
+  gap: 4px !important;
+  padding: 4px !important;
+  background: #202833 !important;
+  border: 1px solid #46515f !important;
+}
+html[data-theme="dark"] .hesabno-report-mode-tabs > button {
+  border: 1px solid #46515f !important;
+  background: #252c35 !important;
+}
+html[data-theme="dark"] .hesabno-report-mode-tabs > button[class*="bg-amber-400"] {
+  border-color: #d29b2d !important;
+  background: #f5c453 !important;
+  color: #3f2b00 !important;
+}
+/* = 038-inline.css = */
+/* Light advanced report catalog cards. */
+html[data-theme="light"] main div[class*="divide-y"][class*="border-stone-700/60"] {
+  padding: 4px !important;
+  background: #e3edf2 !important;
+  border: 1px solid #aebfc9 !important;
+}
+html[data-theme="light"] main div[class*="divide-y"][class*="border-stone-700/60"] > button[class*="text-right"] {
+  width: calc(100% - 12px) !important;
+  margin: 3px 6px !important;
+  border-style: solid !important;
+  border-width: 1px !important;
+  border-color: #b5c6d0 !important;
+  border-radius: 14px !important;
+  background: #f8fbfd !important;
+  box-shadow: 0 1px 3px rgba(74, 99, 115, 0.1) !important;
+}
+html[data-theme="light"] main div[class*="divide-y"][class*="border-stone-700/60"] > button[class*="text-right"]:hover {
+  border-color: #829aaa !important;
+  background: #f1f7fa !important;
+  box-shadow: 0 2px 5px rgba(74, 99, 115, 0.14) !important;
+}
+html[data-theme="light"] main div[class*="divide-y"][class*="border-stone-700/60"] > button[class*="text-right"]:active {
+  border-color: #6f8999 !important;
+  background: #eaf3f7 !important;
+}
+/* = 039-inline.css = */
+/* Light, short motion for navigation, content swaps, overlays, and feedback. */
+@keyframes hesabno-page-enter {
+  from { opacity: 0.96; transform: translate3d(8px, 0, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+@keyframes hesabno-content-swap {
+  from { opacity: 0.9; transform: translate3d(5px, 0, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+@keyframes hesabno-overlay-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes hesabno-dialog-in {
+  from { opacity: 0; transform: translateY(12px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes hesabno-toast-in {
+  from { opacity: 0; transform: translate(-50%, -12px) scale(0.94); }
+  to { opacity: 1; transform: translate(-50%, 0) scale(1); }
+}
+@keyframes hesabno-soft-pop {
+  from { opacity: 0.65; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.hesabno-tab-motion {
+  transition: transform 180ms ease, background-color 220ms ease, border-color 220ms ease, color 220ms ease, box-shadow 220ms ease !important;
+  transform-origin: center;
+}
+.hesabno-tab-motion:hover { transform: translateY(-1px); }
+.hesabno-tab-motion:active { transform: scale(0.96); }
+.hesabno-overlay-motion { animation: hesabno-overlay-in 180ms ease-out both; }
+.hesabno-dialog-motion { animation: hesabno-dialog-in 260ms cubic-bezier(0.22, 1, 0.36, 1) both; transform-origin: center bottom; }
+.hesabno-toast-motion {
+  animation: hesabno-toast-in 300ms cubic-bezier(0.22, 1, 0.36, 1) both !important;
+  top: 16px !important;
+}
+.hesabno-toast-motion > div {
+  min-width: min(320px, calc(100vw - 32px));
+  padding: 14px 18px !important;
+  border-radius: 18px !important;
+  font-size: 13px !important;
+  line-height: 1.5 !important;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.18) !important;
+}
+.hesabno-feedback-pop { animation: hesabno-soft-pop 260ms ease-out both; }
+.hesabno-control-no-motion, .hesabno-control-no-motion * { animation: none !important; transition: none !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+/* = 040-inline.css = */
+/* Transaction date bar and icon surfaces. */
+html[data-theme="light"] main div[class*="sticky"][class*="bg-stone-900/95"][class*="border-b"],
+html[data-theme="dark"] main div[class*="sticky"][class*="bg-stone-900/95"][class*="border-b"] {
+  margin-inline: 0 !important;
+  padding-inline: 12px !important;
+  border: 1px solid #b3c4ce !important;
+  border-radius: 16px !important;
+}
+html[data-theme="light"] main div[class*="sticky"][class*="bg-stone-900/95"][class*="border-b"] {
+  background: #edf4f7 !important;
+  border-color: #aebfc9 !important;
+  box-shadow: 0 2px 7px rgba(74, 99, 115, 0.1) !important;
+}
+html[data-theme="dark"] main div[class*="sticky"][class*="bg-stone-900/95"][class*="border-b"] {
+  background: #202833 !important;
+  border-color: #46515f !important;
+  box-shadow: 0 2px 7px rgba(0, 0, 0, 0.18) !important;
+}
+html[data-theme="light"] article[id^="tx-card-"] span[class*="select-none"][class*="bg-transparent"] {
+  background: #fff4e4 !important;
+  border: 1px solid #d6aa65 !important;
+  box-shadow: 0 2px 6px rgba(145, 95, 22, 0.12) !important;
+}
+html[data-theme="dark"] article[id^="tx-card-"] span[class*="select-none"][class*="bg-transparent"] {
+  background: #35291f !important;
+  border: 1px solid #d9954a !important;
+  box-shadow: 0 2px 7px rgba(0, 0, 0, 0.24) !important;
+}
+
+/* Neutral, readable feedback instead of a saturated toast fill. */
+.hesabno-toast-motion {
+  cursor: pointer !important;
+  pointer-events: auto !important;
+  touch-action: pan-y !important;
+}
+.hesabno-toast-motion > div {
+  background: rgba(255, 255, 255, 0.96) !important;
+  color: #263746 !important;
+  border: 1px solid #aebfc9 !important;
+}
+html[data-theme="light"] .hesabno-toast-motion > div {
+  background-color: rgba(255, 255, 255, 0.96) !important;
+  color: #263746 !important;
+}
+html[data-theme="dark"] .hesabno-toast-motion > div {
+  background-color: rgba(24, 27, 32, 0.96) !important;
+  color: #e3edf2 !important;
+  border-color: #596575 !important;
+}
+@keyframes hesabno-toast-out-up {
+  from { opacity: 1; transform: translate(-50%, 0) scale(1); }
+  to { opacity: 0; transform: translate(-50%, -16px) scale(0.96); }
+}
+.hesabno-toast-dismissing { animation: hesabno-toast-out-up 180ms ease-in forwards !important; }
+/* = 041-hesabno-light-balance.css = */
+html[data-theme="light"] body,
+html[data-theme="light"] #root,
+html[data-theme="light"] #root > div,
+html[data-theme="light"] #root > div > div { background-color: #edf2f5 !important; }
+html[data-theme="light"] main, html[data-theme="light"] main[class*="bg-stone-900"] { background-color: #dfe8ee !important; background-image: none !important; }
+html[data-theme="light"] [class~="bg-stone-950"] { background-color: #d9e3e9 !important; }
+html[data-theme="light"] [class~="bg-stone-900"],
+html[data-theme="light"] [class*="bg-stone-900/"] { background-color: #eef3f6 !important; }
+html[data-theme="light"] [class~="bg-stone-850"],
+html[data-theme="light"] [class*="bg-stone-850/"] { background-color: #e6edf1 !important; }
+html[data-theme="light"] [class~="bg-stone-800"],
+html[data-theme="light"] [class*="bg-stone-800/"] { background-color: #e1e8ed !important; }
+html[data-theme="light"] [class~="bg-stone-750"],
+html[data-theme="light"] [class*="bg-stone-750/"] { background-color: #d5e0e6 !important; }
+html[data-theme="light"] .text-stone-100 { color: #26343e !important; }
+html[data-theme="light"] .text-stone-200 { color: #374650 !important; }
+html[data-theme="light"] main h1.text-white { color: #2d3b45 !important; }
+html[data-theme="light"] nav.fixed { background-color: #e5edf1 !important; }
+/* = 042-hesabno-tab-motion.css = */
+.hesabno-tab-shell { animation: hesabnoTabShellIn 180ms ease-out both; }
+@keyframes hesabnoTabShellIn { from { opacity: 0.94; transform: none; } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .hesabno-tab-shell { animation: none !important; } }

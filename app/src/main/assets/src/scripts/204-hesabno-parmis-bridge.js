@@ -80,6 +80,6 @@ function tick(){
  var b=document.createElement('button');b.type='button';b.textContent='باز کردن ابزار ورود پارمیس';b.style.cssText='width:100%;min-height:44px;border-radius:12px;border:0;background:#7c3aed;color:#fff;font-weight:700;font-size:15px;font-family:inherit;cursor:pointer';b.onclick=openImporter;card.appendChild(b);
  sc.insertBefore(card,sc.firstChild);
 }
-function start(){new MutationObserver(tick).observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});tick()}
+function start(){window.__hesabnoDom.watch(document.body, {childList:true,subtree:true,attributes:true,attributeFilter:['class']}, tick);tick()}
 if(document.body)start();else document.addEventListener('DOMContentLoaded',start);
 })();

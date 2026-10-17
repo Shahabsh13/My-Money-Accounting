@@ -61,6 +61,6 @@
 
   setup();
   if (document.body) {
-    new MutationObserver(function () { window.requestAnimationFrame(setup); }).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] });
+    window.__hesabnoDom.watch(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] }, function () { window.requestAnimationFrame(setup); });
   }
   })();

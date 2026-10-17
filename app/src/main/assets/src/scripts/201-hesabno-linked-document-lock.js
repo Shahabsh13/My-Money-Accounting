@@ -416,7 +416,7 @@
       window.setTimeout(function () { scheduled = false; sync(); }, 0);
     };
     sync();
-    if (document.body) new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true });
+    if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, schedule);
     window.addEventListener("storage", schedule);
     var resume = "";
     try { resume = sessionStorage.getItem("hesabno:linked-cancel-resume") || ""; sessionStorage.removeItem("hesabno:linked-cancel-resume"); } catch (error) {}

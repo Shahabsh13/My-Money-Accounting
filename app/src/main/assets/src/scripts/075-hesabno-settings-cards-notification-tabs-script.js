@@ -54,6 +54,6 @@
       setTab("daily");
     });
   };
-  new MutationObserver(setup).observe(root, { childList: true, subtree: true });
+  window.__hesabnoDom.watch(root, { childList: true, subtree: true }, setup);
   setup();
 })();

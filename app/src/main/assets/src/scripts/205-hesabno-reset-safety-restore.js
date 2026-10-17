@@ -28,5 +28,5 @@
     }catch(e){try{console.warn("[hesabno]",e)}catch(_){}}
   };
   add();
-  if(document.body) new MutationObserver(add).observe(document.body,{childList:true,subtree:true});
+  if(document.body) window.__hesabnoDom.watch(document.body, {childList:true,subtree:true}, add);
 })();

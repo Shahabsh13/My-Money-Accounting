@@ -83,7 +83,7 @@
     window.addEventListener("focusin", schedule, true);
     document.addEventListener("click", schedule, true);
     document.addEventListener("focusin", schedule, true);
-    if (document.body) new MutationObserver(schedule).observe(document.body, { childList: true, characterData: true, subtree: true });
+    if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, characterData: true, subtree: true }, schedule);
     try { update(); } catch (error) {}
     window.setTimeout(function () { try { update(); } catch (error) {} }, 150);
   })();

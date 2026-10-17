@@ -1,5 +1,14 @@
 @keyframes hesabno-page-open-up { from { opacity: 0; transform: translate3d(0, 18px, 0); } to { opacity: 1; transform: translate3d(0, 0, 0); } }
-@keyframes hesabno-page-exit-down { from { opacity: 1; transform: translate3d(0, 0, 0); } to { opacity: 0.92; transform: translate3d(0, 18px, 0); } }
-@keyframes hesabno-tab-horizontal-in { from { opacity: 0.94; transform: translate3d(6px, 0, 0); } to { opacity: 1; transform: translate3d(0, 0, 0); } }
+@keyframes hesabno-page-exit-down { from { opacity: 1; transform: translate3d(0, 0, 0); } to { opacity: .92; transform: translate3d(0, 18px, 0); } }
+@keyframes hesabno-tab-horizontal-in { from { opacity: .94; transform: translate3d(6px, 0, 0); } to { opacity: 1; transform: translate3d(0, 0, 0); } }
 main.hesabno-page-exit-down { animation: hesabno-page-exit-down 250ms cubic-bezier(.55,.05,.68,.19) both !important; pointer-events: none; will-change: opacity, transform; backface-visibility: hidden; }
 @media (prefers-reduced-motion: reduce) { main.hesabno-page-open-up, main.hesabno-page-exit-down { animation: none !important; } }
+/* Avoid post-render position shifts when enhancement scripts add entry classes. */
+main.hesabno-page-open-up,
+main.hesabno-tab-horizontal-in,
+main.hesabno-content-swap,
+.hesabno-tab-shell {
+  animation: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
