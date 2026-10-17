@@ -35,5 +35,5 @@
   run();
   [300, 900, 2000].forEach(function (d) { setTimeout(run, d); });
   document.addEventListener('click', function () { [0, 150, 500].forEach(function (d) { setTimeout(run, d); }); }, true);
-  if (document.body) new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true });
+  if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, schedule);
 })();

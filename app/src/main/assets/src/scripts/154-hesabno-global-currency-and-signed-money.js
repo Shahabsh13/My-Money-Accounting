@@ -83,7 +83,7 @@
         window.queueMicrotask(function () { queued = false; sync(); });
       };
       sync();
-      if (document.body) new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true, characterData: true });
+      if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true, characterData: true }, schedule);
       window.addEventListener("storage", function (event) { if (!event.key || event.key === currencyKey) schedule(); });
       try {
         var originalSetItem = Storage.prototype.setItem;

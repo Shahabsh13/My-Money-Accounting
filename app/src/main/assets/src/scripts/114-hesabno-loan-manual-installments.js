@@ -110,8 +110,9 @@
         activeMode = fields.purchase ? "create" : clean(fields.name.value) ? "edit" : "create";
         resetSession(main);
         if (activeMode === "create") {
-          previewObserver = new MutationObserver(function () { clearUntouched(main); });
-          previewObserver.observe(main, { childList: true, subtree: true, characterData: true });
+          /* لایه‌ی مشترک MutationObserver (مرحله ۴): هدف، عنصر main است (گره‌ی غیریکتا؛ کلید
+             رجیستری با WeakMap روی خودِ گره ساخته می‌شود تا به گره‌ی اشتباه وصل نشود). */
+          previewObserver = window.__hesabnoDom.watch(main, { childList: true, subtree: true, characterData: true }, function () { clearUntouched(main); });
         }
       }
       if (activeMode !== "create") return;
@@ -146,5 +147,5 @@
       }
     }, true);
     sync();
-    if (document.body) new MutationObserver(sync).observe(document.body, { childList: true, subtree: true });
+    if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, sync);
   })();

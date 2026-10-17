@@ -52,7 +52,7 @@
   }
 
   if (document.body) {
-    new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
+    window.__hesabnoDom.watch(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] }, schedule);
   }
   check();
 })();

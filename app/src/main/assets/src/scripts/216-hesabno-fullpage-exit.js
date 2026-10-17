@@ -66,12 +66,12 @@
     window.setTimeout(function () { if (ghost.parentNode) ghost.parentNode.removeChild(ghost); }, (item.kind === 'toast' ? TOAST_DURATION : DURATION) + 60);
   }
 
-  new MutationObserver(function (records) {
+  window.__hesabnoDom.watch(document.body || document.documentElement, { childList: true, subtree: true }, function (records) {
     records.forEach(function (record) {
       Array.prototype.forEach.call(record.removedNodes, function (node) {
         if (node.isConnected) return; // فقط حذف واقعی، نه جابه‌جایی
         collect(node).forEach(exitItem);
       });
     });
-  }).observe(document.body || document.documentElement, { childList: true, subtree: true });
+  });
 })();

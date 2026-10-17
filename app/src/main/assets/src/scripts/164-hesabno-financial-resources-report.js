@@ -119,7 +119,7 @@
     };
     render();
     var root = document.documentElement || document.body;
-    if (root) new MutationObserver(schedule).observe(root, { childList: true, characterData: true, subtree: true });
+    if (root) window.__hesabnoDom.watch(root, { childList: true, characterData: true, subtree: true }, schedule);
     window.addEventListener("storage", function (event) {
       if (!event.key || event.key === "hesabno:transactions" || event.key === "hesabno:accounts" || event.key === "hesabno:accounts_v5" || event.key === "hesabno:currency") schedule();
     });

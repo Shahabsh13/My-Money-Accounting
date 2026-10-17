@@ -296,7 +296,7 @@
       timer = window.setTimeout(function () { timer = 0; sync(); }, delay || 0);
     };
     sync();
-    if (document.body) new MutationObserver(function () { schedule(30); }).observe(document.body, { childList: true, subtree: true });
+    if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, function () { schedule(30); });
     document.addEventListener("click", function (event) {
       var button = event.target && event.target.closest ? event.target.closest("button") : null;
       var section = button && button.closest("section");

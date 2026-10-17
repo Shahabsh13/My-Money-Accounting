@@ -376,8 +376,9 @@
     // همه‌ی تغییرات همان burst را قبل از paint در یک پاس جمع می‌کند.
     Promise.resolve().then(function () { motionQueued = false; enhance(); });
   }
-  dashboardObserver = new MutationObserver(scheduleDashboardEnhance);
-  if (document.body) dashboardObserver.observe(document.body, { childList: true, subtree: true });
+  /* لایه‌ی مشترک MutationObserver (مرحله ۴): dashboardObserver نماینده‌ی ثبت است و همان
+     disconnect/observe چرخه‌ی همیشگی را پشتیبانی می‌کند (بدون ساخته‌شدن observer مستقل). */
+  if (document.body) dashboardObserver = window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, scheduleDashboardEnhance);
   enhance();
   document.addEventListener("click", function (event) {
     var toggle = event.target && event.target.closest ? event.target.closest('button[title="تغییر نحوه محاسبه موجودی در صفحه داشبورد"]') : null;

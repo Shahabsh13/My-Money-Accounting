@@ -439,10 +439,12 @@
     }
   }
 
-  var observer = new MutationObserver(onMutations);
+  /* لایه‌ی مشترک MutationObserver (مرحله ۴): ثبت در observer مشترک body به‌جای observer مستقل.
+     start() فقط یک‌بار اجرا می‌شود، ولی برای اطمینان دو بار ثبت نمی‌کنیم. */
+  var observer = null;
   function start() {
     enhance();
-    if (document.body) observer.observe(document.body, { childList: true, subtree: true });
+    if (!observer && document.body) observer = window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, onMutations);
     setTimeout(enhance, 250);
     setTimeout(enhance, 900);
   }

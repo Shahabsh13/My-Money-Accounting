@@ -2,6 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const { installSharedDomObserver } = require('./helpers/production-slices.cjs');
 const { JSDOM } = require('jsdom');
 
 const root = path.resolve(__dirname, '..');
@@ -15,6 +16,7 @@ function mount(options = {}) {
   if (!options.legacyTouch) dom.window.PointerEvent = dom.window.MouseEvent; // jsdom lacks PointerEvent by default; emulate modern Android WebView support.
   dom.window.requestAnimationFrame = callback => { callback(); return 1; };
   dom.window.setTimeout = callback => { callback(); return 1; };
+  installSharedDomObserver(dom.window);
   dom.window.eval(keypadSource);
   dom.window.eval(geometrySource);
   dom.window.document.dispatchEvent(new dom.window.Event("DOMContentLoaded", { bubbles: true }));

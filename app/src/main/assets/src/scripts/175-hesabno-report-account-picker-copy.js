@@ -52,5 +52,5 @@
       frame = requestAnimationFrame(function () { frame = 0; update(); });
     };
     update();
-    if (document.body) new MutationObserver(schedule).observe(document.body, { childList: true, characterData: true, attributes: true, attributeFilter: ["class"], subtree: true });
+    if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, characterData: true, attributes: true, attributeFilter: ["class"], subtree: true }, schedule);
   })();

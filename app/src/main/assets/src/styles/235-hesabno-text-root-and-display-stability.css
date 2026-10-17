@@ -1,0 +1,151 @@
+/**
+ * لایه ۲۳۵: پایداری ریشه‌ای و نمایشی متون، فونت و ساختار عبارات در جابه‌جایی و باز کردن
+ * HesabNo Root & Display Typography Stability Layer
+ */
+
+:root {
+  /* پیش‌فرض‌های افتادی؛ مقادیر خود برنامه (html[data-font=...]) اولویت دارند */
+  --font-primary: "Vazirmatn", "IRANSans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, system-ui, sans-serif;
+  --font-sans: var(--font-primary);
+  --hesabno-font: var(--font-primary);
+}
+
+/* ۱. تثبیت فونت از ریشه (HTML, Body, Root و تمامی متون فارسی) */
+html,
+body,
+#root,
+button,
+input,
+select,
+textarea,
+p,
+span,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+label,
+article,
+div {
+  font-family: var(--font-primary) !important;
+  text-rendering: optimizeLegibility !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+}
+
+/* جلوگیری مطلق از گسستگی و جدا شدن حروف چسبان فارسی در تمام المان‌ها */
+*,
+*::before,
+*::after {
+  letter-spacing: normal !important;
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1 !important;
+}
+
+/* قوانین شکست متن: کلمات فارسی هرگز از وسط تکه‌تکه نمی‌شوند */
+body,
+p,
+span,
+label,
+div,
+button,
+article {
+  word-break: normal;
+  overflow-wrap: break-word;
+  line-break: loose;
+  hyphens: none !important;
+  -webkit-hyphens: none !important;
+}
+
+/* ۲. پایداری ریشه‌ای هنگام جابه‌جایی (انتقال بین صفحات و تب‌ها) */
+main,
+main.hesabno-page-open-up,
+main.hesabno-tab-horizontal-in,
+main.hesabno-content-swap,
+main.hesabno-page-enter,
+.hesabno-tab-shell,
+.hesabno-full-page-side-open {
+  transform: none !important;
+  scale: none !important;
+  backface-visibility: visible !important;
+  -webkit-backface-visibility: visible !important;
+}
+
+/* ۳. رفع کامل بهم‌خوردن متن در کارت‌های انتقال (از مبدأ به مقصد) */
+[data-hesabno-transfer-row="true"] {
+  white-space: nowrap !important;
+  flex-wrap: nowrap !important;
+  display: flex !important;
+  align-items: center !important;
+  direction: rtl !important;
+}
+
+[data-hesabno-transfer-row="true"] span {
+  letter-spacing: normal !important;
+}
+
+[data-hesabno-transfer-row="true"] span.font-semibold {
+  display: inline-block !important;
+  max-width: 140px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  vertical-align: middle !important;
+  overflow-wrap: normal !important;
+  word-break: normal !important;
+  flex-shrink: 1 !important;
+}
+
+[data-hesabno-transfer-row="true"] span:not(.font-semibold) {
+  flex-shrink: 0 !important;
+  white-space: nowrap !important;
+}
+
+/* ۴. پایداری متن هنگام باز کردن کارت‌های تراکنش و سطر توضیحات */
+article[id^="tx-card-"] {
+  transform: none !important;
+}
+
+article[id^="tx-card-"] p.leading-tight {
+  white-space: normal !important;
+  overflow-wrap: break-word !important;
+  word-break: normal !important;
+  line-break: loose !important;
+  line-height: 1.55 !important;
+}
+
+article[id^="tx-card-"] span {
+  letter-spacing: normal !important;
+}
+
+/* ۵. محافظت از پرانتزها، شماره سندها و تاریخ در متون ترکیبی فارسی و لاتین */
+.font-mono,
+[data-hesabno-money-rtl="true"],
+article span[class*="font-mono"],
+.hesabno-transaction-day-date,
+[data-hesabno-date-badge="true"] {
+  unicode-bidi: isolate !important;
+  display: inline-block !important;
+}
+
+/* ۶. تمیز و شفاف ماندن سربرگ روزها و عناوین حساب‌ها */
+.hesabno-transaction-day-header,
+.hesabno-transaction-day-date,
+.hesabno-statement-bank-name,
+.hesabno-statement-account-number,
+.hesabno-more-category-heading {
+  letter-spacing: normal !important;
+  text-rendering: optimizeLegibility !important;
+}
+
+/* ۷. حفظ فونت مونواسپیس برنامه (اعداد/مبالغ/شبا) در برابر قاعده‌ی بالا */
+.font-mono,
+.font-mono *,
+[data-hesabno-money-rtl="true"],
+code,
+kbd,
+pre {
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace) !important;
+  font-variant-numeric: tabular-nums;
+}

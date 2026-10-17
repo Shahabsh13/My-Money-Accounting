@@ -67,6 +67,6 @@
      });
    };
    enhance();
-   if (document.body) new MutationObserver(enhance).observe(document.body, { childList: true, subtree: true });
-   if (document.documentElement) new MutationObserver(enhance).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+   if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, enhance);
+   if (document.documentElement) window.__hesabnoDom.watch(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] }, enhance);
  })();

@@ -116,5 +116,5 @@
     return true;
   };
   sync();
-  if (document.body) new MutationObserver(function () { window.requestAnimationFrame(sync); }).observe(document.body, { childList: true, subtree: true });
+  if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, function () { window.requestAnimationFrame(sync); });
 })();

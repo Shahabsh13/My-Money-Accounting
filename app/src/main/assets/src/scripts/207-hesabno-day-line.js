@@ -31,6 +31,6 @@
     finally{setTimeout(function(){busy=false},0)}
   }
   var tm=null;function sched(){clearTimeout(tm);tm=setTimeout(run,120)}
-  function start(){run();new MutationObserver(sched).observe(document.body,{childList:true,subtree:true})}
+  function start(){run();window.__hesabnoDom.watch(document.body, {childList:true,subtree:true}, sched);}
   if(document.body)start();else document.addEventListener("DOMContentLoaded",start);
 })();

@@ -1,0 +1,502 @@
+/* بسته‌ی 070-report-layouts.css | چیدمان گزارش‌ها، صورتحساب و جداول تفصیلی
+   ادغام 17 فایل با همان ترتیب آبشار: 153-hesabno-signed-money-direction.css 155-hesabno-account-statement-transaction-styles.css 157-hesabno-dashboard-category-account-icons.css 158-hesabno-dashboard-category-widget-compact.css 161-hesabno-category-report-account-icons-style.css 163-hesabno-financial-resources-report-style.css 165-hesabno-daily-report-presentation-style.css 167-hesabno-balance-report-remove-extra-descriptions.css 169-hesabno-balance-detail-codes-and-panel.css 172-hesabno-statement-picker-remove-helper-copy.css 174-hesabno-report-account-picker-copy-styles.css 176-hesabno-detail-column-chart-layout.css 178-hesabno-global-breakdown-copy-layout.css 180-hesabno-advanced-reports-no-search.css 181-hesabno-hide-subsidiary-account-codes-global.css 183-hesabno-report-selection-label-spacing.css 185-hesabno-account-statement-frame-and-column-alignme.css */
+/* = 153-hesabno-signed-money-direction.css = */
+[data-hesabno-money-rtl="true"] {
+      direction: rtl !important;
+      unicode-bidi: isolate !important;
+    }
+/* = 155-hesabno-account-statement-transaction-styles.css = */
+.hesabno-account-statement-panel .hesabno-statement-header-hidden-cell { display: none !important; }
+    .hesabno-account-statement-panel .hesabno-statement-sticky-date {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      flex: 0 0 auto;
+      width: calc(100% - 1rem);
+      max-width: 40.5rem;
+      min-height: 2.25rem;
+      padding: .35rem .7rem;
+      margin: .35rem auto;
+      border: 1px solid #405a66;
+      border-radius: .75rem;
+      background: linear-gradient(135deg, #1d303a, #263b45);
+      box-shadow: 0 3px 10px rgba(0, 0, 0, .16);
+      color: #f1f7f8;
+      direction: ltr;
+      font: 800 .75rem/1.2 Vazirmatn, system-ui, sans-serif;
+      font-variant-numeric: tabular-nums;
+    }
+    .hesabno-account-statement-panel .hesabno-statement-counterparty {
+      display: flex;
+      align-items: center;
+      gap: .55rem;
+      min-width: 0;
+      padding: .3rem .25rem .05rem;
+      border-top: 0;
+    }
+    .hesabno-account-statement-panel .hesabno-statement-counterparty-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 2rem;
+      width: 2rem;
+      height: 2rem;
+      overflow: hidden;
+      border: 1px solid #4a626d;
+      border-radius: .75rem;
+      background: #253943;
+      font-size: .95rem;
+      line-height: 1;
+    }
+    .hesabno-account-statement-panel .hesabno-statement-counterparty-icon img {
+      width: 100%;
+      height: 100%;
+      padding: .15rem;
+      object-fit: contain;
+    }
+    .hesabno-account-statement-panel .hesabno-statement-counterparty-name {
+      min-width: 0;
+      overflow: hidden;
+      color: #edf5f7;
+      font-size: .7rem;
+      font-weight: 800;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .hesabno-account-statement-panel .hesabno-statement-description {
+      display: flex;
+      align-items: baseline;
+      gap: .4rem;
+      min-width: 0;
+      padding: .32rem .55rem;
+      border: 1px solid #344955;
+      border-radius: .55rem;
+      background: #1b2932;
+      color: #dce8eb;
+      font-size: .65rem;
+    }
+    .hesabno-account-statement-panel .hesabno-statement-description-label {
+      flex: 0 0 auto;
+      color: #9db4bd;
+      font-weight: 800;
+    }
+    .hesabno-account-statement-panel .hesabno-statement-description-value {
+      min-width: 0;
+      overflow: hidden;
+      color: #f1f6f7;
+      font-weight: 650;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .hesabno-account-statement-panel .hesabno-statement-meta-chip {
+      display: inline-flex !important;
+      align-items: center;
+      gap: .25rem;
+      padding: .14rem .42rem !important;
+      border-radius: 4px !important;
+      font-size: .62rem !important;
+      font-weight: 800 !important;
+      line-height: 1.35;
+    }
+    .hesabno-account-statement-panel .hesabno-statement-project-chip,
+    .hesabno-account-statement-panel .hesabno-statement-family-chip {
+      border: 1px solid rgba(148, 163, 184, .2) !important;
+      background: rgba(100, 116, 139, .10) !important;
+      color: #cbd5e1 !important;
+    }
+    html[data-theme="light"] .hesabno-account-statement-panel .hesabno-statement-sticky-date,
+    html.theme-light .hesabno-account-statement-panel .hesabno-statement-sticky-date {
+      border-color: #b3cbd5;
+      background: linear-gradient(135deg, #f5fafc, #e8f2f6);
+      box-shadow: 0 3px 10px rgba(42, 77, 91, .1);
+      color: #244450;
+    }
+    html[data-theme="light"] .hesabno-account-statement-panel .hesabno-statement-counterparty,
+    html.theme-light .hesabno-account-statement-panel .hesabno-statement-counterparty {
+      border-top-color: #d4e0e5;
+    }
+    html[data-theme="light"] .hesabno-account-statement-panel .hesabno-statement-counterparty-icon,
+    html.theme-light .hesabno-account-statement-panel .hesabno-statement-counterparty-icon {
+      border-color: #c7d6dd;
+      background: #f1f6f8;
+    }
+    html[data-theme="light"] .hesabno-account-statement-panel .hesabno-statement-counterparty-name,
+    html.theme-light .hesabno-account-statement-panel .hesabno-statement-counterparty-name {
+      color: #243f4c;
+    }
+    html[data-theme="light"] .hesabno-account-statement-panel .hesabno-statement-description,
+    html.theme-light .hesabno-account-statement-panel .hesabno-statement-description {
+      border-color: #d0dfe5;
+      background: #f4f8fa;
+      color: #365361;
+    }
+    html[data-theme="light"] .hesabno-account-statement-panel .hesabno-statement-description-label,
+    html.theme-light .hesabno-account-statement-panel .hesabno-statement-description-label {
+      color: #607b87;
+    }
+    html[data-theme="light"] .hesabno-account-statement-panel .hesabno-statement-description-value,
+    html.theme-light .hesabno-account-statement-panel .hesabno-statement-description-value {
+      color: #253f4b;
+    }
+    html[data-theme="light"] .hesabno-account-statement-panel .hesabno-statement-project-chip,
+    html.theme-light .hesabno-account-statement-panel .hesabno-statement-project-chip {
+      border-color: #cbd5e1 !important;
+      background: #f1f5f9 !important;
+      color: #475569 !important;
+    }
+/* = 157-hesabno-dashboard-category-account-icons.css = */
+.hesabno-dashboard-category-icon { font-size: 14px !important; line-height: 1 !important; }
+    .hesabno-dashboard-category-icon img { width: 100%; height: 100%; padding: 2px; object-fit: contain; }
+/* = 158-hesabno-dashboard-category-widget-compact.css = */
+section[data-hesabno-category-widget-compact="true"] { padding: .75rem !important; }
+    section[data-hesabno-category-widget-compact="true"] > :not([hidden]) ~ :not([hidden]) {
+      margin-block-start: .5rem !important;
+      margin-block-end: 0 !important;
+    }
+    [data-hesabno-category-period-hidden="true"] { display: none !important; }
+    [data-hesabno-category-header="true"] { gap: .4rem !important; }
+    [data-hesabno-category-header-icon="true"] { width: 1.75rem !important; height: 1.75rem !important; }
+    [data-hesabno-category-summary="true"] { padding-top: .25rem !important; }
+    [data-hesabno-category-summary="true"] > div:first-child button { padding: .25rem .5rem !important; }
+/* = 161-hesabno-category-report-account-icons-style.css = */
+.hesabno-category-report-account-icon { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; flex: 0 0 auto; font-size: 14px; line-height: 1; }
+    .hesabno-category-report-account-icon img { width: 100%; height: 100%; object-fit: contain; }
+    [data-hesabno-category-report-detail-items-duplicate="true"] { display: none !important; }
+/* = 163-hesabno-financial-resources-report-style.css = */
+[data-hesabno-financial-header] { gap: .5rem; }
+    [data-hesabno-financial-header] > div:first-child { min-width: 0; }
+    [data-hesabno-financial-title] { white-space: nowrap; }
+    [data-hesabno-financial-current] { white-space: nowrap; flex: 0 0 auto; }
+    [data-hesabno-period-badge], [data-hesabno-period-subtitle] { display: none !important; }
+    [data-hesabno-resources-summary] {
+      display: grid !important;
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      gap: .5rem !important;
+    }
+    [data-hesabno-resources-summary] > div { min-width: 0; }
+    [data-hesabno-summary-balance] { grid-column: 1 / -1; }
+    [data-hesabno-resources-summary] p[data-hesabno-money-ltr] {
+      max-width: none !important;
+      overflow: visible !important;
+      text-overflow: clip !important;
+      white-space: nowrap !important;
+      font-size: clamp(11px, 3vw, 14px) !important;
+      letter-spacing: -.035em;
+    }
+    [data-hesabno-resources-summary] [data-hesabno-summary-label] { white-space: nowrap; }
+    .hesabno-report-bank-heading { white-space: normal; }
+    .hesabno-report-bank-logo {
+      background-color: #fff !important;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: contain;
+      border-color: transparent !important;
+      color: transparent !important;
+      font-size: 0 !important;
+      overflow: hidden;
+      padding: 4px;
+    }
+    @media (min-width: 640px) {
+      [data-hesabno-resources-summary] { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+      [data-hesabno-summary-balance] { grid-column: auto; }
+      [data-hesabno-resources-summary] p[data-hesabno-money-ltr] { font-size: 14px !important; }
+    }
+/* = 165-hesabno-daily-report-presentation-style.css = */
+[data-hesabno-daily-month-selected-label="true"] { display: none !important; }
+/* = 167-hesabno-balance-report-remove-extra-descriptions.css = */
+[data-hesabno-balance-report-extra-description="true"] { display: none !important; }
+/* = 169-hesabno-balance-detail-codes-and-panel.css = */
+[data-hesabno-balance-detail-code="true"] { display: none !important; }
+    [data-hesabno-balance-detail-entry="true"] { background-color: transparent !important; }
+    [data-hesabno-balance-detail-panel="true"] { background-color: transparent !important; border-right: 0 !important; }
+/* = 172-hesabno-statement-picker-remove-helper-copy.css = */
+[data-hesabno-statement-extra-description="true"] { display: none !important; }
+/* = 174-hesabno-report-account-picker-copy-styles.css = */
+[data-hesabno-report-picker-description="true"],
+    [data-hesabno-report-aggregate-description="true"] { display: none !important; }
+/* = 176-hesabno-detail-column-chart-layout.css = */
+[data-hesabno-column-chart-root="true"] {
+      height: 17rem !important;
+      box-sizing: border-box !important;
+    }
+    [data-hesabno-column-chart-axis="true"] {
+      flex: 0 0 4.5rem !important;
+      width: 4.5rem !important;
+      min-width: 4.5rem !important;
+      padding-top: 0 !important;
+      padding-bottom: 3.25rem !important;
+      box-sizing: border-box !important;
+    }
+    [data-hesabno-column-chart-plot="true"] {
+      flex: 1 1 0% !important;
+      width: 0 !important;
+      min-width: 0 !important;
+      overflow-x: hidden !important;
+      box-sizing: border-box !important;
+    }
+    [data-hesabno-column-chart-grid="true"] { padding-bottom: 3.25rem !important; }
+    [data-hesabno-column-chart-bars="true"] {
+      width: 100% !important;
+      min-width: 0 !important;
+      max-width: none !important;
+      flex: 1 1 0% !important;
+      gap: .25rem !important;
+      padding-left: .25rem !important;
+      padding-right: .25rem !important;
+      box-sizing: border-box !important;
+    }
+    [data-hesabno-column-chart-bar="true"] {
+      flex: 1 1 0% !important;
+      width: 0 !important;
+      min-width: 0 !important;
+      max-width: none !important;
+      overflow: visible !important;
+      box-sizing: border-box !important;
+    }
+    [data-hesabno-column-chart-slot="true"] {
+      flex: 1 1 0% !important;
+      width: 100% !important;
+      height: auto !important;
+      min-height: 0 !important;
+      box-sizing: border-box !important;
+    }
+    [data-hesabno-column-chart-fill="true"] {
+      width: clamp(10px, 45%, 24px) !important;
+      max-width: 24px !important;
+      min-height: 4px !important;
+    }
+    [data-hesabno-column-chart-label-slot="true"] {
+      display: flex !important;
+      align-items: flex-start !important;
+      justify-content: center !important;
+      flex: 0 0 3.25rem !important;
+      width: 100% !important;
+      min-width: 0 !important;
+      max-width: 100% !important;
+      height: 3.25rem !important;
+      padding-top: .25rem !important;
+      overflow: hidden !important;
+      box-sizing: border-box !important;
+    }
+    [data-hesabno-column-chart-label="true"] {
+      display: -webkit-box !important;
+      -webkit-box-orient: vertical !important;
+      -webkit-line-clamp: 3 !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      max-height: 3.45em !important;
+      overflow: hidden !important;
+      text-align: center !important;
+      text-overflow: ellipsis !important;
+      white-space: normal !important;
+      word-break: break-word !important;
+      writing-mode: horizontal-tb !important;
+      direction: rtl !important;
+      transform: none !important;
+      font-size: 9px !important;
+      line-height: 1.15 !important;
+    }
+    html.theme-light [data-hesabno-column-chart-axis="true"] > span { color: #64748b !important; }
+    html.theme-dark [data-hesabno-column-chart-axis="true"] > span { color: #cbd5e1 !important; }
+/* = 178-hesabno-global-breakdown-copy-layout.css = */
+[data-hesabno-global-breakdown-hint="true"] { white-space: nowrap !important; }
+/* = 180-hesabno-advanced-reports-no-search.css = */
+main:has(.hesabno-report-mode-tabs > button:nth-child(2).bg-amber-400) .relative:has(input[placeholder*="جستجو"]) { display: none !important; }
+/* = 181-hesabno-hide-subsidiary-account-codes-global.css = */
+[data-hesabno-subsidiary-account-code="true"] { display: none !important; }
+/* = 183-hesabno-report-selection-label-spacing.css = */
+[data-hesabno-report-moein-badge="true"] { display: none !important; }
+    [data-hesabno-report-analysis-title="true"] { word-spacing: .14em !important; }
+/* = 185-hesabno-account-statement-frame-and-column-alignme.css = */
+.hesabno-account-statement-panel > header,
+    .hesabno-account-statement-panel > header + div,
+    .hesabno-account-statement-panel .hesabno-statement-columns {
+      width: calc(100% - 1rem) !important;
+      max-width: 42rem !important;
+      margin-inline: auto !important;
+      border-inline: 1px solid #607b88 !important;
+    }
+    .hesabno-account-statement-panel > header {
+      border-top: 1px solid #607b88 !important;
+      border-radius: .9rem .9rem 0 0;
+    }
+    .hesabno-account-statement-panel > header + div {
+      border-bottom: 1px solid #607b88 !important;
+    }
+    .hesabno-account-statement-panel .hesabno-statement-columns {
+      padding-inline: .625rem !important;
+      border-bottom: 1px solid #607b88 !important;
+      border-radius: 0 0 .75rem .75rem;
+      box-shadow: 0 2px 8px rgba(20, 43, 54, .1);
+    }
+    .hesabno-account-statement-panel .hesabno-statement-columns > :nth-child(1) {
+      text-align: right !important;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+    .hesabno-account-statement-panel [data-hesabno-statement-card="true"] > .grid > :nth-child(1) {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      min-width: 0;
+      text-align: right !important;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+      direction: ltr;
+    }
+    .hesabno-account-statement-panel .hesabno-statement-columns > :nth-child(2),
+    .hesabno-account-statement-panel [data-hesabno-statement-card="true"] > .grid > :nth-child(2) {
+      text-align: center !important;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+    .hesabno-account-statement-panel .hesabno-statement-columns > :nth-child(3),
+    .hesabno-account-statement-panel [data-hesabno-statement-card="true"] > .grid > :nth-child(3) {
+      text-align: left !important;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+    .hesabno-account-statement-panel [data-hesabno-statement-card="true"] > .grid > :nth-child(2) {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 0;
+    }
+    .hesabno-account-statement-panel [data-hesabno-statement-card="true"] > .grid > :nth-child(3) {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      min-width: 0;
+    }
+    .hesabno-account-statement-panel [data-hesabno-statement-card="true"] {
+      border: 1px solid #607b88 !important;
+      background: linear-gradient(145deg, #1d2c36, #253943) !important;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, .2), inset 0 1px 0 rgba(255, 255, 255, .035) !important;
+    }
+    html[data-theme="light"] .hesabno-account-statement-panel > header,
+    html.theme-light .hesabno-account-statement-panel > header,
+    html[data-theme="light"] .hesabno-account-statement-panel > header + div,
+    html.theme-light .hesabno-account-statement-panel > header + div,
+    html[data-theme="light"] .hesabno-account-statement-panel .hesabno-statement-columns,
+    html.theme-light .hesabno-account-statement-panel .hesabno-statement-columns {
+      border-color: #a8bdc8 !important;
+    }
+    html[data-theme="light"] .hesabno-account-statement-panel .hesabno-statement-columns,
+    html.theme-light .hesabno-account-statement-panel .hesabno-statement-columns {
+      box-shadow: 0 2px 8px rgba(34, 61, 74, .09);
+    }
+    html[data-theme="light"] .hesabno-account-statement-panel [data-hesabno-statement-card="true"],
+    html.theme-light .hesabno-account-statement-panel [data-hesabno-statement-card="true"] {
+      border-color: #a2b8c3 !important;
+      background: linear-gradient(145deg, #f7fafc, #e8f1f5) !important;
+      box-shadow: 0 4px 12px rgba(34, 61, 74, .12), inset 0 1px 0 rgba(255, 255, 255, .72) !important;
+    }
+    .hesabno-account-statement-panel [data-hesabno-statement-card="true"] > .grid {
+      border-bottom: 1px solid #607b88;
+      padding-bottom: .35rem;
+    }
+    html[data-theme="light"] .hesabno-account-statement-panel [data-hesabno-statement-card="true"] > .grid,
+    html.theme-light .hesabno-account-statement-panel [data-hesabno-statement-card="true"] > .grid {
+      border-bottom-color: #a8bdc8;
+    }
+    .hesabno-account-statement-panel .hesabno-statement-counterparty {
+      gap: .5rem;
+    }
+    .hesabno-account-statement-panel [data-hesabno-statement-metadata="true"] {
+      display: flex !important;
+      align-items: center !important;
+      flex-wrap: nowrap !important;
+      gap: .125rem !important;
+      min-width: 0;
+      width: 100%;
+      margin-top: .125rem;
+      padding: .25rem 0 !important;
+      overflow: hidden;
+      direction: rtl;
+    }
+    .hesabno-account-statement-panel .hesabno-statement-metadata-divider {
+      display: block;
+      flex: 0 0 1px;
+      align-self: center;
+      width: 1px;
+      height: .55rem;
+      margin-inline: .06rem;
+      border-radius: 999px;
+      background: #607b88;
+    }
+    html[data-theme="light"] .hesabno-account-statement-panel .hesabno-statement-metadata-divider,
+    html.theme-light .hesabno-account-statement-panel .hesabno-statement-metadata-divider {
+      background: #a8bdc8;
+    }
+    .hesabno-account-statement-panel .hesabno-statement-project-chip,
+    .hesabno-account-statement-panel .hesabno-statement-family-chip {
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 4px !important;
+      flex: 0 1 auto;
+      min-width: 0;
+      max-width: 42%;
+      padding: 2px 4px !important;
+      border: 1px solid rgba(148, 163, 184, .2) !important;
+      border-radius: 999px !important;
+      background: rgba(100, 116, 139, .10) !important;
+      color: #cbd5e1 !important;
+      font-size: 9px !important;
+      font-weight: 700 !important;
+      line-height: 1.3 !important;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .hesabno-account-statement-panel .hesabno-statement-project-chip svg,
+    .hesabno-account-statement-panel .hesabno-statement-family-chip svg {
+      display: block;
+      flex: 0 0 auto;
+      width: 10px;
+      height: 10px;
+    }
+    .hesabno-account-statement-panel .hesabno-statement-project-chip > [data-hesabno-canonical-meta-label],
+    .hesabno-account-statement-panel .hesabno-statement-family-chip > [data-hesabno-canonical-meta-label] {
+      display: block;
+      flex: 1 1 auto;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    html[data-theme="light"] .hesabno-account-statement-panel .hesabno-statement-project-chip,
+    html.theme-light .hesabno-account-statement-panel .hesabno-statement-project-chip,
+    html[data-theme="light"] .hesabno-account-statement-panel .hesabno-statement-family-chip,
+    html.theme-light .hesabno-account-statement-panel .hesabno-statement-family-chip {
+      border-color: #cbd5e1 !important;
+      background: #f1f5f9 !important;
+      color: #475569 !important;
+    }
+    html[data-theme="light"] .hesabno-account-statement-panel .hesabno-statement-project-chip svg,
+    html.theme-light .hesabno-account-statement-panel .hesabno-statement-project-chip svg,
+    html[data-theme="light"] .hesabno-account-statement-panel .hesabno-statement-family-chip svg,
+    html.theme-light .hesabno-account-statement-panel .hesabno-statement-family-chip svg {
+      color: #64748b !important;
+    }
+    .hesabno-account-statement-panel .hesabno-statement-opening-balance .hesabno-statement-opening-balance-label {
+      display: none !important;
+    }
+    .hesabno-account-statement-panel .hesabno-statement-opening-balance .hesabno-statement-opening-balance-description {
+      display: none !important;
+    }
+    .hesabno-account-statement-panel .hesabno-statement-opening-balance .grid > div:first-child {
+      white-space: nowrap;
+    }
+    @media (min-width: 640px) {
+      .hesabno-account-statement-panel > header,
+      .hesabno-account-statement-panel > header + div,
+      .hesabno-account-statement-panel .hesabno-statement-columns {
+        width: calc(100% - 1.5rem) !important;
+      }
+    }
+    @media (min-width: 696px) {
+      .hesabno-account-statement-panel .hesabno-statement-columns {
+        padding-inline: 1.375rem !important;
+      }
+    }

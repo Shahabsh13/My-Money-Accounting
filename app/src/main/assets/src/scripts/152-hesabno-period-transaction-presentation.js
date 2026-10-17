@@ -338,7 +338,7 @@
         requestAnimationFrame(function () { queued = false; sync(); });
       };
       sync();
-      if (document.body) new MutationObserver(function () { sync(); }).observe(document.body, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ["class"] });
+      if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ["class"] }, function () { sync(); });
       document.addEventListener("click", function (event) {
         var target = event.target;
         var button = target && target.closest ? target.closest("button") : null;

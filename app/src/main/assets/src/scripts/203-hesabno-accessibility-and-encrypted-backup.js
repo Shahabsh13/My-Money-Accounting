@@ -124,5 +124,5 @@
 
     function update() { patchBudgetBack(); mountEncryptedBackup(); }
     update();
-    new MutationObserver(update).observe(document.documentElement, { childList: true, subtree: true });
+    window.__hesabnoDom.watch(document.documentElement, { childList: true, subtree: true }, update);
   })();

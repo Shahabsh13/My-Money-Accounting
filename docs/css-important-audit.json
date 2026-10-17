@@ -1,0 +1,271 @@
+{
+  "root": "/home/user/My-Money-Accounting",
+  "at": "2026-10-16T19:59:52.932Z",
+  "totals": {
+    "files": 10,
+    "declarations": 5044,
+    "importantDeclarations": 1609,
+    "importantRules": 653,
+    "removable": 29
+  },
+  "skipped": {
+    "nested": 184,
+    "animated": 71,
+    "inlineStyle": 1228,
+    "strongerCompetitor": 97
+  },
+  "animatedProperties": [
+    "box-shadow",
+    "opacity",
+    "transform"
+  ],
+  "inlineStyleProperties": [
+    "--hesabno-status-tab-height",
+    "align-items",
+    "align-self",
+    "animation",
+    "animation-duration",
+    "backdrop-filter",
+    "background",
+    "background-color",
+    "background-image",
+    "border",
+    "border-color",
+    "border-radius",
+    "border-right",
+    "border-style",
+    "border-width",
+    "box-shadow",
+    "color",
+    "column-gap",
+    "css-text",
+    "cursor",
+    "direction",
+    "display",
+    "flex",
+    "flex-shrink",
+    "flex-wrap",
+    "font-family",
+    "font-size",
+    "font-variant-numeric",
+    "font-weight",
+    "gap",
+    "grid-template-columns",
+    "height",
+    "isolation",
+    "justify-content",
+    "left",
+    "letter-spacing",
+    "line-height",
+    "margin-inline-end",
+    "margin-left",
+    "margin-right",
+    "max-height",
+    "max-width",
+    "min-height",
+    "min-width",
+    "object-fit",
+    "opacity",
+    "outline",
+    "overflow",
+    "overflow-wrap",
+    "overflow-x",
+    "overflow-y",
+    "padding",
+    "padding-top",
+    "pointer-events",
+    "position",
+    "right",
+    "row-gap",
+    "stroke-width",
+    "text-decoration",
+    "text-overflow",
+    "transform",
+    "transition",
+    "unicode-bidi",
+    "vertical-align",
+    "view-transition-class",
+    "view-transition-name",
+    "visibility",
+    "white-space",
+    "width",
+    "word-break",
+    "z-index"
+  ],
+  "candidates": [
+    {
+      "file": "010-core-base.css",
+      "selector": ".filter\\!",
+      "property": "filter",
+      "value": "var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) va"
+    },
+    {
+      "file": "010-core-base.css",
+      "selector": "[data-theme=light] svg line[stroke=\"#44403c\"],[data-theme=light] svg line[stroke=\"#57534e\"]",
+      "property": "stroke",
+      "value": "#e2e8f0"
+    },
+    {
+      "file": "020-core-fixes.css",
+      "selector": ".hesabno-toast-motion",
+      "property": "touch-action",
+      "value": "pan-y"
+    },
+    {
+      "file": "040-settings-and-validation.css",
+      "selector": "html article[id^=\"tx-card-\"] :is([data-hesabno-footnote-kind], [data-hesabno-footnote-kind] *, [data-hesabno-check-correction-link])",
+      "property": "transition-property",
+      "value": "none"
+    },
+    {
+      "file": "235-hesabno-text-root-and-display-stability.css",
+      "selector": "body,\np,\nspan,\nlabel,\ndiv,\nbutton,\narticle",
+      "property": "hyphens",
+      "value": "none"
+    },
+    {
+      "file": "235-hesabno-text-root-and-display-stability.css",
+      "selector": "main,\nmain.hesabno-page-open-up,\nmain.hesabno-tab-horizontal-in,\nmain.hesabno-content-swap,\nmain.hesabno-page-enter,\n.hesabno-tab-shell,\n.he",
+      "property": "scale",
+      "value": "none"
+    },
+    {
+      "file": "235-hesabno-text-root-and-display-stability.css",
+      "selector": "main,\nmain.hesabno-page-open-up,\nmain.hesabno-tab-horizontal-in,\nmain.hesabno-content-swap,\nmain.hesabno-page-enter,\n.hesabno-tab-shell,\n.he",
+      "property": "backface-visibility",
+      "value": "visible"
+    },
+    {
+      "file": "235-hesabno-text-root-and-display-stability.css",
+      "selector": "article[id^=\"tx-card-\"] p.leading-tight",
+      "property": "line-break",
+      "value": "loose"
+    },
+    {
+      "file": "060-reports-and-motion.css",
+      "selector": ".hesabno-overlay-motion table",
+      "property": "table-layout",
+      "value": "fixed"
+    },
+    {
+      "file": "060-reports-and-motion.css",
+      "selector": "#root .transition,\n#root [class*=\"transition-\"]",
+      "property": "transition-duration",
+      "value": "180ms"
+    },
+    {
+      "file": "060-reports-and-motion.css",
+      "selector": "#root .transition,\n  #root [class*=\"transition-\"],\n  #root [class*=\"animate-in\"],\n  .hesabno-tab-shell,\n  main.hesabno-page-exit-down,\n  .he",
+      "property": "animation-iteration-count",
+      "value": "1"
+    },
+    {
+      "file": "060-reports-and-motion.css",
+      "selector": "#root .transition,\n  #root [class*=\"transition-\"],\n  #root [class*=\"animate-in\"],\n  .hesabno-tab-shell,\n  main.hesabno-page-exit-down,\n  .he",
+      "property": "transition-duration",
+      "value": ".01ms"
+    },
+    {
+      "file": "060-reports-and-motion.css",
+      "selector": "main.hesabno-page-exit-down,\n    .hesabno-full-page-side-open,\n    .hesabno-full-page-side-exit",
+      "property": "will-change",
+      "value": "opacity, transform"
+    },
+    {
+      "file": "060-reports-and-motion.css",
+      "selector": "#root .transition,\n    #root [class*=\"transition-\"]",
+      "property": "transition-timing-function",
+      "value": "var(--hesabno-motion-ease)"
+    },
+    {
+      "file": "060-reports-and-motion.css",
+      "selector": "#root .transition,\n    #root [class~=\"transition-colors\"]",
+      "property": "transition-duration",
+      "value": "var(--hesabno-motion-fast)"
+    },
+    {
+      "file": "060-reports-and-motion.css",
+      "selector": "#root [class~=\"transition-transform\"]",
+      "property": "transition-duration",
+      "value": "var(--hesabno-motion-normal)"
+    },
+    {
+      "file": "060-reports-and-motion.css",
+      "selector": "#root [class~=\"transition-transform\"]",
+      "property": "transition-property",
+      "value": "transform"
+    },
+    {
+      "file": "060-reports-and-motion.css",
+      "selector": "#root [class~=\"transition-all\"]",
+      "property": "transition-duration",
+      "value": "var(--hesabno-motion-card)"
+    },
+    {
+      "file": "060-reports-and-motion.css",
+      "selector": "#root [class~=\"transition-all\"]",
+      "property": "transition-property",
+      "value": "opacity, transform, background-color, border-color, color, b"
+    },
+    {
+      "file": "060-reports-and-motion.css",
+      "selector": "#root [class*=\"animate-in\"]",
+      "property": "animation-timing-function",
+      "value": "var(--hesabno-motion-ease)"
+    },
+    {
+      "file": "060-reports-and-motion.css",
+      "selector": "main.hesabno-page-exit-down,\n    .hesabno-tab-shell,\n    .hesabno-overlay-motion,\n    .hesabno-dialog-motion,\n    .hesabno-toast-motion,\n   ",
+      "property": "animation-timing-function",
+      "value": "var(--hesabno-motion-ease)"
+    },
+    {
+      "file": "060-reports-and-motion.css",
+      "selector": "#root .transition,\n      #root [class*=\"transition-\"],\n      #root [class*=\"animate-in\"],\n      main.hesabno-page-exit-down,\n      .hesabno-",
+      "property": "animation-iteration-count",
+      "value": "1"
+    },
+    {
+      "file": "060-reports-and-motion.css",
+      "selector": "#root .transition,\n      #root [class*=\"transition-\"],\n      #root [class*=\"animate-in\"],\n      main.hesabno-page-exit-down,\n      .hesabno-",
+      "property": "transition-duration",
+      "value": ".01ms"
+    },
+    {
+      "file": "060-reports-and-motion.css",
+      "selector": "[data-hesabno-tx-status-meta][data-hesabno-tx-status]::after",
+      "property": "content",
+      "value": "none"
+    },
+    {
+      "file": "060-reports-and-motion.css",
+      "selector": "[data-hesabno-period-manual-description=\"true\"]",
+      "property": "order",
+      "value": "3"
+    },
+    {
+      "file": "060-reports-and-motion.css",
+      "selector": "[data-hesabno-period-footer=\"true\"]",
+      "property": "order",
+      "value": "4"
+    },
+    {
+      "file": "070-report-layouts.css",
+      "selector": "[data-hesabno-column-chart-label=\"true\"]",
+      "property": "writing-mode",
+      "value": "horizontal-tb"
+    },
+    {
+      "file": "070-report-layouts.css",
+      "selector": "[data-hesabno-report-analysis-title=\"true\"]",
+      "property": "word-spacing",
+      "value": ".14em"
+    },
+    {
+      "file": "080-report-cleanups.css",
+      "selector": ".hesabno-bank-form-page > :last-child",
+      "property": "bottom",
+      "value": "0"
+    }
+  ]
+}

@@ -11,5 +11,5 @@
     }
   }
   markModeTabs();
-  if (document.body) new MutationObserver(markModeTabs).observe(document.body, { childList: true, subtree: true });
+  if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, markModeTabs);
 })();

@@ -213,5 +213,5 @@
       action.parentElement.insertBefore(backup, action);
     };
     enhance();
-    if (document.body) new MutationObserver(enhance).observe(document.body, { childList: true, subtree: true });
+    if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, enhance);
   })();

@@ -72,5 +72,5 @@
       return formatDate(text) || toFa(text);
     };
     enhance();
-    if (document.body) new MutationObserver(enhance).observe(document.body, { childList: true, subtree: true, characterData: true });
+    if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true, characterData: true }, enhance);
   })();

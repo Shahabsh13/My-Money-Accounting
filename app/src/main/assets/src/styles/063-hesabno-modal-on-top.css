@@ -1,1 +1,0 @@
-body>[role="dialog"][aria-modal="true"],body>[data-hesabno-linked-cancel-confirm],body>[data-hesabno-linked-document-notice]{z-index:2147483600!important;isolation:isolate}body:has(>[aria-modal="true"]) main .sticky,body:has(>[aria-modal="true"]) main [class*="sticky"]{z-index:0!important}
