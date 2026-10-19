@@ -11,6 +11,7 @@
       var hasAccountSignals = overlayText.includes('سنجاق‌شده‌ها') || overlayText.includes('انتخاب حساب') || overlayText.includes('انتخاب حساب بانکی') || overlayText.includes('حساب یا سرفصل') || (overlayText.includes('بانک‌ها') && overlayText.includes('صندوق‌ها') && overlayText.includes('سرفصل'));
       if (!heading && !hasAccountSignals) return;
       if (!overlay.classList.contains('hesabno-account-picker-overlay')) overlay.classList.add('hesabno-account-picker-overlay');
+      if (!overlay.classList.contains('hesabno-fullpage-layer')) overlay.classList.add('hesabno-fullpage-layer');
       if (overlay.firstElementChild && !overlay.firstElementChild.classList.contains('hesabno-account-picker-panel')) overlay.firstElementChild.classList.add('hesabno-account-picker-panel');
       var parent = overlay.parentElement;
       while (parent && parent !== document.body) {
@@ -19,15 +20,19 @@
       }
     });
   };
+  var queued = false;
+  var scheduleMicrotask = function () {
+    if (queued) return;
+    queued = true;
+    Promise.resolve().then(function () { queued = false; enhance(); });
+  };
   enhance();
+  if (document.body && window.__hesabnoDom && window.__hesabnoDom.watch) {
+    window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, scheduleMicrotask);
+  }
   var schedule = function () {
     enhance();
-    [40, 120, 260, 500].forEach(function (delay) { window.setTimeout(enhance, delay); });
+    scheduleMicrotask();
   };
-  schedule();
-  document.addEventListener('click', function (event) {
-    var button = event.target && event.target.closest ? event.target.closest('button') : null;
-    var text = clean(button && button.innerText);
-    if (/(حساب|سرفصل|بانک|صندوق)/.test(text)) schedule();
-  }, true);
+  document.addEventListener('click', schedule, true);
 })();

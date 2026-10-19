@@ -31,7 +31,7 @@
     var schedule = function () {
       if (queued) return;
       queued = true;
-      window.requestAnimationFrame(function () { queued = false; sync(); });
+      Promise.resolve().then(function () { queued = false; sync(); });
     };
     sync();
   if (document.body) new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true });

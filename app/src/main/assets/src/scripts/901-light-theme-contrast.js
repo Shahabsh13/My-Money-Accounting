@@ -69,35 +69,19 @@
   // رنگ و شفافیت اصلی متن را می‌خواند، بدون اثر رنگ‌هایی که خود این اسکریپت قبلاً ثبت کرده.
   // اگر این کار نشود، اسکریپت رنگ تصحیح‌شدهٔ خودش را می‌خواند و همیشه نتیجهٔ متفاوت می‌گیرد.
   function originalStyle(el) {
-    if (el.hasAttribute(MARK) && el.hasAttribute("data-hn-orig")) {
+    if ((el.hasAttribute(MARK) || el.hasAttribute("data-hn-lc-opaque")) && el.hasAttribute("data-hn-orig")) {
       var parts = el.getAttribute("data-hn-orig").split("|");
       return { color: parts[0], opacity: parseFloat(parts[1]) || 1 };
     }
-    if (!el.hasAttribute(MARK)) {
-      var cs = getComputedStyle(el);
-      return { color: cs.color, opacity: parseFloat(cs.opacity) };
-    }
-    var savedColor = el.style.getPropertyValue("color");
-    var savedColorPri = el.style.getPropertyPriority("color");
-    var savedOp = el.style.getPropertyValue("opacity");
-    var savedOpPri = el.style.getPropertyPriority("opacity");
-    var result = null;
-    withoutTransition(el, function () {
-      el.style.removeProperty("color");
-      el.style.removeProperty("opacity");
-      var cs = getComputedStyle(el);
-      result = { color: cs.color, opacity: parseFloat(cs.opacity) };
-    });
-    if (savedColor) el.style.setProperty("color", savedColor, savedColorPri);
-    if (savedOp) el.style.setProperty("opacity", savedOp, savedOpPri);
-    return result;
+    var cs = getComputedStyle(el);
+    return { color: cs.color, opacity: parseFloat(cs.opacity) };
   }
   function clearMark(el) {
     withoutTransition(el, function () {
-      el.style.removeProperty("color");
-      el.style.removeProperty("opacity");
+      el.style.removeProperty("--hn-lc-color");
     });
     el.removeAttribute(MARK);
+    el.removeAttribute("data-hn-lc-opaque");
     el.removeAttribute("data-hn-orig");
   }
 
@@ -123,6 +107,11 @@
     for (var i = 0; i < els.length; i++) {
       var el = els[i];
       if (el.closest("[data-hn-dialog]")) continue;
+      if (el.closest("[data-hesabno-simple-report-native]")) continue;
+      if (el.closest("[data-hesabno-metadata-canonical], [data-hesabno-tx-metadata-row], [data-hesabno-footnote-kind], [data-hesabno-compound-badge], [data-hesabno-tx-status-badge], [data-hesabno-check-correction-link], [data-hesabno-returned-effect], [data-hesabno-returned-correction], [data-hesabno-check-replacement-link], .hesabno-tx-project-chip, .hesabno-tx-family-chip, .hesabno-canonical-meta-chip, .hesabno-footnote-action-chip, .hesabno-day-balance")) {
+        if (el.hasAttribute(MARK) || el.hasAttribute("data-hn-lc-opaque")) clearMark(el);
+        continue;
+      }
       if (!hasOwnText(el)) {
         if (el.hasAttribute(MARK)) clearMark(el);
         continue;
@@ -144,23 +133,23 @@
             t += 0.05;
           }
           var nextColor = "rgb(" + out[0] + "," + out[1] + "," + out[2] + ")";
-          if (el.style.getPropertyValue("color").replace(/\s+/g, "") !== nextColor.replace(/\s+/g, "")) {
-            withoutTransition(el, function () { el.style.setProperty("color", nextColor, "important"); });
+          if (el.style.getPropertyValue("--hn-lc-color").replace(/\s+/g, "") !== nextColor.replace(/\s+/g, "")) {
+            withoutTransition(el, function () { el.style.setProperty("--hn-lc-color", nextColor); });
           }
+          if (!el.hasAttribute(MARK)) el.setAttribute(MARK, "1");
           fix = true;
         }
         if (op < 0.9) {
-          if (el.style.getPropertyValue("opacity") !== "1") {
-            withoutTransition(el, function () { el.style.setProperty("opacity", "1", "important"); });
+          if (!el.hasAttribute("data-hn-lc-opaque")) {
+            withoutTransition(el, function () { el.setAttribute("data-hn-lc-opaque", "1"); });
           }
           fix = true;
         }
       }
       if (fix) {
-        if (!el.hasAttribute(MARK) || !el.hasAttribute("data-hn-orig")) el.setAttribute("data-hn-orig", orig.color + "|" + orig.opacity);
-        if (!el.hasAttribute(MARK)) el.setAttribute(MARK, "1");
+        if (!el.hasAttribute("data-hn-orig")) el.setAttribute("data-hn-orig", orig.color + "|" + orig.opacity);
       }
-      else if (el.hasAttribute(MARK)) clearMark(el);
+      else if (el.hasAttribute(MARK) || el.hasAttribute("data-hn-lc-opaque")) clearMark(el);
     }
   }
 
@@ -196,7 +185,10 @@
     var old = strip(r.oldValue);
     return cur === old;
   }
-  new MutationObserver(function (records) {
+  window.__hesabnoDom.watch(document.documentElement, {
+    childList: true, subtree: true, attributes: true, attributeOldValue: true,
+    attributeFilter: ["data-theme", "class"]
+  }, function (records) {
     var themeTouched = false, relevant = false;
     records.forEach(function (r) {
       if (r.type === "attributes" && r.attributeName === "data-theme") themeTouched = true;
@@ -205,16 +197,8 @@
     });
     if (themeTouched) themeChanged();
     else if (relevant) schedule();
-  }).observe(document.documentElement, {
-    childList: true, subtree: true, attributes: true, attributeOldValue: true,
-    attributeFilter: ["data-theme", "class"]
   });
-  if (!document.getElementById("hn-theme-instant-style")) {
-    var st = document.createElement("style");
-    st.id = "hn-theme-instant-style";
-    st.textContent = "html.hn-theme-instant, html.hn-theme-instant *, html.hn-theme-instant *::before, html.hn-theme-instant *::after, html.hn-lc-batch, html.hn-lc-batch *, html.hn-lc-batch *::before, html.hn-lc-batch *::after { transition: none !important; }";
-    (document.head || document.documentElement).appendChild(st);
-  }
+  /* قواعد hn-theme-instant، hn-lc-batch و [data-hn-lc] در بستهٔ ۲۳۵ قرار دارد. */
   // وقتی انیمیشن یا انتقال یک المان تمام می‌شود، رنگ پس‌زمینه نهایی شده؛ بررسی دوباره لازم است
   document.addEventListener("transitionend", schedule, true);
   document.addEventListener("animationend", schedule, true);

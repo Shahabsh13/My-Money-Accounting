@@ -228,16 +228,16 @@
       var unit = currencyUnit();
       document.querySelectorAll("section").forEach(function (section) {
         if (!isWidget(section)) return;
-        section.dataset.hesabnoCategoryWidgetCompact = "true";
+        if (section.dataset.hesabnoCategoryWidgetCompact !== "true") section.dataset.hesabnoCategoryWidgetCompact = "true";
         var header = Array.from(section.children).find(function (node) {
           return Array.from(node.querySelectorAll("h2")).some(function (heading) { return clean(heading.textContent) === widgetTitle; });
         });
         if (header) {
-          header.dataset.hesabnoCategoryHeader = "true";
+          if (header.dataset.hesabnoCategoryHeader !== "true") header.dataset.hesabnoCategoryHeader = "true";
           var icon = header.querySelector("span.w-8.h-8");
-          if (icon) icon.dataset.hesabnoCategoryHeaderIcon = "true";
+          if (icon && icon.dataset.hesabnoCategoryHeaderIcon !== "true") icon.dataset.hesabnoCategoryHeaderIcon = "true";
           var summary = header.nextElementSibling;
-          if (summary) summary.dataset.hesabnoCategorySummary = "true";
+          if (summary && summary.dataset.hesabnoCategorySummary !== "true") summary.dataset.hesabnoCategorySummary = "true";
         }
         var todayButton = Array.from(section.querySelectorAll("button")).find(function (button) { return clean(button.textContent).indexOf("امروز (ساعتی)") !== -1; });
         if (todayButton && todayButton.dataset.hesabnoCategoryPeriodHidden !== "true") {
@@ -265,7 +265,7 @@
         var period = selectedPeriod(section);
         var result = categoryTotals(transactions, accounts, mode, dateRange(period));
         if (!result.items.length) {
-          enhancedList.style.setProperty("display", "none", "important");
+          if (enhancedList.style.getPropertyValue("display") !== "none") enhancedList.style.setProperty("display", "none", "important");
           if (list.dataset.hesabnoCategoryDisplaySaved === "true") {
             var oldDisplay = list.dataset.hesabnoCategoryDisplay || "";
             var oldPriority = list.dataset.hesabnoCategoryDisplayPriority || "";
@@ -282,27 +282,28 @@
           list.dataset.hesabnoCategoryDisplayPriority = list.style.getPropertyPriority("display");
           list.dataset.hesabnoCategoryDisplaySaved = "true";
         }
-        list.style.setProperty("display", "none", "important");
-        enhancedList.style.removeProperty("display");
+        if (list.style.getPropertyValue("display") !== "none") list.style.setProperty("display", "none", "important");
+        if (enhancedList.style.getPropertyValue("display")) enhancedList.style.removeProperty("display");
         var signature = JSON.stringify([mode, period, unit, result.total, result.items.map(function (item) { return [item.name, item.amount, item.account && item.account.picture || ""]; })]);
         if (enhancedList.dataset.hesabnoCategorySignature === signature && enhancedList.querySelector("[data-hesabno-category-row='true']")) return;
         enhancedList.dataset.hesabnoCategorySignature = signature;
         enhancedList.replaceChildren.apply(enhancedList, result.items.map(function (item) { return buildRow(item, mode, result.total, unit); }));
       });
     };
-    var timer = 0;
-    var schedule = function (delay) {
-      if (timer) window.clearTimeout(timer);
-      timer = window.setTimeout(function () { timer = 0; sync(); }, delay || 0);
+    var queued = false;
+    var schedule = function () {
+      if (queued) return;
+      queued = true;
+      Promise.resolve().then(function () { queued = false; sync(); });
     };
     sync();
-    if (document.body) new MutationObserver(function () { schedule(30); }).observe(document.body, { childList: true, subtree: true });
+    if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, schedule);
     document.addEventListener("click", function (event) {
       var button = event.target && event.target.closest ? event.target.closest("button") : null;
       var section = button && button.closest("section");
-      if (section && isWidget(section)) { schedule(40); window.setTimeout(sync, 180); }
+      if (section && isWidget(section)) { schedule(); window.setTimeout(sync, 180); }
     }, true);
     window.addEventListener("storage", function (event) {
-      if (!event.key || event.key === "hesabno:transactions" || event.key === "hesabno:accounts_v5" || event.key === "hesabno:currency") schedule(40);
+      if (!event.key || event.key === "hesabno:transactions" || event.key === "hesabno:accounts_v5" || event.key === "hesabno:currency") schedule();
     });
   })();

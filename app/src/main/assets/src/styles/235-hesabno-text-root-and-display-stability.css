@@ -1,0 +1,4643 @@
+/**
+ * لایه ۲۳۵: پایداری ریشه‌ای و نمایشی متون، فونت و ساختار عبارات در جابه‌جایی و باز کردن
+ * HesabNo Root & Display Typography Stability Layer
+ */
+
+:root {
+  /* پیش‌فرض‌های افتادی؛ مقادیر خود برنامه (html[data-font=...]) اولویت دارند */
+  --font-primary: "Vazirmatn", "IRANSans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, system-ui, sans-serif;
+  --font-sans: var(--font-primary);
+  --hesabno-font: var(--font-primary);
+}
+
+/* ۱. تثبیت فونت از ریشه (HTML, Body, Root و تمامی متون فارسی) */
+html,
+body,
+#root,
+button,
+input,
+select,
+textarea,
+p,
+span,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+label,
+article,
+div {
+  font-family: var(--font-primary) !important;
+  text-rendering: optimizeLegibility !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+}
+
+/* جلوگیری مطلق از گسستگی و جدا شدن حروف چسبان فارسی در تمام المان‌ها */
+*,
+*::before,
+*::after {
+  letter-spacing: normal !important;
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1 !important;
+}
+
+/* قوانین شکست متن: کلمات فارسی هرگز از وسط تکه‌تکه نمی‌شوند */
+body,
+p,
+span,
+label,
+div,
+button,
+article {
+  word-break: normal;
+  overflow-wrap: break-word;
+  line-break: loose;
+  hyphens: none !important;
+  -webkit-hyphens: none !important;
+}
+
+/* ۲. پایداری ریشه‌ای هنگام جابه‌جایی (انتقال بین صفحات و تب‌ها) */
+main,
+main.hesabno-page-open-up,
+main.hesabno-tab-horizontal-in,
+main.hesabno-content-swap,
+main.hesabno-page-enter,
+.hesabno-tab-shell,
+.hesabno-full-page-side-open {
+  transform: none !important;
+  scale: none !important;
+  backface-visibility: visible !important;
+  -webkit-backface-visibility: visible !important;
+}
+
+/* ۳. رفع کامل بهم‌خوردن متن در کارت‌های انتقال (از مبدأ به مقصد) */
+[data-hesabno-transfer-row="true"] {
+  white-space: nowrap !important;
+  flex-wrap: nowrap !important;
+  display: flex !important;
+  align-items: center !important;
+  direction: rtl !important;
+}
+
+[data-hesabno-transfer-row="true"] span {
+  letter-spacing: normal !important;
+}
+
+[data-hesabno-transfer-row="true"] span.font-semibold {
+  display: inline-block !important;
+  max-width: 140px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  vertical-align: middle !important;
+  overflow-wrap: normal !important;
+  word-break: normal !important;
+  flex-shrink: 1 !important;
+}
+
+[data-hesabno-transfer-row="true"] span:not(.font-semibold) {
+  flex-shrink: 0 !important;
+  white-space: nowrap !important;
+}
+
+/* ۴. پایداری متن هنگام باز کردن کارت‌های تراکنش و سطر توضیحات */
+article[id^="tx-card-"] {
+  transform: none !important;
+}
+
+article[id^="tx-card-"] p.leading-tight {
+  white-space: normal !important;
+  overflow-wrap: break-word !important;
+  word-break: normal !important;
+  line-break: loose !important;
+  line-height: 1.55 !important;
+}
+
+article[id^="tx-card-"] span {
+  letter-spacing: normal !important;
+}
+
+/* ۵. محافظت از پرانتزها، شماره سندها و تاریخ در متون ترکیبی فارسی و لاتین */
+.font-mono,
+[data-hesabno-money-rtl="true"],
+article span[class*="font-mono"],
+.hesabno-transaction-day-date,
+[data-hesabno-date-badge="true"] {
+  unicode-bidi: isolate !important;
+  display: inline-block !important;
+}
+
+/* ۶. تمیز و شفاف ماندن سربرگ روزها و عناوین حساب‌ها */
+.hesabno-transaction-day-header,
+.hesabno-transaction-day-date,
+.hesabno-statement-bank-name,
+.hesabno-statement-account-number,
+.hesabno-more-category-heading {
+  letter-spacing: normal !important;
+  text-rendering: optimizeLegibility !important;
+}
+
+/* ۷. حفظ فونت مونواسپیس برنامه (اعداد/مبالغ/شبا) در برابر قاعده‌ی بالا */
+.font-mono,
+.font-mono *,
+[data-hesabno-money-rtl="true"],
+code,
+kbd,
+pre {
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace) !important;
+  font-variant-numeric: tabular-nums;
+  unicode-bidi: isolate;
+}
+
+/* ==========================================================================
+ * لایهٔ ظاهر (Appearance layer) — پیوست ۲۳۵
+ * --------------------------------------------------------------------------
+ * قانون: هر مقدار بصری (رنگ، فونت، اندازه، حاشیه، سایه) فقط همین‌جا تعریف
+ * می‌شود و جاوااسکریپت تنها «کلاس معنایی» می‌گذارد. برای تغییر ظاهر، فقط
+ * متغیرهای :root را عوض کنید؛ هیچ فایل JS لازم نیست دست بخورد.
+ * ========================================================================== */
+
+
+:root {
+  /* فونت رابط کاربری داشبورد */
+  --hesabno-ui-font: "Vazirmatn", system-ui, sans-serif;
+
+  /* تاریخ بالای داشبورد */
+  --hesabno-date-size: 11px;
+  --hesabno-date-weight: 900;
+  --hesabno-date-tone-dark: #f2d18a;
+  --hesabno-date-tone-light: #244b59;
+
+  /* تاریخ‌های لیست تراکنش‌ها و صورت‌حساب */
+  --hesabno-daydate-tone-dark: #b9cbd4;
+  --hesabno-daydate-tone-light: #526875;
+
+  /* سرتیتر روز در دفتر تراکنش‌ها */
+  --hesabno-dayheader-bg-dark: rgba(255, 255, 255, .055);
+  --hesabno-dayheader-bg-light: #cde3de;
+  --hesabno-dayheader-radius: 0;
+
+  /* دکمهٔ بستن تقویم داشبورد */
+  --hesabno-calendar-close-size: 32px;
+  --hesabno-calendar-close-offset: 12px;
+  --hesabno-calendar-close-border: rgba(71, 85, 105, .25);
+  --hesabno-calendar-close-bg: rgba(255, 255, 255, .45);
+  --hesabno-calendar-close-text: #475569;
+  --hesabno-calendar-close-glyph: 24px;
+
+  /* آیکون طرف حساب و نشان وضعیت روی کارت تراکنش (۱۰۴ و ۱۲۹) */
+  --hesabno-counterparty-icon-size: 1rem;
+  --hesabno-tx-badge-bg: rgba(16, 185, 129, .12);
+  --hesabno-tx-badge-border: rgba(16, 185, 129, .35);
+  --hesabno-tx-badge-text: #087f68;
+  --hesabno-tx-badge-size: 9px;
+
+  /* قاب لوگوی بانک در «آخرین تراکنش‌ها» (۱۸۹) */
+  --hesabno-recent-logo-bg-dark: rgba(148, 163, 184, .12);
+  --hesabno-recent-logo-border-dark: rgba(148, 163, 184, .32);
+  --hesabno-recent-logo-bg-light: #fff;
+  --hesabno-recent-logo-border-light: #cad8de;
+  --hesabno-recent-logo-img-size: 34px;
+  --hesabno-recent-logo-glyph-size: 22px;
+
+  /* متادیتای کارت تراکنش و پاورقی یکپارچه (۱۴۵ و ۲۰۲) */
+  --hesabno-footnote-chip-height: 20px;
+  --hesabno-footnote-chip-radius: 6px;
+  --hesabno-footnote-chip-padding-x: 6px;
+  --hesabno-footnote-chip-gap: 3px;
+  --hesabno-footnote-chip-font-size: 9px;
+  --hesabno-meta-row-border: rgba(148, 163, 184, .24);
+  --hesabno-meta-separator-color: rgba(148, 163, 184, .34);
+  --hesabno-meta-chip-bg-dark: #26333b;
+  --hesabno-meta-chip-border-dark: #45545f;
+  --hesabno-meta-chip-text-dark: #d0dbe0;
+  --hesabno-meta-chip-bg-light: #edf3f6;
+  --hesabno-meta-chip-border-light: #d2dde4;
+  --hesabno-meta-chip-text-light: #405c6a;
+  --hesabno-meta-chip-icon-light: #405c6a;
+  --hesabno-footnote-blue-bg-light: #e0f2fe;
+  --hesabno-footnote-blue-border-light: #7dd3fc;
+  --hesabno-footnote-blue-fg-light: #075985;
+  --hesabno-footnote-blue-bg-dark: #172e42;
+  --hesabno-footnote-blue-border-dark: #386b94;
+  --hesabno-footnote-blue-fg-dark: #bae6fd;
+
+  /* نشان‌های چک برگشتی و سند اصلاحی در لیست تراکنش‌ها (۲۰۲) */
+  --hesabno-returned-effect-bg: var(--footnote-red-bg);
+  --hesabno-returned-effect-border: var(--footnote-red-border);
+  --hesabno-returned-effect-text: var(--footnote-red-fg);
+  --hesabno-returned-correction-bg: var(--footnote-purple-bg);
+  --hesabno-returned-correction-border: var(--footnote-purple-border);
+  --hesabno-returned-correction-text: var(--footnote-purple-fg);
+  --hesabno-replacement-link-bg: var(--hesabno-footnote-blue-bg-light);
+  --hesabno-replacement-link-border: var(--hesabno-footnote-blue-border-light);
+  --hesabno-replacement-link-text: var(--hesabno-footnote-blue-fg-light);
+
+  /* صفحه‌کلید عددی مبلغ (۲۱۴ و ۲۲۵) */
+  --hesabno-keypad-bg-dark: rgba(15, 23, 42, 0.96);
+  --hesabno-keypad-display-bg-dark: #090e17;
+  --hesabno-keypad-digit-bg-dark: #1e293b;
+  --hesabno-keypad-zero-bg-dark: #182232;
+  --hesabno-keypad-confirm-bg-dark: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  --hesabno-keypad-bg-light: rgba(248, 250, 252, 0.98);
+  --hesabno-keypad-display-bg-light: #ffffff;
+  --hesabno-keypad-digit-bg-light: #ffffff;
+  --hesabno-keypad-zero-bg-light: #f1f5f9;
+  --hesabno-keypad-confirm-bg-light: linear-gradient(135deg, #10b981 0%, #047857 100%);
+
+  /* نشان سررسید چک و رنگ وضعیت کارت‌های چک (۱۱۵، ۱۳۸ و ۱۴۰) */
+  --hesabno-check-due-bg: #fff5cf;
+  --hesabno-check-due-border: #d7b45b;
+  --hesabno-check-due-text: #8a5d0c;
+  --hesabno-check-card-inprogress-bg-dark: #342f22;
+  --hesabno-check-card-inprogress-border-dark: #826f3f;
+  --hesabno-check-card-passed-bg-dark: #18362d;
+  --hesabno-check-card-passed-border-dark: #3e846b;
+  --hesabno-check-card-bounced-bg-dark: #3e252b;
+  --hesabno-check-card-bounced-border-dark: #8e4e5b;
+  --hesabno-check-card-refunded-bg-dark: #25354a;
+  --hesabno-check-card-refunded-border-dark: #5e7fa8;
+  --hesabno-check-card-bankhold-bg-dark: #302a4b;
+  --hesabno-check-card-bankhold-border-dark: #7669a9;
+  --hesabno-check-card-inprogress-bg-light: #fff8e7;
+  --hesabno-check-card-inprogress-border-light: #e1c979;
+  --hesabno-check-card-passed-bg-light: #eef9f3;
+  --hesabno-check-card-passed-border-light: #a8d8be;
+  --hesabno-check-card-bounced-bg-light: #fff0f2;
+  --hesabno-check-card-bounced-border-light: #e2a9b2;
+  --hesabno-check-card-refunded-bg-light: #eef4ff;
+  --hesabno-check-card-refunded-border-light: #b6c9e8;
+  --hesabno-check-card-bankhold-bg-light: #f2efff;
+  --hesabno-check-card-bankhold-border-light: #c4b8e8;
+
+  /* پیش‌نمایش و فرم وام و اقساط (۱۱۲، ۱۲۸، ۱۳۷، ۱۹۳ و ۱۹۵) */
+  --hesabno-loan-warning-light: #8a6512;
+  --hesabno-loan-warning-label-dark: #fcd34d;
+  --hesabno-loan-warning-text-dark: #fde68a;
+  --hesabno-loan-profit-pos: #167257;
+  --hesabno-loan-profit-neg: #b4233c;
+  --hesabno-loan-form-title-light: #2d3b45;
+  --hesabno-loan-form-title-dark: #f5f5f4;
+  --hesabno-loan-name-light: #1c1917;
+
+  /* گزارش پروژه/خانواده و گزارش ساده (۱۰۹، ۱۲۱ و ۱۳۹) */
+  --hesabno-hfr-shell-bg-dark: #20262d;
+  --hesabno-hfr-shell-text-dark: #e6edf2;
+  --hesabno-hfr-shell-bg-light: #edf4f7;
+  --hesabno-hfr-shell-text-light: #263746;
+  --hesabno-simple-report-heading-light: #708690;
+  --hesabno-simple-report-heading-dark: #9bb0b9;
+  --hesabno-simple-report-desc-light: #70818c;
+  --hesabno-simple-report-desc-dark: #aebdc5;
+
+  /* توست، سلامت داده، تاریخ تسویه، پشتیبان رمزگذاری‌شده و اجرای اول (۰۷۸/۱۴۲/۲۰۳/۲۱۷) */
+  --hesabno-health-ok: #2c9d8b;
+  --hesabno-health-invalid: #d66f67;
+  --hesabno-toast-bg: rgba(28, 25, 23, .97);
+  --hesabno-toast-text: #f5f5f4;
+  --hesabno-toast-accent: #34d399;
+  --hesabno-settlement-accent-light: #167257;
+  --hesabno-settlement-accent-dark: #75d6b2;
+  --hesabno-secure-backup-bg-light: #f3faf8;
+  --hesabno-secure-backup-text-light: #223b36;
+  --hesabno-secure-backup-bg-dark: #1c302c;
+  --hesabno-secure-backup-text-dark: #e5f4ef;
+
+  /* قفل اسناد مرتبط و کنتراست تم روشن (۲۰۱ و ۹۰۱) */
+  --hesabno-linked-cancel-overlay-dark: rgba(15, 23, 42, .72);
+  --hesabno-linked-cancel-overlay-light: rgba(15, 23, 42, .52);
+  --hesabno-linked-cancel-panel-bg-dark: #1c1917;
+  --hesabno-linked-cancel-panel-border-dark: rgba(244, 63, 94, .45);
+  --hesabno-linked-cancel-panel-text-dark: #f5f5f4;
+  --hesabno-linked-cancel-panel-bg-light: #f8fbfd;
+  --hesabno-linked-cancel-panel-border-light: #e2b4ba;
+  --hesabno-linked-cancel-panel-text-light: #26343e;
+  --hesabno-linked-cancel-title-dark: #fecdd3;
+  --hesabno-linked-cancel-title-light: #b23a4b;
+  --hesabno-linked-cancel-desc-dark: #d6d3d1;
+  --hesabno-linked-cancel-desc-light: #526675;
+  --hesabno-linked-cancel-ref-bg-dark: #0c0a09;
+  --hesabno-linked-cancel-ref-border-dark: #57534e;
+  --hesabno-linked-cancel-ref-text-dark: #e7e5e4;
+  --hesabno-linked-cancel-ref-bg-light: #edf2f5;
+  --hesabno-linked-cancel-ref-border-light: #c8d5de;
+  --hesabno-linked-cancel-ref-text-light: #334155;
+  --hesabno-linked-cancel-error-dark: #fda4af;
+  --hesabno-linked-cancel-confirm-bg-light: #c75c6c;
+  --hesabno-linked-cancel-close-bg-dark: #44403c;
+  --hesabno-linked-cancel-close-bg-light: #e1e8ed;
+}
+
+/* ---------- ۱) فونت رابط داشبورد ---------------------------------------- */
+/* قبلاً 090 روی main و همهٔ فرزندان (صدها گره در هر پاس) font-family می‌نوشت. */
+main.hesabno-dashboard-main,
+main.hesabno-dashboard-main *:not(.hesabno-unified-number-font) {
+  font-family: var(--hesabno-ui-font) !important;
+}
+
+/* ---------- ۲) تاریخ بالای داشبورد -------------------------------------- */
+/* 090/116/223: اندازه/وزن/رنگ این اسپن را درون‌خطی می‌نوشتند. */
+button[title="مشاهده تقویم و تاریخ امروز"] .hesabno-dashboard-date-value {
+  font-size: var(--hesabno-date-size) !important;
+  font-weight: var(--hesabno-date-weight) !important;
+  white-space: nowrap !important;
+  opacity: 1 !important;
+  color: var(--hesabno-date-tone-light) !important;
+}
+
+/* 223 دقیقاً «dark» را چک می‌کرد؛ پس حالت پیش‌فرض (بدون داده‌تم) همان روشن است. */
+html[data-theme="dark"] button[title="مشاهده تقویم و تاریخ امروز"] .hesabno-dashboard-date-value {
+  color: var(--hesabno-date-tone-dark) !important;
+}
+
+/* ---------- ۳) تاریخ‌های لیست/صورت‌حساب ---------------------------------- */
+.hesabno-transaction-day-header .hesabno-transaction-day-date,
+[data-hesabno-period-date='true'],
+[data-hesabno-relative-date],
+.hesabno-statement-date-cell {
+  color: var(--hesabno-daydate-tone-light) !important;
+  opacity: 1 !important;
+}
+
+html[data-theme="dark"] .hesabno-transaction-day-header .hesabno-transaction-day-date,
+html[data-theme="dark"] [data-hesabno-period-date='true'],
+html[data-theme="dark"] [data-hesabno-relative-date],
+html[data-theme="dark"] .hesabno-statement-date-cell {
+  color: var(--hesabno-daydate-tone-dark) !important;
+}
+
+/* ---------- ۴) سرتیتر روز در دفتر تراکنش‌ها ----------------------------- */
+/* 101 این سه ویژگی را با !important روی هر سرتیتر می‌نوشت. */
+.hesabno-transaction-day-header {
+  border: 0 !important;
+  box-shadow: none !important;
+  background: var(--hesabno-dayheader-bg-dark) !important;
+  border-radius: var(--hesabno-dayheader-radius) !important;
+}
+
+html[data-theme="light"] .hesabno-transaction-day-header {
+  background: var(--hesabno-dayheader-bg-light) !important;
+}
+
+/* ---------- ۶) تقویم داشبورد: دکمهٔ بستن ---------------------------------- */
+/* ۱۱۶ این ۱۲ ویژگی را با style.cssText می‌نوشت. مقدارها عیناً همان‌اند. */
+.hesabno-calendar-card {
+  position: relative !important;
+}
+
+.hesabno-calendar-close {
+  position: absolute !important;
+  top: var(--hesabno-calendar-close-offset) !important;
+  left: var(--hesabno-calendar-close-offset) !important;
+  width: var(--hesabno-calendar-close-size) !important;
+  height: var(--hesabno-calendar-close-size) !important;
+  border: 1px solid var(--hesabno-calendar-close-border) !important;
+  border-radius: 999px !important;
+  background: var(--hesabno-calendar-close-bg) !important;
+  color: var(--hesabno-calendar-close-text) !important;
+  font-size: var(--hesabno-calendar-close-glyph) !important;
+  line-height: 1 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+}
+
+/* ---------- ۷) آیکون طرف حساب و نشان وضعیت کارت تراکنش (۱۰۴ و ۱۲۹) ------- */
+/* ۱۰۴ دو تگ <style> تزریق می‌کرد و همراه ۱۲۹ روی هر آیکون style درون‌خطی می‌نوشت. */
+.hesabno-counterparty-icon {
+  font-size: 0 !important;
+  line-height: 1 !important;
+  pointer-events: none;
+}
+
+.hesabno-counterparty-icon > *,
+.hesabno-counterparty-icon img {
+  display: none !important;
+}
+
+.hesabno-counterparty-icon::after {
+  content: attr(data-hesabno-counterparty-icon);
+  display: inline-block;
+  font-size: var(--hesabno-counterparty-icon-size);
+  line-height: 1;
+}
+
+.hesabno-tx-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex: 0 0 auto;
+  white-space: nowrap;
+  padding: 2px 6px;
+  border-radius: 5px;
+  background: var(--hesabno-tx-badge-bg);
+  border: 1px solid var(--hesabno-tx-badge-border);
+  color: var(--hesabno-tx-badge-text);
+  font-size: var(--hesabno-tx-badge-size);
+  font-weight: 800;
+}
+
+/* ---------- ۸) لوگوی حساب در «آخرین تراکنش‌ها»ی داشبورد (۱۸۹) ------------ */
+.hesabno-recent-account-logo {
+  overflow: hidden;
+  background: var(--hesabno-recent-logo-bg-dark) !important;
+  border-color: var(--hesabno-recent-logo-border-dark) !important;
+}
+
+.hesabno-recent-account-logo img {
+  width: var(--hesabno-recent-logo-img-size);
+  height: var(--hesabno-recent-logo-img-size);
+  object-fit: contain;
+}
+
+.hesabno-recent-account-logo span {
+  font-size: var(--hesabno-recent-logo-glyph-size);
+  line-height: 1;
+}
+
+html[data-theme=light] .hesabno-recent-account-logo,
+html.theme-light .hesabno-recent-account-logo {
+  background: var(--hesabno-recent-logo-bg-light) !important;
+  border-color: var(--hesabno-recent-logo-border-light) !important;
+}
+
+/* ---------- ۹) خلاصهٔ عنوان تراکنش مرکب (۱۳۱) --------------------------- */
+article[id^='tx-card-'] > div > div:first-child > div.grow > div[class~='flex-wrap'] > p:has(~ span[class*='bg-violet-500/15']) {
+  visibility: hidden !important;
+}
+
+/* ---------- ۱۰) متادیتای استاندارد کارت تراکنش (۱۴۵) -------------------- */
+article [data-hesabno-metadata-canonical='true'] {
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: nowrap !important;
+  gap: 0 !important;
+  direction: rtl !important;
+  white-space: nowrap !important;
+  overflow-x: hidden !important;
+  overflow-y: hidden !important;
+  scrollbar-width: none !important;
+  border-top: 1px solid var(--hesabno-meta-row-border) !important;
+  padding: 4px 0 !important;
+  min-height: 24px;
+}
+
+article [data-hesabno-metadata-canonical='true'][data-hesabno-metadata-empty='true'] {
+  display: none !important;
+  min-height: 0 !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  overflow: hidden !important;
+}
+
+article [data-hesabno-metadata-canonical='true']::-webkit-scrollbar {
+  display: none;
+}
+
+article [data-hesabno-metadata-canonical='true'] > [data-hesabno-metadata-canonical-item],
+article[id^='tx-card-'] .hesabno-canonical-meta-chip,
+article[id^='tx-card-'] .hesabno-tx-project-chip,
+article[id^='tx-card-'] .hesabno-tx-family-chip,
+article[id^='tx-card-'] [data-hesabno-tx-status-badge],
+article[id^='tx-card-'] [data-hesabno-compound-badge],
+article[id^='tx-card-'] :is(button, span)[data-hesabno-footnote-kind],
+article[id^='tx-card-'] div[data-hesabno-footnote-kind] button,
+article[id^='tx-card-'] .hesabno-footnote-action-chip,
+article[id^='tx-card-'] button[data-hesabno-check-correction-link],
+article[id^='tx-card-'] :is(.hesabno-returned-effect-chip, [data-hesabno-returned-effect]),
+article[id^='tx-card-'] :is(.hesabno-returned-correction-chip, [data-hesabno-returned-correction]),
+article[id^='tx-card-'] :is(.hesabno-check-replacement-chip, [data-hesabno-check-replacement-link]) {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+  height: var(--hesabno-footnote-chip-height) !important;
+  min-height: var(--hesabno-footnote-chip-height) !important;
+  max-height: var(--hesabno-footnote-chip-height) !important;
+  padding: 0 var(--hesabno-footnote-chip-padding-x) !important;
+  gap: var(--hesabno-footnote-chip-gap) !important;
+  border-radius: var(--hesabno-footnote-chip-radius) !important;
+  font-size: var(--hesabno-footnote-chip-font-size) !important;
+  font-weight: 800 !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  flex: 0 0 auto !important;
+}
+
+article[id^='tx-card-'] div[data-hesabno-footnote-kind] {
+  border-radius: var(--hesabno-footnote-chip-radius) !important;
+}
+
+article [data-hesabno-metadata-canonical='true'] > [data-hesabno-meta-separator] {
+  display: block !important;
+  flex: 0 0 1px !important;
+  width: 1px !important;
+  height: 12px !important;
+  margin: 0 4px !important;
+  background: var(--hesabno-meta-separator-color) !important;
+  border: 0 !important;
+  padding: 0 !important;
+}
+
+article [data-hesabno-metadata-canonical='true'] > [data-hesabno-metadata-canonical-item='project'],
+article [data-hesabno-metadata-canonical='true'] > [data-hesabno-metadata-canonical-item='family'],
+article [data-hesabno-metadata-canonical='true'] > [data-hesabno-metadata-canonical-item='status'] {
+  flex: 0 1 auto !important;
+  min-width: 0 !important;
+  max-width: 42% !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+html[data-theme] article[id^='tx-card-'][id^='tx-card-'] .hesabno-canonical-meta-chip,
+article [data-hesabno-metadata-canonical='true'] .hesabno-canonical-meta-chip {
+  gap: var(--hesabno-footnote-chip-gap) !important;
+  padding: 0 var(--hesabno-footnote-chip-padding-x) !important;
+  border: 1px solid var(--hesabno-meta-chip-border-dark) !important;
+  border-radius: var(--hesabno-footnote-chip-radius) !important;
+  background: var(--hesabno-meta-chip-bg-dark) !important;
+  color: var(--hesabno-meta-chip-text-dark) !important;
+  font-size: var(--hesabno-footnote-chip-font-size) !important;
+  font-weight: 800 !important;
+}
+
+html[data-theme] article[id^='tx-card-'][id^='tx-card-'] .hesabno-canonical-meta-chip svg,
+article [data-hesabno-metadata-canonical='true'] .hesabno-canonical-meta-chip svg {
+  display: block !important;
+  flex: 0 0 auto !important;
+  width: 10px !important;
+  height: 10px !important;
+  color: var(--hesabno-meta-chip-text-dark) !important;
+}
+
+html[data-theme] article[id^='tx-card-'][id^='tx-card-'] .hesabno-canonical-meta-chip > [data-hesabno-canonical-meta-label],
+article [data-hesabno-metadata-canonical='true'] .hesabno-canonical-meta-chip > [data-hesabno-canonical-meta-label] {
+  display: block !important;
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  color: inherit !important;
+}
+
+html[data-theme='light'] article[id^='tx-card-'][id^='tx-card-'] .hesabno-canonical-meta-chip,
+html[data-theme='light'] article [data-hesabno-metadata-canonical='true'] .hesabno-canonical-meta-chip {
+  color: var(--hesabno-meta-chip-text-light) !important;
+  background: var(--hesabno-meta-chip-bg-light) !important;
+  border-color: var(--hesabno-meta-chip-border-light) !important;
+}
+
+html[data-theme='light'] article[id^='tx-card-'][id^='tx-card-'] .hesabno-canonical-meta-chip svg,
+html[data-theme='light'] article [data-hesabno-metadata-canonical='true'] .hesabno-canonical-meta-chip svg {
+  color: var(--hesabno-meta-chip-icon-light) !important;
+}
+
+html[data-theme] article[id^='tx-card-'][id^='tx-card-'] [data-hesabno-tx-status-badge],
+article [data-hesabno-metadata-canonical='true'] > [data-hesabno-tx-status-badge] {
+  font-size: var(--hesabno-footnote-chip-font-size) !important;
+  font-weight: 800 !important;
+  flex: 0 0 auto !important;
+  white-space: nowrap !important;
+  background: var(--footnote-amber-bg) !important;
+  border: 1px solid var(--footnote-amber-border) !important;
+  color: var(--footnote-amber-fg) !important;
+}
+
+html[data-theme] article[id^='tx-card-'][id^='tx-card-'] [data-hesabno-tx-status-badge][data-hesabno-status-tone='green'],
+html[data-theme] article[id^='tx-card-'][id^='tx-card-'] [data-hesabno-tx-status-badge][data-hesabno-canonical-status-value='پاس‌شده'],
+html[data-theme] article[id^='tx-card-'][id^='tx-card-'] [data-hesabno-tx-status-badge][data-hesabno-canonical-status-value='وصول‌شده'] {
+  background: var(--footnote-green-bg) !important;
+  border-color: var(--footnote-green-border) !important;
+  color: var(--footnote-green-fg) !important;
+}
+
+html[data-theme] article[id^='tx-card-'][id^='tx-card-'] [data-hesabno-tx-status-badge][data-hesabno-status-tone='red'],
+html[data-theme] article[id^='tx-card-'][id^='tx-card-'] [data-hesabno-tx-status-badge][data-hesabno-canonical-status-value*='برگشت'] {
+  background: var(--footnote-red-bg) !important;
+  border-color: var(--footnote-red-border) !important;
+  color: var(--footnote-red-fg) !important;
+}
+
+html[data-theme] article[id^='tx-card-'][id^='tx-card-'] [data-hesabno-tx-status-badge][data-hesabno-status-tone='purple'],
+html[data-theme] article[id^='tx-card-'][id^='tx-card-'] [data-hesabno-tx-status-badge][data-hesabno-canonical-status-value*='مسترد'] {
+  background: var(--footnote-purple-bg) !important;
+  border-color: var(--footnote-purple-border) !important;
+  color: var(--footnote-purple-fg) !important;
+}
+
+html[data-theme] article[id^='tx-card-'][id^='tx-card-'] [data-hesabno-tx-status-badge][data-hesabno-status-tone='blue'],
+html[data-theme] article[id^='tx-card-'][id^='tx-card-'] [data-hesabno-tx-status-badge][data-hesabno-canonical-status-value*='بانک'] {
+  background: var(--hesabno-footnote-blue-bg-light) !important;
+  border-color: var(--hesabno-footnote-blue-border-light) !important;
+  color: var(--hesabno-footnote-blue-fg-light) !important;
+}
+
+html[data-theme='dark'] article[id^='tx-card-'][id^='tx-card-'] [data-hesabno-tx-status-badge][data-hesabno-status-tone='blue'],
+html[data-theme='dark'] article[id^='tx-card-'][id^='tx-card-'] [data-hesabno-tx-status-badge][data-hesabno-canonical-status-value*='بانک'] {
+  background: var(--hesabno-footnote-blue-bg-dark) !important;
+  border-color: var(--hesabno-footnote-blue-border-dark) !important;
+  color: var(--hesabno-footnote-blue-fg-dark) !important;
+}
+
+html[data-theme] article[id^='tx-card-'][id^='tx-card-'] [data-hesabno-tx-status-badge] span,
+html[data-theme] article[id^='tx-card-'][id^='tx-card-'] [data-hesabno-tx-status-badge] svg,
+article [data-hesabno-metadata-canonical='true'] > [data-hesabno-tx-status-badge] svg {
+  display: block;
+  flex: 0 0 auto;
+  width: 9px;
+  height: 9px;
+  color: inherit !important;
+}
+
+html[data-theme] article[id^='tx-card-'][id^='tx-card-'] [data-hesabno-tx-status-badge] span {
+  display: inline !important;
+  width: auto !important;
+  height: auto !important;
+}
+
+html[data-theme] article[id^='tx-card-'][id^='tx-card-'] [data-hesabno-compound-badge],
+article [data-hesabno-metadata-canonical='true'] > [data-hesabno-compound-badge] {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: var(--hesabno-footnote-chip-gap) !important;
+  flex: 0 0 auto !important;
+  width: auto !important;
+  height: var(--hesabno-footnote-chip-height) !important;
+  min-width: 0 !important;
+  max-width: 72px !important;
+  padding: 0 var(--hesabno-footnote-chip-padding-x) !important;
+  border-radius: var(--hesabno-footnote-chip-radius) !important;
+  background: var(--footnote-purple-bg) !important;
+  border: 1px solid var(--footnote-purple-border) !important;
+  color: var(--footnote-purple-fg) !important;
+  font-size: var(--hesabno-footnote-chip-font-size) !important;
+  font-weight: 800 !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+}
+
+html[data-theme] article[id^='tx-card-'][id^='tx-card-'] [data-hesabno-compound-badge] > span,
+article [data-hesabno-metadata-canonical='true'] > [data-hesabno-compound-badge] > span {
+  display: inline !important;
+  flex: 0 1 auto !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  color: var(--footnote-purple-fg) !important;
+}
+
+html[data-theme] article[id^='tx-card-'][id^='tx-card-'] [data-hesabno-compound-badge] svg,
+article [data-hesabno-metadata-canonical='true'] > [data-hesabno-compound-badge] svg {
+  display: block !important;
+  width: 12px !important;
+  height: 12px !important;
+  flex: 0 0 auto !important;
+  color: var(--footnote-purple-fg) !important;
+}
+
+html[data-theme] article[id^='tx-card-'][id^='tx-card-'] [data-hesabno-footnote-kind] span,
+html[data-theme] article[id^='tx-card-'][id^='tx-card-'] .hesabno-tx-project-chip span,
+html[data-theme] article[id^='tx-card-'][id^='tx-card-'] .hesabno-tx-family-chip span {
+  color: inherit !important;
+}
+
+article [data-hesabno-metadata-duplicate='true'],
+article[id^='tx-card-'] [data-hesabno-metadata-duplicate='true'],
+html[data-theme] article[id^='tx-card-'][id^='tx-card-'][id^='tx-card-'] [data-hesabno-metadata-duplicate='true'] {
+  display: none !important;
+}
+
+article [data-hesabno-metadata-empty='true'],
+article[id^='tx-card-'] [data-hesabno-metadata-empty='true'],
+html[data-theme] article[id^='tx-card-'][id^='tx-card-'][id^='tx-card-'] [data-hesabno-metadata-empty='true'] {
+  display: none !important;
+}
+
+/* ---------- ۱۱) لینک سند اصلاحی و نشان‌های چک برگشتی در لیست (۲۰۲) ------ */
+html[data-theme='light'] [data-hesabno-correction-link-row] {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  direction: rtl !important;
+  gap: 6px !important;
+  margin-inline-start: auto !important;
+  color: #4c1d95 !important;
+  background: var(--hesabno-returned-correction-bg) !important;
+  border: 1px solid var(--hesabno-returned-correction-border) !important;
+  border-radius: var(--hesabno-footnote-chip-radius) !important;
+  padding: 3px 6px !important;
+}
+
+html[data-theme='light'] [data-hesabno-correction-link-row] svg {
+  color: #6d28d9 !important;
+}
+
+html[data-theme='light'] [data-hesabno-correction-link-row] button {
+  color: #fff !important;
+  background: #6d28d9 !important;
+  border: 1px solid #5b21b6 !important;
+  border-radius: var(--hesabno-footnote-chip-radius) !important;
+}
+
+html[data-theme='light'] [data-hesabno-correction-link-row] button:hover,
+html[data-theme='light'] [data-hesabno-correction-link-row] button:active {
+  color: #fff !important;
+  background: #4c1d95 !important;
+  border-color: #4c1d95 !important;
+}
+
+html[data-theme='light'] article[id^='tx-card-'] button[data-hesabno-check-correction-link] {
+  color: #fff !important;
+  background: #5b21b6 !important;
+  border: 1px solid #4c1d95 !important;
+  border-radius: var(--hesabno-footnote-chip-radius) !important;
+  box-shadow: 0 1px 3px rgba(76, 29, 149, .24) !important;
+}
+
+html[data-theme='light'] article[id^='tx-card-'] button[data-hesabno-check-correction-link]:hover,
+html[data-theme='light'] article[id^='tx-card-'] button[data-hesabno-check-correction-link]:active,
+html[data-theme='light'] article[id^='tx-card-'] button[data-hesabno-check-correction-link]:focus-visible {
+  color: #fff !important;
+  background: #3b0764 !important;
+  border-color: #3b0764 !important;
+  outline: 2px solid #a78bfa !important;
+  outline-offset: 1px !important;
+}
+
+html[data-theme='dark'] article[id^='tx-card-'] button[data-hesabno-check-correction-link] {
+  color: #faf5ff !important;
+  background: #6d28d9 !important;
+  border: 1px solid #c4b5fd !important;
+  border-radius: var(--hesabno-footnote-chip-radius) !important;
+}
+
+html[data-theme='dark'] article[id^='tx-card-'] button[data-hesabno-check-correction-link]:hover,
+html[data-theme='dark'] article[id^='tx-card-'] button[data-hesabno-check-correction-link]:active,
+html[data-theme='dark'] article[id^='tx-card-'] button[data-hesabno-check-correction-link]:focus-visible {
+  color: #fff !important;
+  background: #5b21b6 !important;
+  border-color: #ddd6fe !important;
+  outline: 2px solid #a78bfa !important;
+  outline-offset: 1px !important;
+}
+
+html[data-theme] article[id^='tx-card-'][id^='tx-card-'] :is(.hesabno-returned-effect-chip, [data-hesabno-returned-effect]),
+.hesabno-returned-effect-chip,
+[data-hesabno-returned-effect] {
+  flex: 0 0 auto;
+  border: 1px solid var(--hesabno-returned-effect-border) !important;
+  background: var(--hesabno-returned-effect-bg) !important;
+  color: var(--hesabno-returned-effect-text) !important;
+}
+
+html[data-theme] article[id^='tx-card-'][id^='tx-card-'] :is(.hesabno-returned-correction-chip, [data-hesabno-returned-correction]),
+.hesabno-returned-correction-chip,
+[data-hesabno-returned-correction] {
+  flex: 0 1 auto;
+  max-width: 48%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border: 1px solid var(--hesabno-returned-correction-border) !important;
+  background: var(--hesabno-returned-correction-bg) !important;
+  color: var(--hesabno-returned-correction-text) !important;
+}
+
+html[data-theme] article[id^='tx-card-'][id^='tx-card-'] :is(.hesabno-check-replacement-chip, [data-hesabno-check-replacement-link]),
+.hesabno-check-replacement-chip,
+[data-hesabno-check-replacement-link] {
+  border: 1px solid var(--hesabno-replacement-link-border) !important;
+  background: var(--hesabno-replacement-link-bg) !important;
+  color: var(--hesabno-replacement-link-text) !important;
+}
+
+html[data-theme='dark'] article[id^='tx-card-'][id^='tx-card-'] :is(.hesabno-check-replacement-chip, [data-hesabno-check-replacement-link]),
+html[data-theme='dark'] .hesabno-check-replacement-chip,
+html[data-theme='dark'] [data-hesabno-check-replacement-link] {
+  border-color: var(--hesabno-footnote-blue-border-dark) !important;
+  background: var(--hesabno-footnote-blue-bg-dark) !important;
+  color: var(--hesabno-footnote-blue-fg-dark) !important;
+}
+
+html[data-theme] article[id^='tx-card-'][id^='tx-card-'] .hesabno-footnote-action-chip {
+  border: 1px solid var(--footnote-red-border) !important;
+  background: var(--footnote-red-bg) !important;
+  color: var(--footnote-red-fg) !important;
+}
+
+/* ---------- ۱۲) نشان‌های مخفی‌شده و واحد ماندهٔ اولیه (۱۴۷ و ۱۴۸) --------- */
+[data-hesabno-section-card-badge-hidden="true"] {
+  display: none !important;
+}
+
+[data-hesabno-opening-balance-preview="true"] {
+  display: none !important;
+}
+
+/* ---------- ۱۳) صفحه‌کلید عددی مبلغ و پردهٔ پشت آن (۲۱۴ و ۲۲۵) ----------- */
+#hesabno-amount-keyboard[hidden],
+#hesabno-amount-keyboard-backdrop[hidden] {
+  display: none !important;
+}
+
+#hesabno-amount-keyboard-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2147482999;
+  background: rgba(2, 6, 23, .24);
+  backdrop-filter: blur(2px) saturate(.96);
+  -webkit-backdrop-filter: blur(2px) saturate(.96);
+  animation: hesabno-amount-backdrop-in .16s ease-out both;
+}
+
+html[data-theme="light"] #hesabno-amount-keyboard-backdrop,
+html.theme-light #hesabno-amount-keyboard-backdrop {
+  background: rgba(248, 250, 252, .42);
+}
+
+@keyframes hesabno-amount-backdrop-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #hesabno-amount-keyboard-backdrop {
+    animation: none;
+  }
+}
+
+#hesabno-amount-keyboard {
+  position: fixed;
+  z-index: 2147483000;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  box-sizing: border-box;
+  padding: 6px 10px calc(4px + env(safe-area-inset-bottom, 0px)) !important;
+  background: var(--hesabno-keypad-bg-dark) !important;
+  color: #f8fafc !important;
+  border-top: 1px solid rgba(148, 163, 184, 0.18) !important;
+  box-shadow: 0 -10px 32px rgba(0, 0, 0, 0.45) !important;
+  font-family: inherit;
+  direction: rtl;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  transition: background-color .22s ease, border-color .22s ease, box-shadow .22s ease;
+}
+
+#hesabno-amount-keyboard .hkap-shell {
+  width: 100%;
+  max-width: 440px !important;
+  margin: 0 auto;
+}
+
+#hesabno-amount-keyboard .hkap-top {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+}
+
+#hesabno-amount-keyboard .hkap-display {
+  flex: 1;
+  min-width: 0;
+  min-height: 52px;
+  border-radius: 14px;
+  padding: 6px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  box-sizing: border-box;
+  background: var(--hesabno-keypad-display-bg-dark) !important;
+  border: 1px solid rgba(148, 163, 184, 0.22) !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+  transition: background-color .22s ease, border-color .22s ease;
+}
+
+#hesabno-amount-keyboard .hkap-value-wrap {
+  min-width: 0;
+}
+
+#hesabno-amount-keyboard .hkap-label,
+#hesabno-amount-keyboard .hkap-hint {
+  display: none !important;
+}
+
+#hesabno-amount-keyboard .hkap-value {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #f8fafc !important;
+  font-family: inherit;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+  direction: ltr;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  caret-color: transparent;
+}
+
+#hesabno-amount-keyboard .hkap-currency {
+  flex: none;
+  color: #34d399 !important;
+  font-size: 12px;
+  font-weight: 700;
+  padding-inline-start: 10px;
+  border-inline-start: 1px solid rgba(52, 211, 153, 0.3) !important;
+  white-space: nowrap;
+}
+
+#hesabno-amount-keyboard .hkap-close {
+  flex: 0 0 48px;
+  width: 48px;
+  min-height: 52px;
+  border-radius: 14px;
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: rgba(244, 63, 94, 0.14) !important;
+  border: 1px solid rgba(244, 63, 94, 0.28) !important;
+  color: #fb7185 !important;
+  transition: transform .12s ease, background-color .15s ease;
+}
+
+#hesabno-amount-keyboard .hkap-close:active {
+  transform: scale(0.94);
+  background: rgba(244, 63, 94, 0.25) !important;
+}
+
+#hesabno-amount-keyboard .hkap-key-grid {
+  display: grid;
+  direction: ltr;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 6px;
+}
+
+#hesabno-amount-keyboard button {
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 48px;
+  border: 1px solid rgba(148, 163, 184, .2);
+  border-radius: 13px;
+  background: #1f2937;
+  color: #f8fafc;
+  font-family: inherit;
+  font-size: 20px;
+  font-weight: 800;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+#hesabno-amount-keyboard button:active {
+  transform: scale(.96);
+  background: #334155;
+}
+
+#hesabno-amount-keyboard button.hkap-pressed {
+  transform: scale(.96);
+  background: #334155;
+  filter: brightness(1.12);
+}
+
+#hesabno-amount-keyboard .hkap-utility {
+  font-size: 14px;
+  color: #cbd5e1;
+  background: #273449;
+}
+
+#hesabno-amount-keyboard .hkap-key-grid button {
+  min-height: 48px;
+  border-radius: 13px;
+  font-size: 21px;
+  font-weight: 700;
+  border: 1px solid transparent;
+  transition: transform .1s ease, filter .1s ease, background-color .15s ease;
+  cursor: pointer;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#hesabno-amount-keyboard .hkap-key-grid button:active {
+  transform: scale(0.95);
+}
+
+#hesabno-amount-keyboard .hkap-key-grid [data-hkap-action="digit"]:not([data-value="00"]):not([data-value="000"]) {
+  background: var(--hesabno-keypad-digit-bg-dark) !important;
+  border-color: rgba(148, 163, 184, 0.18) !important;
+  color: #f8fafc !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25) !important;
+}
+
+#hesabno-amount-keyboard .hkap-key-grid [data-hkap-action="digit"]:not([data-value="00"]):not([data-value="000"]):active {
+  background: #2d3d54 !important;
+}
+
+#hesabno-amount-keyboard .hkap-key-grid [data-value="00"],
+#hesabno-amount-keyboard .hkap-key-grid [data-value="000"] {
+  background: var(--hesabno-keypad-zero-bg-dark) !important;
+  border-color: rgba(148, 163, 184, 0.14) !important;
+  color: #cbd5e1 !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+  font-size: 19px !important;
+}
+
+#hesabno-amount-keyboard .hkap-key-grid [data-value="00"]:active,
+#hesabno-amount-keyboard .hkap-key-grid [data-value="000"]:active {
+  background: #223046 !important;
+}
+
+#hesabno-amount-keyboard .hkap-key-grid [data-hkap-action="clear"] {
+  background: rgba(245, 158, 11, 0.14) !important;
+  border-color: rgba(245, 158, 11, 0.3) !important;
+  color: #fbbf24 !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+}
+
+#hesabno-amount-keyboard .hkap-key-grid [data-hkap-action="clear"]:active {
+  background: rgba(245, 158, 11, 0.26) !important;
+}
+
+#hesabno-amount-keyboard .hkap-key-grid [data-hkap-action="backspace"] {
+  background: rgba(244, 63, 94, 0.14) !important;
+  border-color: rgba(244, 63, 94, 0.3) !important;
+  color: #fb7185 !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+}
+
+#hesabno-amount-keyboard .hkap-key-grid [data-hkap-action="backspace"]:active {
+  background: rgba(244, 63, 94, 0.26) !important;
+}
+
+#hesabno-amount-keyboard .hkap-confirm {
+  grid-column: span 2;
+  background: var(--hesabno-keypad-confirm-bg-dark) !important;
+  border-color: #34d399 !important;
+  color: #ffffff !important;
+  font-size: 16px !important;
+  font-weight: 800 !important;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.32) !important;
+}
+
+#hesabno-amount-keyboard .hkap-confirm:active {
+  filter: brightness(0.92);
+}
+
+html[data-theme="light"] #hesabno-amount-keyboard,
+html.theme-light #hesabno-amount-keyboard,
+[data-theme="light"] #hesabno-amount-keyboard,
+body.theme-light #hesabno-amount-keyboard {
+  background: var(--hesabno-keypad-bg-light) !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  border-top: 1px solid #cbd5e1 !important;
+  box-shadow: 0 -10px 30px rgba(15, 23, 42, 0.08) !important;
+  color: #0f172a !important;
+}
+
+html[data-theme="light"] #hesabno-amount-keyboard .hkap-display,
+html.theme-light #hesabno-amount-keyboard .hkap-display,
+[data-theme="light"] #hesabno-amount-keyboard .hkap-display {
+  background: var(--hesabno-keypad-display-bg-light) !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: inset 0 1px 3px rgba(15, 23, 42, 0.04) !important;
+}
+
+html[data-theme="light"] #hesabno-amount-keyboard .hkap-value,
+html.theme-light #hesabno-amount-keyboard .hkap-value,
+[data-theme="light"] #hesabno-amount-keyboard .hkap-value {
+  color: #0f172a !important;
+}
+
+html[data-theme="light"] #hesabno-amount-keyboard .hkap-currency,
+html.theme-light #hesabno-amount-keyboard .hkap-currency,
+[data-theme="light"] #hesabno-amount-keyboard .hkap-currency {
+  color: #059669 !important;
+  border-inline-start-color: rgba(5, 150, 105, 0.3) !important;
+}
+
+html[data-theme="light"] #hesabno-amount-keyboard .hkap-close,
+html.theme-light #hesabno-amount-keyboard .hkap-close,
+[data-theme="light"] #hesabno-amount-keyboard .hkap-close {
+  background: #fee2e2 !important;
+  border: 1px solid #fca5a5 !important;
+  color: #dc2626 !important;
+}
+
+html[data-theme="light"] #hesabno-amount-keyboard .hkap-close:active,
+html.theme-light #hesabno-amount-keyboard .hkap-close:active {
+  background: #fecaca !important;
+}
+
+html[data-theme="light"] #hesabno-amount-keyboard .hkap-key-grid [data-hkap-action="digit"]:not([data-value="00"]):not([data-value="000"]),
+html.theme-light #hesabno-amount-keyboard .hkap-key-grid [data-hkap-action="digit"]:not([data-value="00"]):not([data-value="000"]),
+[data-theme="light"] #hesabno-amount-keyboard .hkap-key-grid [data-hkap-action="digit"]:not([data-value="00"]):not([data-value="000"]) {
+  background: var(--hesabno-keypad-digit-bg-light) !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.05) !important;
+}
+
+html[data-theme="light"] #hesabno-amount-keyboard .hkap-key-grid [data-hkap-action="digit"]:not([data-value="00"]):not([data-value="000"]):active,
+html.theme-light #hesabno-amount-keyboard .hkap-key-grid [data-hkap-action="digit"]:not([data-value="00"]):not([data-value="000"]):active {
+  background: #f1f5f9 !important;
+  border-color: #94a3b8 !important;
+}
+
+html[data-theme="light"] #hesabno-amount-keyboard .hkap-key-grid [data-value="00"],
+html[data-theme="light"] #hesabno-amount-keyboard .hkap-key-grid [data-value="000"],
+html.theme-light #hesabno-amount-keyboard .hkap-key-grid [data-value="00"],
+html.theme-light #hesabno-amount-keyboard .hkap-key-grid [data-value="000"],
+[data-theme="light"] #hesabno-amount-keyboard .hkap-key-grid [data-value="00"],
+[data-theme="light"] #hesabno-amount-keyboard .hkap-key-grid [data-value="000"] {
+  background: var(--hesabno-keypad-zero-bg-light) !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #334155 !important;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04) !important;
+}
+
+html[data-theme="light"] #hesabno-amount-keyboard .hkap-key-grid [data-value="00"]:active,
+html[data-theme="light"] #hesabno-amount-keyboard .hkap-key-grid [data-value="000"]:active,
+html.theme-light #hesabno-amount-keyboard .hkap-key-grid [data-value="00"]:active,
+html.theme-light #hesabno-amount-keyboard .hkap-key-grid [data-value="000"]:active {
+  background: #e2e8f0 !important;
+}
+
+html[data-theme="light"] #hesabno-amount-keyboard .hkap-key-grid [data-hkap-action="clear"],
+html.theme-light #hesabno-amount-keyboard .hkap-key-grid [data-hkap-action="clear"],
+[data-theme="light"] #hesabno-amount-keyboard .hkap-key-grid [data-hkap-action="clear"] {
+  background: #fef3c7 !important;
+  border: 1px solid #fde68a !important;
+  color: #b45309 !important;
+  box-shadow: 0 1px 3px rgba(245, 158, 11, 0.1) !important;
+}
+
+html[data-theme="light"] #hesabno-amount-keyboard .hkap-key-grid [data-hkap-action="clear"]:active,
+html.theme-light #hesabno-amount-keyboard .hkap-key-grid [data-hkap-action="clear"]:active {
+  background: #fde68a !important;
+}
+
+html[data-theme="light"] #hesabno-amount-keyboard .hkap-key-grid [data-hkap-action="backspace"],
+html.theme-light #hesabno-amount-keyboard .hkap-key-grid [data-hkap-action="backspace"],
+[data-theme="light"] #hesabno-amount-keyboard .hkap-key-grid [data-hkap-action="backspace"] {
+  background: #ffe4e6 !important;
+  border: 1px solid #fecdd3 !important;
+  color: #e11d48 !important;
+  box-shadow: 0 1px 3px rgba(225, 29, 72, 0.1) !important;
+}
+
+html[data-theme="light"] #hesabno-amount-keyboard .hkap-key-grid [data-hkap-action="backspace"]:active,
+html.theme-light #hesabno-amount-keyboard .hkap-key-grid [data-hkap-action="backspace"]:active {
+  background: #fecdd3 !important;
+}
+
+html[data-theme="light"] #hesabno-amount-keyboard .hkap-confirm,
+html.theme-light #hesabno-amount-keyboard .hkap-confirm,
+[data-theme="light"] #hesabno-amount-keyboard .hkap-confirm {
+  background: var(--hesabno-keypad-confirm-bg-light) !important;
+  border: 1px solid #059669 !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.28) !important;
+}
+
+@media (max-height: 680px) {
+  #hesabno-amount-keyboard {
+    padding-top: 4px;
+  }
+  #hesabno-amount-keyboard .hkap-key-grid {
+    gap: 5px;
+    margin-top: 5px;
+  }
+  #hesabno-amount-keyboard button,
+  #hesabno-amount-keyboard .hkap-key-grid button {
+    min-height: 40px;
+    border-radius: 11px;
+    font-size: 18px;
+  }
+  #hesabno-amount-keyboard .hkap-display,
+  #hesabno-amount-keyboard .hkap-close {
+    min-height: 46px;
+  }
+  #hesabno-amount-keyboard .hkap-value {
+    font-size: 20px;
+  }
+}
+
+/* ---------- ۱۴) سررسید، وضعیت، رنگ و چیدمان کارت‌های چک (۱۱۵/۱۳۵/۱۳۸/۱۴۰) -- */
+.hesabno-check-due-badge {
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  padding: 2px 6px !important;
+  line-height: 1.3 !important;
+  border-radius: 7px;
+  background: var(--hesabno-check-due-bg) !important;
+  border: 1px solid var(--hesabno-check-due-border) !important;
+  color: var(--hesabno-check-due-text) !important;
+  white-space: nowrap;
+}
+
+.hesabno-check-status-corrected {
+  font-weight: 700 !important;
+}
+
+[data-hesabno-tx-status-source] {
+  display: none !important;
+}
+
+article[id^='tx-card-'] > div > div:first-child > div.grow > div[class~='gap-1.5'][class~='flex-wrap'] > span {
+  display: none !important;
+}
+
+[data-hesabno-check-terminal='true'] [data-hesabno-check-pass] {
+  display: none !important;
+}
+
+article[data-hesabno-check-status-card] {
+  transition: background-color .24s ease, border-color .24s ease, box-shadow .24s ease !important;
+}
+
+html[data-theme="light"] article[data-hesabno-check-status-card="in-progress"] {
+  background: var(--hesabno-check-card-inprogress-bg-light) !important;
+  border-color: var(--hesabno-check-card-inprogress-border-light) !important;
+  box-shadow: 0 3px 12px rgba(171, 132, 35, .08) !important;
+}
+
+html[data-theme="light"] article[data-hesabno-check-status-card="passed"] {
+  background: var(--hesabno-check-card-passed-bg-light) !important;
+  border-color: var(--hesabno-check-card-passed-border-light) !important;
+  box-shadow: 0 3px 12px rgba(42, 132, 91, .08) !important;
+}
+
+html[data-theme="light"] article[data-hesabno-check-status-card="bounced"] {
+  background: var(--hesabno-check-card-bounced-bg-light) !important;
+  border-color: var(--hesabno-check-card-bounced-border-light) !important;
+  box-shadow: 0 3px 12px rgba(180, 45, 65, .08) !important;
+}
+
+html[data-theme="light"] article[data-hesabno-check-status-card="refunded"] {
+  background: var(--hesabno-check-card-refunded-bg-light) !important;
+  border-color: var(--hesabno-check-card-refunded-border-light) !important;
+  box-shadow: 0 3px 12px rgba(65, 101, 166, .08) !important;
+}
+
+html[data-theme="light"] article[data-hesabno-check-status-card="bank-hold"] {
+  background: var(--hesabno-check-card-bankhold-bg-light) !important;
+  border-color: var(--hesabno-check-card-bankhold-border-light) !important;
+  box-shadow: 0 3px 12px rgba(94, 72, 157, .08) !important;
+}
+
+html[data-theme="dark"] article[data-hesabno-check-status-card="in-progress"] {
+  background: var(--hesabno-check-card-inprogress-bg-dark) !important;
+  border-color: var(--hesabno-check-card-inprogress-border-dark) !important;
+}
+
+html[data-theme="dark"] article[data-hesabno-check-status-card="passed"] {
+  background: var(--hesabno-check-card-passed-bg-dark) !important;
+  border-color: var(--hesabno-check-card-passed-border-dark) !important;
+}
+
+html[data-theme="dark"] article[data-hesabno-check-status-card="bounced"] {
+  background: var(--hesabno-check-card-bounced-bg-dark) !important;
+  border-color: var(--hesabno-check-card-bounced-border-dark) !important;
+}
+
+html[data-theme="dark"] article[data-hesabno-check-status-card="refunded"] {
+  background: var(--hesabno-check-card-refunded-bg-dark) !important;
+  border-color: var(--hesabno-check-card-refunded-border-dark) !important;
+}
+
+html[data-theme="dark"] article[data-hesabno-check-status-card="bank-hold"] {
+  background: var(--hesabno-check-card-bankhold-bg-dark) !important;
+  border-color: var(--hesabno-check-card-bankhold-border-dark) !important;
+}
+
+[data-hesabno-check-top-status],
+[data-hesabno-check-top-meta],
+[data-hesabno-check-top-amount] {
+  display: none !important;
+}
+
+[data-hesabno-check-card-layout] > div:first-child {
+  gap: .65rem !important;
+  align-items: center !important;
+}
+
+[data-hesabno-check-card-layout] [data-hesabno-check-info-grid] {
+  gap: .45rem !important;
+}
+
+[data-hesabno-check-info-box] {
+  min-width: 0 !important;
+}
+
+[data-hesabno-check-info-box] [data-hesabno-check-info-label] {
+  display: block;
+  color: #667684;
+  font-size: 10px;
+  line-height: 1.3;
+}
+
+[data-hesabno-check-info-box] [data-hesabno-check-info-value] {
+  display: block;
+  min-width: 0;
+  color: #2d3a45;
+  font-size: 12px;
+  line-height: 1.45;
+  font-weight: 900;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+[data-hesabno-check-status-display] {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: .35rem !important;
+  min-width: 0;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+[data-hesabno-check-status-display] [data-hesabno-check-status-label] {
+  color: #667684;
+}
+
+[data-hesabno-check-status-display] [data-hesabno-check-status-value] {
+  font-weight: 900;
+}
+
+html[data-theme="light"] [data-hesabno-check-status-display="in-progress"] [data-hesabno-check-status-value] {
+  color: #8a6512 !important;
+}
+
+html[data-theme="light"] [data-hesabno-check-status-display="passed"] [data-hesabno-check-status-value] {
+  color: #167257 !important;
+}
+
+html[data-theme="light"] [data-hesabno-check-status-display="bounced"] [data-hesabno-check-status-value] {
+  color: #a33b4c !important;
+}
+
+html[data-theme="light"] [data-hesabno-check-status-display="refunded"] [data-hesabno-check-status-value] {
+  color: #4165a6 !important;
+}
+
+html[data-theme="light"] [data-hesabno-check-status-display="bank-hold"] [data-hesabno-check-status-value] {
+  color: #6656a0 !important;
+}
+
+html[data-theme="dark"] [data-hesabno-check-info-box] [data-hesabno-check-info-label] {
+  color: #9bb0b9;
+}
+
+html[data-theme="dark"] [data-hesabno-check-info-box] [data-hesabno-check-info-value] {
+  color: #e2edf1;
+}
+
+html[data-theme="dark"] [data-hesabno-check-status-display] [data-hesabno-check-status-label] {
+  color: #9bb0b9;
+}
+
+html[data-theme="dark"] [data-hesabno-check-status-display="in-progress"] [data-hesabno-check-status-value] {
+  color: #f5d17a !important;
+}
+
+html[data-theme="dark"] [data-hesabno-check-status-display="passed"] [data-hesabno-check-status-value] {
+  color: #7bd7b5 !important;
+}
+
+html[data-theme="dark"] [data-hesabno-check-status-display="bounced"] [data-hesabno-check-status-value] {
+  color: #f29aa8 !important;
+}
+
+html[data-theme="dark"] [data-hesabno-check-status-display="refunded"] [data-hesabno-check-status-value] {
+  color: #9ebcf0 !important;
+}
+
+html[data-theme="dark"] [data-hesabno-check-status-display="bank-hold"] [data-hesabno-check-status-value] {
+  color: #b8a9f2 !important;
+}
+
+[data-hesabno-check-info-grid] {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  grid-auto-flow: row !important;
+}
+
+[data-hesabno-check-info-grid] > [data-hesabno-check-info-due] {
+  order: 1 !important;
+}
+
+[data-hesabno-check-info-grid] > [data-hesabno-check-amount-box] {
+  order: 2 !important;
+}
+
+[data-hesabno-check-info-grid] > [data-hesabno-check-number-box] {
+  order: 3 !important;
+}
+
+[data-hesabno-check-info-grid] > [data-hesabno-check-info-account] {
+  order: 4 !important;
+}
+
+[data-hesabno-check-info-grid]::before {
+  content: 'مبلغ چک\A' attr(data-hesabno-check-amount);
+  order: 2 !important;
+}
+
+[data-hesabno-check-info-grid]::after {
+  content: 'شماره چک\A' attr(data-hesabno-check-number);
+  order: 3 !important;
+}
+
+[data-hesabno-check-info-generated] {
+  display: none !important;
+}
+
+[data-hesabno-check-status-display] > * {
+  display: none !important;
+}
+
+[data-hesabno-check-status-display]::before {
+  content: 'وضعیت چک:';
+  color: #667684;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+[data-hesabno-check-status-display='in-progress']::after {
+  content: 'در جریان';
+}
+
+[data-hesabno-check-status-display='passed']::after {
+  content: 'پاس‌شده';
+}
+
+[data-hesabno-check-status-display='bounced']::after {
+  content: 'برگشت خورده';
+}
+
+[data-hesabno-check-status-display='refunded']::after {
+  content: 'مسترد شده';
+}
+
+[data-hesabno-check-status-display='bank-hold']::after {
+  content: 'خوابیده در بانک';
+}
+
+[data-hesabno-check-status-display]::after {
+  font-size: 11px;
+  font-weight: 900;
+}
+
+[data-hesabno-check-info-grid]::before,
+[data-hesabno-check-info-grid]::after {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  min-height: 0;
+  padding: .625rem;
+  border-radius: .75rem;
+  overflow: hidden;
+  white-space: pre-line;
+  font-size: 12px;
+  line-height: 1.45;
+  font-weight: 900;
+  color: #2d3a45;
+  background: rgba(241, 245, 249, .8);
+  border: 1px solid rgba(148, 163, 184, .35);
+}
+
+html[data-theme='dark'] [data-hesabno-check-info-grid]::before,
+html[data-theme='dark'] [data-hesabno-check-info-grid]::after {
+  color: #e2edf1;
+  background: rgba(28, 35, 44, .8);
+  border-color: rgba(100, 116, 139, .45);
+}
+
+html[data-theme='dark'] [data-hesabno-check-status-display]::before {
+  color: #9bb0b9;
+}
+
+/* ---------- ۱۵) فرم، پیش‌نمایش و تب‌های وام و اقساط (۱۱۲/۱۲۸/۱۳۷/۱۹۳/۱۹۵) --- */
+[data-hesabno-loan-amount-section='true'] {
+  display: block !important;
+}
+
+[data-hesabno-loan-amount-section='true'] > * {
+  min-width: 0;
+  width: 100% !important;
+}
+
+[data-hesabno-loan-installment-section='true'] {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: .75rem;
+  align-items: end;
+}
+
+[data-hesabno-loan-installment-section='true'] > * {
+  min-width: 0;
+  grid-column: 1 / -1 !important;
+  width: 100% !important;
+}
+
+[data-hesabno-interest-wrap='true'],
+[data-hesabno-principal-toman] {
+  display: none !important;
+}
+
+[data-hesabno-principal-toman]:empty {
+  display: none;
+}
+
+[data-hesabno-loan-preview-warning] {
+  border-top-color: #c8d5de !important;
+}
+
+[data-hesabno-loan-preview-warning] .hesabno-loan-preview-warning-label {
+  color: var(--hesabno-loan-warning-light) !important;
+}
+
+[data-hesabno-loan-preview-warning] .hesabno-loan-preview-warning-text {
+  color: var(--hesabno-loan-warning-light) !important;
+  font-weight: 700 !important;
+}
+
+.hesabno-loan-preview-profit-value.is-positive {
+  color: var(--hesabno-loan-profit-pos) !important;
+}
+
+.hesabno-loan-preview-profit-value.is-negative {
+  color: var(--hesabno-loan-profit-neg) !important;
+}
+
+html[data-theme="dark"] [data-hesabno-loan-preview-warning] {
+  border-top-color: rgba(120, 113, 108, .35) !important;
+}
+
+html[data-theme="dark"] [data-hesabno-loan-preview-warning] .hesabno-loan-preview-warning-label {
+  color: var(--hesabno-loan-warning-label-dark) !important;
+}
+
+html[data-theme="dark"] [data-hesabno-loan-preview-warning] .hesabno-loan-preview-warning-text {
+  color: var(--hesabno-loan-warning-text-dark) !important;
+}
+
+[data-hesabno-form-presets-hidden="true"],
+[data-hesabno-list-count-hidden="true"],
+[data-hesabno-list-description-hidden="true"] {
+  display: none !important;
+}
+
+[data-hesabno-form-header-title] {
+  color: var(--hesabno-loan-form-title-light) !important;
+}
+
+html[data-theme="dark"] [data-hesabno-form-header-title] {
+  color: var(--hesabno-loan-form-title-dark) !important;
+}
+
+[data-hesabno-form-short-title] {
+  font-size: 0 !important;
+}
+
+[data-hesabno-form-short-title]::before {
+  content: attr(data-hesabno-form-short-title);
+  display: block;
+  font-size: 1rem;
+  line-height: 1.5;
+  font-weight: 900;
+  color: var(--hesabno-loan-form-title-light);
+}
+
+@media (min-width: 640px) {
+  [data-hesabno-form-short-title]::before {
+    font-size: 1.125rem;
+  }
+}
+
+html[data-theme="dark"] [data-hesabno-form-short-title]::before {
+  color: var(--hesabno-loan-form-title-dark);
+}
+
+html.theme-light [data-hesabno-loan-name="true"],
+html[data-theme="light"] [data-hesabno-loan-name="true"],
+html.theme-light [data-hesabno-installment-name="true"],
+html[data-theme="light"] [data-hesabno-installment-name="true"],
+html.theme-light [data-hesabno-payment-loan-name="true"],
+html[data-theme="light"] [data-hesabno-payment-loan-name="true"] {
+  color: var(--hesabno-loan-name-light) !important;
+}
+
+[data-hesabno-status-button="true"] {
+  box-sizing: border-box !important;
+  height: var(--hesabno-status-tab-height, 32px) !important;
+  width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* ---------- ۱۶) گزارش پروژه/خانواده و گزارش ساده (۱۰۹/۱۲۱/۱۲۲/۱۳۹) ------- */
+.hesabno-report-transaction-card.hesabno-simple-report-detail-card {
+  padding: 12px 14px !important;
+}
+
+.hesabno-simple-report-detail-card .hesabno-simple-report-list > :not([hidden]) ~ :not([hidden]) {
+  border-top-width: 0 !important;
+  border-bottom-width: 0 !important;
+}
+
+.hesabno-simple-report-detail-card .hesabno-report-transaction-row,
+html[data-theme="light"] main .hesabno-report-transaction-card.hesabno-simple-report-detail-card .hesabno-report-transaction-row,
+html[data-theme="dark"] .hesabno-report-transaction-card.hesabno-simple-report-detail-card .hesabno-report-transaction-row {
+  margin-block: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.hesabno-simple-report-detail-card .hesabno-report-transaction-row:hover,
+html[data-theme="light"] main .hesabno-report-transaction-card.hesabno-simple-report-detail-card .hesabno-report-transaction-row:hover,
+html[data-theme="dark"] .hesabno-report-transaction-card.hesabno-simple-report-detail-card .hesabno-report-transaction-row:hover {
+  border: 0 !important;
+  background: transparent !important;
+}
+
+.hesabno-simple-report-detail-card .hesabno-report-transaction-row > [data-hesabno-simple-report-native="true"] {
+  display: none !important;
+}
+
+.hesabno-simple-report-date-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 4px 1px;
+  margin-bottom: 3px;
+  color: var(--hesabno-simple-report-heading-light);
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.hesabno-simple-report-date-group::after {
+  content: "";
+  height: 1px;
+  flex: 1;
+  background: rgba(112, 134, 144, .26);
+}
+
+html[data-theme='dark'] .hesabno-simple-report-date-group {
+  color: var(--hesabno-simple-report-heading-dark);
+}
+
+[data-hesabno-daily-tooltip-position='left'] {
+  left: 0 !important;
+  right: auto !important;
+  transform: none !important;
+  align-items: flex-start !important;
+}
+
+[data-hesabno-daily-tooltip-position='center'] {
+  left: 50% !important;
+  right: auto !important;
+  transform: translateX(-50%) !important;
+  align-items: center !important;
+}
+
+[data-hesabno-daily-tooltip-position='right'] {
+  left: auto !important;
+  right: 0 !important;
+  transform: none !important;
+  align-items: flex-end !important;
+}
+
+.hesabno-report-transaction-row,
+.hesabno-simple-report-row-box {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  margin-block: 2px !important;
+  padding: 7px 8px !important;
+  gap: 2px !important;
+}
+
+.hesabno-simple-report-row-box {
+  border: 1px solid #aebfc9 !important;
+  border-radius: 14px !important;
+  background: #f8fbfd !important;
+  box-shadow: 0 1px 3px rgba(74, 99, 115, 0.12) !important;
+}
+
+.hesabno-simple-report-row-box:hover {
+  border-color: #7f9aaa !important;
+  background: #f1f7fa !important;
+}
+
+html[data-theme="dark"] .hesabno-simple-report-row-box {
+  border-color: #46515f !important;
+  background: #252c35 !important;
+  box-shadow: none !important;
+}
+
+html[data-theme="dark"] .hesabno-simple-report-row-box:hover {
+  border-color: #596575 !important;
+  background: #2e3743 !important;
+}
+
+.hesabno-simple-report-date-rows {
+  gap: 2px !important;
+}
+
+.hesabno-simple-report-bank-wrap {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  flex: 1;
+}
+
+.hesabno-simple-report-bank-wrap .hesabno-bank-mark {
+  margin-inline-end: 0 !important;
+  padding: 0 !important;
+  background: #e1f5fe !important;
+  border: 1px solid rgba(148, 163, 184, 0.35) !important;
+  font-size: 12px !important;
+  line-height: 1 !important;
+  color: #1b2a34 !important;
+}
+
+.hesabno-simple-report-bank,
+.hesabno-simple-report-amount {
+  font-size: 11px !important;
+  font-weight: 900 !important;
+  line-height: 1.35 !important;
+  color: #1b2a34 !important;
+}
+
+.hesabno-simple-report-bank {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hesabno-simple-report-amount {
+  font-size: 10px !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  white-space: nowrap;
+}
+
+html[data-theme="dark"] .hesabno-simple-report-bank,
+html[data-theme="dark"] .hesabno-simple-report-amount {
+  color: #eef4f8 !important;
+}
+
+.hesabno-simple-report-description {
+  margin-top: 1px !important;
+  padding: 0 4px !important;
+  font-size: 9px !important;
+  line-height: 1.35 !important;
+  color: var(--hesabno-simple-report-desc-light) !important;
+}
+
+html[data-theme="dark"] .hesabno-simple-report-description {
+  color: var(--hesabno-simple-report-desc-dark) !important;
+}
+
+html[data-theme="dark"] .hesabno-simple-report-bank-wrap .hesabno-bank-mark {
+  background: #d9eef7 !important;
+  border-color: rgba(148, 163, 184, 0.45) !important;
+}
+
+#hesabno-family-project-report {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  background: rgba(10, 15, 20, .78);
+  backdrop-filter: blur(5px);
+  direction: rtl;
+  overflow: auto;
+}
+
+#hesabno-family-project-report .hfr-shell {
+  width: 100%;
+  max-width: 520px;
+  min-height: 100%;
+  margin: auto;
+  background: var(--hesabno-hfr-shell-bg-dark);
+  color: var(--hesabno-hfr-shell-text-dark);
+  box-shadow: 0 0 36px #0008;
+}
+
+#hesabno-family-project-report .hfr-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  border-bottom: 1px solid #3b4650;
+  background: #252d35;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+#hesabno-family-project-report .hfr-head button {
+  width: 38px;
+  height: 38px;
+  border: 1px solid #46535e;
+  border-radius: 13px;
+  color: #d7e0e5;
+  background: #303a43;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+#hesabno-family-project-report h1 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 900;
+}
+
+#hesabno-family-project-report .hfr-sub {
+  margin: 3px 0 0;
+  color: #9eabb5;
+  font-size: 10px;
+}
+
+#hesabno-family-project-report .hfr-content {
+  padding: 15px 14px 30px;
+}
+
+#hesabno-family-project-report .hfr-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+  padding: 5px;
+  border: 1px solid #46535e;
+  border-radius: 17px;
+  background: #2a333c;
+}
+
+#hesabno-family-project-report .hfr-tab {
+  border: 0;
+  border-radius: 12px;
+  padding: 11px;
+  color: #aebbc4;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+#hesabno-family-project-report .hfr-tab[data-active=true] {
+  color: #17222a;
+  background: #dff1f3;
+}
+
+#hesabno-family-project-report .hfr-card {
+  margin-top: 13px;
+  padding: 13px;
+  border: 1px solid #46535e;
+  border-radius: 19px;
+  background: #28323b;
+}
+
+#hesabno-family-project-report .hfr-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+#hesabno-family-project-report .hfr-count {
+  color: #9eabb5;
+  font-size: 10px;
+}
+
+#hesabno-family-project-report .hfr-list {
+  display: grid;
+  gap: 8px;
+}
+
+#hesabno-family-project-report .hfr-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  border: 1px solid #43515b;
+  border-radius: 14px;
+  padding: 10px;
+  text-align: right;
+  color: #edf4f5;
+  background: #222b33;
+  cursor: pointer;
+}
+
+#hesabno-family-project-report .hfr-item strong {
+  display: block;
+  font-size: 12px;
+}
+
+#hesabno-family-project-report .hfr-item small {
+  display: block;
+  margin-top: 3px;
+  color: #91a2ad;
+  font-size: 9px;
+}
+
+#hesabno-family-project-report .hfr-icon {
+  display: grid;
+  place-items: center;
+  width: 35px;
+  height: 35px;
+  flex: 0 0 35px;
+  border-radius: 11px;
+  background: #33414a;
+  font-size: 18px;
+}
+
+#hesabno-family-project-report .hfr-values {
+  margin-right: auto;
+  text-align: left;
+  font-size: 10px;
+  line-height: 1.7;
+}
+
+#hesabno-family-project-report .hfr-income {
+  color: #73d8b6;
+}
+
+#hesabno-family-project-report .hfr-expense {
+  color: #f59a9a;
+}
+
+#hesabno-family-project-report .hfr-detail {
+  margin-top: 13px;
+  border-top: 1px solid #46535e;
+  padding-top: 12px;
+}
+
+#hesabno-family-project-report .hfr-detail h2 {
+  margin: 0 0 8px;
+  font-size: 12px;
+}
+
+#hesabno-family-project-report .hfr-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  border-bottom: 1px solid #3b4650;
+  padding: 8px 0;
+  font-size: 10px;
+}
+
+#hesabno-family-project-report .hfr-row:last-child {
+  border-bottom: 0;
+}
+
+#hesabno-family-project-report .hfr-empty {
+  padding: 18px 8px;
+  border: 1px dashed #43515b;
+  border-radius: 13px;
+  color: #9cabb4;
+  text-align: center;
+  font-size: 11px;
+}
+
+html[data-theme=light] #hesabno-family-project-report .hfr-shell {
+  background: var(--hesabno-hfr-shell-bg-light);
+  color: var(--hesabno-hfr-shell-text-light);
+}
+
+html[data-theme=light] #hesabno-family-project-report .hfr-head {
+  border-color: #c0d0d9;
+  background: #f7fbfc;
+}
+
+html[data-theme=light] #hesabno-family-project-report .hfr-card {
+  border-color: #bdced8;
+  background: #f7fbfc;
+}
+
+html[data-theme=light] #hesabno-family-project-report .hfr-item {
+  border-color: #c4d4dc;
+  background: #fff;
+  color: #263746;
+}
+
+html[data-theme=light] #hesabno-family-project-report .hfr-tabs {
+  border-color: #bdced8;
+  background: #dfe9ee;
+}
+
+html[data-theme=light] #hesabno-family-project-report .hfr-tab {
+  color: #587080;
+}
+
+html[data-theme=light] #hesabno-family-project-report .hfr-tab[data-active=true] {
+  color: #24404d;
+  background: #fff;
+}
+
+#hesabno-family-project-report .hfr-overview {
+  margin-top: 13px;
+  padding: 13px;
+  border: 1px solid #43515b;
+  border-radius: 19px;
+  background: linear-gradient(145deg, #293943, #222c34);
+}
+
+#hesabno-family-project-report .hfr-overview-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+#hesabno-family-project-report .hfr-overview-head > div {
+  display: grid;
+  gap: 3px;
+}
+
+#hesabno-family-project-report .hfr-overview-head small {
+  color: #9eabb5;
+  font-size: 9px;
+}
+
+#hesabno-family-project-report .hfr-overview-head strong {
+  font-size: 13px;
+}
+
+#hesabno-family-project-report .hfr-overview-badge {
+  flex: none;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: #35434d;
+  color: #c4d3da;
+  font-size: 9px;
+}
+
+#hesabno-family-project-report .hfr-kpis {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+
+#hesabno-family-project-report .hfr-kpi {
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid #394852;
+  border-radius: 14px;
+  background: #202a32;
+}
+
+#hesabno-family-project-report .hfr-kpi span {
+  display: block;
+  color: #9eabb5;
+  font-size: 9px;
+}
+
+#hesabno-family-project-report .hfr-kpi strong {
+  display: block;
+  margin-top: 5px;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+#hesabno-family-project-report .hfr-kpi[data-tone=income] strong {
+  color: #65d6a3;
+}
+
+#hesabno-family-project-report .hfr-kpi[data-tone=expense] strong {
+  color: #ff9a9a;
+}
+
+#hesabno-family-project-report .hfr-kpi[data-tone=net] strong {
+  color: #88d4e2;
+}
+
+#hesabno-family-project-report .hfr-kpi[data-tone=docs] strong {
+  color: #f2cb79;
+}
+
+#hesabno-family-project-report .hfr-compare {
+  margin-top: 10px;
+  padding: 12px;
+  border: 1px solid #394852;
+  border-radius: 16px;
+  background: rgba(20, 27, 33, .42);
+}
+
+#hesabno-family-project-report .hfr-compare-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+#hesabno-family-project-report .hfr-compare-head strong {
+  font-size: 11px;
+}
+
+#hesabno-family-project-report .hfr-compare-head span {
+  color: #91a2ad;
+  font-size: 9px;
+}
+
+#hesabno-family-project-report .hfr-chart-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 11px;
+}
+
+#hesabno-family-project-report .hfr-chart-row {
+  display: grid;
+  gap: 5px;
+}
+
+#hesabno-family-project-report .hfr-chart-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 10px;
+}
+
+#hesabno-family-project-report .hfr-chart-label span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #c7d1d7;
+}
+
+#hesabno-family-project-report .hfr-chart-label strong {
+  flex: none;
+  color: #edf4f5;
+  font-size: 9px;
+}
+
+#hesabno-family-project-report .hfr-chart-track {
+  height: 9px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #182129;
+  direction: rtl;
+}
+
+#hesabno-family-project-report .hfr-chart-total {
+  display: flex;
+  height: 100%;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+#hesabno-family-project-report .hfr-bar-income {
+  height: 100%;
+  background: #39bb83;
+}
+
+#hesabno-family-project-report .hfr-bar-expense {
+  height: 100%;
+  background: #f17172;
+}
+
+#hesabno-family-project-report .hfr-legend {
+  display: flex;
+  gap: 12px;
+  margin-top: 10px;
+  color: #aab8c2;
+  font-size: 9px;
+}
+
+#hesabno-family-project-report .hfr-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+#hesabno-family-project-report .hfr-legend i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+#hesabno-family-project-report .hfr-legend .income i {
+  background: #39bb83;
+}
+
+#hesabno-family-project-report .hfr-legend .expense i {
+  background: #f17172;
+}
+
+#hesabno-family-project-report .hfr-chart-empty {
+  padding: 12px;
+  border-radius: 12px;
+  background: #202a32;
+  color: #9eabb5;
+  text-align: center;
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+#hesabno-family-project-report .hfr-empty strong {
+  display: block;
+  margin-bottom: 5px;
+  color: #e6edf2;
+  font-size: 12px;
+}
+
+#hesabno-family-project-report .hfr-empty span {
+  display: block;
+  max-width: 35em;
+  margin: auto;
+  line-height: 1.8;
+}
+
+#hesabno-family-project-report .hfr-detail-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+#hesabno-family-project-report .hfr-detail-head h2 {
+  margin: 0;
+  font-size: 12px;
+}
+
+#hesabno-family-project-report .hfr-detail-count {
+  color: #9eabb5;
+  font-size: 9px;
+}
+
+#hesabno-family-project-report .hfr-detail-kpis {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin: 10px 0;
+}
+
+#hesabno-family-project-report .hfr-detail-kpis > div {
+  min-width: 0;
+  padding: 8px;
+  border-radius: 11px;
+  background: #28333c;
+}
+
+#hesabno-family-project-report .hfr-detail-kpis small {
+  display: block;
+  color: #9eabb5;
+  font-size: 8px;
+}
+
+#hesabno-family-project-report .hfr-detail-kpis strong {
+  display: block;
+  margin-top: 4px;
+  overflow-wrap: anywhere;
+  font-size: 9px;
+}
+
+#hesabno-family-project-report .hfr-detail-kpis [data-tone=income] strong {
+  color: #65d6a3;
+}
+
+#hesabno-family-project-report .hfr-detail-kpis [data-tone=expense] strong {
+  color: #ff9a9a;
+}
+
+#hesabno-family-project-report .hfr-detail-kpis [data-tone=net] strong {
+  color: #88d4e2;
+}
+
+html.theme-light #hesabno-family-project-report .hfr-overview {
+  background: #e8f0f3 !important;
+  color: #263746 !important;
+  border-color: #c2d2dc !important;
+}
+
+html.theme-light #hesabno-family-project-report .hfr-overview-head small,
+html.theme-light #hesabno-family-project-report .hfr-overview-badge {
+  color: #617683 !important;
+}
+
+html.theme-light #hesabno-family-project-report .hfr-overview-badge {
+  background: #d5e3e8 !important;
+}
+
+html.theme-light #hesabno-family-project-report .hfr-kpi {
+  background: #f7fbfc !important;
+  color: #263746 !important;
+  border-color: #cbd9e0 !important;
+}
+
+html.theme-light #hesabno-family-project-report .hfr-kpi span,
+html.theme-light #hesabno-family-project-report .hfr-compare-head span {
+  color: #617683 !important;
+}
+
+html.theme-light #hesabno-family-project-report .hfr-kpi[data-tone=income] strong {
+  color: #167a5b !important;
+}
+
+html.theme-light #hesabno-family-project-report .hfr-kpi[data-tone=expense] strong {
+  color: #b44046 !important;
+}
+
+html.theme-light #hesabno-family-project-report .hfr-kpi[data-tone=net] strong {
+  color: #246987 !important;
+}
+
+html.theme-light #hesabno-family-project-report .hfr-kpi[data-tone=docs] strong {
+  color: #8c6518 !important;
+}
+
+html.theme-light #hesabno-family-project-report .hfr-compare {
+  background: #f3f7f9 !important;
+  border-color: #cbd9e0 !important;
+  color: #263746 !important;
+}
+
+html.theme-light #hesabno-family-project-report .hfr-chart-label span {
+  color: #425865 !important;
+}
+
+html.theme-light #hesabno-family-project-report .hfr-chart-label strong {
+  color: #263746 !important;
+}
+
+html.theme-light #hesabno-family-project-report .hfr-chart-track {
+  background: #d6e1e6 !important;
+}
+
+html.theme-light #hesabno-family-project-report .hfr-chart-empty {
+  background: #e7eff2 !important;
+  color: #586f7c !important;
+}
+
+html.theme-light #hesabno-family-project-report .hfr-empty {
+  color: #607481 !important;
+  border-color: #9aadb8 !important;
+}
+
+html.theme-light #hesabno-family-project-report .hfr-empty strong {
+  color: #263746 !important;
+}
+
+html.theme-light #hesabno-family-project-report .hfr-empty span {
+  color: #607481 !important;
+}
+
+html.theme-light #hesabno-family-project-report .hfr-detail-kpis > div {
+  background: #f0f5f7 !important;
+}
+
+html.theme-light #hesabno-family-project-report .hfr-detail-kpis small {
+  color: #617683 !important;
+}
+
+html.theme-light #hesabno-family-project-report .hfr-detail-kpis [data-tone=income] strong {
+  color: #167a5b !important;
+}
+
+html.theme-light #hesabno-family-project-report .hfr-detail-kpis [data-tone=expense] strong {
+  color: #b44046 !important;
+}
+
+html.theme-light #hesabno-family-project-report .hfr-detail-kpis [data-tone=net] strong {
+  color: #246987 !important;
+}
+
+html.theme-dark #hesabno-family-project-report .hfr-overview {
+  background: linear-gradient(145deg, #293943, #222c34) !important;
+  color: #e6edf2 !important;
+  border-color: #43515b !important;
+}
+
+html.theme-dark #hesabno-family-project-report .hfr-kpi {
+  background: #202a32 !important;
+  color: #e6edf2 !important;
+  border-color: #394852 !important;
+}
+
+html.theme-dark #hesabno-family-project-report .hfr-compare {
+  background: rgba(20, 27, 33, .7) !important;
+  color: #e6edf2 !important;
+  border-color: #394852 !important;
+}
+
+html.theme-dark #hesabno-family-project-report .hfr-empty {
+  color: #9eabb5 !important;
+  border-color: #4a5965 !important;
+}
+
+html.theme-dark #hesabno-family-project-report .hfr-empty strong {
+  color: #e6edf2 !important;
+}
+
+html.theme-dark #hesabno-family-project-report .hfr-empty span {
+  color: #9eabb5 !important;
+}
+
+html[data-theme="light"] [data-hesabno-check-status-display="in-progress"]::after {
+  color: #8a6512;
+}
+
+html[data-theme="light"] [data-hesabno-check-status-display="passed"]::after {
+  color: #167257;
+}
+
+html[data-theme="light"] [data-hesabno-check-status-display="bounced"]::after {
+  color: #a33b4c;
+}
+
+html[data-theme="light"] [data-hesabno-check-status-display="refunded"]::after {
+  color: #4165a6;
+}
+
+html[data-theme="light"] [data-hesabno-check-status-display="bank-hold"]::after {
+  color: #6656a0;
+}
+
+html[data-theme="dark"] [data-hesabno-check-status-display="in-progress"]::after {
+  color: #f5d17a;
+}
+
+html[data-theme="dark"] [data-hesabno-check-status-display="passed"]::after {
+  color: #7bd7b5;
+}
+
+html[data-theme="dark"] [data-hesabno-check-status-display="bounced"]::after {
+  color: #f29aa8;
+}
+
+html[data-theme="dark"] [data-hesabno-check-status-display="refunded"]::after {
+  color: #9ebcf0;
+}
+
+html[data-theme="dark"] [data-hesabno-check-status-display="bank-hold"]::after {
+  color: #b8a9f2;
+}
+
+/* ---------- ۱۷) توست، تاریخ تسویه، پشتیبان رمزگذاری‌شده و اجرای اول (۰۷۸/۱۴۲/۲۰۳/۲۱۷) ------- */
+[data-health-result][data-health-state="ok"] {
+  color: var(--hesabno-health-ok);
+}
+
+[data-health-result][data-health-state="invalid"] {
+  color: var(--hesabno-health-invalid);
+}
+
+.hesabno-undo-toast {
+  display: none !important;
+}
+
+.hn-toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(88px + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  z-index: 99999;
+  width: min(92vw, 420px);
+  background: var(--hesabno-toast-bg);
+  color: var(--hesabno-toast-text);
+  border: 1px solid rgba(120, 113, 108, .35);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .45);
+  overflow: hidden;
+  direction: rtl;
+  font-size: 13px;
+  touch-action: pan-y;
+  transition: opacity .3s, transform .3s;
+  animation: hnIn .25s ease-out;
+}
+
+.hn-toast-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+}
+
+.hn-toast-row span {
+  flex: 1;
+  line-height: 1.6;
+}
+
+.hn-toast-row button {
+  flex: none;
+  background: rgba(16, 185, 129, .15);
+  color: var(--hesabno-toast-accent);
+  border: 0;
+  border-radius: 10px;
+  padding: 6px 12px;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.hn-toast-bar {
+  height: 3px;
+  background: var(--hesabno-toast-accent);
+  transform-origin: right;
+  animation: hnBar linear forwards;
+}
+
+@keyframes hnBar {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0); }
+}
+
+@keyframes hnIn {
+  from { opacity: 0; transform: translate(-50%, 12px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+[data-hesabno-settlement-date-field] {
+  margin-top: .65rem;
+  padding: .65rem .75rem;
+  border: 1px solid rgba(16, 185, 129, .28);
+  border-radius: .8rem;
+  background: rgba(16, 185, 129, .06);
+  display: grid;
+  gap: .35rem;
+}
+
+[data-hesabno-settlement-date-field] label {
+  font-size: 11px;
+  font-weight: 800;
+  color: #4f635e;
+}
+
+[data-hesabno-settlement-date-field] input {
+  width: 100%;
+  padding: .55rem .65rem;
+  border: 1px solid rgba(148, 163, 184, .45);
+  border-radius: .65rem;
+  background: #fff;
+  color: #26343b;
+  font-family: ui-monospace, monospace;
+  font-size: 13px;
+  text-align: center;
+  outline: none;
+}
+
+[data-hesabno-settlement-date-field] input:focus {
+  border-color: #22a879;
+  box-shadow: 0 0 0 2px rgba(34, 168, 121, .15);
+}
+
+[data-hesabno-settlement-date-field] small {
+  font-size: 10px;
+  color: #71828b;
+}
+
+html[data-theme='dark'] [data-hesabno-settlement-date-field] label {
+  color: #b8cec7;
+}
+
+html[data-theme='dark'] [data-hesabno-settlement-date-field] input {
+  background: #1c232c;
+  color: #e2edf1;
+  border-color: rgba(100, 116, 139, .6);
+}
+
+[data-hesabno-check-settlement-display] {
+  margin-top: .35rem;
+  padding-top: .3rem;
+  border-top: 1px solid rgba(16, 185, 129, .2);
+}
+
+[data-hesabno-check-settlement-display] [data-hesabno-check-settlement-label] {
+  display: block;
+  font-size: 10px;
+  line-height: 1.3;
+  color: #16805f;
+  font-weight: 800;
+}
+
+[data-hesabno-check-settlement-display] [data-hesabno-check-settlement-value] {
+  display: block;
+  margin-top: .1rem;
+  font-size: 11px;
+  line-height: 1.35;
+  color: var(--hesabno-settlement-accent-light);
+  font-weight: 900;
+}
+
+html[data-theme='dark'] [data-hesabno-check-settlement-display] [data-hesabno-check-settlement-label],
+html[data-theme='dark'] [data-hesabno-check-settlement-display] [data-hesabno-check-settlement-value] {
+  color: var(--hesabno-settlement-accent-dark);
+}
+
+[data-hesabno-dashboard-settlement-row] {
+  color: var(--hesabno-settlement-accent-light);
+  font-weight: 800;
+  font-size: 11px;
+}
+
+[data-hesabno-tx-settlement-display] {
+  font-size: 9px !important;
+  font-weight: 800 !important;
+  color: var(--hesabno-settlement-accent-light) !important;
+  background: rgba(16, 185, 129, .09) !important;
+  border: 1px solid rgba(16, 185, 129, .22) !important;
+  padding: .15rem .35rem !important;
+  border-radius: .35rem !important;
+  white-space: nowrap !important;
+}
+
+html[data-theme='dark'] [data-hesabno-tx-settlement-display] {
+  color: var(--hesabno-settlement-accent-dark) !important;
+  background: rgba(16, 185, 129, .12) !important;
+  border-color: rgba(52, 211, 153, .28) !important;
+}
+
+.hesabno-secure-backup {
+  margin: 14px 0;
+  padding: 16px;
+  border: 1px solid #87b8aa;
+  border-radius: 16px;
+  background: var(--hesabno-secure-backup-bg-light);
+  color: var(--hesabno-secure-backup-text-light);
+}
+
+.hesabno-secure-backup h3 {
+  margin: 0 0 5px;
+  font-size: 14px;
+}
+
+.hesabno-secure-backup p {
+  margin: 5px 0 12px;
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.hesabno-secure-backup label {
+  display: block;
+  margin: 8px 0 5px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.hesabno-secure-backup input[type=password] {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1px solid #9abdb4;
+  border-radius: 10px;
+  background: #fff;
+  color: #17212b;
+  font: inherit;
+}
+
+.hesabno-secure-backup .hsb-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.hesabno-secure-backup button {
+  border: 1px solid #327c6a;
+  border-radius: 10px;
+  padding: 9px 12px;
+  background: #277c68;
+  color: #fff;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.hesabno-secure-backup button:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+
+.hesabno-secure-backup [data-hsb-status] {
+  min-height: 1.6em;
+  margin-top: 8px;
+  color: #385e53;
+}
+
+.hesabno-secure-backup [data-hsb-status][data-error=true] {
+  color: #a61b2b;
+}
+
+html[data-theme=dark] .hesabno-secure-backup {
+  border-color: #4d8d7f;
+  background: var(--hesabno-secure-backup-bg-dark);
+  color: var(--hesabno-secure-backup-text-dark);
+}
+
+html[data-theme=dark] .hesabno-secure-backup input[type=password] {
+  border-color: #4d685f;
+  background: #101a18;
+  color: #f8fafc;
+}
+
+html[data-theme=dark] .hesabno-secure-backup [data-hsb-status] {
+  color: #a9e0d0;
+}
+
+.hesabno-secure-backup button,
+.hesabno-secure-backup input[type=password] {
+  min-height: 44px;
+}
+
+#hesabno-first-run {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483646;
+  background: radial-gradient(ellipse at 18% 12%, rgba(16, 185, 129, .20), transparent 38%), radial-gradient(ellipse at 88% 86%, rgba(45, 212, 191, .12), transparent 34%), linear-gradient(145deg, #071b1b 0%, #0b2527 52%, #101a2b 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  font-family: Vazirmatn, system-ui, sans-serif;
+  direction: rtl;
+  color: #f1f5f9;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+#hesabno-first-run .hesabno-fr-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  width: 100%;
+  max-width: 400px;
+  box-sizing: border-box;
+  background: linear-gradient(155deg, rgba(20, 43, 45, .97), rgba(13, 27, 39, .98));
+  border: 1px solid rgba(110, 231, 183, .22);
+  border-radius: 28px;
+  padding: clamp(20px, 5vw, 28px);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, .42), inset 0 1px 0 rgba(255, 255, 255, .05);
+}
+
+#hesabno-first-run .hesabno-fr-glow {
+  position: absolute;
+  z-index: -1;
+  left: -54px;
+  top: -66px;
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  background: rgba(16, 185, 129, .11);
+  filter: blur(10px);
+  pointer-events: none;
+}
+
+#hesabno-first-run .hesabno-fr-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+#hesabno-first-run .hesabno-fr-mark {
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 17px;
+  background: linear-gradient(145deg, #1a6658, #123e3b);
+  border: 1px solid rgba(110, 231, 183, .32);
+  box-shadow: 0 8px 24px rgba(16, 185, 129, .14);
+}
+
+#hesabno-first-run .hesabno-fr-brand-text {
+  min-width: 0;
+}
+
+#hesabno-first-run .hesabno-fr-brand-name {
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: #6ee7b7;
+}
+
+#hesabno-first-run .hesabno-fr-brand-caption {
+  font-size: 12px;
+  color: #a7c5c1;
+  margin-top: 3px;
+}
+
+#hesabno-first-run .hesabno-fr-step {
+  display: inline-flex;
+  align-items: center;
+  margin: 0 0 10px;
+  padding: 6px 10px;
+  border: 1px solid rgba(110, 231, 183, .18);
+  border-radius: 999px;
+  background: rgba(16, 185, 129, .08);
+  font-size: 11px;
+  font-weight: 700;
+  color: #86efc6;
+}
+
+#hesabno-first-run .hesabno-fr-title {
+  margin: 0 0 8px;
+  font-size: clamp(20px, 5.3vw, 24px);
+  line-height: 1.65;
+  font-weight: 900;
+  letter-spacing: -.4px;
+  color: #f0fdfa;
+}
+
+#hesabno-first-run .hesabno-fr-sub {
+  margin: 0 0 22px;
+  font-size: 13px;
+  line-height: 1.95;
+  color: #a8c1c0;
+}
+
+#hesabno-first-run .hesabno-fr-sub[data-error="true"] {
+  color: #f87171;
+}
+
+#hesabno-first-run .hesabno-fr-field {
+  margin-bottom: 13px;
+}
+
+#hesabno-first-run .hesabno-fr-label {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 12.5px;
+  font-weight: 750;
+  color: #d5e9e5;
+}
+
+#hesabno-first-run .hesabno-fr-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 14px 15px;
+  border-radius: 15px;
+  border: 1px solid #345052;
+  background: rgba(5, 20, 27, .64);
+  color: #f0fdfa;
+  font-size: 15px;
+  outline: none;
+  font-family: inherit;
+  transition: border-color .18s, box-shadow .18s, background .18s;
+}
+
+#hesabno-first-run .hesabno-fr-input:focus {
+  border-color: #34d399;
+  box-shadow: 0 0 0 3px rgba(52, 211, 153, .12);
+  background: rgba(5, 20, 27, .92);
+}
+
+#hesabno-first-run .hesabno-fr-err {
+  min-height: 16px;
+  margin-top: 4px;
+  font-size: 11.5px;
+  color: #f87171;
+}
+
+#hesabno-first-run .hesabno-fr-submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  margin-top: 8px;
+  padding: 15px;
+  border: 1px solid rgba(167, 243, 208, .38);
+  border-radius: 16px;
+  background: linear-gradient(100deg, #6ee7b7 0%, #34d399 55%, #2dd4bf 100%);
+  color: #073b31;
+  font-size: 15px;
+  font-weight: 900;
+  cursor: pointer;
+  font-family: inherit;
+  box-shadow: 0 10px 25px rgba(16, 185, 129, .17);
+  transition: transform .15s, filter .15s;
+}
+
+#hesabno-first-run .hesabno-fr-submit:active {
+  transform: scale(.985);
+}
+
+#hesabno-first-run .hesabno-fr-submit-arrow {
+  font-size: 20px;
+  line-height: 1;
+}
+
+#hesabno-first-run .hesabno-fr-privacy {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  margin: 15px 2px 0;
+  font-size: 10.5px;
+  line-height: 1.8;
+  color: #87a6a3;
+}
+
+#hesabno-first-run .hesabno-fr-lock {
+  display: inline-flex;
+  flex: 0 0 auto;
+  margin-top: 2px;
+}
+
+#hesabno-intro-tour {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483645;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  overflow-y: auto;
+  background: radial-gradient(circle at 15% 10%, rgba(16, 185, 129, .18), transparent 38%), #071115;
+  color: #eef7f6;
+  font-family: Vazirmatn, system-ui, sans-serif;
+}
+
+#hesabno-intro-tour * {
+  box-sizing: border-box;
+}
+
+#hesabno-intro-tour .intro-brand-row {
+  display: flex;
+  align-items: center;
+}
+
+#hesabno-intro-tour .intro-brand-label {
+  letter-spacing: .08em;
+  font-size: 11px;
+}
+
+#hesabno-intro-tour .intro-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 22px;
+  border: 1px solid #294349;
+  border-radius: 26px;
+  background: linear-gradient(145deg, #12252b, #0b171c);
+  box-shadow: 0 24px 70px #0008;
+  animation: introCardIn .5s cubic-bezier(.22, .75, .25, 1) both;
+}
+
+@keyframes introCardIn {
+  from { opacity: 0; transform: translateY(18px) scale(.98); }
+  to { opacity: 1; transform: none; }
+}
+
+#hesabno-intro-tour .intro-art {
+  position: relative;
+  overflow: hidden;
+  height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 8px 0 20px;
+  border: 1px solid #294349;
+  border-radius: 20px;
+  background: linear-gradient(160deg, #122a30, #0b171c);
+  padding: 8px;
+}
+
+#hesabno-intro-tour .intro-art::after {
+  content: '';
+  position: absolute;
+  z-index: 5;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(115deg, transparent 35%, rgba(255, 255, 255, .07) 50%, transparent 65%);
+  transform: translateX(-120%);
+  animation: introSheen 5.4s ease-in-out infinite;
+}
+
+@keyframes introSheen {
+  0% { transform: translateX(-120%); }
+  45%, 100% { transform: translateX(120%); }
+}
+
+#hesabno-intro-tour .intro-art svg {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  animation: mockIn .45s cubic-bezier(.22, .75, .25, 1) both;
+}
+
+@keyframes mockIn {
+  from { opacity: 0; transform: translateY(10px) scale(.98); }
+  to { opacity: 1; transform: none; }
+}
+
+#hesabno-intro-tour .intro-kicker {
+  color: #5eead4;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+#hesabno-intro-tour .intro-copy {
+  animation: introCopyIn .42s cubic-bezier(.22, .75, .25, 1) both;
+}
+
+@keyframes introCopyIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
+#hesabno-intro-tour h2 {
+  margin: 8px 0 0;
+  color: #f4fbfa;
+  font-size: 22px;
+}
+
+#hesabno-intro-tour p {
+  margin: 6px 0 0;
+  color: #a6bfbe;
+  font-size: 13px;
+  line-height: 1.9;
+}
+
+#hesabno-intro-tour .intro-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+#hesabno-intro-tour button {
+  min-height: 44px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 13px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .2s ease, background .2s ease;
+}
+
+#hesabno-intro-tour button:hover {
+  transform: translateY(-1px);
+}
+
+#hesabno-intro-tour button:active {
+  transform: translateY(0) scale(.97);
+}
+
+#hesabno-intro-tour button:focus-visible {
+  outline: 2px solid #2dd4bf;
+  outline-offset: 2px;
+}
+
+#hesabno-intro-tour .intro-skip {
+  background: #23383d;
+  color: #b9cecc;
+}
+
+#hesabno-intro-tour .intro-skip:hover {
+  background: #2c464b;
+}
+
+#hesabno-intro-tour .intro-next {
+  background: linear-gradient(110deg, #6ee7b7, #2dd4bf);
+  color: #06251e;
+  box-shadow: 0 8px 20px rgba(45, 212, 191, .2);
+  animation: introNextGlow 3.4s ease-in-out infinite;
+}
+
+@keyframes introNextGlow {
+  0%, 100% { box-shadow: 0 8px 20px rgba(45, 212, 191, .18); }
+  50% { box-shadow: 0 11px 28px rgba(45, 212, 191, .45); }
+}
+
+#hesabno-intro-tour .intro-next:hover {
+  animation: none;
+  box-shadow: 0 12px 30px rgba(45, 212, 191, .45);
+}
+
+#hesabno-intro-tour .intro-dots {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  margin-top: 18px;
+}
+
+#hesabno-intro-tour .intro-dots span {
+  width: 6px;
+  height: 6px;
+  border-radius: 9px;
+  background: #385052;
+  transition: all .3s ease;
+}
+
+#hesabno-intro-tour .intro-dots span.active {
+  width: 18px;
+  background: #34d399;
+}
+
+@media (max-height: 620px) {
+  #hesabno-intro-tour .intro-art {
+    height: 190px;
+    margin: 6px 0 12px;
+  }
+  #hesabno-intro-tour .intro-card {
+    padding: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #hesabno-intro-tour *,
+  #hesabno-intro-tour *::before,
+  #hesabno-intro-tour *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ---------- ۱۸) قفل اسناد مرتبط و کنتراست تم روشن (۲۰۱ و ۹۰۱) ------- */
+[data-hesabno-dependent-no-correction="true"] {
+  display: none !important;
+}
+
+[data-hesabno-linked-lock-action="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+[data-hesabno-linked-document-notice="true"] {
+  z-index: 2147483600 !important;
+  isolation: isolate !important;
+}
+
+[data-hesabno-linked-cancel-confirm="true"] {
+  z-index: 2147483600 !important;
+  isolation: isolate !important;
+  background-color: var(--hesabno-linked-cancel-overlay-dark) !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+html[data-theme="light"] [data-hesabno-linked-cancel-confirm="true"] {
+  background-color: var(--hesabno-linked-cancel-overlay-light) !important;
+}
+
+[data-hesabno-linked-cancel-confirm="true"] .hesabno-linked-cancel-panel {
+  background-color: var(--hesabno-linked-cancel-panel-bg-dark) !important;
+  border-color: var(--hesabno-linked-cancel-panel-border-dark) !important;
+  color: var(--hesabno-linked-cancel-panel-text-dark) !important;
+}
+
+html[data-theme="light"] [data-hesabno-linked-cancel-confirm="true"] .hesabno-linked-cancel-panel {
+  background-color: var(--hesabno-linked-cancel-panel-bg-light) !important;
+  border-color: var(--hesabno-linked-cancel-panel-border-light) !important;
+  color: var(--hesabno-linked-cancel-panel-text-light) !important;
+}
+
+[data-hesabno-linked-cancel-confirm="true"] .hesabno-linked-cancel-title {
+  color: var(--hesabno-linked-cancel-title-dark) !important;
+}
+
+html[data-theme="light"] [data-hesabno-linked-cancel-confirm="true"] .hesabno-linked-cancel-title {
+  color: var(--hesabno-linked-cancel-title-light) !important;
+}
+
+[data-hesabno-linked-cancel-confirm="true"] .hesabno-linked-cancel-desc {
+  color: var(--hesabno-linked-cancel-desc-dark) !important;
+}
+
+html[data-theme="light"] [data-hesabno-linked-cancel-confirm="true"] .hesabno-linked-cancel-desc {
+  color: var(--hesabno-linked-cancel-desc-light) !important;
+}
+
+[data-hesabno-linked-cancel-confirm="true"] .hesabno-linked-cancel-ref {
+  background-color: var(--hesabno-linked-cancel-ref-bg-dark) !important;
+  border-color: var(--hesabno-linked-cancel-ref-border-dark) !important;
+  color: var(--hesabno-linked-cancel-ref-text-dark) !important;
+}
+
+html[data-theme="light"] [data-hesabno-linked-cancel-confirm="true"] .hesabno-linked-cancel-ref {
+  background-color: var(--hesabno-linked-cancel-ref-bg-light) !important;
+  border-color: var(--hesabno-linked-cancel-ref-border-light) !important;
+  color: var(--hesabno-linked-cancel-ref-text-light) !important;
+}
+
+[data-hesabno-linked-cancel-confirm="true"] .hesabno-linked-cancel-error {
+  color: var(--hesabno-linked-cancel-error-dark) !important;
+}
+
+html[data-theme="light"] [data-hesabno-linked-cancel-confirm="true"] .hesabno-linked-cancel-error {
+  color: var(--hesabno-linked-cancel-title-light) !important;
+}
+
+html[data-theme="light"] [data-hesabno-linked-cancel-confirm="true"] .hesabno-linked-cancel-confirm-btn {
+  background-color: var(--hesabno-linked-cancel-confirm-bg-light) !important;
+}
+
+[data-hesabno-linked-cancel-confirm="true"] .hesabno-linked-cancel-close-btn {
+  background-color: var(--hesabno-linked-cancel-close-bg-dark) !important;
+  color: var(--hesabno-linked-cancel-panel-text-dark) !important;
+}
+
+html[data-theme="light"] [data-hesabno-linked-cancel-confirm="true"] .hesabno-linked-cancel-close-btn {
+  background-color: var(--hesabno-linked-cancel-close-bg-light) !important;
+  color: var(--hesabno-linked-cancel-ref-text-light) !important;
+}
+
+html.hn-theme-instant,
+html.hn-theme-instant *,
+html.hn-theme-instant *::before,
+html.hn-theme-instant *::after,
+html.hn-lc-batch,
+html.hn-lc-batch *,
+html.hn-lc-batch *::before,
+html.hn-lc-batch *::after {
+  transition: none !important;
+}
+
+html[data-theme="light"] [data-hn-lc="1"] {
+  color: var(--hn-lc-color) !important;
+}
+
+html[data-theme="light"] [data-hn-lc-opaque="1"] {
+  opacity: 1 !important;
+}
+
+/* ==========================================================================
+ * بخش ۲۶: اصلاح کنتراست حالت تیره + فریز دکمه‌های ثبت در اسکرول و بالای کیبورد گوشی
+ * (همیشه زیر کیبورد داخلی برنامه #hesabno-amount-keyboard)
+ * ========================================================================== */
+
+html:not([data-theme="light"]) #root main [data-hesabno-report-account-detail-title] {
+  color: #f5f5f4 !important;
+}
+
+html:not([data-theme="light"]) button.bg-sky-500.text-stone-950,
+html:not([data-theme="light"]) button.bg-indigo-500.text-stone-950,
+html:not([data-theme="light"]) button.bg-purple-500.text-stone-950,
+html:not([data-theme="light"]) button.bg-teal-500.text-stone-950,
+html:not([data-theme="light"]) button.bg-rose-500.text-stone-950,
+html:not([data-theme="light"]) button.from-sky-500.to-sky-600.text-stone-950 {
+  color: #ffffff !important;
+}
+
+html:not([data-theme="light"]) #root main .hesabno-report-transaction-card {
+  background: #202833 !important;
+  border-color: #364152 !important;
+}
+
+html:not([data-theme="light"]) #root main .hesabno-report-transaction-row {
+  background: #252c35 !important;
+}
+
+html:not([data-theme="light"]) #root main .hesabno-account-statement-panel[data-hesabno-report-account-detail="true"] {
+  background-color: #1c2c36 !important;
+  border-color: rgba(56, 189, 248, 0.25) !important;
+}
+
+/* فریز دکمه‌های ثبت در تمام فرم‌های تمام‌صفحه و مودال‌ها هنگام اسکرول */
+.hesabno-bank-form-page,
+.hesabno-shortcut-form-page {
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  padding-bottom: 0 !important;
+}
+
+.hesabno-bank-form-page > :nth-child(2),
+.hesabno-shortcut-form-page > :nth-child(3) {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  padding-bottom: 1rem !important;
+}
+
+.hesabno-bank-form-page > .hesabno-sticky-form-footer,
+.hesabno-shortcut-form-page > .hesabno-sticky-form-footer {
+  flex-shrink: 0 !important;
+  position: sticky !important;
+  bottom: 0 !important;
+  z-index: 30 !important;
+  margin-top: auto !important;
+  padding-top: 0.75rem !important;
+  padding-bottom: max(1rem, env(safe-area-inset-bottom, 0px)) !important;
+  background-color: inherit !important;
+}
+
+form.overflow-y-auto:has(> .hesabno-sticky-form-footer) {
+  padding-bottom: 0 !important;
+}
+
+form.overflow-y-auto > .hesabno-sticky-form-footer {
+  position: sticky !important;
+  bottom: 0 !important;
+  z-index: 30 !important;
+  margin-inline: -1.25rem !important;
+  padding: 0.75rem 1.25rem max(1rem, env(safe-area-inset-bottom, 0px)) !important;
+  background-color: #1c1917 !important;
+}
+
+html[data-theme="light"] form.overflow-y-auto > .hesabno-sticky-form-footer {
+  background-color: #eef3f6 !important;
+  border-top-color: #cbd5e1 !important;
+}
+
+[data-hesabno-return-account-view] > .flex.gap-2:last-child,
+.max-h-\[90vh\].overflow-y-auto > .flex.gap-2:last-child {
+  position: sticky !important;
+  bottom: 0 !important;
+  z-index: 30 !important;
+  padding-top: 0.75rem !important;
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom, 0px)) !important;
+  background-color: inherit !important;
+}
+
+/* فریز دکمه ثبت فرم اصلی تراکنش و صفحه پروفایل (و قرارگیری بالای کیبورد گوشی، اما زیر کیبورد داخلی برنامه) */
+main:has(button.hesabno-sticky-page-submit) {
+  padding-bottom: 96px !important;
+}
+
+main form button[type="submit"].py-3\.5,
+button.hesabno-sticky-page-submit {
+  position: fixed !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  bottom: calc(var(--hesabno-kb-offset, 0px) + max(12px, env(safe-area-inset-bottom, 0px))) !important;
+  width: min(calc(100% - 32px), 28rem) !important;
+  z-index: 60 !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35) !important;
+}
+
+/* هنگام باز شدن کیبورد گوشی (نه کیبورد داخلی برنامه)، لایه فرم دقیقاً بالای کیبورد گوشی قرار می‌گیرد */
+html[data-hesabno-native-kb="1"] .hesabno-fullpage-layer {
+  top: var(--hesabno-vv-top, 0px) !important;
+  height: var(--hesabno-vvh, 100%) !important;
+  max-height: var(--hesabno-vvh, 100%) !important;
+  bottom: auto !important;
+}
+
+html[data-hesabno-native-kb="1"] .hesabno-fullpage-layer > :first-child {
+  height: 100% !important;
+  min-height: 0 !important;
+  max-height: 100% !important;
+}
+
+/* پنجره مستقل و کاملاً کدر صورتحساب حساب/صندوق روی پنجره قبلی (تم روشن و تیره) */
+html body .hesabno-account-statement-panel.fixed.inset-0,
+html body .hesabno-account-statement-panel[data-hesabno-report-account-detail="true"],
+html body div.fixed.inset-0.bg-stone-900 {
+  position: fixed !important;
+  inset: 0 !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100dvh !important;
+  min-height: 100vh !important;
+  max-width: none !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 0.5rem 0 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  z-index: 70 !important;
+  opacity: 1 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+}
+
+html[data-theme="light"] body .hesabno-account-statement-panel.fixed.inset-0,
+html[data-theme="light"] body .hesabno-account-statement-panel.hesabno-fullpage-ghost,
+html[data-theme="light"] body .hesabno-account-statement-panel.hesabno-overlay-ghost,
+html[data-theme="light"] body .hesabno-account-statement-panel[data-hesabno-report-account-detail="true"],
+html[data-theme="light"] body div.fixed.inset-0.bg-stone-900,
+html[data-theme="light"] .hesabno-account-statement-panel > div.grow.overflow-y-auto {
+  background: #eef3f6 !important;
+  background-color: #eef3f6 !important;
+  background-image: none !important;
+  color: #0f172a !important;
+}
+
+html:not([data-theme="light"]) body .hesabno-account-statement-panel.fixed.inset-0,
+html:not([data-theme="light"]) body .hesabno-account-statement-panel.hesabno-fullpage-ghost,
+html:not([data-theme="light"]) body .hesabno-account-statement-panel.hesabno-overlay-ghost,
+html:not([data-theme="light"]) body .hesabno-account-statement-panel[data-hesabno-report-account-detail="true"],
+html:not([data-theme="light"]) body div.fixed.inset-0.bg-stone-900,
+html:not([data-theme="light"]) .hesabno-account-statement-panel > div.grow.overflow-y-auto {
+  background: #121519 !important;
+  background-color: #121519 !important;
+  background-image: none !important;
+  color: #f8fafc !important;
+}
+
+.hesabno-account-statement-panel > header + div > .grid.grid-cols-3 {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  align-items: center !important;
+  width: 100% !important;
+  padding: 0.55rem 2rem 0.55rem 0.5rem !important;
+}
+
+.hesabno-account-statement-panel > header + div > .grid.grid-cols-3 > div {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.15rem !important;
+  min-width: 0 !important;
+}
+
+.hesabno-account-statement-panel > header + button {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: calc(100% - 1rem) !important;
+  max-width: 42rem !important;
+  margin-inline: auto !important;
+  border-inline: 1px solid #607b88 !important;
+}
+
+html[data-theme="light"] .hesabno-account-statement-panel > header + button {
+  border-color: #a8bdc8 !important;
+  background-color: #f8fafc !important;
+  color: #334155 !important;
+}
+
+.hesabno-account-statement-panel .hesabno-statement-bank-name {
+  display: block !important;
+  line-height: 1.45 !important;
+}
+
+.hesabno-account-statement-panel .hesabno-statement-account-number {
+  display: block !important;
+  line-height: 1.5 !important;
+  font-family: var(--font-primary) !important;
+}
+
+.hesabno-account-statement-panel[data-hesabno-report-statement-section="true"] .hesabno-statement-columns {
+  width: 100% !important;
+  max-width: none !important;
+  border-top-width: 1px !important;
+  border-top-style: solid !important;
+  border-radius: .75rem !important;
+}
+
+/* ── ۱۰. دفتر تراکنش‌ها و اسناد: رنگ خنثی و خوانا برای عدد جمع روزانه، حذف دکمه باز کردن همه، و ثبات پس‌زمینه در تب‌های خالی ── */
+html[data-theme="light"] .hesabno-day-balance,
+html[data-theme="light"] .hesabno-day-balance.neg {
+  color: #1e293b !important;
+}
+
+html:not([data-theme="light"]) .hesabno-day-balance,
+html:not([data-theme="light"]) .hesabno-day-balance.neg,
+html[data-theme="dark"] .hesabno-day-balance,
+html[data-theme="dark"] .hesabno-day-balance.neg {
+  color: #e2e8f0 !important;
+}
+
+button[title="باز کردن همه اسناد"],
+button[title="بستن همه اسناد"] {
+  display: none !important;
+}
+
+html[data-theme="light"] body:has(main[data-hesabno-transactions-page="true"]),
+html[data-theme="light"] #root:has(main[data-hesabno-transactions-page="true"]),
+html[data-theme="light"] #root:has(main[data-hesabno-transactions-page="true"]) > div,
+html[data-theme="light"] #root:has(main[data-hesabno-transactions-page="true"]) > div > div,
+html[data-theme="light"] main[data-hesabno-transactions-page="true"] {
+  background-color: #e7eff5 !important;
+  background-image: none !important;
+}
+
+html[data-theme="light"] main[data-hesabno-transactions-page="true"] > div.sticky {
+  background-color: #e7eff5 !important;
+  background-image: none !important;
+  backdrop-filter: none !important;
+  border-bottom-color: #cbd8e2 !important;
+  box-shadow: none !important;
+}
+
+html[data-theme="light"] main[data-hesabno-transactions-page="true"] input[placeholder*="جستجو"] {
+  background-color: #f8fbfd !important;
+  border-color: #c5d3de !important;
+}
+
+html[data-theme="light"] main[data-hesabno-transactions-page="true"] > div.sticky.top-0 > div.flex.items-center.gap-1\.5 {
+  background-color: #f1f6f9 !important;
+  border-color: #c5d3de !important;
+}
+
+html[data-theme="light"] main[data-hesabno-transactions-page="true"] [data-hesabno-transactions-empty="true"] {
+  background-color: #f8fbfd !important;
+  border-color: #cbd8e2 !important;
+}
+
+button[data-hesabno-tx-edit-mode-locked="true"] {
+  opacity: 0.38 !important;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+  filter: grayscale(0.6) !important;
+}
+
+section[data-hesabno-today-widget-section] > [data-hesabno-today-empty="true"] {
+  padding: 9px 12px !important;
+  border-radius: 14px !important;
+}
+
+section[data-hesabno-today-widget-section] [data-hesabno-today-list="true"] {
+  border-radius: 14px !important;
+}
+
+section[data-hesabno-today-widget-section] [data-hesabno-today-row="true"] {
+  padding: 7px 10px !important;
+  gap: 10px !important;
+  min-height: 0 !important;
+}
+
+section[data-hesabno-today-widget-section] [data-hesabno-today-row="true"] > span:first-child {
+  width: 34px !important;
+  height: 34px !important;
+  min-width: 34px !important;
+  min-height: 34px !important;
+  border-radius: 10px !important;
+}
+
+section[data-hesabno-today-widget-section] [data-hesabno-today-row="true"] > span:first-child svg {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+section[data-hesabno-today-widget-section] [data-hesabno-today-row="true"] > span:first-child[data-hesabno-today-category-icon]::after {
+  font-size: 18px !important;
+  line-height: 1 !important;
+}
+
+section[data-hesabno-today-widget-section] [data-hesabno-today-row="true"] > div.grow > p[data-hesabno-today-payment] {
+  margin-top: 1px !important;
+  line-height: 1.25 !important;
+}
+
+[data-hesabno-liquidity-row] {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 8px !important;
+}
+
+[data-hesabno-liquidity-row] [data-hesabno-liquidity-amount-wrap="true"] {
+  display: inline-flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  gap: 6px !important;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+}
+
+[data-hesabno-liquidity-row] [data-hesabno-liquidity-amount-wrap="true"] > svg {
+  display: block !important;
+  flex-shrink: 0 !important;
+}
+
+header.sticky.top-0 {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  box-shadow: none !important;
+}
+
+.hesabno-fullpage-ghost {
+  padding: 0 !important;
+  align-items: stretch !important;
+  justify-content: stretch !important;
+  border-radius: 0 !important;
+}
+
+.hesabno-fullpage-ghost > :first-child:not(header) {
+  width: 100% !important;
+  max-width: none !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  max-height: none !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.hesabno-fullpage-ghost > .hesabno-bank-form-page,
+.hesabno-fullpage-ghost > .hesabno-shortcut-form-page {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+html body .hesabno-account-statement-panel.hesabno-fullpage-ghost,
+html body .hesabno-account-statement-panel.hesabno-overlay-ghost {
+  position: fixed !important;
+  inset: 0 !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100dvh !important;
+  min-height: 100vh !important;
+  max-width: none !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 0.5rem 0 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+}
+
+[data-hesabno-dashboard-hero-modal="true"] {
+  position: fixed !important;
+  inset: 0 !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 1rem !important;
+  z-index: 55 !important;
+}
+
+.hidden [data-hesabno-dashboard-hero-modal="true"] {
+  display: none !important;
+}
+
+[data-hesabno-dashboard-hero-modal-card="true"] {
+  display: flex !important;
+  flex-direction: column !important;
+  width: 100% !important;
+  max-width: 28rem !important;
+  height: 74vh !important;
+  min-height: 74vh !important;
+  max-height: 74vh !important;
+  border-radius: 1.5rem !important;
+  overflow: hidden !important;
+  margin: auto !important;
+  background-color: #eef3f6 !important;
+  border: 1px solid #b8cbd8 !important;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.28) !important;
+}
+
+html[data-theme="dark"] [data-hesabno-dashboard-hero-modal-card="true"] {
+  background-color: #181b20 !important;
+  border: 1px solid #364152 !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55) !important;
+}
+
+[data-hesabno-dashboard-hero-modal-card="true"] > div.grow.overflow-y-auto {
+  flex: 1 1 0% !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+[data-hesabno-dashboard-hero-modal-card="true"] > div.grow.overflow-y-auto > * {
+  flex-shrink: 0 !important;
+}
+
+table th,
+table td,
+table th.font-mono,
+table td.font-mono,
+table th[data-hesabno-money-rtl="true"],
+table td[data-hesabno-money-rtl="true"] {
+  display: table-cell !important;
+  vertical-align: middle !important;
+}
+
+main table:not(:has(> thead tr > th:nth-child(5))),
+.hesabno-overlay-motion table:not(:has(> thead tr > th:nth-child(5))) {
+  width: 100% !important;
+  min-width: 100% !important;
+  table-layout: fixed !important;
+}
+
+main table:not(:has(> thead tr > th:nth-child(5))) > thead th:first-child,
+main table:not(:has(> thead tr > th:nth-child(5))) > tbody td:first-child,
+main table:not(:has(> thead tr > th:nth-child(5))) > tfoot td:first-child {
+  width: 40% !important;
+}
+
+main table:has(> thead tr > th:nth-child(5)),
+.hesabno-overlay-motion table:has(> thead tr > th:nth-child(5)) {
+  width: max-content !important;
+  min-width: 100% !important;
+  table-layout: auto !important;
+}
+
+.hesabno-overlay-motion table:has(> thead tr > th:nth-child(5)) > thead th:first-child,
+.hesabno-overlay-motion table:has(> thead tr > th:nth-child(5)) > tbody td:first-child {
+  width: auto !important;
+}
+
+[data-hesabno-gdrive-card] {
+  border-color: rgba(14, 165, 233, 0.38) !important;
+}
+
+html[data-theme="light"] [data-hesabno-gdrive-card] {
+  background-color: #f0f9ff !important;
+  border-color: #7dd3fc !important;
+}
+
+[data-hesabno-gdrive-sync="true"],
+[data-hesabno-gdrive-restore-pick="true"] {
+  background-color: #0284c7 !important;
+  color: #ffffff !important;
+}
+
+[data-hesabno-gdrive-restore-connected="true"] {
+  background-color: #059669 !important;
+  color: #ffffff !important;
+}
+
+#hesabno-first-run .hesabno-fr-card[data-hesabno-fr-active-step="restore"] [data-hesabno-fr-view="profile"],
+#hesabno-first-run .hesabno-fr-card[data-hesabno-fr-active-step="restore"] [data-hesabno-fr-view="permissions"],
+#hesabno-first-run .hesabno-fr-card[data-hesabno-fr-active-step="restore"] [data-hesabno-fr-view="preferences"],
+#hesabno-first-run .hesabno-fr-card[data-hesabno-fr-active-step="profile"] [data-hesabno-fr-view="restore"],
+#hesabno-first-run .hesabno-fr-card[data-hesabno-fr-active-step="profile"] [data-hesabno-fr-view="permissions"],
+#hesabno-first-run .hesabno-fr-card[data-hesabno-fr-active-step="profile"] [data-hesabno-fr-view="preferences"],
+#hesabno-first-run .hesabno-fr-card[data-hesabno-fr-active-step="permissions"] [data-hesabno-fr-view="restore"],
+#hesabno-first-run .hesabno-fr-card[data-hesabno-fr-active-step="permissions"] [data-hesabno-fr-view="profile"],
+#hesabno-first-run .hesabno-fr-card[data-hesabno-fr-active-step="permissions"] [data-hesabno-fr-view="preferences"],
+#hesabno-first-run .hesabno-fr-card[data-hesabno-fr-active-step="preferences"] [data-hesabno-fr-view="restore"],
+#hesabno-first-run .hesabno-fr-card[data-hesabno-fr-active-step="preferences"] [data-hesabno-fr-view="profile"],
+#hesabno-first-run .hesabno-fr-card[data-hesabno-fr-active-step="preferences"] [data-hesabno-fr-view="permissions"],
+#hesabno-first-run .hesabno-fr-card[data-hesabno-fr-restored="true"] [data-hesabno-fr-back-profile="true"],
+#hesabno-first-run .hesabno-fr-hidden-file {
+  display: none !important;
+}
+
+#hesabno-first-run .hesabno-fr-gdrive-box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding: 14px;
+  border-radius: 18px;
+  border: 1px solid rgba(56, 189, 248, 0.28);
+  background: rgba(8, 33, 46, 0.55);
+}
+
+#hesabno-first-run .hesabno-fr-gdrive-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  width: 100%;
+  padding: 13px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(125, 211, 252, 0.38);
+  background: linear-gradient(100deg, #0284c7 0%, #0369a1 100%);
+  color: #ffffff;
+  font-size: 13.5px;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: inherit;
+  box-shadow: 0 8px 20px rgba(2, 132, 199, 0.25);
+}
+
+#hesabno-first-run .hesabno-fr-file-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: 13px;
+  border: 1px solid rgba(148, 163, 184, 0.26);
+  background: rgba(15, 35, 42, 0.8);
+  color: #cbd5e1;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+#hesabno-first-run .hesabno-fr-restore-status {
+  min-height: 4px;
+  font-size: 12px;
+  line-height: 1.7;
+  text-align: center;
+  color: #6ee7b7;
+}
+
+#hesabno-first-run .hesabno-fr-restore-status[data-state="error"] {
+  color: #f87171;
+}
+
+#hesabno-first-run .hesabno-fr-back-restore {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  width: 100%;
+  margin-top: 10px;
+  padding: 11px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  background: rgba(14, 116, 144, 0.18);
+  color: #7dd3fc;
+  font-size: 12px;
+  font-weight: 750;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+#hn-parmis-card {
+  margin: 12px 0;
+  padding: 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(124, 58, 237, 0.35);
+  background: rgba(124, 58, 237, 0.1);
+  direction: rtl;
+  font-family: inherit;
+}
+
+#hn-parmis-card .hn-parmis-card-title {
+  font-weight: 800;
+  font-size: 13.5px;
+  margin-bottom: 6px;
+}
+
+#hn-parmis-card .hn-parmis-card-desc {
+  font-size: 11.5px;
+  opacity: 0.85;
+  line-height: 1.85;
+  margin-bottom: 10px;
+}
+
+#hn-parmis-card .hn-parmis-open-btn {
+  width: 100%;
+  min-height: 44px;
+  border-radius: 12px;
+  border: 0;
+  background: #7c3aed;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 14px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+#hn-parmis-ov {
+  --bg: #0e1117;
+  --card: #171b24;
+  --card2: #1f2430;
+  --line: #ffffff14;
+  --fg: #eef1f6;
+  --mut: #9aa3b2;
+  --pri: #34d39a;
+  --acc: #a879ff;
+  --exp: #ff6b7a;
+  --warn: #f5c451;
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  background: var(--bg);
+  color: var(--fg);
+  direction: rtl;
+  font-family: Vazirmatn, "Vazir", Tahoma, system-ui, sans-serif;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+#hn-parmis-ov * {
+  box-sizing: border-box;
+}
+
+#hn-parmis-ov .hn-p-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: var(--card);
+  border-bottom: 1px solid var(--line);
+}
+
+#hn-parmis-ov .hn-p-topbar-title {
+  font-size: 14px;
+  color: var(--fg);
+}
+
+#hn-parmis-ov .wrap {
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+#hn-parmis-ov h1 {
+  font-size: 20px;
+  font-weight: 800;
+  margin: 6px 0 4px;
+}
+
+#hn-parmis-ov .sub {
+  color: var(--mut);
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+#hn-parmis-ov .drop {
+  display: block;
+  margin-top: 18px;
+  border: 2px dashed #34d39a66;
+  border-radius: 22px;
+  padding: 34px 20px;
+  text-align: center;
+  background: linear-gradient(140deg, #123a30, #241b44);
+  cursor: pointer;
+}
+
+#hn-parmis-ov .drop b {
+  display: block;
+  font-size: 16px;
+  margin-bottom: 6px;
+  color: var(--fg);
+}
+
+#hn-parmis-ov .btn {
+  background: var(--pri);
+  color: #0b1a14;
+  border: 0;
+  border-radius: 14px;
+  padding: 10px 16px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+#hn-parmis-ov .btn.ghost {
+  background: var(--card2);
+  color: var(--fg);
+  border: 1px solid var(--line);
+}
+
+#hn-parmis-ov .hn-p-btn-sm {
+  padding: 5px 12px;
+  font-size: 12px;
+}
+
+#hn-parmis-ov .stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
+  gap: 10px;
+  margin-top: 18px;
+}
+
+#hn-parmis-ov .stat {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 12px;
+}
+
+#hn-parmis-ov .stat span {
+  color: var(--mut);
+  font-size: 12px;
+}
+
+#hn-parmis-ov .stat p {
+  margin: 4px 0 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--fg);
+}
+
+#hn-parmis-ov .actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+#hn-parmis-ov .hn-p-fy-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--card2);
+  padding: 6px 14px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+}
+
+#hn-parmis-ov .hn-p-fy-lbl {
+  font-size: 12.5px;
+  color: var(--mut);
+  white-space: nowrap;
+}
+
+#hn-parmis-ov .hn-p-fy-select {
+  background: var(--card2);
+  color: var(--fg);
+  border: none;
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  outline: none;
+}
+
+#hn-parmis-ov .tabs {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin: 18px 0 10px;
+}
+
+#hn-parmis-ov .tab {
+  background: var(--card);
+  border: 1px solid var(--line);
+  color: var(--mut);
+  padding: 7px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+}
+
+#hn-parmis-ov .tab.on {
+  background: var(--pri);
+  color: #0b1a14;
+  border-color: transparent;
+  font-weight: 700;
+}
+
+#hn-parmis-ov .panel {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  overflow: auto;
+  max-height: 65vh;
+}
+
+#hn-parmis-ov .hn-p-table-scroll {
+  width: 100%;
+  overflow-x: auto;
+}
+
+#hn-parmis-ov table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+
+#hn-parmis-ov th,
+#hn-parmis-ov td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--line);
+  text-align: right;
+  white-space: nowrap;
+}
+
+#hn-parmis-ov th {
+  position: sticky;
+  top: 0;
+  background: var(--card2);
+  color: var(--mut);
+  font-weight: 600;
+  z-index: 2;
+}
+
+#hn-parmis-ov .in {
+  color: var(--pri);
+}
+
+#hn-parmis-ov .out {
+  color: var(--exp);
+}
+
+#hn-parmis-ov .pend {
+  color: var(--warn);
+}
+
+#hn-parmis-ov .hidden {
+  display: none !important;
+}
+
+#hn-parmis-ov .err {
+  color: var(--exp);
+  margin-top: 12px;
+  font-size: 13px;
+}
+
+#hn-parmis-ov .pill {
+  display: inline-block;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--card2);
+  color: var(--mut);
+}
+
+#hn-parmis-ov .hn-p-pill-pri {
+  color: var(--pri);
+}
+
+#hn-parmis-ov .hn-p-fy-chip {
+  font-size: 11.5px;
+  background: var(--card2);
+}
+
+#hn-parmis-ov .hn-p-total-chip {
+  font-weight: 700;
+  border: 1px solid var(--line);
+  background: var(--card);
+}
+
+#hn-parmis-ov .hn-p-tree-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 7px 12px;
+  border-bottom: 1px solid var(--line);
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: 13px;
+}
+
+#hn-parmis-ov .hn-p-tree-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#hn-parmis-ov .hn-p-tree-title[data-hn-depth="1"] { padding-inline-start: 16px; }
+#hn-parmis-ov .hn-p-tree-title[data-hn-depth="2"] { padding-inline-start: 32px; }
+#hn-parmis-ov .hn-p-tree-title[data-hn-depth="3"] { padding-inline-start: 48px; }
+#hn-parmis-ov .hn-p-tree-title[data-hn-depth="4"] { padding-inline-start: 64px; }
+#hn-parmis-ov .hn-p-tree-title[data-hn-depth="5"] { padding-inline-start: 80px; }
+#hn-parmis-ov .hn-p-tree-title[data-hn-depth="6"] { padding-inline-start: 96px; }
+#hn-parmis-ov .hn-p-tree-title[data-hn-depth="7"] { padding-inline-start: 112px; }
+#hn-parmis-ov .hn-p-tree-title[data-hn-depth="8"] { padding-inline-start: 128px; }
+
+#hn-parmis-ov .hn-p-leaf {
+  font-weight: 400;
+}
+
+#hn-parmis-ov .hn-p-parent {
+  font-weight: 700;
+}
+
+#hn-parmis-ov .hn-p-tree-bals {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+#hn-parmis-ov .hn-p-select {
+  background: var(--card2);
+  color: var(--fg);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 6px 8px;
+  font-family: inherit;
+  font-size: 12.5px;
+  max-width: 240px;
+}
+
+#hn-parmis-ov .hn-p-map-bar {
+  padding: 10px 12px;
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--line);
+}
+
+#hn-parmis-ov .hn-p-map-chk {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  cursor: pointer;
+}
+
+#hn-parmis-ov .hn-p-pad {
+  padding: 14px;
+  font-size: 13px;
+  line-height: 2;
+}
+
+#hn-parmis-ov .hn-p-subhead {
+  padding: 8px 14px;
+}
+
+#hn-parmis-ov .hn-p-loan-box {
+  padding: 14px;
+  border-bottom: 1px solid var(--line);
+  font-size: 13px;
+  line-height: 1.9;
+}
+
+#hn-parmis-ov .hn-p-textarea {
+  width: 100%;
+  min-height: 90px;
+  margin-top: 8px;
+  background: var(--card2);
+  color: var(--fg);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 8px;
+  font-family: inherit;
+}
+
+#hn-parmis-ov .hn-p-mt {
+  margin-top: 8px;
+}
+
+/* ── انتخابگر منبع تصویر پیوست (دوربین یا گالری) ── */
+#hesabno-attachment-source-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10050;
+  background: rgba(9, 13, 19, 0.78);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+#hesabno-attachment-source-modal .hesabno-att-source-card {
+  width: 100%;
+  max-width: 360px;
+  background: #171d26;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 22px;
+  padding: 18px;
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.55);
+  color: #f1f5f9;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+#hesabno-attachment-source-modal .hesabno-att-source-head {
+  text-align: right;
+}
+
+#hesabno-attachment-source-modal .hesabno-att-source-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 800;
+  color: #f8fafc;
+}
+
+#hesabno-attachment-source-modal .hesabno-att-source-sub {
+  margin: 4px 0 0;
+  font-size: 11.5px;
+  color: #94a3b8;
+}
+
+#hesabno-attachment-source-modal .hesabno-att-source-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#hesabno-attachment-source-modal .hesabno-att-source-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(52, 211, 153, 0.28);
+  background: rgba(16, 185, 129, 0.1);
+  color: #ecfdf5;
+  text-align: right;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease;
+}
+
+#hesabno-attachment-source-modal .hesabno-att-source-btn[data-hesabno-att-source="gallery"] {
+  border-color: rgba(56, 189, 248, 0.28);
+  background: rgba(14, 165, 233, 0.1);
+  color: #f0f9ff;
+}
+
+#hesabno-attachment-source-modal .hesabno-att-source-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.55);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 19px;
+  flex-shrink: 0;
+}
+
+#hesabno-attachment-source-modal .hesabno-att-source-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+#hesabno-attachment-source-modal .hesabno-att-source-copy strong {
+  font-size: 12.5px;
+  font-weight: 800;
+}
+
+#hesabno-attachment-source-modal .hesabno-att-source-copy small {
+  font-size: 10.5px;
+  color: #cbd5e1;
+}
+
+#hesabno-attachment-source-modal .hesabno-att-source-cancel {
+  width: 100%;
+  padding: 10px;
+  border-radius: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(30, 41, 59, 0.75);
+  color: #cbd5e1;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+input[data-hesabno-invalid="true"],
+textarea[data-hesabno-invalid="true"],
+select[data-hesabno-invalid="true"],
+button[data-hesabno-invalid="true"] {
+  border-color: rgba(244, 63, 94, 0.85) !important;
+  background-color: rgba(244, 63, 94, 0.06) !important;
+  box-shadow: 0 0 0 1px rgba(244, 63, 94, 0.35) !important;
+}
+
+#hesabno-first-run .hesabno-fr-perms-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 46vh;
+  overflow-y: auto;
+  margin-bottom: 14px;
+  padding-left: 2px;
+}
+
+#hesabno-first-run .hesabno-fr-perm-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 13px;
+  border-radius: 16px;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  background: rgba(12, 31, 38, 0.72);
+  transition: border-color 0.18s ease, background-color 0.18s ease;
+}
+
+#hesabno-first-run .hesabno-fr-perm-item[data-granted="true"] {
+  border-color: rgba(52, 211, 153, 0.42);
+  background: rgba(6, 48, 43, 0.58);
+}
+
+#hesabno-first-run .hesabno-fr-perm-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+#hesabno-first-run .hesabno-fr-perm-title-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-width: 0;
+}
+
+#hesabno-first-run .hesabno-fr-perm-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: #f1f5f9;
+}
+
+#hesabno-first-run .hesabno-fr-perm-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 8px;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  background: rgba(30, 41, 59, 0.8);
+  color: #94a3b8;
+}
+
+#hesabno-first-run .hesabno-fr-perm-item[data-granted="true"] .hesabno-fr-perm-badge {
+  border-color: rgba(52, 211, 153, 0.35);
+  background: rgba(16, 185, 129, 0.16);
+  color: #6ee7b7;
+}
+
+#hesabno-first-run .hesabno-fr-perm-reason {
+  margin: 0;
+  font-size: 11.5px;
+  line-height: 1.65;
+  color: #cbd5e1;
+}
+
+#hesabno-first-run .hesabno-fr-perm-switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 44px;
+  height: 24px;
+  padding: 0;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  background: rgba(51, 65, 85, 0.9);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+#hesabno-first-run .hesabno-fr-perm-switch[aria-checked="true"] {
+  background: #10b981;
+  border-color: #34d399;
+}
+
+#hesabno-first-run .hesabno-fr-perm-knob {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: #ffffff;
+  transform: translateX(-4px);
+  transition: transform 0.2s ease;
+}
+
+#hesabno-first-run .hesabno-fr-perm-switch[aria-checked="true"] .hesabno-fr-perm-knob {
+  transform: translateX(-22px);
+}
+
+#hesabno-first-run .hesabno-fr-grant-all-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 11px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(56, 189, 248, 0.36);
+  background: rgba(14, 116, 144, 0.22);
+  color: #7dd3fc;
+  font-size: 12.5px;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+#hesabno-first-run .hesabno-fr-skip-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 8px;
+  padding: 10px 12px;
+  border-radius: 13px;
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  background: rgba(15, 23, 42, 0.55);
+  color: #cbd5e1;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+#hesabno-first-run .hesabno-fr-prefs-box {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+#hesabno-first-run .hesabno-fr-pref-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 13px;
+  border-radius: 16px;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  background: rgba(12, 31, 38, 0.72);
+}
+
+#hesabno-first-run .hesabno-fr-pref-label {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #f1f5f9;
+}
+
+#hesabno-first-run .hesabno-fr-pref-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+#hesabno-first-run .hesabno-fr-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+#hesabno-first-run .hesabno-fr-pill {
+  flex: 1 1 auto;
+  padding: 8px 10px;
+  border-radius: 11px;
+  border: 1px solid rgba(148, 163, 184, 0.26);
+  background: rgba(30, 41, 59, 0.75);
+  color: #cbd5e1;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: center;
+}
+
+#hesabno-first-run .hesabno-fr-pill[data-selected="true"] {
+  border-color: #34d399;
+  background: rgba(16, 185, 129, 0.22);
+  color: #6ee7b7;
+  font-weight: 800;
+}
+
+#hesabno-first-run .hesabno-fr-time-input {
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  background: rgba(15, 23, 42, 0.8);
+  color: #f8fafc;
+  font-size: 13px;
+  font-weight: 800;
+  font-family: inherit;
+  text-align: center;
+}
+
+
+
+
+
+
+
+
+

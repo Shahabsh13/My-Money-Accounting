@@ -1,0 +1,64 @@
+{
+  "root": "/home/user/My-Money-Accounting",
+  "at": "2026-10-17T04:44:50.417Z",
+  "node": "v22.22.3",
+  "runsPerScale": 3,
+  "format": "hesabno-sync",
+  "version": 1,
+  "datasets": [
+    {
+      "n": 1000,
+      "accounts": 25,
+      "bytesRaw": 202816,
+      "bytesDoc": 219590,
+      "overheadPercent": 8.27,
+      "buildMs": 26.7,
+      "mergeMs": 39.6,
+      "conflicts": 0,
+      "stats": {
+        "added": 1,
+        "removed": 0,
+        "updated": 20,
+        "unchanged": 1011,
+        "conflicts": 0
+      },
+      "equal": true
+    },
+    {
+      "n": 10000,
+      "accounts": 25,
+      "bytesRaw": 1976987,
+      "bytesDoc": 2155761,
+      "overheadPercent": 9.04,
+      "buildMs": 240.1,
+      "mergeMs": 342.3,
+      "conflicts": 0,
+      "stats": {
+        "added": 1,
+        "removed": 0,
+        "updated": 100,
+        "unchanged": 9931,
+        "conflicts": 0
+      },
+      "equal": true
+    },
+    {
+      "n": 50000,
+      "accounts": 25,
+      "bytesRaw": 9930993,
+      "bytesDoc": 10909767,
+      "overheadPercent": 9.86,
+      "buildMs": 1399.2,
+      "mergeMs": 1624.7,
+      "conflicts": 0,
+      "stats": {
+        "added": 1,
+        "removed": 0,
+        "updated": 100,
+        "unchanged": 49931,
+        "conflicts": 0
+      },
+      "equal": true
+    }
+  ]
+}

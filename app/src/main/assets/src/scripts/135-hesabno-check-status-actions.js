@@ -7,13 +7,8 @@
         return Array.isArray(value) ? value : [];
       } catch (error) { return []; }
     };
-    var ensureStyle = function () {
-      if (document.querySelector("style[data-hesabno-check-status-actions-style]")) return;
-      var style = document.createElement("style");
-      style.setAttribute("data-hesabno-check-status-actions-style", "true");
-      style.textContent = "[data-hesabno-check-terminal='true'] [data-hesabno-check-pass]{display:none!important}";
-      if (document.head) document.head.appendChild(style);
-    };
+    /* قاعدهٔ [data-hesabno-check-terminal='true'] [data-hesabno-check-pass] در بستهٔ ۲۳۵ است. */
+    var ensureStyle = function () {};
     var confirmClick = function (button, message) {
       if (!button || button.dataset.hesabnoCheckConfirmBound === "true") return;
       button.dataset.hesabnoCheckConfirmBound = "true";

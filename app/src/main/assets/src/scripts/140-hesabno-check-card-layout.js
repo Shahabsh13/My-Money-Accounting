@@ -14,44 +14,8 @@
       return ({ "in-progress": "در جریان", passed: "پاس‌شده", bounced: "برگشت خورده", refunded: "مسترد شده", "bank-hold": "خوابیده در بانک" })[key] || "نامشخص";
     };
     var digits = function (value) { return String(value || "").replace(/[۰-۹]/g, function (digit) { return String("۰۱۲۳۴۵۶۷۸۹".indexOf(digit)); }).replace(/[^0-9]/g, ""); };
-    var ensureStyles = function () {
-      if (document.querySelector("style[data-hesabno-check-card-layout-style]")) return;
-      var style = document.createElement("style");
-      style.setAttribute("data-hesabno-check-card-layout-style", "true");
-      style.textContent = "[data-hesabno-check-top-status],[data-hesabno-check-top-meta],[data-hesabno-check-top-amount]{display:none!important}[data-hesabno-check-card-layout] > div:first-child{gap:.65rem!important}[data-hesabno-check-card-layout] [data-hesabno-check-info-grid]{gap:.45rem!important}[data-hesabno-check-info-box]{min-width:0!important}[data-hesabno-check-info-box] [data-hesabno-check-info-label]{display:block;color:#667684;font-size:10px;line-height:1.3}[data-hesabno-check-info-box] [data-hesabno-check-info-value]{display:block;min-width:0;color:#2d3a45;font-size:12px;line-height:1.45;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}[data-hesabno-check-status-display]{justify-content:flex-end;min-width:0;font-size:11px;font-weight:800}[data-hesabno-check-status-display] [data-hesabno-check-status-label]{color:#667684}[data-hesabno-check-status-display] [data-hesabno-check-status-value]{font-weight:900}html[data-theme=\"light\"] [data-hesabno-check-status-display=\"in-progress\"] [data-hesabno-check-status-value]{color:#8a6512!important}html[data-theme=\"light\"] [data-hesabno-check-status-display=\"passed\"] [data-hesabno-check-status-value]{color:#167257!important}html[data-theme=\"light\"] [data-hesabno-check-status-display=\"bounced\"] [data-hesabno-check-status-value]{color:#a33b4c!important}html[data-theme=\"light\"] [data-hesabno-check-status-display=\"refunded\"] [data-hesabno-check-status-value]{color:#4165a6!important}html[data-theme=\"light\"] [data-hesabno-check-status-display=\"bank-hold\"] [data-hesabno-check-status-value]{color:#6656a0!important}html[data-theme=\"dark\"] [data-hesabno-check-info-box] [data-hesabno-check-info-label]{color:#9bb0b9}html[data-theme=\"dark\"] [data-hesabno-check-info-box] [data-hesabno-check-info-value]{color:#e2edf1}html[data-theme=\"dark\"] [data-hesabno-check-status-display] [data-hesabno-check-status-label]{color:#9bb0b9}html[data-theme=\"dark\"] [data-hesabno-check-status-display=\"in-progress\"] [data-hesabno-check-status-value]{color:#f5d17a!important}html[data-theme=\"dark\"] [data-hesabno-check-status-display=\"passed\"] [data-hesabno-check-status-value]{color:#7bd7b5!important}html[data-theme=\"dark\"] [data-hesabno-check-status-display=\"bounced\"] [data-hesabno-check-status-value]{color:#f29aa8!important}html[data-theme=\"dark\"] [data-hesabno-check-status-display=\"refunded\"] [data-hesabno-check-status-value]{color:#9ebcf0!important}html[data-theme=\"dark\"] [data-hesabno-check-status-display=\"bank-hold\"] [data-hesabno-check-status-value]{color:#b8a9f2!important}";
-      document.head.appendChild(style);
-    };
-    var safeStyle = document.createElement("style");
-    safeStyle.setAttribute("data-hesabno-check-card-layout-safe-style", "true");
-    safeStyle.textContent = [
-      "[data-hesabno-check-info-grid]{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-auto-flow:row!important}",
-      "[data-hesabno-check-info-grid]>[data-hesabno-check-info-due]{order:1!important}",
-      "[data-hesabno-check-info-grid]>[data-hesabno-check-amount-box]{order:2!important}",
-      "[data-hesabno-check-info-grid]>[data-hesabno-check-number-box]{order:3!important}",
-      "[data-hesabno-check-info-grid]>[data-hesabno-check-info-account]{order:4!important}",
-      "[data-hesabno-check-info-grid]::before{order:2!important}",
-      "[data-hesabno-check-info-grid]::after{order:3!important}",
-      "[data-hesabno-check-info-generated]{display:none!important}",
-      "[data-hesabno-check-status-display]{display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:.35rem!important}",
-      "[data-hesabno-check-status-display]>*{display:none!important}",
-      "[data-hesabno-check-status-display]::before{content:'وضعیت چک:';color:#667684;font-size:11px;font-weight:800}",
-      "[data-hesabno-check-status-display='in-progress']::after{content:'در جریان'}",
-      "[data-hesabno-check-status-display='passed']::after{content:'پاس‌شده'}",
-      "[data-hesabno-check-status-display='bounced']::after{content:'برگشت خورده'}",
-      "[data-hesabno-check-status-display='refunded']::after{content:'مسترد شده'}",
-      "[data-hesabno-check-status-display='bank-hold']::after{content:'خوابیده در بانک'}",
-      "[data-hesabno-check-status-display]::after{font-size:11px;font-weight:900}",
-      "[data-hesabno-check-info-grid]::before,[data-hesabno-check-info-grid]::after{display:flex;align-items:center;min-width:0;min-height:0;padding:.625rem;border-radius:.75rem;overflow:hidden;white-space:pre-line;font-size:12px;line-height:1.45;font-weight:900;color:#2d3a45;background:rgba(241,245,249,.8);border:1px solid rgba(148,163,184,.35)}",
-      "[data-hesabno-check-info-grid]::before{content:'مبلغ چک\\A' attr(data-hesabno-check-amount);order:2}",
-      "[data-hesabno-check-info-grid]::after{content:'شماره چک\\A' attr(data-hesabno-check-number);order:3}",
-      "html[data-theme='dark'] [data-hesabno-check-info-grid]::before,html[data-theme='dark'] [data-hesabno-check-info-grid]::after{color:#e2edf1;background:rgba(28,35,44,.8);border-color:rgba(100,116,139,.45)}",
-      "html[data-theme='dark'] [data-hesabno-check-status-display]::before{color:#9bb0b9}"
-    ].join("");
-    document.head.appendChild(safeStyle);
-    var headerStyle = document.createElement("style");
-    headerStyle.setAttribute("data-hesabno-check-card-header-style", "true");
-    headerStyle.textContent = "[data-hesabno-check-card-layout] > div:first-child{align-items:center!important}";
-    document.head.appendChild(headerStyle);
+    /* چیدمان و رنگ‌بندی کارت‌های چک در بستهٔ ۲۳۵ (لایهٔ ظاهر) قرار دارد. */
+    var ensureStyles = function () {};
     var ensureInfo = function (grid, marker, label, value) {
       var box = grid.querySelector("[" + marker + "]");
       if (!box) {
@@ -129,8 +93,8 @@
       var storedNumber = article.getAttribute("data-hesabno-check-number") || "";
       if (!storedAmount && topAmount) storedAmount = clean(topAmount.textContent).replace(/^[−-]\s*/, "");
       if (!storedNumber && meta) storedNumber = clean(meta.textContent).replace(/^.*شماره چک:\s*/, "").split("·")[0].trim();
-      if (storedAmount) article.setAttribute("data-hesabno-check-amount", storedAmount);
-      if (storedNumber) article.setAttribute("data-hesabno-check-number", storedNumber);
+      if (storedAmount && article.getAttribute("data-hesabno-check-amount") !== storedAmount) article.setAttribute("data-hesabno-check-amount", storedAmount);
+      if (storedNumber && article.getAttribute("data-hesabno-check-number") !== storedNumber) article.setAttribute("data-hesabno-check-number", storedNumber);
       var topStatus = Array.from(top.querySelectorAll("span")).find(function (node) {
         var text = clean(node.textContent);
         return statusTerms.some(function (term) { return text === term || text.includes(term); });
@@ -157,8 +121,8 @@
           var text = clean(node.textContent);
           return text.includes("حساب واسط") || text.includes("کسر شده از") || text.includes("واریز شده به");
         }) || existing.find(function (node) { return node !== due; });
-        if (storedAmount) grid.setAttribute("data-hesabno-check-amount", storedAmount);
-        if (storedNumber) grid.setAttribute("data-hesabno-check-number", storedNumber);
+        if (storedAmount && grid.getAttribute("data-hesabno-check-amount") !== storedAmount) grid.setAttribute("data-hesabno-check-amount", storedAmount);
+        if (storedNumber && grid.getAttribute("data-hesabno-check-number") !== storedNumber) grid.setAttribute("data-hesabno-check-number", storedNumber);
         if (due) due.setAttribute("data-hesabno-check-info-due", "true");
         if (account) account.setAttribute("data-hesabno-check-info-account", "true");
         var amountBox = ensureInfo(grid, "data-hesabno-check-amount-box", "مبلغ چک", storedAmount);
@@ -214,7 +178,7 @@
           statusArea.setAttribute("data-hesabno-check-status-display", key || "unknown");
         }
       }
-      article.setAttribute("data-hesabno-check-card-layout", "true");
+      if (article.getAttribute("data-hesabno-check-card-layout") !== "true") article.setAttribute("data-hesabno-check-card-layout", "true");
     };
     var sync = function () {
       ensureStyles();
@@ -224,7 +188,7 @@
     var schedule = function () {
       if (pending) return;
       pending = true;
-      window.setTimeout(function () { pending = false; sync(); }, 0);
+      Promise.resolve().then(function () { pending = false; sync(); });
     };
     sync();
     if (document.body) new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ["data-hesabno-check-status-card"] });

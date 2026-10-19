@@ -9,20 +9,26 @@
     { value: "7", label: "۱ هفته قبل از سررسید" }
   ];
   var findAlertDialog = function () {
-    var heading = Array.from(document.querySelectorAll("h3")).find(function (item) { return item.textContent.trim() === "هشدار سررسید چک‌ها"; });
+    var heading = Array.from(document.querySelectorAll("h3")).find(function (item) {
+      var t = item.textContent.trim();
+      return t === "چک وام و قسط" || t === "هشدار سررسید چک‌ها";
+    });
     return heading ? heading.closest('div[class*="max-w-sm"]') : null;
   };
   var setup = function () {
     var panel = document.querySelector(".hesabno-notification-check-panel");
     if (!panel || panel.dataset.hesabnoInlineCheckOptions === "ready") return;
     var notificationDialog = panel.closest('div[class*="max-w-sm"]');
-    var originalButton = notificationDialog && Array.from(notificationDialog.querySelectorAll("button")).find(function (button) { return button.textContent.trim() === "تنظیم هشدار سررسید چک‌ها" && !button.closest(".hesabno-notification-check-panel"); });
+    var originalButton = notificationDialog && Array.from(notificationDialog.querySelectorAll("button")).find(function (button) {
+      var t = button.textContent.trim();
+      return (t === "تنظیم هشدار چک وام و قسط" || t === "تنظیم هشدار سررسید چک‌ها") && !button.closest(".hesabno-notification-check-panel");
+    });
     if (!originalButton) return;
 
     var existingProxy = panel.querySelector("button");
     if (existingProxy) existingProxy.remove();
     var rowText = (document.querySelector("#setting-row-notifications") || {}).textContent || "";
-    var selected = rowText.indexOf("۱ روز") !== -1 ? "1" : rowText.indexOf("۲ روز") !== -1 ? "2" : rowText.indexOf("۵ روز") !== -1 ? "5" : rowText.indexOf("۱ هفته") !== -1 ? "7" : "3";
+    var selected = rowText.indexOf("۱ روز") !== -1 ? "1" : rowText.indexOf("۲ روز") !== -1 ? "2" : rowText.indexOf("۵ روز") !== -1 ? "5" : (rowText.indexOf("۷ روز") !== -1 || rowText.indexOf("۱ هفته") !== -1) ? "7" : "3";
     var list = document.createElement("div");
     list.className = "hesabno-check-options";
     options.forEach(function (option) {

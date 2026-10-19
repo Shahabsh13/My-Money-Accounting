@@ -26,21 +26,22 @@
           });
         }
         var icon = match && match.picture ? match.picture : transaction.type === "expense" ? "📉" : "📈";
+        /* pointer-events در بستهٔ ۲۳۵ روی کلاس .hesabno-counterparty-icon است. */
+        if (iconBox.classList.contains("hesabno-counterparty-icon") && iconBox.getAttribute("data-hesabno-counterparty-icon") === icon) return;
         iconBox.classList.add("hesabno-counterparty-icon");
         iconBox.setAttribute("data-hesabno-counterparty-icon", icon);
-        iconBox.style.pointerEvents = "none";
       });
     };
     var scheduled = false;
     var schedule = function () {
       if (scheduled) return;
       scheduled = true;
-      window.requestAnimationFrame(function () { scheduled = false; sync(); });
+      Promise.resolve().then(function () { scheduled = false; sync(); });
     };
     sync();
     document.addEventListener("click", function (event) {
       var target = event.target && event.target.nodeType === 1 ? event.target : event.target && event.target.parentElement;
       if (target && target.closest && target.closest("article[id^='tx-card-']")) schedule();
     }, true);
-    if (document.body) new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true });
+    if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, schedule);
   })();

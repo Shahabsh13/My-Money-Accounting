@@ -10,13 +10,8 @@
       value = String(value);
       if (node && node.textContent !== value) node.textContent = value;
     };
-    var ensureStyles = function () {
-      if (document.querySelector("style[data-hesabno-loan-preview-clarity-style]")) return;
-      var style = document.createElement("style");
-      style.setAttribute("data-hesabno-loan-preview-clarity-style", "true");
-      style.textContent = "[data-hesabno-loan-preview-warning]{border-top-color:#c8d5de!important}[data-hesabno-loan-preview-warning] .hesabno-loan-preview-warning-label{color:#8a6512!important}[data-hesabno-loan-preview-warning] .hesabno-loan-preview-warning-text{color:#8a6512!important;font-weight:700!important}.hesabno-loan-preview-profit-value.is-positive{color:#167257!important}.hesabno-loan-preview-profit-value.is-negative{color:#b4233c!important}html[data-theme=\"dark\"] [data-hesabno-loan-preview-warning]{border-top-color:rgba(120,113,108,.35)!important}html[data-theme=\"dark\"] [data-hesabno-loan-preview-warning] .hesabno-loan-preview-warning-label{color:#fcd34d!important}html[data-theme=\"dark\"] [data-hesabno-loan-preview-warning] .hesabno-loan-preview-warning-text{color:#fde68a!important}";
-      document.head.appendChild(style);
-    };
+    /* رنگ‌های کارت پیش‌نمایش وام در بستهٔ ۲۳۵ (لایهٔ ظاهر) قرار دارد. */
+    var ensureStyles = function () {};
     var findMain = function () {
       return Array.from(document.querySelectorAll("main")).find(function (main) {
         return clean(main.textContent).includes("ثبت وام بانکی و تسهیلات");
@@ -126,7 +121,7 @@
     var schedule = function () {
       if (scheduled) return;
       scheduled = true;
-      window.requestAnimationFrame(function () {
+      Promise.resolve().then(function () {
         scheduled = false;
         render();
       });
@@ -141,5 +136,5 @@
     ensureStyles();
     bind();
     render();
-    if (document.body) new MutationObserver(function () { bind(); schedule(); }).observe(document.body, { childList: true, subtree: true });
+    if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, function () { bind(); schedule(); });
   })();

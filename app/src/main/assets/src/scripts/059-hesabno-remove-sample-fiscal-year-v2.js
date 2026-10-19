@@ -38,10 +38,20 @@
     if (!Array.isArray(years)) return;
     var cleaned = years.filter(function (year) { return !isSample(year); });
     if (cleaned.length === years.length) return;
-    set(key, JSON.stringify(cleaned));
-    if (get(activeKey) === "fy-1404") {
-      var next = cleaned.find(function (year) { return year && !year.isClosed; }) || cleaned[0];
-      next ? set(activeKey, next.id) : remove(activeKey);
+    /* نگهبان مهاجرت (۶.۰): هر دو کلید (سال‌های مالی و سال فعال) با هم اتمی می‌شوند */
+    var apply = function (write, erase) {
+      write(key, JSON.stringify(cleaned));
+      if (get(activeKey) === "fy-1404") {
+        var next = cleaned.find(function (year) { return year && !year.isClosed; }) || cleaned[0];
+        next ? write(activeKey, next.id) : erase(activeKey);
+      }
+    };
+    if (window.__hesabnoMigration) {
+      window.__hesabnoMigration.run("059-remove-sample-fiscal-year", [key, activeKey], function (db) {
+        apply(function (name, value) { db.set(name, value); }, function (name) { db.remove(name); });
+      });
+    } else {
+      apply(set, remove);
     }
   } catch (error) {}
 })();

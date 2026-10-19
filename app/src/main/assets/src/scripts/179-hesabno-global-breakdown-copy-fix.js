@@ -9,17 +9,18 @@
           else span.textContent = "تفکیک سرفصل‌ها";
         } else if (text === "(با کلیک بر روی هر سرفصل، به ریز تفصیلی بروید)") {
           span.textContent = "برای دیدن ریز تفصیلی، سرفصل را انتخاب کنید";
-          span.dataset.hesabnoGlobalBreakdownHint = "true";
+          if (span.dataset.hesabnoGlobalBreakdownHint !== "true") span.dataset.hesabnoGlobalBreakdownHint = "true";
         }
       });
     };
     var frame = 0;
     var schedule = function () {
       if (frame) return;
-      frame = requestAnimationFrame(function () { frame = 0; fix(); });
+      frame = 1;
+      Promise.resolve().then(function () { frame = 0; fix(); });
     };
     fix();
-    if (document.documentElement) new MutationObserver(schedule).observe(document.documentElement, { childList: true, characterData: true, subtree: true });
+    if (document.documentElement) window.__hesabnoDom.watch(document.documentElement, { childList: true, characterData: true, subtree: true }, schedule);
     window.addEventListener("DOMContentLoaded", schedule, { once: true });
     window.addEventListener("load", schedule, { once: true });
     [0, 100, 300, 800, 1600].forEach(function (delay) { window.setTimeout(schedule, delay); });

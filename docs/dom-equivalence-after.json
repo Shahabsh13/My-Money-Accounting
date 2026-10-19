@@ -1,0 +1,21 @@
+{
+  "root": "/home/user/My-Money-Accounting",
+  "at": "2026-10-16T20:53:31.015Z",
+  "hash": "4d232c09b0232c84d63af91134a4a3e900aa3b189996ce1255e789294fd7469f",
+  "counts": {
+    "elements": 641,
+    "headScripts": 15,
+    "headStylesheets": 7,
+    "classes": 1876,
+    "dataAttributes": 57,
+    "inlineStyles": 402,
+    "rootHtmlBytes": 77187,
+    "textHash": "f9df6c610af757fa0b8eb20c6770cfb6c435f7e28b1457eba1d657c0a9ddd16c"
+  },
+  "errors": [],
+  "ignoredClasses": [
+    "hesabno-home-header-enter"
+  ],
+  "strippedClasses": 0,
+  "normalizedStyleOrders": 8
+}

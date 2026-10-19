@@ -1,13 +1,7 @@
 (function () {
     var clean = function (value) { return String(value || "").replace(/\s+/g, " ").trim(); };
     var purchaseMode = "active";
-    var style = document.getElementById("hesabno-loan-card-light-contrast");
-    if (!style) {
-      style = document.createElement("style");
-      style.id = "hesabno-loan-card-light-contrast";
-      style.textContent = 'html.theme-light [data-hesabno-loan-name="true"],html[data-theme="light"] [data-hesabno-loan-name="true"],html.theme-light [data-hesabno-installment-name="true"],html[data-theme="light"] [data-hesabno-installment-name="true"],html.theme-light [data-hesabno-payment-loan-name="true"],html[data-theme="light"] [data-hesabno-payment-loan-name="true"]{color:#1c1917!important}[data-hesabno-status-button="true"]{box-sizing:border-box!important;height:var(--hesabno-status-tab-height,32px)!important;width:100%!important;display:flex!important;align-items:center!important;justify-content:center!important}';
-      (document.head || document.documentElement).appendChild(style);
-    }
+    /* قواعد کنتراست نام وام و تب‌های وضعیت در بستهٔ ۲۳۵ (لایهٔ ظاهر) قرار دارد. */
     var findMain = function () {
       return Array.from(document.querySelectorAll("main")).find(function (main) {
         var heading = clean(main.querySelector("h1") && main.querySelector("h1").textContent);
@@ -222,7 +216,7 @@
     schedule = function () {
       if (queued) return;
       queued = true;
-      window.requestAnimationFrame(function () { queued = false; sync(); });
+      Promise.resolve().then(function () { queued = false; sync(); });
     };
     sync();
     document.addEventListener("click", function (event) {
@@ -234,5 +228,5 @@
       }
     }, true);
     window.addEventListener("resize", schedule);
-    if (document.body) new MutationObserver(schedule).observe(document.body, { childList: true, characterData: true, subtree: true });
+    if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, characterData: true, subtree: true }, schedule);
   })();

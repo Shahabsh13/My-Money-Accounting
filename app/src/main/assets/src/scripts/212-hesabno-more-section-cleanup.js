@@ -38,10 +38,9 @@
   function schedule() {
     if (queued) return;
     queued = true;
-    requestAnimationFrame(function () { queued = false; run(); });
+    Promise.resolve().then(function () { queued = false; run(); });
   }
   run();
-  document.addEventListener('click', function () { [0, 120, 400, 1000].forEach(function (d) { setTimeout(run, d); }); }, true);
-  [300, 900, 2000].forEach(function (d) { setTimeout(run, d); });
-  if (document.body) new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true, characterData: true });
+  document.addEventListener('click', function () { schedule(); }, true);
+  if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true, characterData: true }, schedule);
 })();

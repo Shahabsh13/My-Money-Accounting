@@ -63,9 +63,9 @@
     var schedule = function () {
       if (scheduled) return;
       scheduled = true;
-      window.requestAnimationFrame(function () { scheduled = false; sync(); });
+      Promise.resolve().then(function () { scheduled = false; sync(); });
     };
     sync();
     document.addEventListener("click", schedule, true);
-    if (document.body) new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true });
+    if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, schedule);
   })();

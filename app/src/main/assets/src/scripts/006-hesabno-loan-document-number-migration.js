@@ -31,6 +31,11 @@
   });
   if (!changed) return;
   var value = JSON.stringify(transactions);
+  /* نگهبان مهاجرت (۶.۰): نوشتن + تأیید خواندن دوباره + بازگردانی خودکار در صورت شکست */
+  if (window.__hesabnoMigration) {
+    window.__hesabnoMigration.run("006-loan-document-number", [key], function (db) { db.set(key, value); });
+    return;
+  }
   try {
     if (storage) { storage.setItem(key, value); return; }
   } catch (error) {}

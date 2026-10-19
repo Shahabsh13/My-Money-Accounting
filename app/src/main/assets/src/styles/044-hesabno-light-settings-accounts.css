@@ -1,4 +1,0 @@
-html[data-theme="light"] [id^="setting-row-"] { background-color: #e8eff3 !important; border-bottom: 1px solid #bdccd6 !important; }
-html[data-theme="light"] [id^="setting-row-"]:hover { background-color: #e1ebf0 !important; }
-html[data-theme="light"] .divide-y > [id^="setting-row-"] { border-bottom: 1px solid #bdccd6 !important; border-bottom-color: #bdccd6 !important; }
-html[data-theme="light"] main > div[class*="sticky"] button[class*="bg-stone-800/80"] { background-color: #eef3f6 !important; border-color: #b7c8d4 !important; color: #536979 !important; box-shadow: 0 1px 3px rgba(47, 70, 88, 0.08) !important; }

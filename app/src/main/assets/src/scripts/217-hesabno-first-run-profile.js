@@ -1,4 +1,6 @@
-/* First launch: ask the user for name, family name and mobile before entering the app.
+/* First launch:
+   Step 1 (before entering user profile info): Optional restore from Google Drive / backup file.
+   Step 2: Ask the user for name, family name and mobile before entering the app, with a button to return to Step 1.
    Stores into the same profile key the app reads ("hesabno:user_profile") and then soft-reloads
    so the dashboard greeting picks the saved name. Shown only once (flag key below). */
 (function () {
@@ -24,45 +26,126 @@
     return String(v == null ? "" : v).replace(/\d/g, function (d) { return "۰۱۲۳۴۵۶۷۸۹"[d]; });
   }
 
-  // Already set up (flag, or a stored profile that already has a name) -> nothing to do.
+  // Already set up check is performed in startFirstRun() so window.__hesabnoOpenFirstRunWizard is always registered.
   var existing = null;
   try { existing = JSON.parse(read(PROFILE_KEY) || "null"); } catch (error) { existing = null; }
-  if (read(DONE_KEY) === "1" || (existing && clean(existing.firstName))) return;
 
   function build() {
-    var css = {
-      position: "fixed", inset: "0", zIndex: "2147483646", background: "#0b1220",
-      display: "flex", alignItems: "center", justifyContent: "center", padding: "20px",
-      fontFamily: "Vazirmatn, system-ui, sans-serif", direction: "rtl", color: "#f1f5f9", overflowY: "auto"
-    };
     var overlay = document.createElement("div");
     overlay.id = "hesabno-first-run";
-    Object.keys(css).forEach(function (k) { overlay.style[k] = css[k]; });
 
     var card = document.createElement("form");
+    card.className = "hesabno-fr-card";
     card.setAttribute("novalidate", "novalidate");
-    card.style.cssText = "width:100%;max-width:380px;background:#111827;border:1px solid #1f2937;border-radius:24px;padding:24px;box-shadow:0 20px 50px rgba(0,0,0,.45)";
+    card.setAttribute("data-hesabno-fr-active-step", "restore");
 
+    var glow = document.createElement("div");
+    glow.className = "hesabno-fr-glow";
+    glow.setAttribute("aria-hidden", "true");
+    card.appendChild(glow);
+
+    var brand = document.createElement("div");
+    brand.className = "hesabno-fr-brand";
+    var mark = document.createElement("div");
+    mark.className = "hesabno-fr-mark";
+    mark.innerHTML = '<svg viewBox="0 0 48 48" width="32" height="32" fill="none" aria-hidden="true"><rect x="8" y="7" width="25" height="34" rx="6" stroke="#d1fae5" stroke-width="2" transform="rotate(-7 8 7)"/><path d="M15 18h12M15 23h8M16 31v-4m6 4v-8m6 8v-12" stroke="#6ee7b7" stroke-width="2.6" stroke-linecap="round"/><circle cx="34" cy="31" r="10" fill="#34d399" stroke="#0d3833" stroke-width="2"/><path d="m29.5 31 3 3 6-6.5" stroke="#073b31" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    var brandText = document.createElement("div");
+    brandText.className = "hesabno-fr-brand-text";
+    var brandName = document.createElement("div");
+    brandName.className = "hesabno-fr-brand-name";
+    brandName.textContent = "MY MONEY";
+    var brandCaption = document.createElement("div");
+    brandCaption.className = "hesabno-fr-brand-caption";
+    brandCaption.textContent = "مدیریت مالی، ساده‌تر";
+    brandText.appendChild(brandName); brandText.appendChild(brandCaption); brand.appendChild(mark); brand.appendChild(brandText);
+    card.appendChild(brand);
+
+    // ── مرحله ۱ از ۲: صفحه بازیابی از گوگل درایو / فایل پشتیبان (قبل از وارد کردن اطلاعات) ──
+    var restoreView = document.createElement("div");
+    restoreView.className = "hesabno-fr-view";
+    restoreView.setAttribute("data-hesabno-fr-view", "restore");
+
+    var rStep = document.createElement("div");
+    rStep.className = "hesabno-fr-step";
+    rStep.textContent = "شروع کار  ·  مرحله ۱ از ۳";
+
+    var rTitle = document.createElement("h1");
+    rTitle.className = "hesabno-fr-title";
+    rTitle.textContent = "نسخه پشتیبان قبلی دارید؟";
+
+    var rSub = document.createElement("p");
+    rSub.className = "hesabno-fr-sub";
+    rSub.textContent = "اگر قبلاً از برنامه استفاده کرده‌اید، همین الان اطلاعات خود را از گوگل درایو برگردانید؛ یا به مرحله ثبت مشخصات بروید.";
+
+    var gdriveBox = document.createElement("div");
+    gdriveBox.className = "hesabno-fr-gdrive-box";
+
+    var gdriveBtn = document.createElement("button");
+    gdriveBtn.type = "button";
+    gdriveBtn.className = "hesabno-fr-gdrive-btn";
+    gdriveBtn.setAttribute("data-hesabno-fr-gdrive-btn", "true");
+    gdriveBtn.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg><span>بازیابی اطلاعات از گوگل درایو (Google Drive)</span>';
+
+    var fileBtn = document.createElement("button");
+    fileBtn.type = "button";
+    fileBtn.className = "hesabno-fr-file-btn";
+    fileBtn.setAttribute("data-hesabno-fr-file-btn", "true");
+    fileBtn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>انتخاب فایل پشتیبان از حافظه گوشی (.json)</span>';
+
+    var fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = ".json,application/json";
+    fileInput.className = "hesabno-fr-hidden-file";
+
+    var rStatus = document.createElement("div");
+    rStatus.className = "hesabno-fr-restore-status";
+    rStatus.setAttribute("data-hesabno-fr-restore-status", "");
+
+    gdriveBox.appendChild(gdriveBtn);
+    gdriveBox.appendChild(fileBtn);
+    gdriveBox.appendChild(fileInput);
+    gdriveBox.appendChild(rStatus);
+
+    var goProfileBtn = document.createElement("button");
+    goProfileBtn.type = "button";
+    goProfileBtn.className = "hesabno-fr-submit";
+    goProfileBtn.setAttribute("data-hesabno-fr-go-profile", "true");
+    goProfileBtn.innerHTML = 'کاربر جدید هستم · ورود اطلاعات کاربری <span class="hesabno-fr-submit-arrow" aria-hidden="true">←</span>';
+
+    restoreView.appendChild(rStep);
+    restoreView.appendChild(rTitle);
+    restoreView.appendChild(rSub);
+    restoreView.appendChild(gdriveBox);
+    restoreView.appendChild(goProfileBtn);
+
+    // ── مرحله ۲ از ۳: صفحه وارد کردن اطلاعات کاربری (همراه با دکمه بازگشت به صفحه بازیابی) ──
+    var profileView = document.createElement("div");
+    profileView.className = "hesabno-fr-view";
+    profileView.setAttribute("data-hesabno-fr-view", "profile");
+
+    var step = document.createElement("div");
+    step.className = "hesabno-fr-step";
+    step.textContent = "شروع کار  ·  مرحله ۲ از ۳";
     var title = document.createElement("h1");
-    title.textContent = "خوش آمدید";
-    title.style.cssText = "margin:0 0 6px;font-size:20px;font-weight:800;color:#f8fafc";
+    title.className = "hesabno-fr-title";
+    title.textContent = "به حساب‌وکتابت خوش آمدی";
     var sub = document.createElement("p");
-    sub.textContent = "برای شروع، اطلاعات خود را وارد کنید. نام شما در داشبورد نمایش داده می‌شود.";
-    sub.style.cssText = "margin:0 0 18px;font-size:12.5px;line-height:1.7;color:#94a3b8";
+    sub.className = "hesabno-fr-sub";
+    sub.textContent = "اول خودت را معرفی کن؛ بعد از این، برنامه با نام خودت از تو استقبال می‌کند.";
 
     function field(id, label, placeholder, required, type) {
       var wrap = document.createElement("div");
-      wrap.style.cssText = "margin-bottom:14px";
+      wrap.className = "hesabno-fr-field";
       var lb = document.createElement("label");
+      lb.className = "hesabno-fr-label";
       lb.htmlFor = id;
       lb.textContent = label + (required ? " *" : " (اختیاری)");
-      lb.style.cssText = "display:block;margin-bottom:6px;font-size:12.5px;font-weight:700;color:#cbd5e1";
       var input = document.createElement("input");
+      input.className = "hesabno-fr-input";
       input.id = id; input.name = id; input.type = type || "text";
-      input.placeholder = placeholder; input.autocomplete = "off";
-      input.style.cssText = "width:100%;box-sizing:border-box;padding:12px 14px;border-radius:14px;border:1px solid #334155;background:#0f172a;color:#f8fafc;font-size:15px;outline:none;font-family:inherit";
+      input.placeholder = placeholder; input.autocomplete = id.indexOf("mobile") >= 0 ? "tel" : "given-name";
       var err = document.createElement("div");
-      err.style.cssText = "min-height:16px;margin-top:4px;font-size:11.5px;color:#f87171";
+      err.className = "hesabno-fr-err";
       wrap.appendChild(lb); wrap.appendChild(input); wrap.appendChild(err);
       return { wrap: wrap, input: input, err: err };
     }
@@ -73,13 +156,574 @@
 
     var submit = document.createElement("button");
     submit.type = "submit";
-    submit.textContent = "ورود به برنامه";
-    submit.style.cssText = "width:100%;margin-top:6px;padding:13px;border:0;border-radius:14px;background:#10b981;color:#052e1b;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit";
+    submit.className = "hesabno-fr-submit";
+    submit.setAttribute("data-hesabno-fr-submit-profile", "true");
+    submit.innerHTML = 'ادامه و تنظیم دسترسی‌ها <span class="hesabno-fr-submit-arrow" aria-hidden="true">←</span>';
 
-    card.appendChild(title); card.appendChild(sub);
-    card.appendChild(first.wrap); card.appendChild(last.wrap); card.appendChild(mobile.wrap);
-    card.appendChild(submit);
+    var backToRestoreBtn = document.createElement("button");
+    backToRestoreBtn.type = "button";
+    backToRestoreBtn.className = "hesabno-fr-back-restore";
+    backToRestoreBtn.setAttribute("data-hesabno-fr-back-restore", "true");
+    backToRestoreBtn.innerHTML = '<span aria-hidden="true">→</span><span>قبلاً نسخه پشتیبان دارم · بازگشت به بازیابی از گوگل درایو</span>';
+
+    var privacy = document.createElement("p");
+    privacy.className = "hesabno-fr-privacy";
+    var privacyText = "اطلاعاتت فقط برای شخصی‌سازی تجربه‌ی داخل برنامه استفاده می‌شود.";
+    var lock = document.createElement("span");
+    lock.className = "hesabno-fr-lock";
+    lock.innerHTML = '<svg viewBox="0 0 20 20" width="15" height="15" fill="none" aria-hidden="true"><rect x="4" y="8" width="12" height="9" rx="2" stroke="#6ee7b7" stroke-width="1.5"/><path d="M7 8V6a3 3 0 0 1 6 0v2" stroke="#6ee7b7" stroke-width="1.5" stroke-linecap="round"/></svg>';
+    privacy.appendChild(lock); privacy.appendChild(document.createTextNode(privacyText));
+
+    profileView.appendChild(step);
+    profileView.appendChild(title);
+    profileView.appendChild(sub);
+    profileView.appendChild(first.wrap);
+    profileView.appendChild(last.wrap);
+    profileView.appendChild(mobile.wrap);
+    profileView.appendChild(submit);
+    profileView.appendChild(backToRestoreBtn);
+    profileView.appendChild(privacy);
+
+    // ── مرحله ۳ از ۳: لیست دسترسی‌ها همراه با دلیل نیاز به هر دسترسی (پس از تکمیل اطلاعات) ──
+    var permissionsView = document.createElement("div");
+    permissionsView.className = "hesabno-fr-view";
+    permissionsView.setAttribute("data-hesabno-fr-view", "permissions");
+
+    var pStep = document.createElement("div");
+    pStep.className = "hesabno-fr-step";
+    pStep.textContent = "شروع کار  ·  مرحله ۳ از ۳";
+
+    var pTitle = document.createElement("h1");
+    pTitle.className = "hesabno-fr-title";
+    pTitle.textContent = "دسترسی‌های مورد نیاز برنامه";
+
+    var pSub = document.createElement("p");
+    pSub.className = "hesabno-fr-sub";
+    pSub.textContent = "برای کارکرد کامل یادآورها، پیامبانک و پیوست رسیدها، دسترسی‌های مورد نظرتان را فعال کنید.";
+
+    var permDefs = [
+      {
+        key: "notifications",
+        title: "اعلان‌ها و نوتیفیکیشن",
+        reason: "برای یادآوری سررسید چک صیادی، موعد پرداخت اقساط وام، اعلان دریافت پیامک بانکی و یادآور ثبت روزانه."
+      },
+      {
+        key: "sms",
+        title: "پیامک‌ها (پیامبانک بانکی)",
+        reason: "برای تشخیص خودکار پیامک‌های واریز و برداشت بانکی و پر کردن فوری مبلغ و نام بانک در فرم ثبت سند."
+      },
+      {
+        key: "camera",
+        title: "دوربین و اسکن رسیدها",
+        reason: "برای عکس گرفتن مستقیم از برگه چک صیادی، فاکتورهای خرید و فیش‌های بانکی جهت پیوست به سند مالی."
+      },
+      {
+        key: "storage",
+        title: "حافظه و ذخیره‌سازی فایل‌ها",
+        reason: "برای ذخیره امن پایگاه‌داده آفلاین، تصاویر پیوست اسناد و تهیه فایل پشتیبان و خروجی اکسل روی دستگاه."
+      },
+      {
+        key: "biometrics",
+        title: "سنسور اثر انگشت و بیومتریک",
+        reason: "برای ورود سریع و محافظت از حریم خصوصی اطلاعات مالی شما با اثر انگشت یا تشخیص چهره گوشی."
+      },
+      {
+        key: "clipboard",
+        title: "کلیپ‌بورد و حافظه موقت متن",
+        reason: "برای چسباندن سریع متن پیامک بانکی یا شماره کارت و شبا در بخش پیامبانک و فرم ثبت تراکنش."
+      }
+    ];
+
+    var permsList = document.createElement("div");
+    permsList.className = "hesabno-fr-perms-list";
+    permsList.setAttribute("data-hesabno-fr-perms-list", "true");
+
+    var permNodes = {};
+
+    function readCurrentPermsState() {
+      if (typeof window.__hesabnoRefreshPermissionsState === "function") {
+        try { return window.__hesabnoRefreshPermissionsState() || {}; } catch (e) {}
+      }
+      var saved = {};
+      try { saved = JSON.parse(read("hesabno:permissions") || "{}") || {}; } catch (e) {}
+      var br = window.HnBridge || null;
+      return {
+        notifications: Boolean(br && typeof br.hasNotificationPermission === "function" ? br.hasNotificationPermission() && saved.notifications !== false : (typeof window.Notification !== "undefined" && window.Notification.permission === "granted" && saved.notifications !== false)),
+        sms: Boolean(br && typeof br.hasSmsPermission === "function" ? br.hasSmsPermission() && saved.sms !== false : (saved.smsGranted === true && saved.sms !== false)),
+        camera: Boolean(br && typeof br.hasCameraPermission === "function" ? br.hasCameraPermission() && saved.camera !== false : (saved.cameraGranted === true && saved.camera !== false)),
+        storage: Boolean(br && typeof br.hasStoragePermission === "function" ? br.hasStoragePermission() && saved.storage !== false : saved.storage !== false),
+        biometrics: Boolean(saved.biometrics === true),
+        clipboard: Boolean(saved.clipboardGranted === true && saved.clipboard !== false)
+      };
+    }
+
+    function syncPermsUi() {
+      var st = readCurrentPermsState();
+      for (var i = 0; i < permDefs.length; i += 1) {
+        var k = permDefs[i].key;
+        var entry = permNodes[k];
+        if (!entry) continue;
+        var isGranted = Boolean(st[k]);
+        entry.item.setAttribute("data-granted", isGranted ? "true" : "false");
+        entry.sw.setAttribute("aria-checked", isGranted ? "true" : "false");
+        entry.badge.textContent = isGranted ? "✓ فعال" : "غیرفعال";
+      }
+    }
+
+    function toggleOrRequestPerm(key) {
+      var st = readCurrentPermsState();
+      if (st[key]) {
+        if (typeof window.__hesabnoOnNativePermissionResult === "function") {
+          window.__hesabnoOnNativePermissionResult(key, false);
+        }
+        syncPermsUi();
+        return;
+      }
+      if (typeof window.__hesabnoRequestDevicePermission === "function") {
+        window.__hesabnoRequestDevicePermission(key, function () {
+          syncPermsUi();
+        });
+      }
+      syncPermsUi();
+    }
+
+    permDefs.forEach(function (def) {
+      var item = document.createElement("div");
+      item.className = "hesabno-fr-perm-item";
+      item.setAttribute("data-hesabno-fr-perm-item", def.key);
+      item.setAttribute("data-granted", "false");
+
+      var head = document.createElement("div");
+      head.className = "hesabno-fr-perm-head";
+
+      var titleRow = document.createElement("div");
+      titleRow.className = "hesabno-fr-perm-title-row";
+
+      var tSpan = document.createElement("span");
+      tSpan.className = "hesabno-fr-perm-title";
+      tSpan.textContent = def.title;
+
+      var badge = document.createElement("span");
+      badge.className = "hesabno-fr-perm-badge";
+      badge.textContent = "غیرفعال";
+
+      titleRow.appendChild(tSpan);
+      titleRow.appendChild(badge);
+
+      var sw = document.createElement("button");
+      sw.type = "button";
+      sw.className = "hesabno-fr-perm-switch";
+      sw.setAttribute("role", "switch");
+      sw.setAttribute("aria-checked", "false");
+      sw.setAttribute("data-hesabno-fr-perm-key", def.key);
+      var knob = document.createElement("span");
+      knob.className = "hesabno-fr-perm-knob";
+      sw.appendChild(knob);
+
+      sw.addEventListener("click", function () {
+        toggleOrRequestPerm(def.key);
+      });
+
+      head.appendChild(titleRow);
+      head.appendChild(sw);
+
+      var reason = document.createElement("p");
+      reason.className = "hesabno-fr-perm-reason";
+      reason.setAttribute("data-hesabno-fr-perm-reason", def.key);
+      reason.textContent = def.reason;
+
+      item.appendChild(head);
+      item.appendChild(reason);
+      permsList.appendChild(item);
+
+      permNodes[def.key] = { item: item, sw: sw, badge: badge };
+    });
+
+    var grantAllBtn = document.createElement("button");
+    grantAllBtn.type = "button";
+    grantAllBtn.className = "hesabno-fr-grant-all-btn";
+    grantAllBtn.setAttribute("data-hesabno-fr-grant-all", "true");
+    grantAllBtn.textContent = "درخواست و فعال‌سازی همه دسترسی‌ها";
+    grantAllBtn.addEventListener("click", function () {
+      var st = readCurrentPermsState();
+      permDefs.forEach(function (def) {
+        if (!st[def.key] && typeof window.__hesabnoRequestDevicePermission === "function") {
+          window.__hesabnoRequestDevicePermission(def.key, function () { syncPermsUi(); });
+        }
+      });
+      syncPermsUi();
+    });
+
+    var restoredFromBackup = false;
+
+    var nextFromPermsBtn = document.createElement("button");
+    nextFromPermsBtn.type = "button";
+    nextFromPermsBtn.className = "hesabno-fr-submit";
+    nextFromPermsBtn.setAttribute("data-hesabno-fr-next-from-perms", "true");
+    nextFromPermsBtn.innerHTML = 'ادامه <span class="hesabno-fr-submit-arrow" aria-hidden="true">←</span>';
+
+    var skipPermsBtn = document.createElement("button");
+    skipPermsBtn.type = "button";
+    skipPermsBtn.className = "hesabno-fr-skip-btn";
+    skipPermsBtn.setAttribute("data-hesabno-fr-skip-perms", "true");
+    skipPermsBtn.textContent = "رد کردن";
+
+    var backToProfileBtn = document.createElement("button");
+    backToProfileBtn.type = "button";
+    backToProfileBtn.className = "hesabno-fr-back-restore";
+    backToProfileBtn.setAttribute("data-hesabno-fr-back-profile", "true");
+    backToProfileBtn.innerHTML = '<span aria-hidden="true">→</span><span>بازگشت به ویرایش مشخصات کاربری</span>';
+
+    permissionsView.appendChild(pStep);
+    permissionsView.appendChild(pTitle);
+    permissionsView.appendChild(pSub);
+    permissionsView.appendChild(permsList);
+    permissionsView.appendChild(grantAllBtn);
+    permissionsView.appendChild(nextFromPermsBtn);
+    permissionsView.appendChild(skipPermsBtn);
+    permissionsView.appendChild(backToProfileBtn);
+
+    // ── مرحله ۴: فرم زمان یادآوری اعلان روزانه، چک و وام و انتخاب واحد پول ──
+    var preferencesView = document.createElement("div");
+    preferencesView.className = "hesabno-fr-view";
+    preferencesView.setAttribute("data-hesabno-fr-view", "preferences");
+
+    var prefStep = document.createElement("div");
+    prefStep.className = "hesabno-fr-step";
+    prefStep.textContent = "شروع کار  ·  تنظیمات یادآوری و واحد پول";
+
+    var prefTitle = document.createElement("h1");
+    prefTitle.className = "hesabno-fr-title";
+    prefTitle.textContent = "یادآورها و واحد پول";
+
+    var prefSub = document.createElement("p");
+    prefSub.className = "hesabno-fr-sub";
+    prefSub.textContent = "واحد پول برنامه، زمان یادآوری ثبت روزانه و هشدار سررسید چک و قسط را مشخص کنید.";
+
+    var prefsBox = document.createElement("div");
+    prefsBox.className = "hesabno-fr-prefs-box";
+
+    var selectedCurrency = read("hesabno:currency") === "toman" ? "toman" : "rial";
+    var dailyReminderEnabled = read("hesabno:reminder") !== "false";
+    var dailyReminderTime = clean(read("hesabno:reminderTime")) || "21:00";
+    var selectedCheckAlertDays = clean(read("hesabno:checkAlertDays")) || "3";
+
+    // ۱. انتخاب واحد پول
+    var currSection = document.createElement("div");
+    currSection.className = "hesabno-fr-pref-section";
+    var currLabel = document.createElement("div");
+    currLabel.className = "hesabno-fr-pref-label";
+    currLabel.textContent = "انتخاب واحد پول برنامه";
+    var currPills = document.createElement("div");
+    currPills.className = "hesabno-fr-pills";
+    var currButtons = {};
+    [
+      { id: "rial", label: "ریال" },
+      { id: "toman", label: "تومان" }
+    ].forEach(function (cOpt) {
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "hesabno-fr-pill";
+      btn.setAttribute("data-hesabno-fr-currency", cOpt.id);
+      btn.setAttribute("data-selected", selectedCurrency === cOpt.id ? "true" : "false");
+      btn.textContent = cOpt.label;
+      btn.addEventListener("click", function () {
+        selectedCurrency = cOpt.id;
+        Object.keys(currButtons).forEach(function (k) {
+          currButtons[k].setAttribute("data-selected", k === selectedCurrency ? "true" : "false");
+        });
+      });
+      currButtons[cOpt.id] = btn;
+      currPills.appendChild(btn);
+    });
+    currSection.appendChild(currLabel);
+    currSection.appendChild(currPills);
+
+    // ۲. زمان یادآوری اعلان روزانه
+    var dailySection = document.createElement("div");
+    dailySection.className = "hesabno-fr-pref-section";
+    var dailyRow = document.createElement("div");
+    dailyRow.className = "hesabno-fr-pref-row";
+    var dailyLabel = document.createElement("span");
+    dailyLabel.className = "hesabno-fr-pref-label";
+    dailyLabel.textContent = "یادآوری اعلان ثبت روزانه";
+    var dailySw = document.createElement("button");
+    dailySw.type = "button";
+    dailySw.className = "hesabno-fr-perm-switch";
+    dailySw.setAttribute("role", "switch");
+    dailySw.setAttribute("data-hesabno-fr-daily-toggle", "true");
+    dailySw.setAttribute("aria-checked", dailyReminderEnabled ? "true" : "false");
+    var dailyKnob = document.createElement("span");
+    dailyKnob.className = "hesabno-fr-perm-knob";
+    dailySw.appendChild(dailyKnob);
+    dailySw.addEventListener("click", function () {
+      dailyReminderEnabled = !dailyReminderEnabled;
+      dailySw.setAttribute("aria-checked", dailyReminderEnabled ? "true" : "false");
+    });
+    dailyRow.appendChild(dailyLabel);
+    dailyRow.appendChild(dailySw);
+
+    var timeInput = document.createElement("input");
+    timeInput.type = "time";
+    timeInput.id = "hesabno-fr-reminder-time";
+    timeInput.className = "hesabno-fr-time-input";
+    timeInput.setAttribute("data-hesabno-fr-reminder-time", "true");
+    timeInput.value = dailyReminderTime;
+    timeInput.addEventListener("change", function () {
+      if (clean(timeInput.value)) dailyReminderTime = clean(timeInput.value);
+    });
+    dailySection.appendChild(dailyRow);
+    dailySection.appendChild(timeInput);
+
+    // ۳. یادآوری چک وام و قسط
+    var checkSection = document.createElement("div");
+    checkSection.className = "hesabno-fr-pref-section";
+    var checkLabel = document.createElement("div");
+    checkLabel.className = "hesabno-fr-pref-label";
+    checkLabel.textContent = "زمان یادآوری چک وام و قسط";
+    var checkPills = document.createElement("div");
+    checkPills.className = "hesabno-fr-pills";
+    var checkButtons = {};
+    [
+      { id: "1", label: "۱ روز قبل" },
+      { id: "2", label: "۲ روز قبل" },
+      { id: "3", label: "۳ روز قبل" },
+      { id: "5", label: "۵ روز قبل" },
+      { id: "7", label: "۷ روز قبل" }
+    ].forEach(function (dOpt) {
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "hesabno-fr-pill";
+      btn.setAttribute("data-hesabno-fr-check-days", dOpt.id);
+      btn.setAttribute("data-selected", selectedCheckAlertDays === dOpt.id ? "true" : "false");
+      btn.textContent = dOpt.label;
+      btn.addEventListener("click", function () {
+        selectedCheckAlertDays = dOpt.id;
+        Object.keys(checkButtons).forEach(function (k) {
+          checkButtons[k].setAttribute("data-selected", k === selectedCheckAlertDays ? "true" : "false");
+        });
+      });
+      checkButtons[dOpt.id] = btn;
+      checkPills.appendChild(btn);
+    });
+    checkSection.appendChild(checkLabel);
+    checkSection.appendChild(checkPills);
+
+    prefsBox.appendChild(currSection);
+    prefsBox.appendChild(dailySection);
+    prefsBox.appendChild(checkSection);
+
+    var finishBtn = document.createElement("button");
+    finishBtn.type = "button";
+    finishBtn.className = "hesabno-fr-submit";
+    finishBtn.setAttribute("data-hesabno-fr-finish", "true");
+    finishBtn.innerHTML = 'ورود به برنامه <span class="hesabno-fr-submit-arrow" aria-hidden="true">←</span>';
+
+    var backToPermsBtn = document.createElement("button");
+    backToPermsBtn.type = "button";
+    backToPermsBtn.className = "hesabno-fr-back-restore";
+    backToPermsBtn.setAttribute("data-hesabno-fr-back-perms", "true");
+    backToPermsBtn.innerHTML = '<span aria-hidden="true">→</span><span>بازگشت به مرحله دسترسی‌ها</span>';
+
+    preferencesView.appendChild(prefStep);
+    preferencesView.appendChild(prefTitle);
+    preferencesView.appendChild(prefSub);
+    preferencesView.appendChild(prefsBox);
+    preferencesView.appendChild(finishBtn);
+    preferencesView.appendChild(backToPermsBtn);
+
+    window.addEventListener("hn-permissions-updated", function () {
+      syncPermsUi();
+    });
+
+    card.appendChild(restoreView);
+    card.appendChild(profileView);
+    card.appendChild(permissionsView);
+    card.appendChild(preferencesView);
     overlay.appendChild(card);
+
+    function savePreferencesAndFinish() {
+      var finalTime = clean(timeInput.value) || dailyReminderTime || "21:00";
+      store("hesabno:currency", selectedCurrency);
+      store("hesabno:reminder", dailyReminderEnabled ? "true" : "false");
+      store("hesabno:reminderTime", finalTime);
+      store("hesabno:checkAlertDays", String(selectedCheckAlertDays || "3"));
+      try {
+        if (window.HnBridge && typeof window.HnBridge.saveDailyReminderConfig === "function") {
+          window.HnBridge.saveDailyReminderConfig(Boolean(dailyReminderEnabled), finalTime, "", "");
+        }
+      } catch (e) {}
+      finishOnboardingAndEnterApp();
+    }
+
+    function finishOnboardingAndEnterApp() {
+      store(DONE_KEY, "1");
+      overlay.remove();
+      if (typeof window.__hesabnoSoftReload === "function") window.__hesabnoSoftReload();
+    }
+
+    function proceedFromPermissions() {
+      if (restoredFromBackup) {
+        finishOnboardingAndEnterApp();
+      } else {
+        showStep("preferences");
+      }
+    }
+
+    nextFromPermsBtn.addEventListener("click", proceedFromPermissions);
+    skipPermsBtn.addEventListener("click", proceedFromPermissions);
+    backToPermsBtn.addEventListener("click", function () {
+      showStep("permissions");
+    });
+
+    function showStep(stepName) {
+      card.setAttribute("data-hesabno-fr-active-step", stepName);
+      if (stepName === "profile") {
+        first.input.focus();
+      } else if (stepName === "permissions") {
+        syncPermsUi();
+        pStep.textContent = restoredFromBackup ? "بازیابی حساب  ·  تنظیم دسترسی‌های گوشی" : "شروع کار  ·  مرحله ۳";
+        nextFromPermsBtn.innerHTML = restoredFromBackup
+          ? 'تأیید و ورود به برنامه <span class="hesabno-fr-submit-arrow" aria-hidden="true">←</span>'
+          : 'ادامه <span class="hesabno-fr-submit-arrow" aria-hidden="true">←</span>';
+        nextFromPermsBtn.focus();
+      } else if (stepName === "preferences") {
+        finishBtn.focus();
+      } else {
+        gdriveBtn.focus();
+      }
+    }
+
+    function applyBackupJsonString(rawJson) {
+      try {
+        var parsed = JSON.parse(String(rawJson || "").trim());
+        if (parsed && typeof parsed === "object" && parsed.attachments && typeof parsed.attachments === "object" && typeof window.__hesabnoImportAttachmentsMap === "function") {
+          window.__hesabnoImportAttachmentsMap(parsed.attachments);
+        }
+        var bag = parsed && typeof parsed === "object" ? (parsed.storageData || parsed.entries) : null;
+        if (!bag || typeof bag !== "object" || Array.isArray(bag)) {
+          rStatus.setAttribute("data-state", "error");
+          rStatus.textContent = "ساختار فایل پشتیبان معتبر نیست.";
+          return false;
+        }
+        var keys = Object.keys(bag);
+        var count = 0;
+        for (var i = 0; i < keys.length; i += 1) {
+          var k = keys[i];
+          var val = bag[k];
+          if (typeof k === "string" && typeof val === "string") {
+            if ((k === "hesabno:transactions" || k === "hesabno:checks") && val.indexOf("data:") !== -1 && typeof window.__hesabnoOffloadTransactionsJson === "function") {
+              val = window.__hesabnoOffloadTransactionsJson(val);
+            }
+            store(k, val);
+            count += 1;
+          }
+        }
+        if (parsed && typeof parsed === "object") {
+          if (parsed.currency === "rial" || parsed.currency === "toman") {
+            store("hesabno:currency", parsed.currency);
+          }
+          if (parsed.settingsData && typeof parsed.settingsData === "object") {
+            Object.keys(parsed.settingsData).forEach(function (sk) {
+              var sv = parsed.settingsData[sk];
+              if (typeof sv === "string") store(sk, sv);
+            });
+          }
+        }
+        if (count === 0) {
+          rStatus.setAttribute("data-state", "error");
+          rStatus.textContent = "فایل انتخاب‌شده خالی است.";
+          return false;
+        }
+        restoredFromBackup = true;
+        card.setAttribute("data-hesabno-fr-restored", "true");
+        rStatus.setAttribute("data-state", "ok");
+        rStatus.textContent = "اطلاعات نسخه پشتیبان با موفقیت بازیابی شد ✓";
+        showStep("permissions");
+        return true;
+      } catch (err) {
+        rStatus.setAttribute("data-state", "error");
+        rStatus.textContent = "خطا در خواندن فایل پشتیبان. لطفاً یک فایل JSON معتبر انتخاب کنید.";
+        return false;
+      }
+    }
+
+    window.__hesabnoFirstRunApplyBackup = applyBackupJsonString;
+    window.__hesabnoReceiveCloudBackupJson = function (jsonStr) {
+      applyBackupJsonString(jsonStr);
+    };
+
+    gdriveBtn.addEventListener("click", function () {
+      rStatus.textContent = "";
+      rStatus.removeAttribute("data-state");
+      try {
+        if (window.HnBridge) {
+          if (typeof window.HnBridge.readFromCloudDrive === "function") {
+            var direct = window.HnBridge.readFromCloudDrive();
+            if (direct && String(direct).trim()) {
+              if (applyBackupJsonString(direct)) return;
+            }
+          }
+          if (typeof window.HnBridge.pickCloudBackupToRestore === "function") {
+            window.HnBridge.pickCloudBackupToRestore();
+            return;
+          }
+        }
+        if (window.__hesabnoCloudDriveState && window.__hesabnoCloudDriveState.payload) {
+          applyBackupJsonString(window.__hesabnoCloudDriveState.payload);
+          return;
+        }
+        fileInput.click();
+      } catch (err) {
+        rStatus.setAttribute("data-state", "error");
+        rStatus.textContent = "امکان باز کردن گوگل درایو وجود ندارد.";
+      }
+    });
+
+    fileBtn.addEventListener("click", function () {
+      rStatus.textContent = "";
+      rStatus.removeAttribute("data-state");
+      fileInput.click();
+    });
+
+    fileInput.addEventListener("change", function () {
+      var file = fileInput.files && fileInput.files[0];
+      if (!file) return;
+      if (typeof FileReader === "function") {
+        var reader = new FileReader();
+        reader.onload = function () { applyBackupJsonString(reader.result); };
+        reader.readAsText(file);
+      } else if (typeof file.text === "function") {
+        file.text().then(applyBackupJsonString);
+      }
+    });
+
+    goProfileBtn.addEventListener("click", function () {
+      restoredFromBackup = false;
+      card.removeAttribute("data-hesabno-fr-restored");
+      showStep("profile");
+    });
+
+    backToRestoreBtn.addEventListener("click", function () {
+      showStep("restore");
+    });
+
+    backToProfileBtn.addEventListener("click", function () {
+      showStep("profile");
+    });
+
+    finishBtn.addEventListener("click", function () {
+      savePreferencesAndFinish();
+    });
+
+    [first.input, last.input, mobile.input].forEach(function (inp) {
+      inp.addEventListener("input", function () {
+        if (clean(inp.value)) {
+          inp.removeAttribute("data-hesabno-invalid");
+          inp.removeAttribute("aria-invalid");
+        }
+      });
+    });
 
     function validate() {
       var ok = true;
@@ -87,15 +731,50 @@
       var m = toEnglishDigits(mobile.input.value).replace(/[\s-]/g, "");
       first.err.textContent = f ? "" : "نام را وارد کنید";
       last.err.textContent = l ? "" : "نام خانوادگی را وارد کنید";
-      if (!f) ok = false;
-      if (!l) ok = false;
+      if (!f) {
+        ok = false;
+        first.input.setAttribute("data-hesabno-invalid", "true");
+        first.input.setAttribute("aria-invalid", "true");
+      } else {
+        first.input.removeAttribute("data-hesabno-invalid");
+        first.input.removeAttribute("aria-invalid");
+      }
+      if (!l) {
+        ok = false;
+        last.input.setAttribute("data-hesabno-invalid", "true");
+        last.input.setAttribute("aria-invalid", "true");
+      } else {
+        last.input.removeAttribute("data-hesabno-invalid");
+        last.input.removeAttribute("aria-invalid");
+      }
       mobile.err.textContent = "";
-      if (m && !/^\+?\d{7,15}$/.test(m)) { mobile.err.textContent = "شماره موبایل معتبر نیست"; ok = false; }
+      if (m && !/^\+?\d{7,15}$/.test(m)) {
+        mobile.err.textContent = "شماره موبایل معتبر نیست";
+        mobile.input.setAttribute("data-hesabno-invalid", "true");
+        mobile.input.setAttribute("aria-invalid", "true");
+        ok = false;
+      } else {
+        mobile.input.removeAttribute("data-hesabno-invalid");
+        mobile.input.removeAttribute("aria-invalid");
+      }
       return ok ? { first: f, last: l, mobile: m } : null;
     }
 
     card.addEventListener("submit", function (event) {
       event.preventDefault();
+      var currentStep = card.getAttribute("data-hesabno-fr-active-step");
+      if (currentStep === "preferences") {
+        savePreferencesAndFinish();
+        return;
+      }
+      if (currentStep === "permissions") {
+        proceedFromPermissions();
+        return;
+      }
+      if (currentStep !== "profile") {
+        showStep("profile");
+        return;
+      }
       var v = validate();
       if (!v) return;
       var stored = null;
@@ -108,12 +787,10 @@
       });
       if (!store(PROFILE_KEY, JSON.stringify(profile))) {
         sub.textContent = "ذخیره اطلاعات انجام نشد. فضای ذخیره‌سازی مرورگر را بررسی کنید.";
-        sub.style.color = "#f87171";
+        sub.setAttribute("data-error", "true");
         return;
       }
-      store(DONE_KEY, "1");
-      overlay.remove();
-      if (typeof window.__hesabnoSoftReload === "function") window.__hesabnoSoftReload();
+      showStep("permissions");
     });
 
     return overlay;
@@ -123,8 +800,8 @@
     if (!document.body) { document.addEventListener("DOMContentLoaded", mount); return; }
     if (document.getElementById("hesabno-first-run")) return;
     document.body.appendChild(build());
-    var input = document.getElementById("hesabno-fr-first");
-    if (input) input.focus();
+    var gdriveBtn = document.querySelector('[data-hesabno-fr-gdrive-btn="true"]');
+    if (gdriveBtn) gdriveBtn.focus();
   }
   function showIntro(done) {
     var key = "hesabno:first_run_intro_done";
@@ -151,47 +828,16 @@
         svg: '<svg viewBox="0 0 200 160" fill="none"><defs><linearGradient id="t4" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#134e4a"/><stop offset="1" stop-color="#0f2a2e"/></linearGradient></defs><rect x="35" y="8" width="130" height="134" rx="26" fill="url(#t4)" stroke="#2b5b58" stroke-width="1.5"/><rect x="56" y="28" width="38" height="38" rx="12" fill="#0f2127" stroke="#244047"/><rect x="106" y="28" width="38" height="38" rx="12" fill="#0f2127" stroke="#244047"/><rect x="56" y="78" width="38" height="38" rx="12" fill="#0f2127" stroke="#244047"/><rect x="106" y="78" width="38" height="38" rx="12" fill="#0f2127" stroke="#244047"/><circle cx="75" cy="47" r="7" fill="none" stroke="#2dd4bf" stroke-width="2.5"/><path d="M125 42 v10 M120 47 h10" stroke="#fbbf24" stroke-width="2.5" stroke-linecap="round"/><rect x="70" y="92" width="10" height="10" rx="3" fill="none" stroke="#fb7185" stroke-width="2.5"/><path d="M118 90 l8 8 M126 90 l-8 8" stroke="#6ee7b7" stroke-width="2.5" stroke-linecap="round"/></svg>'
       }
     ];
+    /* قواعد ظاهری تور معرفی (#hesabno-intro-tour) و فرم اجرای اول (#hesabno-first-run) در بستهٔ ۲۳۵ قرار دارد. */
     var current = 0;
     var overlay = document.createElement("div");
     overlay.id = "hesabno-intro-tour";
     overlay.dir = "rtl";
-    overlay.style.cssText = "position:fixed;inset:0;z-index:2147483645;display:flex;align-items:center;justify-content:center;padding:18px;overflow-y:auto;background:radial-gradient(circle at 15% 10%,rgba(16,185,129,.18),transparent 38%),#071115;color:#eef7f6;font-family:Vazirmatn,system-ui,sans-serif";
-    var style = document.createElement("style");
-    style.textContent =
-      "#hesabno-intro-tour *{box-sizing:border-box}" +
-      "#hesabno-intro-tour .intro-card{width:100%;max-width:420px;padding:22px;border:1px solid #294349;border-radius:26px;background:linear-gradient(145deg,#12252b,#0b171c);box-shadow:0 24px 70px #0008;animation:introCardIn .5s cubic-bezier(.22,.75,.25,1) both}" +
-      "@keyframes introCardIn{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:none}}" +
-      "#hesabno-intro-tour .intro-art{position:relative;overflow:hidden;height:250px;display:flex;align-items:center;justify-content:center;margin:8px 0 20px;border:1px solid #294349;border-radius:20px;background:linear-gradient(160deg,#122a30,#0b171c);padding:8px}" +
-      "#hesabno-intro-tour .intro-art::after{content:'';position:absolute;z-index:5;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.07) 50%,transparent 65%);transform:translateX(-120%);animation:introSheen 5.4s ease-in-out infinite}" +
-      "@keyframes introSheen{0%{transform:translateX(-120%)}45%,100%{transform:translateX(120%)}}" +
-      "#hesabno-intro-tour .intro-art svg{position:relative;z-index:2;width:100%;height:100%;animation:mockIn .45s cubic-bezier(.22,.75,.25,1) both}" +
-      "@keyframes mockIn{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}" +
-      "#hesabno-intro-tour .intro-kicker{color:#5eead4;font-size:11px;font-weight:800}" +
-      "#hesabno-intro-tour .intro-copy{animation:introCopyIn .42s cubic-bezier(.22,.75,.25,1) both}" +
-      "@keyframes introCopyIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}" +
-      "#hesabno-intro-tour h2{margin:8px 0 0;color:#f4fbfa;font-size:22px}" +
-      "#hesabno-intro-tour p{margin:6px 0 0;color:#a6bfbe;font-size:13px;line-height:1.9}" +
-      "#hesabno-intro-tour .intro-actions{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:22px}" +
-      "#hesabno-intro-tour button{min-height:44px;padding:0 16px;border:0;border-radius:13px;font:inherit;font-size:12px;font-weight:800;cursor:pointer;transition:transform .15s ease,box-shadow .2s ease,background .2s ease}" +
-      "#hesabno-intro-tour button:hover{transform:translateY(-1px)}" +
-      "#hesabno-intro-tour button:active{transform:translateY(0) scale(.97)}" +
-      "#hesabno-intro-tour button:focus-visible{outline:2px solid #2dd4bf;outline-offset:2px}" +
-      "#hesabno-intro-tour .intro-skip{background:#23383d;color:#b9cecc}" +
-      "#hesabno-intro-tour .intro-skip:hover{background:#2c464b}" +
-      "#hesabno-intro-tour .intro-next{background:linear-gradient(110deg,#6ee7b7,#2dd4bf);color:#06251e;box-shadow:0 8px 20px rgba(45,212,191,.2);animation:introNextGlow 3.4s ease-in-out infinite}" +
-      "@keyframes introNextGlow{0%,100%{box-shadow:0 8px 20px rgba(45,212,191,.18)}50%{box-shadow:0 11px 28px rgba(45,212,191,.45)}}" +
-      "#hesabno-intro-tour .intro-next:hover{animation:none;box-shadow:0 12px 30px rgba(45,212,191,.45)}" +
-      "#hesabno-intro-tour .intro-dots{display:flex;gap:5px;align-items:center}" +
-      "#hesabno-intro-tour .intro-dots span{width:6px;height:6px;border-radius:9px;background:#385052;transition:all .3s ease}" +
-      "#hesabno-intro-tour .intro-dots span.active{width:18px;background:#34d399}" +
-      "@media(max-height:620px){#hesabno-intro-tour .intro-art{height:190px;margin:6px 0 12px}#hesabno-intro-tour .intro-card{padding:16px}}" +
-      "@media(prefers-reduced-motion:reduce){#hesabno-intro-tour *,#hesabno-intro-tour *::before,#hesabno-intro-tour *::after{animation:none!important;transition:none!important}}";
-    document.head.appendChild(style);
     var card = document.createElement("section"); card.className = "intro-card"; card.setAttribute("role", "dialog"); card.setAttribute("aria-modal", "true"); card.setAttribute("aria-label", "معرفی برنامه");
-    card.innerHTML = '<div style="display:flex;align-items:center"><strong style="letter-spacing:.08em;font-size:11px">MY MONEY</strong></div><div class="intro-art" aria-hidden="true" data-intro-art></div><div class="intro-copy" data-intro-copy><div class="intro-kicker" data-intro-step></div><h2 data-intro-title></h2><p data-intro-body aria-live="polite"></p></div><div class="intro-dots" data-intro-dots style="margin-top:18px"></div><div class="intro-actions"><button type="button" class="intro-skip" data-intro-skip>رد کردن</button><button type="button" class="intro-next" data-intro-next>بعدی ←</button></div>';
-    overlay.appendChild(style); overlay.appendChild(card); document.body.appendChild(overlay);
+    card.innerHTML = '<div class="intro-brand-row"><strong class="intro-brand-label">MY MONEY</strong></div><div class="intro-art" aria-hidden="true" data-intro-art></div><div class="intro-copy" data-intro-copy><div class="intro-kicker" data-intro-step></div><h2 data-intro-title></h2><p data-intro-body aria-live="polite"></p></div><div class="intro-dots" data-intro-dots></div><div class="intro-actions"><button type="button" class="intro-skip" data-intro-skip>رد کردن</button><button type="button" class="intro-next" data-intro-next>بعدی ←</button></div>';
+    overlay.appendChild(card); document.body.appendChild(overlay);
     var step = card.querySelector('[data-intro-step]'), title = card.querySelector('[data-intro-title]'), body = card.querySelector('[data-intro-body]'), dots = card.querySelector('[data-intro-dots]'), next = card.querySelector('[data-intro-next]'), copy = card.querySelector('[data-intro-copy]'), art = card.querySelector('[data-intro-art]');
-    function finish() { store(key, "1"); overlay.remove(); style.remove(); done(); }
+    function finish() { store(key, "1"); overlay.remove(); done(); }
     function render() {
       step.textContent = faDigits(current + 1) + " از " + faDigits(slides.length);
       title.textContent = slides[current].t;
@@ -206,6 +852,25 @@
     render(); next.focus();
   }
 
-  function startFirstRun() { showIntro(mount); }
+  window.__hesabnoOpenFirstRunWizard = function (initialStep) {
+    var oldOv = document.getElementById("hesabno-first-run");
+    if (oldOv) oldOv.remove();
+    var ov = build();
+    document.body.appendChild(ov);
+    var cardEl = ov.querySelector(".hesabno-fr-card");
+    if (cardEl && initialStep) {
+      cardEl.setAttribute("data-hesabno-fr-active-step", initialStep);
+    }
+    return ov;
+  };
+
+  function startFirstRun() {
+    var forceByQuery = false;
+    try {
+      forceByQuery = window.location && String(window.location.search || "").indexOf("firstRun=1") !== -1;
+    } catch (e) {}
+    if (!forceByQuery && (read(DONE_KEY) === "1" || (existing && clean(existing.firstName)))) return;
+    showIntro(mount);
+  }
   startFirstRun();
 })();

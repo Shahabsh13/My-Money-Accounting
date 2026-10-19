@@ -31,8 +31,12 @@
        var titleBlock = heading.parentElement && heading.parentElement.parentElement;
        var balanceLine = titleBlock && titleBlock.querySelector("p");
        if (balanceLine) {
-         balanceLine.textContent = accountNumber ? "شماره حساب: " + digits(accountNumber) : "حساب بانکی";
+         balanceLine.textContent = accountNumber ? "شماره حساب: " + digits(accountNumber) : (account && account.group === "cash" ? "صندوق نقدینگی" : "حساب بانکی");
          balanceLine.classList.add("hesabno-statement-account-number");
+       }
+       var closeBtn = panel.querySelector('button[title="بستن پنل صورتحساب"]');
+       if (closeBtn && !closeBtn.getAttribute("aria-label")) {
+         closeBtn.setAttribute("aria-label", "بستن");
        }
        var columns = Array.from(panel.querySelectorAll("div.grid.grid-cols-3")).find(function (node) {
          return clean(node.textContent).indexOf("تاریخ و سند") !== -1 && clean(node.textContent).indexOf("مبلغ گردش") !== -1;
@@ -50,5 +54,5 @@
      });
    };
    enhance();
-   if (document.body) new MutationObserver(enhance).observe(document.body, { childList: true, subtree: true });
+   if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, enhance);
  })();

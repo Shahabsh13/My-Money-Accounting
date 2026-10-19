@@ -19,10 +19,10 @@
     var scheduleSync = function () {
       if (syncScheduled) return;
       syncScheduled = true;
-      window.setTimeout(function () {
+      Promise.resolve().then(function () {
         syncScheduled = false;
         sync();
-      }, 60);
+      });
     };
      sync();
      if (document.body) {

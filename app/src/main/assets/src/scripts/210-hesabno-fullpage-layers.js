@@ -14,6 +14,10 @@
   }
   function apply() {
     document.querySelectorAll('div.fixed.inset-0').forEach(function (overlay) {
+      if (overlay.getAttribute('data-hesabno-dashboard-hero-modal') === 'true') {
+        overlay.classList.remove('hesabno-fullpage-layer');
+        return;
+      }
       if (overlay.classList.contains('hesabno-fullpage-layer')) return;
       if (overlay.closest('nav')) return;
       if (isLarge(overlay)) overlay.classList.add('hesabno-fullpage-layer');
@@ -23,10 +27,9 @@
   function schedule() {
     if (queued) return;
     queued = true;
-    requestAnimationFrame(function () { queued = false; apply(); });
+    Promise.resolve().then(function () { queued = false; apply(); });
   }
   apply();
-  [120, 400, 900].forEach(function (d) { setTimeout(apply, d); });
-  if (document.body) new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true });
-  document.addEventListener('click', function () { setTimeout(apply, 60); setTimeout(apply, 300); }, true);
+  if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, schedule);
+  document.addEventListener('click', schedule, true);
 })();

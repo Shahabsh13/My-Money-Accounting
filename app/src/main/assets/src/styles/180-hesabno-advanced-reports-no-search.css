@@ -1,1 +1,0 @@
-main:has(.hesabno-report-mode-tabs > button:nth-child(2).bg-amber-400) .relative:has(input[placeholder*="جستجو"]) { display: none !important; }

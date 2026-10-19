@@ -13,7 +13,7 @@
         return text.indexOf("خلاصهگزارشات") === 0 && text.indexOf("تحلیل") !== -1;
       });
       if (!heading) return;
-      heading.dataset.hesabnoReportAnalysisTitle = "true";
+      if (heading.dataset.hesabnoReportAnalysisTitle !== "true") heading.dataset.hesabnoReportAnalysisTitle = "true";
       var walker = document.createTreeWalker(heading, NodeFilter.SHOW_TEXT);
       var nodes = [], current;
       while ((current = walker.nextNode())) nodes.push(current);
@@ -33,19 +33,21 @@
         return account && account.parentId == null && list.some(function (child) { return child && String(child.parentId) === String(account.id); });
       }).map(function (account) { return clean(account.name); }).filter(Boolean);
       if (!names.length) return;
-      Array.from(document.querySelectorAll('[data-hesabno-report-moein-badge="true"]')).forEach(function (node) {
-        delete node.dataset.hesabnoReportMoeinBadge;
-      });
+      var matched = new Set();
       Array.from(document.querySelectorAll("span, small, label, div")).forEach(function (node) {
         if (clean(node.textContent) !== "معین") return;
         var parent = node.parentElement;
         for (var depth = 0; parent && depth < 5; depth += 1, parent = parent.parentElement) {
           var text = clean(parent.textContent);
           if (text.length <= 220 && /تفصیلی\s*[0-9۰-۹٠-٩]+/u.test(text) && names.some(function (name) { return text.indexOf(name) !== -1; })) {
-            node.dataset.hesabnoReportMoeinBadge = "true";
+            matched.add(node);
+            if (node.dataset.hesabnoReportMoeinBadge !== "true") node.dataset.hesabnoReportMoeinBadge = "true";
             break;
           }
         }
+      });
+      Array.from(document.querySelectorAll('[data-hesabno-report-moein-badge="true"]')).forEach(function (node) {
+        if (!matched.has(node)) delete node.dataset.hesabnoReportMoeinBadge;
       });
     };
     var update = function () {
@@ -55,10 +57,11 @@
     var frame = 0;
     var schedule = function () {
       if (frame) return;
-      frame = requestAnimationFrame(function () { frame = 0; update(); });
+      frame = 1;
+      Promise.resolve().then(function () { frame = 0; update(); });
     };
     update();
-    if (document.body) new MutationObserver(schedule).observe(document.body, { childList: true, characterData: true, subtree: true });
+    if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, characterData: true, subtree: true }, schedule);
     window.addEventListener("storage", function (event) {
       if (!event.key || event.key === "hesabno:accounts" || event.key === "hesabno:accounts_v5") schedule();
     });

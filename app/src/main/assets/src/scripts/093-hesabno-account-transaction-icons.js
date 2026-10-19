@@ -24,19 +24,22 @@
           return labels.some(function (label) { return label === title || title.indexOf(label) >= 0 || label.indexOf(title) >= 0; });
         });
         if (!tx || tx.type !== "income" && tx.type !== "expense") return;
-        var category = clean(tx.category) || title;
+        var counterparty = clean(tx.account || tx.destinationAccount);
         var account = accounts.find(function (item) {
           var name = clean(item && item.name);
-          return name && (name === category || title.indexOf(name) >= 0 || category.indexOf(name) >= 0) && (item.group === "income" || item.group === "expense");
+          return name && counterparty && (name === counterparty || counterparty.indexOf(name) >= 0 || name.indexOf(counterparty) >= 0);
         });
-        if (!account || !account.picture || iconBox.dataset.hesabnoIcon === account.picture) return;
-        iconBox.textContent = account.picture;
-        iconBox.dataset.hesabnoIcon = account.picture;
-        iconBox.style.fontSize = "1rem";
-        iconBox.style.lineHeight = "1";
+        if (iconBox.querySelector("img, [data-hesabno-bank-logo]")) return;
+        var pic = clean(account && account.picture);
+        if (!pic || /^(Landmark|Banknote|Wallet|TrendingUp|TrendingDown|User|Users)$/i.test(pic)) {
+          pic = (account && account.group === "cash") || /صندوق|تنخواه|نقد/.test(counterparty) ? "💵" : "";
+        }
+        if (!pic || iconBox.dataset.hesabnoIcon === pic) return;
+        iconBox.textContent = pic;
+        iconBox.dataset.hesabnoIcon = pic;
       });
     });
   };
   enhance();
-  if (document.body) new MutationObserver(enhance).observe(document.body, { childList: true, subtree: true });
+  if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, enhance);
 })();

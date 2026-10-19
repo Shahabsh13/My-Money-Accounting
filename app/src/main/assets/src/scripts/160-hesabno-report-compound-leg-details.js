@@ -93,8 +93,8 @@
     };
     var findLegForCard = function (card, transaction, accounts) {
       var flow = flowForCard(card);
-      var source = sideName(flow, "مبدأ");
-      var destination = sideName(flow, "مقصد");
+      var source = sideName(flow, "مبدأ") || clean(card.dataset.hesabnoFromText);
+      var destination = sideName(flow, "مقصد") || clean(card.dataset.hesabnoToText);
       var amount = amountForCard(card);
       var preferred = transaction.type === "income"
         ? [{ legs: transaction.compoundSources, name: source, side: "source" }, { legs: transaction.compoundDestinations, name: destination, side: "destination" }]
@@ -112,10 +112,16 @@
       return names.length > 1 && names.every(function (name) { return text.indexOf(name) !== -1; });
     };
     var descriptionRow = function (card) {
-      return Array.from(card.children).find(function (node) { return clean(node.textContent).indexOf("شرح:") === 0; });
+      return Array.from(card.children).find(function (node) {
+        return node.dataset.hesabnoStatementDescription === "true" || clean(node.textContent).indexOf("توضیحات:") === 0 || clean(node.textContent).indexOf("شرح:") === 0;
+      });
     };
     var updateDescription = function (card, transaction, match, accounts) {
       var row = descriptionRow(card);
+      if (card.dataset.hesabnoShowDescription === "false") {
+        if (row) row.remove();
+        return;
+      }
       var leg = match.leg;
       var note = clean(leg.description || leg.notes || leg.note || leg.memo);
       var notes = [transaction.description, transaction.notes, transaction.note, transaction.memo].map(clean).filter(Boolean);
@@ -123,26 +129,38 @@
       var display = note || shared;
       if (!row && display) {
         row = document.createElement("div");
-        row.className = "flex items-center justify-between gap-1.5 pt-0.5 text-[9px] flex-wrap border-t border-stone-800/50";
+        row.className = "hesabno-statement-description";
+        row.dataset.hesabnoStatementDescription = "true";
         row.dataset.hesabnoReportCompoundDescription = "true";
         var label = document.createElement("span");
-        label.className = "text-stone-500 font-bold shrink-0";
-        label.textContent = "شرح:";
+        label.className = "hesabno-statement-description-label";
+        label.textContent = "توضیحات:";
         var value = document.createElement("span");
-        value.className = "text-stone-300 truncate font-normal";
+        value.className = "hesabno-statement-description-value";
         row.append(label, value);
-        card.appendChild(row);
+        var party = Array.from(card.children).find(function (node) { return node.dataset.hesabnoCounterpartyRow === "true"; });
+        card.insertBefore(row, party ? party.nextSibling : card.lastElementChild);
       }
       if (!row) return;
+      row.classList.add("hesabno-statement-description");
+      row.dataset.hesabnoStatementDescription = "true";
       row.dataset.hesabnoReportCompoundDescription = "true";
       if (!display) {
         row.style.setProperty("display", "none", "important");
         return;
       }
       row.style.removeProperty("display");
-      var valueNode = Array.from(row.querySelectorAll("span")).find(function (node) { return clean(node.textContent) !== "شرح:"; });
-      if (valueNode && clean(valueNode.textContent) !== display) valueNode.textContent = display;
-      if (valueNode) valueNode.title = display;
+      var labelNode = row.querySelector(".hesabno-statement-description-label") || row.querySelector("span");
+      if (labelNode) {
+        labelNode.className = "hesabno-statement-description-label";
+        if (clean(labelNode.textContent) !== "توضیحات:") labelNode.textContent = "توضیحات:";
+      }
+      var valueNode = row.querySelector(".hesabno-statement-description-value") || Array.from(row.querySelectorAll("span")).find(function (node) { return node !== labelNode; });
+      if (valueNode) {
+        valueNode.className = "hesabno-statement-description-value";
+        if (clean(valueNode.textContent) !== display) valueNode.textContent = display;
+        valueNode.title = display;
+      }
     };
     var hideDocumentNumber = function (card) {
       var header = headerFor(card);
@@ -153,20 +171,24 @@
     var render = function () {
       var heading = Array.from(document.querySelectorAll("h1")).find(function (node) { return clean(node.textContent) === "گزارش صورتحساب"; });
       if (!heading) return;
-      var root = heading.closest("main") || document;
+      var root = heading.closest("main") || heading.closest("div.w-full.flex.flex-col") || document;
       var accounts = readArray("hesabno:accounts_v5");
       var transactions = readArray("hesabno:transactions");
       var columns = Array.from(root.querySelectorAll("div.grid.grid-cols-3")).find(function (node) {
         var text = clean(node.textContent);
-        return text.indexOf("تاریخ و سند") !== -1 && text.indexOf("مبلغ تراکنش") !== -1;
+        return (text.indexOf("تاریخ و سند") !== -1 || text.indexOf("تاریخ") !== -1) && (text.indexOf("مبلغ تراکنش") !== -1 || text.indexOf("مبلغ گردش") !== -1);
       });
       if (columns) {
+        columns.classList.add("hesabno-statement-columns");
         var label = Array.from(columns.querySelectorAll("*")).find(function (node) { return clean(node.textContent) === "تاریخ و سند"; });
         if (label) label.textContent = "تاریخ";
+        var amountLabel = Array.from(columns.querySelectorAll("*")).find(function (node) { return clean(node.textContent) === "مبلغ تراکنش"; });
+        if (amountLabel) amountLabel.textContent = "مبلغ گردش";
       }
       var cards = Array.from(root.querySelectorAll("div")).filter(function (card) {
+        if (card.classList.contains("hesabno-statement-opening-balance")) return false;
         var header = headerFor(card);
-        return header && flowForCard(card);
+        return header && (flowForCard(card) || card.dataset.hesabnoStatementCard === "true");
       });
       cards.forEach(function (card) {
         var transaction = transactionForCard(card, transactions);
@@ -182,8 +204,8 @@
     var schedule = function () {
       if (scheduled) return;
       scheduled = true;
-      window.requestAnimationFrame(function () { scheduled = false; render(); });
+      Promise.resolve().then(function () { scheduled = false; render(); });
     };
     render();
-    if (document.body) new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true });
+    if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, schedule);
   })();

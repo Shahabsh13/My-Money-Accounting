@@ -1,10 +1,5 @@
 (function () {
-    var style = document.createElement("style");
-    style.textContent = ".hesabno-secure-backup{margin:14px 0;padding:16px;border:1px solid #87b8aa;border-radius:16px;background:#f3faf8;color:#223b36}.hesabno-secure-backup h3{margin:0 0 5px;font-size:14px}.hesabno-secure-backup p{margin:5px 0 12px;font-size:12px;line-height:1.8}.hesabno-secure-backup label{display:block;margin:8px 0 5px;font-size:12px;font-weight:700}.hesabno-secure-backup input[type=password]{width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid #9abdb4;border-radius:10px;background:#fff;color:#17212b;font:inherit}.hesabno-secure-backup .hsb-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.hesabno-secure-backup button{border:1px solid #327c6a;border-radius:10px;padding:9px 12px;background:#277c68;color:#fff;font:inherit;font-size:12px;font-weight:700;cursor:pointer}.hesabno-secure-backup button:disabled{opacity:.55;cursor:not-allowed}.hesabno-secure-backup [data-hsb-status]{min-height:1.6em;margin-top:8px;color:#385e53}.hesabno-secure-backup [data-hsb-status][data-error=true]{color:#a61b2b}html[data-theme=dark] .hesabno-secure-backup{border-color:#4d8d7f;background:#1c302c;color:#e5f4ef}html[data-theme=dark] .hesabno-secure-backup input[type=password]{border-color:#4d685f;background:#101a18;color:#f8fafc}html[data-theme=dark] .hesabno-secure-backup [data-hsb-status]{color:#a9e0d0}";
-    document.head.appendChild(style);
-    var touchStyle = document.createElement("style");
-    touchStyle.textContent = ".hesabno-secure-backup button,.hesabno-secure-backup input[type=password]{min-height:44px}";
-    document.head.appendChild(touchStyle);
+    /* قواعد ظاهری پنل پشتیبان رمزگذاری‌شده (.hesabno-secure-backup) در بستهٔ ۲۳۵ قرار دارد. */
 
     function patchBudgetBack() {
       var main = document.querySelector("main");
@@ -43,10 +38,15 @@
     }
 
     function mountEncryptedBackup() {
+      var existing = document.getElementById("hesabno-encrypted-backup");
+      if (!window.__hesabnoEnableEncryptedBackupUi) {
+        if (existing) existing.remove();
+        return;
+      }
       var download = Array.prototype.find.call(document.querySelectorAll("button"), function (button) {
         return button.textContent.trim() === "دانلود فایل پشتیبان (JSON)";
       });
-      if (!download || document.getElementById("hesabno-encrypted-backup")) return;
+      if (!download || existing) return;
       var content = download.closest('div[class*="overflow-y-auto"]');
       if (!content) return;
       var box = document.createElement("section");
@@ -124,5 +124,5 @@
 
     function update() { patchBudgetBack(); mountEncryptedBackup(); }
     update();
-    new MutationObserver(update).observe(document.documentElement, { childList: true, subtree: true });
+    window.__hesabnoDom.watch(document.documentElement, { childList: true, subtree: true }, update);
   })();

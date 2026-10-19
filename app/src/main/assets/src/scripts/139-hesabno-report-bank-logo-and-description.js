@@ -11,15 +11,25 @@
       try {
         var raw = window.__safeGet ? window.__safeGet("hesabno:accounts_v5") : localStorage.getItem("hesabno:accounts_v5");
         var value = JSON.parse(raw || "[]");
-        return Array.isArray(value) ? value : [];
-      } catch (error) { return []; }
+        if (Array.isArray(value) && value.length > 0) return value;
+      } catch (error) {}
+      return Array.isArray(window.__HESABNO_DEFAULT_ACCOUNTS) ? window.__HESABNO_DEFAULT_ACCOUNTS : [];
+    };
+    var findCounterpartyAccount = function (displayName) {
+      var target = normalizeAccountName(displayName);
+      if (!target) return null;
+      var strippedTarget = target.replace(/^بانک\s+/, "");
+      var accounts = readAccounts();
+      return accounts.find(function (item) {
+        return item && (normalizeAccountName(item.name) === target || (item.bankName && normalizeAccountName(item.bankName) === target));
+      }) || accounts.find(function (item) {
+        var name = normalizeAccountName(item && item.name).replace(/^بانک\s+/, "");
+        return name && name === strippedTarget;
+      }) || null;
     };
     var selectedBankName = function (displayName) {
-      var target = normalizeAccountName(displayName);
-      var account = readAccounts().find(function (item) {
-        return item && item.bankName && (normalizeAccountName(item.name) === target || normalizeAccountName(item.bankName) === target);
-      });
-      return clean(account && account.bankName);
+      var account = findCounterpartyAccount(displayName);
+      return clean(account && (account.bankName || account.selectedBank || account.bank || account.linkedBank));
     };
     var resolveBank = function (value) {
       var text = clean(value).replace(/^•\s*/, "").replace(/^از\s+/, "").replace(/\s*\([^)]*\)/g, " ").replace(/\s+/g, " ").trim();
@@ -31,16 +41,39 @@
       }
       return "";
     };
+    var resolveAccountGlyph = function (displayName, account) {
+      var pic = clean(account && account.picture);
+      if (pic && !/^(Landmark|Banknote|Wallet|TrendingUp|TrendingDown|User|Users|Gem|HandCoins|Scale)$/i.test(pic)) {
+        return pic;
+      }
+      var text = normalizeAccountName(displayName);
+      if ((account && account.group === "cash") || /صندوق|تنخواه|نقد|کیف پول/.test(text)) return "💵";
+      if ((account && account.group === "bank") || /بانک/.test(text)) return "🏦";
+      if (account && account.group === "person") return "👤";
+      return "💵";
+    };
     var makeMark = function (key, label) {
       var mark = document.createElement("span");
       mark.className = "hesabno-bank-mark hesabno-report-bank-logo";
       mark.setAttribute("data-hesabno-report-bank-logo", key);
+      mark.setAttribute("data-hesabno-bank-logo", key);
       mark.title = label;
       var image = document.createElement("img");
       image.alt = label;
-      image.loading = "lazy";
+      image.loading = "eager";
+      image.decoding = "sync";
       image.src = logos[key];
       mark.appendChild(image);
+      return mark;
+    };
+    var makeGlyphMark = function (glyph, label) {
+      var mark = document.createElement("span");
+      mark.className = "hesabno-bank-mark hesabno-report-account-icon";
+      mark.setAttribute("data-hesabno-report-bank-logo", "glyph:" + glyph);
+      mark.setAttribute("data-hesabno-bank-logo", "glyph:" + glyph);
+      mark.setAttribute("data-hesabno-report-account-icon", glyph);
+      mark.title = label;
+      mark.textContent = glyph;
       return mark;
     };
     var readTransactions = function () {
@@ -72,37 +105,46 @@
       if (!value || value === title || value === clean(item && (item.title || item.category))) return "";
       return value;
     };
-    var ensureStyle = function () {
-      if (document.querySelector("style[data-hesabno-report-bank-logo-and-description-style]")) return;
-      var style = document.createElement("style");
-      style.setAttribute("data-hesabno-report-bank-logo-and-description-style", "true");
-      style.textContent = ".hesabno-report-transaction-row{margin-block:2px!important;padding:7px 8px!important;gap:2px!important}.hesabno-simple-report-date-rows{gap:2px!important}.hesabno-simple-report-bank-wrap{display:flex;align-items:center;gap:4px;min-width:0;flex:1}.hesabno-simple-report-bank-wrap .hesabno-bank-mark{margin-inline-end:0!important}.hesabno-simple-report-bank{font-size:11px!important}.hesabno-simple-report-amount{font-size:10px!important}.hesabno-simple-report-description{margin-top:1px!important;padding:0 4px!important;font-size:9px!important;line-height:1.35!important;color:#70818c!important}html[data-theme=\"dark\"] .hesabno-simple-report-description{color:#aebdc5!important}html[data-theme=\"dark\"] .hesabno-simple-report-bank-wrap .hesabno-bank-mark{background:#d9eef7!important}";
-      document.head.appendChild(style);
-    };
+    /* قواعد ردیف، لوگوی بانک و توضیح گزارش ساده در بستهٔ ۲۳۵ (لایهٔ ظاهر) قرار دارد. */
+    var ensureStyle = function () {};
     var decorate = function () {
       ensureStyle();
       document.querySelectorAll(".hesabno-report-transaction-row").forEach(function (row) {
         var bank = row.querySelector(".hesabno-simple-report-bank");
         if (!bank) return;
         var displayName = bank.getAttribute("title") || bank.textContent;
-        var key = resolveBank(selectedBankName(displayName) || displayName);
-        if (key && !bank.closest("[data-hesabno-report-bank-wrap]")) {
-          var wrap = document.createElement("div");
+        var account = findCounterpartyAccount(displayName);
+        var key = resolveBank(selectedBankName(displayName) || (account && (account.bankName || account.name)) || displayName);
+        var glyph = key ? "" : resolveAccountGlyph(displayName, account);
+        var markId = key || ("glyph:" + glyph);
+        var buildMark = function () {
+          return key ? makeMark(key, displayName) : makeGlyphMark(glyph, displayName);
+        };
+        var wrap = bank.closest("[data-hesabno-report-bank-wrap]");
+        if (markId && !wrap) {
+          wrap = document.createElement("div");
           wrap.className = "hesabno-simple-report-bank-wrap";
           wrap.setAttribute("data-hesabno-report-bank-wrap", "true");
-          wrap.appendChild(makeMark(key, bank.getAttribute("title") || bank.textContent));
+          wrap.appendChild(buildMark());
           bank.parentNode.insertBefore(wrap, bank);
           wrap.appendChild(bank);
+        } else if (markId && wrap) {
+          var currentMark = wrap.querySelector(".hesabno-bank-mark");
+          if (!currentMark || currentMark.getAttribute("data-hesabno-report-bank-logo") !== markId) {
+            if (currentMark) currentMark.remove();
+            wrap.insertBefore(buildMark(), bank);
+          }
         }
         var card = row.closest(".hesabno-report-transaction-card");
         var description = manualDescription(row, card);
+        var box = row.querySelector(".hesabno-simple-report-row-box") || row;
         if (description && !row.querySelector(".hesabno-simple-report-description")) {
           var node = document.createElement("div");
           node.className = "hesabno-simple-report-description";
           node.setAttribute("data-hesabno-report-description-fallback", "true");
           node.textContent = description;
           node.title = description;
-          row.appendChild(node);
+          box.appendChild(node);
         }
       });
     };
@@ -110,8 +152,9 @@
     var schedule = function () {
       if (scheduled) return;
       scheduled = true;
-      window.requestAnimationFrame(function () { scheduled = false; decorate(); });
+      Promise.resolve().then(function () { scheduled = false; decorate(); });
     };
+    window.__hesabnoDecorateSimpleReportRows = decorate;
     decorate();
-    if (document.body) new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true });
+    if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, schedule);
   })();

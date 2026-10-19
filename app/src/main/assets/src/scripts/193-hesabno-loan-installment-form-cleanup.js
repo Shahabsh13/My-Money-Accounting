@@ -5,12 +5,7 @@
       { title: "ثبت خرید اقساطی کالا و خدمات", shortTitle: "خرید اقساطی" }
     ];
     var pageTitles = ["وام‌ها و تسهیلات", "خرید و اقساط"];
-    if (!document.querySelector("style[data-hesabno-form-presets-hidden-style]")) {
-      var style = document.createElement("style");
-      style.setAttribute("data-hesabno-form-presets-hidden-style", "true");
-      style.textContent = '[data-hesabno-form-presets-hidden="true"],[data-hesabno-list-count-hidden="true"],[data-hesabno-list-description-hidden="true"]{display:none!important}[data-hesabno-form-header-title]{color:#2d3b45!important}html[data-theme="dark"] [data-hesabno-form-header-title]{color:#f5f5f4!important}[data-hesabno-form-short-title]{font-size:0!important}[data-hesabno-form-short-title]::before{content:attr(data-hesabno-form-short-title);display:block;font-size:1rem;line-height:1.5;font-weight:900;color:#2d3b45}@media(min-width:640px){[data-hesabno-form-short-title]::before{font-size:1.125rem}}html[data-theme="dark"] [data-hesabno-form-short-title]::before{color:#f5f5f4}';
-      document.head.appendChild(style);
-    }
+    /* قواعد عنوان و پاک‌سازی فرم وام/خرید اقساطی در بستهٔ ۲۳۵ (لایهٔ ظاهر) قرار دارد. */
     var sync = function () {
       Array.from(document.querySelectorAll("main")).forEach(function (main) {
         Array.from(main.querySelectorAll("h1")).forEach(function (heading) {
@@ -36,7 +31,7 @@
               : null;
           }
           if (!config) return;
-          heading.setAttribute("data-hesabno-form-header-title", "true");
+          if (heading.getAttribute("data-hesabno-form-header-title") !== "true") heading.setAttribute("data-hesabno-form-header-title", "true");
           var description = heading.nextElementSibling;
           if (description && description.tagName === "P" && description.getAttribute("data-hesabno-form-short-title") !== config.shortTitle) {
             description.setAttribute("data-hesabno-form-short-title", config.shortTitle);
@@ -45,7 +40,9 @@
         });
         Array.from(main.querySelectorAll("form")).forEach(function (form) {
           var presetLabel = Array.from(form.querySelectorAll("span")).find(function (node) { return clean(node.textContent) === "الگوهای پرکاربرد سریع:"; });
-          if (presetLabel && presetLabel.parentElement) presetLabel.parentElement.setAttribute("data-hesabno-form-presets-hidden", "true");
+          if (presetLabel && presetLabel.parentElement && presetLabel.parentElement.getAttribute("data-hesabno-form-presets-hidden") !== "true") {
+            presetLabel.parentElement.setAttribute("data-hesabno-form-presets-hidden", "true");
+          }
         });
       });
     };
@@ -53,7 +50,7 @@
     var schedule = function () {
       if (scheduled) return;
       scheduled = true;
-      window.requestAnimationFrame(function () { scheduled = false; sync(); });
+      Promise.resolve().then(function () { scheduled = false; sync(); });
     };
     sync();
     document.addEventListener("click", function (event) {
@@ -62,5 +59,5 @@
       if (!text.includes("ثبت") && text !== "وام و تسهیلات" && text !== "خرید و اقساط") return;
       [80, 250, 500].forEach(function (delay) { window.setTimeout(sync, delay); });
     }, true);
-    if (document.body) new MutationObserver(schedule).observe(document.body, { childList: true, attributes: true, attributeFilter: ["class", "style", "hidden"], subtree: true });
+    if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, attributes: true, attributeFilter: ["class", "style", "hidden"], subtree: true }, schedule);
   })();

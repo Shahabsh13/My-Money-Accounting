@@ -83,20 +83,15 @@
     var setCorrectionHidden = function (button, hidden) {
       if (!button) return;
       if (hidden) {
-        if (!button.hasAttribute("data-hesabno-dependent-original-display")) button.setAttribute("data-hesabno-dependent-original-display", button.style.display || "");
         if (!button.hasAttribute("data-hesabno-dependent-original-tabindex")) button.setAttribute("data-hesabno-dependent-original-tabindex", button.getAttribute("tabindex") || "");
         button.setAttribute("data-hesabno-dependent-no-correction", "true");
         button.setAttribute("aria-hidden", "true");
         button.setAttribute("tabindex", "-1");
-        button.style.display = "none";
       } else if (button.hasAttribute("data-hesabno-dependent-no-correction")) {
-        var display = button.getAttribute("data-hesabno-dependent-original-display");
         var tabindex = button.getAttribute("data-hesabno-dependent-original-tabindex");
-        if (display) button.style.display = display; else button.style.removeProperty("display");
         if (tabindex) button.setAttribute("tabindex", tabindex); else button.removeAttribute("tabindex");
         button.removeAttribute("aria-hidden");
         button.removeAttribute("data-hesabno-dependent-no-correction");
-        button.removeAttribute("data-hesabno-dependent-original-display");
         button.removeAttribute("data-hesabno-dependent-original-tabindex");
       }
     };
@@ -111,8 +106,6 @@
        overlay.setAttribute("role", "dialog");
        overlay.setAttribute("aria-modal", "true");
        overlay.className = "fixed inset-0 z-[90] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm";
-      overlay.style.setProperty("z-index", "2147483600", "important");
-      overlay.style.setProperty("isolation", "isolate", "important");
        var panel = document.createElement("div");
        panel.className = "w-full max-w-sm space-y-4 rounded-2xl border border-amber-500/30 bg-stone-900 p-5 text-right shadow-2xl";
        var title = document.createElement("h2");
@@ -228,28 +221,19 @@
           (status === "bounced" || status === "refunded" || parent.check.debtCanceled === true || parent.check.returnedWithCorrection === true) &&
           linkedDocuments(parent, remainingAfterCancel).length === 0;
       });
+      /* رنگ‌ها و ظاهر دیالوگ لغو سند مرتبط در بستهٔ ۲۳۵ قرار دارد. */
       var overlay = document.createElement("div");
       overlay.setAttribute("data-hesabno-linked-cancel-confirm", "true");
       overlay.setAttribute("role", "dialog");
       overlay.setAttribute("aria-modal", "true");
-      var lightTheme = document.documentElement.getAttribute("data-theme") === "light";
       overlay.className = "fixed inset-0 z-[90] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm";
-      overlay.style.setProperty("z-index", "2147483600", "important");
-      overlay.style.setProperty("isolation", "isolate", "important");
-      overlay.style.setProperty("background-color", lightTheme ? "rgba(15, 23, 42, .52)" : "rgba(15, 23, 42, .72)", "important");
-      overlay.style.setProperty("backdrop-filter", "blur(8px)", "important");
       var panel = document.createElement("div");
-      panel.className = "w-full max-w-md max-h-[calc(100dvh-2rem)] overflow-y-auto space-y-4 rounded-2xl border border-rose-500/30 bg-stone-900 p-5 text-right shadow-2xl";
-      panel.style.setProperty("background-color", lightTheme ? "#f8fbfd" : "#1c1917", "important");
-      panel.style.setProperty("border-color", lightTheme ? "#e2b4ba" : "rgba(244, 63, 94, .45)", "important");
-      panel.style.setProperty("color", lightTheme ? "#26343e" : "#f5f5f4", "important");
+      panel.className = "hesabno-linked-cancel-panel w-full max-w-md max-h-[calc(100dvh-2rem)] overflow-y-auto space-y-4 rounded-2xl border border-rose-500/30 bg-stone-900 p-5 text-right shadow-2xl";
       var title = document.createElement("h2");
-      title.className = "font-black text-sm text-rose-200";
-      title.style.setProperty("color", lightTheme ? "#b23a4b" : "#fecdd3", "important");
+      title.className = "hesabno-linked-cancel-title font-black text-sm text-rose-200";
       title.textContent = label + "؟";
       var description = document.createElement("p");
-      description.className = "text-xs leading-6 text-stone-300";
-      description.style.setProperty("color", lightTheme ? "#526675" : "#d6d3d1", "important");
+      description.className = "hesabno-linked-cancel-desc text-xs leading-6 text-stone-300";
       var baseDescription = child.isRefundReceipt || child.refundOfDocNumber != null
         ? "این رسید برگشت وجه از سوابق مالی برداشته می‌شود و جمع مبالغ برگشتی دوباره محاسبه خواهد شد."
         : child.isReversal || child.reversalOfDocNumber != null
@@ -259,26 +243,19 @@
         ? baseDescription + " وضعیت چک اصلی هم به «در جریان» برمی‌گردد و مبلغ آن دوباره در جمع هزینه‌ها محاسبه می‌شود."
         : baseDescription;
       var reference = document.createElement("div");
-      reference.className = "rounded-xl border border-stone-700 bg-stone-950/70 p-3 text-xs text-stone-300";
-      reference.style.setProperty("background-color", lightTheme ? "#edf2f5" : "#0c0a09", "important");
-      reference.style.setProperty("border-color", lightTheme ? "#c8d5de" : "#57534e", "important");
-      reference.style.setProperty("color", lightTheme ? "#334155" : "#e7e5e4", "important");
+      reference.className = "hesabno-linked-cancel-ref rounded-xl border border-stone-700 bg-stone-950/70 p-3 text-xs text-stone-300";
       reference.textContent = "سند #" + (documentNumber(child) || "—") + " · مبلغ " + (Number(child.amount) || 0).toLocaleString("fa-IR") + " ریال · پیوست به " + parents.map(function (parent) { return "#" + (documentNumber(parent) || "—"); }).join("، ");
       var error = document.createElement("p");
-      error.className = "hidden text-xs text-rose-300";
-      error.style.setProperty("color", lightTheme ? "#b23a4b" : "#fda4af", "important");
+      error.className = "hesabno-linked-cancel-error hidden text-xs text-rose-300";
       var actions = document.createElement("div");
       actions.className = "flex gap-2";
       var confirm = document.createElement("button");
       confirm.type = "button";
-      confirm.className = "grow rounded-xl bg-rose-600 px-4 py-2.5 text-xs font-bold text-white hover:bg-rose-500";
-      if (lightTheme) confirm.style.setProperty("background-color", "#c75c6c", "important");
+      confirm.className = "hesabno-linked-cancel-confirm-btn grow rounded-xl bg-rose-600 px-4 py-2.5 text-xs font-bold text-white hover:bg-rose-500";
       confirm.textContent = "تأیید " + label;
       var close = document.createElement("button");
       close.type = "button";
-      close.className = "rounded-xl bg-stone-700 px-4 py-2.5 text-xs font-bold text-stone-200 hover:bg-stone-600";
-      close.style.setProperty("background-color", lightTheme ? "#e1e8ed" : "#44403c", "important");
-      close.style.setProperty("color", lightTheme ? "#334155" : "#f5f5f4", "important");
+      close.className = "hesabno-linked-cancel-close-btn rounded-xl bg-stone-700 px-4 py-2.5 text-xs font-bold text-stone-200 hover:bg-stone-600";
       close.textContent = "انصراف";
       close.addEventListener("click", function () { overlay.remove(); });
       overlay.addEventListener("click", function (event) { if (event.target === overlay) overlay.remove(); });
@@ -307,16 +284,12 @@
         button.setAttribute("data-hesabno-linked-lock-action", "true");
         button.setAttribute("aria-disabled", "true");
         button.title = "این سند پیوند مالی فعال دارد؛ ابتدا پیوند حساب یا سند را لغو کنید.";
-        button.style.opacity = "0.5";
-        button.style.cursor = "not-allowed";
       } else if (button.hasAttribute("data-hesabno-linked-lock-action")) {
         var title = button.getAttribute("data-hesabno-linked-original-title");
         if (title) button.setAttribute("title", title); else button.removeAttribute("title");
         button.removeAttribute("aria-disabled");
         button.removeAttribute("data-hesabno-linked-lock-action");
         button.removeAttribute("data-hesabno-linked-original-title");
-        button.style.removeProperty("opacity");
-        button.style.removeProperty("cursor");
       }
     };
     var sync = function () {
@@ -413,10 +386,10 @@
     var schedule = function () {
       if (scheduled) return;
       scheduled = true;
-      window.setTimeout(function () { scheduled = false; sync(); }, 0);
+      Promise.resolve().then(function () { scheduled = false; sync(); });
     };
     sync();
-    if (document.body) new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true });
+    if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, schedule);
     window.addEventListener("storage", schedule);
     var resume = "";
     try { resume = sessionStorage.getItem("hesabno:linked-cancel-resume") || ""; sessionStorage.removeItem("hesabno:linked-cancel-resume"); } catch (error) {}

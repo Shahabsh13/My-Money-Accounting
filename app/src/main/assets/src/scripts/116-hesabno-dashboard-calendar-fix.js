@@ -30,7 +30,10 @@
         var dateSpans = rows[0] ? rows[0].querySelectorAll("span") : [];
         var dateSpan = dateSpans.length ? dateSpans[dateSpans.length - 1] : null;
         if (dateSpan && fullDate && dateSpan.textContent !== fullDate) dateSpan.textContent = fullDate;
-        if (dateSpan) { dateSpan.style.fontSize = "11px"; dateSpan.style.fontWeight = "900"; dateSpan.style.whiteSpace = "nowrap"; }
+        /* ظاهر این اسپن در بستهٔ ۲۳۵ (لایهٔ ظاهر) است؛ این‌جا فقط کلاس معنایی می‌گذاریم. */
+        if (dateSpan && !dateSpan.classList.contains("hesabno-dashboard-date-value")) {
+          dateSpan.classList.add("hesabno-dashboard-date-value");
+        }
         var currentLabel = rows[1] && rows[1].querySelector("span");
         if (currentLabel && currentLabel.textContent !== "امروز") currentLabel.textContent = "امروز";
       }
@@ -45,23 +48,32 @@
         var dateText = card && card.querySelector("p.text-sm.font-bold");
         var dateDetails = card && card.querySelector("p.text-\\[11px\\]");
         if (dateInfo) {
-          if (heading) heading.textContent = dateInfo.weekday;
-          if (dateText) dateText.textContent = dateInfo.day + " " + dateInfo.month + " " + dateInfo.year;
-          if (dateDetails) dateDetails.textContent = dateInfo.iso + " هجری خورشیدی";
+          if (heading && heading.textContent !== dateInfo.weekday) heading.textContent = dateInfo.weekday;
+          var dateLabel = dateInfo.day + " " + dateInfo.month + " " + dateInfo.year;
+          if (dateText && dateText.textContent !== dateLabel) dateText.textContent = dateLabel;
+          var isoLabel = dateInfo.iso + " هجری خورشیدی";
+          if (dateDetails && dateDetails.textContent !== isoLabel) dateDetails.textContent = isoLabel;
         }
         var detailRows = card ? Array.from(card.querySelectorAll(".flex.justify-between.items-center")) : [];
-        if (dateInfo && detailRows[0] && detailRows[0].lastElementChild) detailRows[0].lastElementChild.textContent = dateInfo.weekday;
-        if (dateInfo && detailRows[1] && detailRows[1].lastElementChild) detailRows[1].lastElementChild.textContent = dateInfo.monthYear;
-        if (dateInfo && detailRows[2] && detailRows[2].lastElementChild) detailRows[2].lastElementChild.textContent = dateInfo.gregorian;
+        var setRow = function (row, value) {
+          var cell = row && row.lastElementChild;
+          if (cell && value && cell.textContent !== value) cell.textContent = value;
+        };
+        if (dateInfo) {
+          setRow(detailRows[0], dateInfo.weekday);
+          setRow(detailRows[1], dateInfo.monthYear);
+          setRow(detailRows[2], dateInfo.gregorian);
+        }
+        if (card) card.classList.add("hesabno-calendar-card");
         if (card && !card.querySelector("[data-hesabno-calendar-close]")) {
-          card.style.position = "relative";
           var closeButton = document.createElement("button");
           closeButton.type = "button";
           closeButton.textContent = "×";
           closeButton.setAttribute("data-hesabno-calendar-close", "true");
           closeButton.setAttribute("aria-label", "بستن تقویم");
           closeButton.setAttribute("title", "بستن");
-          closeButton.style.cssText = "position:absolute;top:12px;left:12px;width:32px;height:32px;border:1px solid rgba(71,85,105,.25);border-radius:999px;background:rgba(255,255,255,.45);color:#475569;font-size:24px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer";
+          /* ظاهر دکمه در بستهٔ ۲۳۵ (لایهٔ ظاهر) است؛ این‌جا فقط کلاس معنایی. */
+          closeButton.className = "hesabno-calendar-close";
           closeButton.addEventListener("click", function (event) { event.preventDefault(); event.stopPropagation(); window.setTimeout(function () { calendar.remove(); }, 0); });
           card.insertBefore(closeButton, card.firstChild);
         }
@@ -73,8 +85,9 @@
     var schedule = function () {
       if (pending) return;
       pending = true;
-      window.setTimeout(function () { pending = false; sync(); }, 0);
+      /* microtask: رفع ناهماهنگی قبل از نقاشی همان فریم، نه ~۴ms بعد از آن */
+      Promise.resolve().then(function () { pending = false; sync(); });
     };
     sync();
-    if (document.body) new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true });
+    if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, schedule);
   })();

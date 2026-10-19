@@ -50,7 +50,7 @@
   function decorateExactBankNames() {
     var elements = document.querySelectorAll('span, p, div');
     elements.forEach(function (element) {
-      if (element.closest('[data-hesabno-bank-logo]') || element.closest('.hesabno-recent-bank-name')) return;
+      if (element.closest('[data-hesabno-bank-logo]') || element.closest('.hesabno-recent-bank-name') || element.closest('.hesabno-simple-report-bank') || element.closest('[data-hesabno-simple-report-native]')) return;
       if (element.dataset.hesabnoBankNameDecorated) {
         // همان عنصر ممکن است بعد از انتخاب بانک دیگری متنش عوض شود؛ لوگوی قبلی باید به‌روز شود
         var own = element.querySelector(':scope > .hesabno-bank-mark');
@@ -402,9 +402,14 @@
     removeGenericWalletIcons();
   }
 
+  /* microtask به‌جای requestAnimationFrame: با rAF، تزئین (لوگوی بانک/وام) یک فریم
+     بعد از دیده‌شدن محتوا انجام می‌شد و آیکون‌ها وسط متن ظاهر می‌شدند (هم در فرم
+     تراکنش و هم در ردیف‌های داشبورد اندازه‌گیری شد). هر burst در همان تسک یک‌بار
+     اجرا می‌شود، پس تعداد پاس‌ها بیشتر از حالت قبلی نیست. */
   function schedule() {
     if (frame) return;
-    frame = requestAnimationFrame(function () {
+    frame = 1;
+    Promise.resolve().then(function () {
       frame = 0;
       enhance();
     });
@@ -415,6 +420,9 @@
   // every decoration write triggers another full-document pass.
   function isOwnNode(node) {
     if (!node || node.nodeType !== 1) return false;
+    /* آیکون <img> داخل نشانِ بانک هم «گره‌ی خودمان» است؛ قبلاً فقط ریشه‌ی نشان شناخته
+       می‌شد و افزودن تصویر، دوباره enhance() را قلقلک می‌داد (لوپ خودتولید هر فریم). */
+    if (node.closest && node.closest('[data-hesabno-bank-logo], [data-hesabno-loan-logo]')) return true;
     if (node.hasAttribute && node.hasAttribute('data-hesabno-bank-logo')) return true;
     if (node.hasAttribute && node.hasAttribute('data-hesabno-loan-logo')) return true;
     return !!(node.querySelector && node.querySelector('[data-hesabno-bank-logo], [data-hesabno-loan-logo]'));
@@ -439,12 +447,12 @@
     }
   }
 
-  var observer = new MutationObserver(onMutations);
+  /* لایه‌ی مشترک MutationObserver (مرحله ۴): ثبت در observer مشترک body به‌جای observer مستقل.
+     start() فقط یک‌بار اجرا می‌شود، ولی برای اطمینان دو بار ثبت نمی‌کنیم. */
+  var observer = null;
   function start() {
     enhance();
-    if (document.body) observer.observe(document.body, { childList: true, subtree: true });
-    setTimeout(enhance, 250);
-    setTimeout(enhance, 900);
+    if (!observer && document.body) observer = window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, onMutations);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
   else start();

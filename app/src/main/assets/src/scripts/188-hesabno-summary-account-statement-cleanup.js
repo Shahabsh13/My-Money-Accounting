@@ -15,7 +15,7 @@
       if (heading) {
         var titleBlock = heading.parentElement;
         var header = titleBlock && titleBlock.parentElement;
-        if (header) header.dataset.hesabnoSummaryHeader = "true";
+        if (header && header.dataset.hesabnoSummaryHeader !== "true") header.dataset.hesabnoSummaryHeader = "true";
         Array.from(heading.querySelectorAll("span")).forEach(function (node) {
           if (clean(node.textContent) === "تحلیل جامع") node.remove();
         });
@@ -24,11 +24,11 @@
         });
         var changeAccount = main.querySelector('[title="ریست انتخاب حساب"]');
         if (changeAccount) {
-          changeAccount.dataset.hesabnoSummaryChangeAccount = "true";
-          changeAccount.style.whiteSpace = "nowrap";
-          changeAccount.style.flexWrap = "nowrap";
+          if (changeAccount.dataset.hesabnoSummaryChangeAccount !== "true") changeAccount.dataset.hesabnoSummaryChangeAccount = "true";
+          if (changeAccount.style.whiteSpace !== "nowrap") changeAccount.style.whiteSpace = "nowrap";
+          if (changeAccount.style.flexWrap !== "nowrap") changeAccount.style.flexWrap = "nowrap";
           var label = changeAccount.querySelector("span");
-          if (label) label.style.whiteSpace = "nowrap";
+          if (label && label.style.whiteSpace !== "nowrap") label.style.whiteSpace = "nowrap";
         }
       }
       var statement = Array.from(main.querySelectorAll("h3")).find(function (node) {
@@ -40,7 +40,7 @@
       var rows = Array.from(card.querySelectorAll("div")).find(function (node) {
         return node.classList.contains("divide-y") && node.classList.contains("divide-stone-800/60");
       });
-      if (rows) rows.dataset.hesabnoSummaryStatementRows = "true";
+      if (rows && rows.dataset.hesabnoSummaryStatementRows !== "true") rows.dataset.hesabnoSummaryStatementRows = "true";
       Array.from(card.querySelectorAll("p")).forEach(function (node) {
         var raw = clean(node.textContent);
         if (!node.classList.contains("truncate") || node.dataset.hesabnoSummaryAccountIcon) return;
@@ -99,11 +99,11 @@
     var schedule = function () {
       if (scheduled) return;
       scheduled = true;
-      window.requestAnimationFrame(function () {
+      Promise.resolve().then(function () {
         scheduled = false;
         update();
       });
     };
     update();
-    if (document.body) new MutationObserver(schedule).observe(document.body, { childList: true, characterData: true, subtree: true });
+    if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, characterData: true, subtree: true }, schedule);
   })();

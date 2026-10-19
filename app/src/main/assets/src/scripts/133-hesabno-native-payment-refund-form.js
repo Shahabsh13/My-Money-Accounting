@@ -268,9 +268,9 @@
     var schedule = function () {
       if (scheduled) return;
       scheduled = true;
-      window.setTimeout(function () { scheduled = false; sync(); }, 20);
+      Promise.resolve().then(function () { scheduled = false; sync(); });
     };
     sync();
-    if (document.body) new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true });
+    if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, schedule);
     window.addEventListener("storage", schedule);
   })();

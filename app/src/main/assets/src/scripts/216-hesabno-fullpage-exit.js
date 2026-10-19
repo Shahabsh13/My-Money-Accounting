@@ -5,7 +5,7 @@
    - تمام‌صفحه: کلاس .hesabno-fullpage-layer (از لایه‌ی ۲۱۰)
    - پاپ‌آپ کوچک: هر overlay «fixed inset-0» که لایه‌ی ۰۷۱ آن را .hesabno-overlay-motion کرده */
 (function () {
-  var FULL = '.hesabno-fullpage-layer';
+  var FULL = '.hesabno-fullpage-layer, .hesabno-account-picker-overlay, .hesabno-fullscreen-picker-overlay, .hesabno-fullscreen-selector-overlay, .hesabno-account-statement-panel:not([data-hesabno-report-account-detail="true"]), div.fixed.inset-0.bg-stone-900';
   var GHOST_FULL = 'hesabno-fullpage-ghost';
   var GHOST_SMALL = 'hesabno-overlay-ghost';
   var GHOST_TOAST = 'hesabno-toast-ghost';
@@ -16,7 +16,7 @@
   var MOTION_TOKEN = /motion|animate-in|fade-in|slide-in|zoom-in|animate-/;
 
   function isGhost(node) {
-    return !!(node.classList && (node.classList.contains(GHOST_FULL) || node.classList.contains(GHOST_SMALL)));
+    return !!(node.classList && (node.classList.contains(GHOST_FULL) || node.classList.contains(GHOST_SMALL) || node.classList.contains(GHOST_TOAST)));
   }
 
   // اعلان کوتاه بالای صفحه (toast): همان کلاس‌های تولید در صفحه گزارش‌ها
@@ -66,12 +66,12 @@
     window.setTimeout(function () { if (ghost.parentNode) ghost.parentNode.removeChild(ghost); }, (item.kind === 'toast' ? TOAST_DURATION : DURATION) + 60);
   }
 
-  new MutationObserver(function (records) {
+  window.__hesabnoDom.watch(document.body || document.documentElement, { childList: true, subtree: true }, function (records) {
     records.forEach(function (record) {
       Array.prototype.forEach.call(record.removedNodes, function (node) {
         if (node.isConnected) return; // فقط حذف واقعی، نه جابه‌جایی
         collect(node).forEach(exitItem);
       });
     });
-  }).observe(document.body || document.documentElement, { childList: true, subtree: true });
+  });
 })();

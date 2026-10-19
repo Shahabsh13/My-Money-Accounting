@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+    <include domain="database" path="hesabno_native_store.db" />
+    <include domain="file" path="hesabno_auto_backup.json" />
+    <include domain="file" path="hesabno_auto_backup.bak.json" />
+    <include domain="file" path="hesabno_attachments" />
+    <include domain="sharedpref" path="hesabno_cloud_prefs.xml" />
+</full-backup-content>

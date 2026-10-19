@@ -1,0 +1,81 @@
+{
+  "root": "/home/user/My-Money-Accounting",
+  "at": "2026-10-17T04:08:59.822Z",
+  "node": "v22.22.3",
+  "accounts": 75,
+  "runsPerScale": 3,
+  "datasets": [
+    {
+      "n": 1000,
+      "accounts": 75,
+      "bytes": 198538,
+      "core": {
+        "balancesMs": 35.5,
+        "summaryMs": 14.2,
+        "totalMs": 49.8
+      },
+      "engine": {
+        "balancesMs": 6.9,
+        "summaryMs": 0.9,
+        "totalMs": 7.8,
+        "buildReportMs": 9.5
+      },
+      "speedup": 6.38,
+      "equal": true
+    },
+    {
+      "n": 10000,
+      "accounts": 75,
+      "bytes": 1979058,
+      "core": {
+        "balancesMs": 348.5,
+        "summaryMs": 125.4,
+        "totalMs": 473.9
+      },
+      "engine": {
+        "balancesMs": 33.3,
+        "summaryMs": 3.3,
+        "totalMs": 36.5,
+        "buildReportMs": 39.5
+      },
+      "speedup": 12.97,
+      "equal": true
+    },
+    {
+      "n": 50000,
+      "accounts": 75,
+      "bytes": 9908905,
+      "core": {
+        "balancesMs": 1780.8,
+        "summaryMs": 631.7,
+        "totalMs": 2412.5
+      },
+      "engine": {
+        "balancesMs": 157.7,
+        "summaryMs": 15,
+        "totalMs": 172.7,
+        "buildReportMs": 192.6
+      },
+      "speedup": 13.97,
+      "equal": true
+    },
+    {
+      "n": 100000,
+      "accounts": 75,
+      "bytes": 19838627,
+      "core": {
+        "balancesMs": 3426.1,
+        "summaryMs": 1213.2,
+        "totalMs": 4639.3
+      },
+      "engine": {
+        "balancesMs": 317.9,
+        "summaryMs": 32.2,
+        "totalMs": 350.1,
+        "buildReportMs": 384.1
+      },
+      "speedup": 13.25,
+      "equal": true
+    }
+  ]
+}

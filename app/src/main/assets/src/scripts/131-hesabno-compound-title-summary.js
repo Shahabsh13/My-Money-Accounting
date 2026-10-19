@@ -7,12 +7,7 @@
         return Array.isArray(value) ? value : [];
       } catch (error) { return []; }
     };
-    if (!document.querySelector("style[data-hesabno-compound-title-style]")) {
-      var style = document.createElement("style");
-      style.setAttribute("data-hesabno-compound-title-style", "true");
-      style.textContent = "article[id^='tx-card-'] > div > div:first-child > div.grow > div[class~='flex-wrap'] > p:has(~ span[class*='bg-violet-500/15']){visibility:hidden!important}";
-      document.head.appendChild(style);
-    }
+    /* قاعدهٔ پنهان‌سازی عنوان فرعی سند مرکب در بستهٔ ۲۳۵ (لایهٔ ظاهر) قرار دارد. */
     var titleFor = function (transaction) {
       if (!transaction || !transaction.isCompound) return "";
       var manual = transaction.hasManualDescription === true || clean(transaction.notes || transaction.description);
@@ -45,6 +40,12 @@
         if (title.textContent !== summary) title.textContent = summary;
       });
     };
+    var queued = false;
+    var schedule = function () {
+      if (queued) return;
+      queued = true;
+      Promise.resolve().then(function () { queued = false; sync(); });
+    };
     sync();
-    if (document.body) new MutationObserver(function () { window.setTimeout(sync, 0); }).observe(document.body, { childList: true, subtree: true });
+    if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, schedule);
   })();
