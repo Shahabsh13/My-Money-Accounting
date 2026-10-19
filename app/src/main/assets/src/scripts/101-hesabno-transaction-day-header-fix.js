@@ -38,11 +38,11 @@
       var rendered = (adjusted < 0 ? "−" : "") + Math.abs(adjusted).toLocaleString("fa-IR") + (currency ? " " + currency : "");
       if (rendered !== currentText) total.textContent = rendered;
       if (correction) {
-        total.setAttribute("data-hesabno-corrected-total", rendered);
-        total.setAttribute("data-hesabno-total-correction", String(correction));
+        if (total.getAttribute("data-hesabno-corrected-total") !== rendered) total.setAttribute("data-hesabno-corrected-total", rendered);
+        if (total.getAttribute("data-hesabno-total-correction") !== String(correction)) total.setAttribute("data-hesabno-total-correction", String(correction));
       } else {
-        total.removeAttribute("data-hesabno-corrected-total");
-        total.removeAttribute("data-hesabno-total-correction");
+        if (total.hasAttribute("data-hesabno-corrected-total")) total.removeAttribute("data-hesabno-corrected-total");
+        if (total.hasAttribute("data-hesabno-total-correction")) total.removeAttribute("data-hesabno-total-correction");
       }
     };
     var enhance = function () {
@@ -53,20 +53,17 @@
         main.querySelectorAll("div.sticky").forEach(function (header) {
          var count = Array.from(header.querySelectorAll("span")).find(function (node) { return /سند$/.test(clean(node.textContent)); });
          if (!count) return;
-         header.classList.add("hesabno-transaction-day-header");
-         var light = document.documentElement.getAttribute("data-theme") === "light";
-         header.style.setProperty("border", "0", "important");
-         header.style.setProperty("background", light ? "#cde3de" : "rgba(255,255,255,.055)", "important");
-         header.style.setProperty("box-shadow", "none", "important");
-         count.classList.add("hesabno-transaction-day-count");
-         if (count.previousElementSibling) count.previousElementSibling.classList.add("hesabno-transaction-day-date");
+         /* ظاهر سرتیتر (حاشیه/پس‌زمینه/سایه) در بستهٔ ۲۳۵ (لایهٔ ظاهر) است؛ این‌جا فقط کلاس می‌گذاریم. */
+         if (!header.classList.contains("hesabno-transaction-day-header")) header.classList.add("hesabno-transaction-day-header");
+         if (!count.classList.contains("hesabno-transaction-day-count")) count.classList.add("hesabno-transaction-day-count");
+         if (count.previousElementSibling && !count.previousElementSibling.classList.contains("hesabno-transaction-day-date")) count.previousElementSibling.classList.add("hesabno-transaction-day-date");
           var total = header.querySelector('span[class*="font-bold"][class*="bg-"]');
-          if (total) total.classList.add("hesabno-transaction-day-total");
+          if (total && !total.classList.contains("hesabno-transaction-day-total")) total.classList.add("hesabno-transaction-day-total");
           syncCanceledCheckTotal(header, transactions);
         });
      });
    };
    enhance();
-   if (document.body) new MutationObserver(enhance).observe(document.body, { childList: true, subtree: true });
-   if (document.documentElement) new MutationObserver(enhance).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+   if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, enhance);
+   if (document.documentElement) window.__hesabnoDom.watch(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] }, enhance);
  })();

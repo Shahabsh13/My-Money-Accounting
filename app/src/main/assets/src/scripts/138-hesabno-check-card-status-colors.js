@@ -1,12 +1,7 @@
 (function () {
     var clean = function (value) { return String(value || "").replace(/\s+/g, " ").trim(); };
-    var ensureStyles = function () {
-      if (document.querySelector("style[data-hesabno-check-card-status-colors-style]")) return;
-      var style = document.createElement("style");
-      style.setAttribute("data-hesabno-check-card-status-colors-style", "true");
-      style.textContent = "article[data-hesabno-check-status-card]{transition:background-color .24s ease,border-color .24s ease,box-shadow .24s ease!important}html[data-theme=\"light\"] article[data-hesabno-check-status-card=\"in-progress\"]{background:#fff8e7!important;border-color:#e1c979!important;box-shadow:0 3px 12px rgba(171,132,35,.08)!important}html[data-theme=\"light\"] article[data-hesabno-check-status-card=\"passed\"]{background:#eef9f3!important;border-color:#a8d8be!important;box-shadow:0 3px 12px rgba(42,132,91,.08)!important}html[data-theme=\"light\"] article[data-hesabno-check-status-card=\"bounced\"]{background:#fff0f2!important;border-color:#e2a9b2!important;box-shadow:0 3px 12px rgba(180,45,65,.08)!important}html[data-theme=\"light\"] article[data-hesabno-check-status-card=\"refunded\"]{background:#eef4ff!important;border-color:#b6c9e8!important;box-shadow:0 3px 12px rgba(65,101,166,.08)!important}html[data-theme=\"light\"] article[data-hesabno-check-status-card=\"bank-hold\"]{background:#f2efff!important;border-color:#c4b8e8!important;box-shadow:0 3px 12px rgba(94,72,157,.08)!important}html[data-theme=\"dark\"] article[data-hesabno-check-status-card=\"in-progress\"]{background:#342f22!important;border-color:#826f3f!important}html[data-theme=\"dark\"] article[data-hesabno-check-status-card=\"passed\"]{background:#18362d!important;border-color:#3e846b!important}html[data-theme=\"dark\"] article[data-hesabno-check-status-card=\"bounced\"]{background:#3e252b!important;border-color:#8e4e5b!important}html[data-theme=\"dark\"] article[data-hesabno-check-status-card=\"refunded\"]{background:#25354a!important;border-color:#5e7fa8!important}html[data-theme=\"dark\"] article[data-hesabno-check-status-card=\"bank-hold\"]{background:#302a4b!important;border-color:#7669a9!important}";
-      document.head.appendChild(style);
-    };
+    /* رنگ‌بندی وضعیت کارت‌های چک در بستهٔ ۲۳۵ (لایهٔ ظاهر) قرار دارد. */
+    var ensureStyles = function () {};
     var statusKey = function (article) {
       var text = clean(article.textContent);
       var labels = Array.from(article.querySelectorAll("span")).map(function (node) { return clean(node.textContent); });
@@ -21,8 +16,8 @@
       ensureStyles();
       document.querySelectorAll("article").forEach(function (article) {
         if (article.id && article.id.indexOf("tx-card-") === 0) {
-          article.removeAttribute("data-hesabno-check-status-card");
-          article.removeAttribute("data-hesabno-check-status-label");
+          if (article.hasAttribute("data-hesabno-check-status-card")) article.removeAttribute("data-hesabno-check-status-card");
+          if (article.hasAttribute("data-hesabno-check-status-label")) article.removeAttribute("data-hesabno-check-status-label");
           return;
         }
         var text = clean(article.textContent);
@@ -30,11 +25,11 @@
         if (!isCheck) return;
         var key = statusKey(article);
         if (key) {
-          article.setAttribute("data-hesabno-check-status-card", key);
-          article.setAttribute("data-hesabno-check-status-label", key);
+          if (article.getAttribute("data-hesabno-check-status-card") !== key) article.setAttribute("data-hesabno-check-status-card", key);
+          if (article.getAttribute("data-hesabno-check-status-label") !== key) article.setAttribute("data-hesabno-check-status-label", key);
         } else {
-          article.removeAttribute("data-hesabno-check-status-card");
-          article.removeAttribute("data-hesabno-check-status-label");
+          if (article.hasAttribute("data-hesabno-check-status-card")) article.removeAttribute("data-hesabno-check-status-card");
+          if (article.hasAttribute("data-hesabno-check-status-label")) article.removeAttribute("data-hesabno-check-status-label");
         }
       });
     };
@@ -42,7 +37,7 @@
     var schedule = function () {
       if (pending) return;
       pending = true;
-      window.setTimeout(function () { pending = false; sync(); }, 0);
+      Promise.resolve().then(function () { pending = false; sync(); });
     };
     sync();
     if (document.body) new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true, characterData: true });

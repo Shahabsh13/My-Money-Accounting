@@ -23,45 +23,45 @@
       if (check && check.resolutionAccount) return "برگشت‌خورده، تسویه با حساب جایگزین";
       return check && statusValue(check.status || check.state || check.checkStatus);
     };
-    if (!document.querySelector("style[data-hesabno-canonical-metadata-style]")) {
-      var style = document.createElement("style");
-      style.setAttribute("data-hesabno-canonical-metadata-style", "true");
-      style.textContent = "article [data-hesabno-metadata-duplicate='true']{display:none!important}" +
-        "article [data-hesabno-metadata-empty='true']{display:none!important}" +
-        "article [data-hesabno-metadata-canonical='true']{display:flex!important;align-items:center!important;flex-wrap:nowrap!important;gap:0!important;direction:rtl!important;white-space:nowrap!important;overflow-x:hidden!important;overflow-y:hidden!important;scrollbar-width:none!important;border-top:1px solid rgba(148,163,184,.24)!important;padding:4px 0!important;min-height:24px}" +
-        "article [data-hesabno-metadata-canonical='true'][data-hesabno-metadata-empty='true']{display:none!important;min-height:0!important;height:0!important;margin:0!important;padding:0!important;border:0!important;overflow:hidden!important}" +
-        "article [data-hesabno-metadata-canonical='true']::-webkit-scrollbar{display:none}" +
-        "article [data-hesabno-metadata-canonical='true']>[data-hesabno-metadata-canonical-item]{display:inline-flex!important;align-items:center!important;flex:0 0 auto!important;white-space:nowrap!important}" +
-        "article [data-hesabno-metadata-canonical='true']>[data-hesabno-meta-separator]{display:block!important;flex:0 0 1px!important;width:1px!important;height:12px!important;margin:0 4px!important;background:rgba(148,163,184,.34)!important;border:0!important;padding:0!important}" +
-        "article [data-hesabno-metadata-canonical='true']>[data-hesabno-metadata-canonical-item='project'],article [data-hesabno-metadata-canonical='true']>[data-hesabno-metadata-canonical-item='family'],article [data-hesabno-metadata-canonical='true']>[data-hesabno-metadata-canonical-item='status']{flex:0 1 auto!important;min-width:0!important;max-width:42%!important;overflow:hidden!important;text-overflow:ellipsis!important}" +
-        "article [data-hesabno-metadata-canonical='true'] .hesabno-canonical-meta-chip{gap:4px!important;padding:2px 4px!important;border:1px solid rgba(148,163,184,.2)!important;border-radius:6px!important;background:rgba(100,116,139,.10)!important;color:#cbd5e1!important;font-size:9px!important;font-weight:700!important}" +
-        "article [data-hesabno-metadata-canonical='true'] .hesabno-canonical-meta-chip svg{display:block!important;flex:0 0 auto!important;width:10px!important;height:10px!important}" +
-        "article [data-hesabno-metadata-canonical='true'] .hesabno-canonical-meta-chip>[data-hesabno-canonical-meta-label]{display:block!important;flex:1 1 auto!important;min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}" +
-        "html[data-theme='light'] article [data-hesabno-metadata-canonical='true'] .hesabno-canonical-meta-chip{color:#475569!important;background:#f1f5f9!important;border-color:#cbd5e1!important}" +
-        "html[data-theme='light'] article [data-hesabno-metadata-canonical='true'] .hesabno-canonical-meta-chip svg{color:#64748b!important}" +
-        "article [data-hesabno-metadata-canonical='true']>[data-hesabno-tx-status-badge]{font-size:9px!important;font-weight:800!important;flex:0 0 auto!important;white-space:nowrap!important}" +
-        "article [data-hesabno-metadata-canonical='true']>[data-hesabno-compound-badge]{display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:3px!important;flex:0 0 auto!important;width:auto!important;height:20px!important;min-width:0!important;max-width:72px!important;padding:0 5px!important;font-size:9px!important;line-height:1.2!important;white-space:nowrap!important;overflow:hidden!important}" +
-        "article [data-hesabno-metadata-canonical='true']>[data-hesabno-compound-badge]>span{display:inline!important;flex:0 1 auto!important;min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}" +
-        "article [data-hesabno-metadata-canonical='true']>[data-hesabno-compound-badge] svg{display:block!important;width:12px!important;height:12px!important;flex:0 0 auto!important}" +
-         "article [data-hesabno-metadata-canonical='true']>[data-hesabno-metadata-canonical-item]{border-radius:4px!important}";
-      document.head.appendChild(style);
-    }
+    var setAttr = function (el, name, val) {
+      if (el && el.getAttribute(name) !== val) el.setAttribute(name, val);
+    };
+    var rmAttr = function (el, name) {
+      if (el && el.hasAttribute(name)) el.removeAttribute(name);
+    };
+    /* ظاهر ردیف متادیتا، برچسب‌های پروژه/خانواده، جداکننده و نشان سند مرکب در بستهٔ ۲۳۵ است. */
     var ensureRow = function (article) {
-      var row = article.querySelector("[data-hesabno-metadata-canonical='true']") || article.querySelector("[data-hesabno-tx-status-meta], [data-hesabno-tx-metadata-row]");
+      var shell = article.firstElementChild;
+      var nativeSource = shell && shell.querySelector(".hesabno-tx-project-chip, .hesabno-tx-family-chip, :is(button, span)[data-hesabno-footnote-kind]");
+      var nativeRow = nativeSource && nativeSource.parentElement;
+      var existingRows = Array.from(article.querySelectorAll("[data-hesabno-metadata-canonical='true'], [data-hesabno-tx-status-meta], [data-hesabno-tx-metadata-row]"));
+      var row = nativeRow || existingRows[0] || null;
       if (!row) {
-        var source = article.querySelector(".hesabno-tx-project-chip, .hesabno-tx-family-chip");
-        row = source && source.parentElement;
-      }
-      if (!row) {
-        var shell = article.firstElementChild;
         if (!shell) return null;
         row = document.createElement("div");
         row.className = "flex items-center gap-1.5 mt-1.5 pt-1 border-t border-stone-700/30 w-full overflow-x-auto no-scrollbar py-0.5";
         shell.appendChild(row);
       }
-      row.setAttribute("data-hesabno-tx-metadata-row", "true");
-      row.setAttribute("data-hesabno-metadata-canonical", "true");
-      row.classList.add("hesabno-canonical-metadata-row");
+      existingRows.forEach(function (other) {
+        if (other === row) return;
+        Array.from(other.children).forEach(function (child) {
+          if (child.hasAttribute("data-hesabno-metadata-canonical-item") ||
+              child.hasAttribute("data-hesabno-tx-status-badge") ||
+              child.hasAttribute("data-hesabno-compound-badge") ||
+              child.hasAttribute("data-hesabno-check-correction-link") ||
+              child.hasAttribute("data-hesabno-returned-effect") ||
+              child.hasAttribute("data-hesabno-returned-correction") ||
+              child.hasAttribute("data-hesabno-check-replacement-link")) {
+            row.appendChild(child);
+          }
+        });
+        if (!other.querySelector(".hesabno-tx-project-chip, .hesabno-tx-family-chip, :is(button, span)[data-hesabno-footnote-kind]")) {
+          other.remove();
+        }
+      });
+      setAttr(row, "data-hesabno-tx-metadata-row", "true");
+      setAttr(row, "data-hesabno-metadata-canonical", "true");
+      if (!row.classList.contains("hesabno-canonical-metadata-row")) row.classList.add("hesabno-canonical-metadata-row");
       return row;
     };
     var sourceValue = function (article, selectors, prefix) {
@@ -95,19 +95,40 @@
       var label = chip.querySelector("[data-hesabno-canonical-meta-label]");
       var text = key + ": " + value;
       if (label && label.textContent !== text) label.textContent = text;
-      chip.setAttribute("aria-label", text);
-      chip.setAttribute("title", text);
-      if (source) source.setAttribute("data-hesabno-metadata-duplicate", "true");
+      setAttr(chip, "aria-label", text);
+      setAttr(chip, "title", text);
+      if (source) setAttr(source, "data-hesabno-metadata-duplicate", "true");
       return chip;
     };
     var findStatusBadge = function (article) {
-      var badge = article.querySelector("[data-hesabno-tx-status-badge]");
-      if (badge) return badge;
+      return article.querySelector("[data-hesabno-tx-status-badge]");
+    };
+    var findNativeStatusText = function (article) {
       var labels = ["چک در جریان", "چک برگشتی", "چک پاس‌شده", "چک وصول‌شده", "خوابیده در بانک", "چک مسترد"];
-      var node = Array.from(article.querySelectorAll("span")).find(function (span) {
-        return labels.indexOf(clean(span.textContent)) !== -1 && !span.hasAttribute("data-hesabno-tx-status-source");
+      var shell = article.firstElementChild || article;
+      var node = Array.from(shell.querySelectorAll("span:not([data-hesabno-tx-status-badge])")).find(function (span) {
+        return labels.indexOf(clean(span.textContent)) !== -1;
       });
-      return node && node.parentElement && node.parentElement.tagName === "SPAN" ? node.parentElement : node;
+      return node ? statusValue(node.textContent) : "";
+    };
+    var hideDuplicateStatusBadges = function (article, keep) {
+      var labels = ["چک در جریان", "چک برگشتی", "چک پاس‌شده", "چک وصول‌شده", "خوابیده در بانک", "چک مسترد"];
+      var shell = article.firstElementChild || article;
+      Array.from(shell.querySelectorAll("span")).forEach(function (span) {
+        if (span === keep || (keep && keep.contains(span))) return;
+        if (labels.indexOf(clean(span.textContent)) !== -1) {
+          var target = span.parentElement && span.parentElement.tagName === "SPAN" && span.parentElement !== keep ? span.parentElement : span;
+          setAttr(target, "data-hesabno-tx-status-source", "true");
+          setAttr(target, "data-hesabno-metadata-duplicate", "true");
+          setAttr(target, "aria-hidden", "true");
+        }
+      });
+      article.querySelectorAll("[data-hesabno-tx-status-badge], [data-hesabno-tx-status-source]").forEach(function (node) {
+        if (node === keep || (keep && keep.contains(node))) return;
+        if (node !== keep && node.hasAttribute("data-hesabno-tx-status-badge")) rmAttr(node, "data-hesabno-tx-status-badge");
+        setAttr(node, "data-hesabno-metadata-duplicate", "true");
+        setAttr(node, "aria-hidden", "true");
+      });
     };
     var ensureStatusIcon = function (badge) {
       if (badge.querySelector("svg.lucide-file-check2, svg.lucide-file-check-2")) return;
@@ -122,7 +143,6 @@
       icon.setAttribute("stroke-linecap", "round");
       icon.setAttribute("stroke-linejoin", "round");
       icon.setAttribute("aria-hidden", "true");
-      icon.style.cssText = "display:block;flex:0 0 auto;width:9px;height:9px";
       icon.innerHTML = '<path d="M4 22h14a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v4"></path><path d="M14 2v4a2 2 0 0 0 2 2h4"></path><path d="m3 15 2 2 4-4"></path>';
       badge.insertBefore(icon, badge.firstChild);
     };
@@ -131,58 +151,56 @@
       var original = stored || badge.getAttribute("data-hesabno-canonical-status-value") || statusValue(badge.textContent);
       if (!original) return "";
       ensureStatusIcon(badge);
-      badge.setAttribute("data-hesabno-canonical-status-value", original);
+      setAttr(badge, "data-hesabno-canonical-status-value", original);
+      var tone = original.indexOf("برگشت") !== -1 ? "red" : original.indexOf("مسترد") !== -1 ? "purple" : original.indexOf("بانک") !== -1 ? "blue" : (original.indexOf("پاس") !== -1 || original.indexOf("وصول") !== -1) ? "green" : "amber";
+      setAttr(badge, "data-hesabno-status-tone", tone);
       var full = "وضعیت چک: " + original;
       var label = badge.querySelector("[data-hesabno-canonical-status-label]");
       if (!label) label = Array.from(badge.querySelectorAll("span")).find(function (span) { return !span.querySelector("svg"); });
       if (label) {
-        label.setAttribute("data-hesabno-canonical-status-label", "true");
+        setAttr(label, "data-hesabno-canonical-status-label", "true");
         if (label.textContent !== full) label.textContent = full;
       } else {
         var textNodes = Array.from(badge.childNodes).filter(function (node) { return node.nodeType === 3; });
         if (textNodes.length) {
-          textNodes[0].nodeValue = full;
-          textNodes.slice(1).forEach(function (node) { node.nodeValue = ""; });
+          if (textNodes[0].nodeValue !== full) textNodes[0].nodeValue = full;
+          textNodes.slice(1).forEach(function (node) { if (node.nodeValue !== "") node.nodeValue = ""; });
         } else badge.appendChild(document.createTextNode(full));
       }
-      badge.setAttribute("aria-label", full);
-      badge.setAttribute("title", full);
-      badge.setAttribute("data-hesabno-metadata-canonical-item", "status");
+      setAttr(badge, "aria-label", full);
+      setAttr(badge, "title", full);
+      setAttr(badge, "data-hesabno-metadata-canonical-item", "status");
       return full;
     };
     var makeStatusBadge = function (text) {
       var badge = document.createElement("span");
       badge.className = "hesabno-tx-status-badge inline-flex items-center gap-1 text-[9px] font-bold px-1.5 py-0.5 rounded border whitespace-nowrap shrink-0 bg-emerald-500/10 border-emerald-500/30 text-emerald-400";
-      badge.setAttribute("data-hesabno-tx-status-badge", "true");
+      setAttr(badge, "data-hesabno-tx-status-badge", "true");
       badge.textContent = text;
       return badge;
     };
     var findCompoundBadge = function (article) {
-      var marked = article.querySelector("[data-hesabno-compound-badge]");
-      if (marked) return marked;
-      var spans = Array.from(article.querySelectorAll("span"));
-      var label = spans.find(function (span) { return clean(span.textContent) === "سند مرکب"; });
-      if (!label) return null;
-      var current = label;
-      for (var level = 0; current && level < 4; level += 1, current = current.parentElement) {
-        if (current.tagName === "SPAN" && clean(current.textContent) === "سند مرکب" && current.querySelector("svg")) return current;
-      }
-      return label;
+      return article.querySelector("[data-hesabno-compound-badge]");
+    };
+    var hasNativeCompoundBadge = function (article) {
+      return Array.from(article.querySelectorAll("span")).some(function (span) {
+        return clean(span.textContent) === "سند مرکب";
+      });
     };
     var makeCompoundBadge = function () {
       var badge = document.createElement("span");
       badge.className = "inline-flex items-center justify-center rounded bg-violet-500/15 border border-violet-500/30 text-violet-300";
-      badge.setAttribute("data-hesabno-compound-badge", "true");
+      setAttr(badge, "data-hesabno-compound-badge", "true");
       badge.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6"></path><path d="M8 13h8"></path><path d="M8 17h8"></path></svg><span data-hesabno-compound-label="true">سند مرکب</span>';
       return badge;
     };
     var hideDuplicates = function (article, selectors, keep) {
       article.querySelectorAll(selectors).forEach(function (node) {
         if (node === keep || (keep && keep.contains(node))) return;
-        node.setAttribute("data-hesabno-metadata-duplicate", "true");
-        node.setAttribute("aria-hidden", "true");
+        setAttr(node, "data-hesabno-metadata-duplicate", "true");
+        setAttr(node, "aria-hidden", "true");
         var divider = node.previousElementSibling;
-        if (divider && divider.classList.contains("h-3") && divider.classList.contains("w-px")) divider.setAttribute("data-hesabno-metadata-duplicate", "true");
+        if (divider && divider.classList.contains("h-3") && divider.classList.contains("w-px")) setAttr(divider, "data-hesabno-metadata-duplicate", "true");
       });
     };
     var hideEmptySourceRows = function (article, canonicalRow) {
@@ -201,8 +219,8 @@
           return !!clean(child.textContent) || !!child.querySelector("svg") || child.tagName === "BUTTON";
         });
         if (!hasVisibleItem) {
-          row.setAttribute("data-hesabno-metadata-duplicate", "true");
-          row.setAttribute("aria-hidden", "true");
+          setAttr(row, "data-hesabno-metadata-duplicate", "true");
+          setAttr(row, "aria-hidden", "true");
         }
       });
     };
@@ -211,25 +229,31 @@
       var oldSeparators = current.filter(function (node) { return node.hasAttribute("data-hesabno-meta-separator"); });
       var known = new Set(items);
       var extras = current.filter(function (node) { return !known.has(node) && !node.hasAttribute("data-hesabno-meta-separator"); });
+      var visibleExtras = extras.filter(function (node) {
+        return node.getAttribute("data-hesabno-metadata-duplicate") !== "true" && node.style.display !== "none";
+      });
+      var hiddenExtras = extras.filter(function (node) {
+        return node.getAttribute("data-hesabno-metadata-duplicate") === "true" || node.style.display === "none";
+      });
+      var visibleItems = items.concat(visibleExtras);
       var desired = [];
-      items.forEach(function (node, index) {
+      visibleItems.forEach(function (node, index) {
         if (index) {
           var separator = oldSeparators[index - 1] || document.createElement("span");
           separator.setAttribute("data-hesabno-meta-separator", "true");
           separator.setAttribute("aria-hidden", "true");
-          separator.style.cssText = "display:block!important;flex:0 0 1px!important;width:1px!important;height:12px!important;margin:0 4px!important;background:rgba(148,163,184,.34)!important;border:0!important;padding:0!important";
           desired.push(separator);
         }
         desired.push(node);
       });
-      desired = desired.concat(extras);
+      desired = desired.concat(hiddenExtras);
       var same = current.length === desired.length && current.every(function (node, index) { return node === desired[index]; });
       if (!same) {
         oldSeparators.filter(function (node) { return desired.indexOf(node) === -1; }).forEach(function (node) { node.remove(); });
         desired.forEach(function (node) { row.appendChild(node); });
       }
-      if (items.length) row.removeAttribute("data-hesabno-metadata-empty");
-      else if (!extras.some(function (node) { return node.getAttribute("data-hesabno-metadata-duplicate") !== "true"; })) row.setAttribute("data-hesabno-metadata-empty", "true");
+      if (visibleItems.length) rmAttr(row, "data-hesabno-metadata-empty");
+      else setAttr(row, "data-hesabno-metadata-empty", "true");
     };
     var sync = function () {
       var transactions = readTransactions();
@@ -247,71 +271,67 @@
         var statusBadge = item && item.isCheckReplacementPayment ? null : findStatusBadge(article);
         if (item && item.isCheckReplacementPayment) {
           article.querySelectorAll("[data-hesabno-tx-status-badge]").forEach(function (badge) {
-            badge.removeAttribute("data-hesabno-tx-status-badge");
-            badge.removeAttribute("data-hesabno-metadata-canonical-item");
-            badge.setAttribute("data-hesabno-tx-status-source", "true");
-            badge.setAttribute("data-hesabno-metadata-duplicate", "true");
-            badge.setAttribute("aria-hidden", "true");
-            badge.style.display = "none";
+            rmAttr(badge, "data-hesabno-tx-status-badge");
+            rmAttr(badge, "data-hesabno-metadata-canonical-item");
+            setAttr(badge, "data-hesabno-tx-status-source", "true");
+            setAttr(badge, "data-hesabno-metadata-duplicate", "true");
+            setAttr(badge, "aria-hidden", "true");
+            if (badge.style.display !== "none") badge.style.display = "none";
           });
         }
-        var storedStatus = statusFromItem(item);
-        if (!statusBadge && storedStatus) statusBadge = makeStatusBadge(storedStatus);
+        var storedStatus = statusFromItem(item) || findNativeStatusText(article);
+        if (!statusBadge && storedStatus && !(item && item.isCheckReplacementPayment)) statusBadge = makeStatusBadge(storedStatus);
         if (statusBadge) {
-          statusBadge.setAttribute("data-hesabno-tx-status-badge", "true");
+          rmAttr(statusBadge, "data-hesabno-metadata-duplicate");
+          rmAttr(statusBadge, "aria-hidden");
+          setAttr(statusBadge, "data-hesabno-tx-status-badge", "true");
           setStatusLabel(statusBadge, item);
         }
+        hideDuplicateStatusBadges(article, statusBadge);
         var compoundBadge = findCompoundBadge(article);
-        var isCompound = item ? item.isCompound === true : !!compoundBadge;
+        var isCompound = item ? item.isCompound === true : hasNativeCompoundBadge(article);
         if (isCompound && !compoundBadge) compoundBadge = makeCompoundBadge();
-        if (!isCompound) compoundBadge = null;
+        if (!isCompound) {
+          if (compoundBadge) compoundBadge.remove();
+          compoundBadge = null;
+        }
         if (compoundBadge) {
-          compoundBadge.setAttribute("data-hesabno-compound-badge", "true");
-          compoundBadge.setAttribute("data-hesabno-metadata-canonical-item", "compound");
-          compoundBadge.setAttribute("aria-label", "سند مرکب");
-          compoundBadge.setAttribute("title", "سند مرکب");
-          compoundBadge.removeAttribute("role");
-          compoundBadge.style.setProperty("display", "inline-flex", "important");
-          compoundBadge.style.setProperty("align-items", "center", "important");
-          compoundBadge.style.setProperty("justify-content", "center", "important");
-          compoundBadge.style.setProperty("gap", "3px", "important");
-          compoundBadge.style.setProperty("font-size", "9px", "important");
-          compoundBadge.style.setProperty("line-height", "1.2", "important");
-          compoundBadge.style.setProperty("width", "auto", "important");
-          compoundBadge.style.setProperty("height", "20px", "important");
-          compoundBadge.style.setProperty("min-width", "0", "important");
-          compoundBadge.style.setProperty("max-width", "72px", "important");
-          compoundBadge.style.setProperty("padding", "0 5px", "important");
-          compoundBadge.style.setProperty("white-space", "nowrap", "important");
-          compoundBadge.style.setProperty("overflow", "hidden", "important");
-          compoundBadge.querySelectorAll("svg").forEach(function (icon) { icon.setAttribute("width", "12"); icon.setAttribute("height", "12"); });
+          rmAttr(compoundBadge, "data-hesabno-metadata-duplicate");
+          rmAttr(compoundBadge, "aria-hidden");
+          setAttr(compoundBadge, "data-hesabno-compound-badge", "true");
+          setAttr(compoundBadge, "data-hesabno-metadata-canonical-item", "compound");
+          setAttr(compoundBadge, "aria-label", "سند مرکب");
+          setAttr(compoundBadge, "title", "سند مرکب");
+          rmAttr(compoundBadge, "role");
+          compoundBadge.querySelectorAll("svg").forEach(function (icon) { setAttr(icon, "width", "12"); setAttr(icon, "height", "12"); });
           Array.from(compoundBadge.childNodes).forEach(function (node) { if (node.nodeType === 3 && clean(node.nodeValue)) node.nodeValue = ""; });
           var compoundLabel = compoundBadge.querySelector("[data-hesabno-compound-label]") || Array.from(compoundBadge.querySelectorAll("span")).find(function (label) { return clean(label.textContent) === "سند مرکب"; });
           if (!compoundLabel) {
             compoundLabel = document.createElement("span");
             compoundBadge.appendChild(compoundLabel);
           }
-          compoundLabel.setAttribute("data-hesabno-compound-label", "true");
-          compoundLabel.removeAttribute("data-hesabno-metadata-duplicate");
-          compoundLabel.removeAttribute("aria-hidden");
+          setAttr(compoundLabel, "data-hesabno-compound-label", "true");
+          rmAttr(compoundLabel, "data-hesabno-metadata-duplicate");
+          rmAttr(compoundLabel, "aria-hidden");
           if (compoundLabel.textContent !== "سند مرکب") compoundLabel.textContent = "سند مرکب";
         }
         Array.from(article.querySelectorAll("span")).forEach(function (node) {
           if (node !== compoundBadge && clean(node.textContent) === "سند مرکب" && !(compoundBadge && compoundBadge.contains(node))) {
-            node.setAttribute("data-hesabno-metadata-duplicate", "true");
-            node.setAttribute("aria-hidden", "true");
+            if (node.hasAttribute("data-hesabno-compound-badge")) rmAttr(node, "data-hesabno-compound-badge");
+            setAttr(node, "data-hesabno-metadata-duplicate", "true");
+            setAttr(node, "aria-hidden", "true");
           }
         });
         var row = ensureRow(article);
         if (!row) return;
         var ordered = [projectTag, familyTag, statusBadge, compoundBadge].filter(Boolean);
         ordered.forEach(function (node) {
-          node.setAttribute("data-hesabno-metadata-canonical-item", node === projectTag ? "project" : node === familyTag ? "family" : node === statusBadge ? "status" : "compound");
+          setAttr(node, "data-hesabno-metadata-canonical-item", node === projectTag ? "project" : node === familyTag ? "family" : node === statusBadge ? "status" : "compound");
           if (node.parentElement !== row) row.appendChild(node);
         });
         if (statusBadge) {
-          row.setAttribute("data-hesabno-tx-status-meta", "true");
-          if (!row.getAttribute("data-hesabno-tx-status")) row.setAttribute("data-hesabno-tx-status", "check");
+          setAttr(row, "data-hesabno-tx-status-meta", "true");
+          if (!row.getAttribute("data-hesabno-tx-status")) setAttr(row, "data-hesabno-tx-status", "check");
         }
         arrange(row, ordered);
         hideEmptySourceRows(article, row);
@@ -325,20 +345,19 @@
       window.queueMicrotask(function () { queued = false; sync(); });
     };
     sync();
-    if (document.body) new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true });
+    if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, schedule);
     document.addEventListener("click", function (event) {
       var button = event.target && event.target.closest ? event.target.closest("button") : null;
       if (button && /^(?:ذخیره تغییرات|ثبت سند|ثبت پرداخت|ثبت دریافت|تایید|تأیید)/u.test(clean(button.textContent))) scheduleBurst();
     }, true);
     window.addEventListener("storage", function (event) { if (event.key === transactionKey) scheduleBurst(); });
-    var nativeSetItem = Storage.prototype.setItem;
-    if (!nativeSetItem.__hesabnoCanonicalTransactionMetadata) {
-      var wrappedSetItem = function (key, value) {
-        var result = nativeSetItem.call(this, key, value);
-        if (key === transactionKey) scheduleBurst();
-        return result;
-      };
-      wrappedSetItem.__hesabnoCanonicalTransactionMetadata = true;
-      Storage.prototype.setItem = wrappedSetItem;
+    /*
+     * پیش از مرحله ۶.۲ این اسکریپت خودش Storage.prototype.setItem را می‌پیچید و پس از خود،
+     * ۱۴۸ و ۱۵۴ هم روی آن می‌پیچیدند؛ هر پیچش نشانه‌ی قبلی را پاک می‌کرد و ترتیب اجرا شکننده بود.
+     * حالا فقط به نگهبان نوشتن «مشترک» می‌شود (رفتار: پس از نوشتن موفق همان کلید).
+     */
+    var writeGuard = window.__hesabnoStorageGuard;
+    if (writeGuard && typeof writeGuard.onWrite === "function") {
+      writeGuard.onWrite(function (change) { if (change.key === transactionKey) scheduleBurst(); });
     }
   })();

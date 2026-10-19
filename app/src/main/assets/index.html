@@ -2,21 +2,27 @@
 <html lang="fa" dir="rtl">
   <head>
     <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content" />
     <title>My Money</title>
-<script src="src/scripts/000-default-accounts.js?v=13"></script>
-    <script src="src/scripts/000b-hesabno-system-accounts-early.js?v=13"></script>
-<script src="src/scripts/001-hesabno-perf-guard.js?v=13"></script>
+<script defer src="src/storage/write-guard.js?v=1"></script>
+    <script defer src="src/scripts/000a-hesabno-storage-write-guard.js?v=5"></script>
+<script defer src="src/scripts/000-default-accounts.js?v=13"></script>
+    <script defer src="src/scripts/000b-hesabno-system-accounts-early.js?v=13"></script>
+<script defer src="src/scripts/001-hesabno-perf-guard.js?v=13"></script>
+<!-- لایه‌ی مشترک MutationObserver (مرحله ۴): باید پیش از همه‌ی مصرف‌کننده‌ها بارگذاری شود -->
+<script defer src="src/scripts/236-hesabno-shared-dom-observer.js?v=1"></script>
 
-<link rel="stylesheet" href="src/styles/002-inline.css?v=13" />
-<script src="src/scripts/003-hesabno-soft-reload.js?v=13"></script>
-<script src="src/scripts/004-hesabno-apk-fixes.js?v=13"></script><!-- seed removed -->
-<script src="src/scripts/005-hesabno-storage-capability.js?v=13"></script>
-<script src="src/scripts/006-hesabno-loan-document-number-migration.js?v=13"></script>
-<script src="src/scripts/007-hesabno-loan-received-description-migration.js?v=13"></script>
-<script src="src/scripts/008-hesabno-hide-daily-trend-widget.js?v=13"></script>
-<script src="src/scripts/009-hesabno-payambank-sample-cleanup.js?v=13"></script>
-<script src="src/scripts/010-hesabno-rial-default.js?v=13"></script>
+<link rel="stylesheet" href="src/styles/010-core-base.css?v=1" />
+<script defer src="src/scripts/003-hesabno-soft-reload.js?v=13"></script>
+<script defer src="src/scripts/004-hesabno-apk-fixes.js?v=13"></script><!-- seed removed -->
+<script defer src="src/scripts/005-hesabno-storage-capability.js?v=13"></script>
+<!-- نگهبان مهاجرت‌های داده (مرحله ۶.۰): باید پیش از ۰۰۶/۰۰۷/۰۵۹/۰۶۵/۰۹۴ بارگذاری شود -->
+<script defer src="src/scripts/005b-hesabno-migration-guard.js?v=1"></script>
+<script defer src="src/scripts/006-hesabno-loan-document-number-migration.js?v=13"></script>
+<script defer src="src/scripts/007-hesabno-loan-received-description-migration.js?v=13"></script>
+<script defer src="src/scripts/008-hesabno-hide-daily-trend-widget.js?v=13"></script>
+<script defer src="src/scripts/009-hesabno-payambank-sample-cleanup.js?v=13"></script>
+<script defer src="src/scripts/010-hesabno-rial-default.js?v=13"></script>
 
     <meta name="description" content="نرم‌افزار حسابداری شخصی و کسب‌وکار نسخه اندروید با رابط کاربری فارسی، مدیریت تراکنش‌ها، سرفصل حساب‌ها، چک‌های صیادی، میانبرهای سریع و گزارش‌های مالی" />
     <meta property="og:title" content="My Money" />
@@ -25,176 +31,137 @@
     
     
     
-    <link rel="stylesheet" href="src/styles/011-hesabno-local-font.css?v=13" />
+    <!-- فونت وزیرمتن محلی: پیش‌بارگذاری برای جلوگیری از پرش متن -->
+    <link rel="preload" href="assets/fonts/Vazirmatn-400.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="assets/fonts/Vazirmatn-700.woff2" as="font" type="font/woff2" crossorigin />
     
-    <link rel="stylesheet" href="src/styles/012-inline.css?v=13" />
-  <link rel="stylesheet" href="src/styles/013-inline.css?v=13" /><link rel="stylesheet" href="src/styles/014-inline.css?v=13" /><link rel="stylesheet" href="src/styles/015-inline.css?v=13" /><link rel="stylesheet" href="src/styles/016-inline.css?v=13" /><link rel="stylesheet" href="src/styles/017-inline.css?v=13" /><link rel="stylesheet" href="src/styles/018-inline.css?v=13" /><link rel="stylesheet" href="src/styles/019-inline.css?v=13" /><link rel="stylesheet" href="src/styles/020-inline.css?v=13" /><link rel="stylesheet" href="src/styles/021-inline.css?v=13" /><link rel="stylesheet" href="src/styles/022-inline.css?v=13" /><link rel="stylesheet" href="src/styles/023-inline.css?v=13" /><link rel="stylesheet" href="src/styles/026-inline.css?v=13" /><link rel="stylesheet" href="src/styles/027-inline.css?v=13" /><link rel="stylesheet" href="src/styles/028-inline.css?v=13" /><script src="src/scripts/029-inline.js?v=13"></script><link rel="stylesheet" href="src/styles/030-inline.css?v=13" /><link rel="stylesheet" href="src/styles/031-inline.css?v=13" /><link rel="stylesheet" href="src/styles/032-inline.css?v=13" /><link rel="stylesheet" href="src/styles/033-inline.css?v=13" /><link rel="stylesheet" href="src/styles/034-inline.css?v=13" /><link rel="stylesheet" href="src/styles/035-inline.css?v=13" /><link rel="stylesheet" href="src/styles/036-inline.css?v=13" /><link rel="stylesheet" href="src/styles/037-inline.css?v=13" /><link rel="stylesheet" href="src/styles/038-inline.css?v=13" />
-<link rel="stylesheet" href="src/styles/039-inline.css?v=13" />
-<link rel="stylesheet" href="src/styles/040-inline.css?v=13" />
-<link rel="stylesheet" href="src/styles/041-hesabno-light-balance.css?v=13" />
-<link rel="stylesheet" href="src/styles/042-hesabno-tab-motion.css?v=13" /><link rel="stylesheet" href="src/styles/043-hesabno-page-open-close-motion.css?v=13" /><link rel="stylesheet" href="src/styles/044-hesabno-light-settings-accounts.css?v=13" /><link rel="stylesheet" href="src/styles/045-hesabno-light-settings-divider-lines.css?v=13" /><link rel="stylesheet" href="src/styles/046-hesabno-settings-cards-notification-tabs.css?v=13" /><link rel="stylesheet" href="src/styles/047-hesabno-inline-check-alert-options.css?v=13" /><link rel="stylesheet" href="src/styles/048-hesabno-toast-and-notification-badge-fix.css?v=13" /><link rel="stylesheet" href="src/styles/049-hesabno-mobile-typography.css?v=13" /><link rel="stylesheet" href="src/styles/050-hesabno-project-family-management.css?v=13" />
-<link rel="stylesheet" href="src/styles/051-hesabno-final-polish.css?v=13" />
-<link rel="stylesheet" href="src/styles/052-hesabno-full-page-side-motion.css?v=13" /><link rel="stylesheet" href="src/styles/053-hesabno-account-picker-fullscreen.css?v=13" /><link rel="stylesheet" href="src/styles/054-hesabno-inline-validation-warnings.css?v=13" /><link rel="stylesheet" href="src/styles/055-hesabno-inline-validation-warnings-v2.css?v=13" /><link rel="stylesheet" href="src/styles/056-hesabno-inline-validation-warnings-v3.css?v=13" /><link rel="stylesheet" href="src/styles/057-hesabno-account-header-light-mode.css?v=13" /><link rel="stylesheet" href="src/styles/058-hesabno-fullscreen-selection-modals.css?v=13" />
-<script src="src/scripts/059-hesabno-remove-sample-fiscal-year-v2.js?v=13"></script>
-<link rel="stylesheet" href="src/styles/060-hesabno-accessibility-fixes.css?v=13" />
-<script src="src/scripts/061-hesabno-validation-and-backup-notices.js?v=13"></script>
-<link rel="stylesheet" href="src/styles/062-hesabno-stable-page-geometry.css?v=13" />
-<link rel="stylesheet" href="src/styles/063-hesabno-modal-on-top.css?v=13" />
-<link rel="stylesheet" href="src/styles/064-hesabno-semantic-footnotes.css?v=13" />
-<link rel="stylesheet" href="src/styles/900-light-theme-contrast.css?v=13" />
-<link rel="stylesheet" href="src/styles/950-amount-box-height.css?v=13" />
-<link rel="stylesheet" href="src/styles/960-sticky-submit.css?v=13" />
-<link rel="stylesheet" href="src/styles/965-bank-form-sticky-footer.css?v=13" />
-<link rel="stylesheet" href="src/styles/970-note-textarea.css?v=13" />
+  <link rel="stylesheet" href="src/styles/020-core-fixes.css?v=1" /><script defer src="src/scripts/029-inline.js?v=13"></script><link rel="stylesheet" href="src/styles/043-hesabno-page-open-close-motion.css?v=13" /><link rel="stylesheet" href="src/styles/030-light-settings-fixes.css?v=1" /><link rel="stylesheet" href="src/styles/040-settings-and-validation.css?v=1" /><script defer src="src/scripts/059-hesabno-remove-sample-fiscal-year-v2.js?v=13"></script>
+<script defer src="src/scripts/061-hesabno-validation-and-backup-notices.js?v=13"></script>
+<link rel="stylesheet" href="src/styles/050-late-legacy-overrides.css?v=1" />
     <link rel="icon" type="image/png" sizes="32x32" href="assets/icon/favicon-32.png?v=13" />
     <link rel="apple-touch-icon" sizes="180x180" href="assets/icon/apple-touch-icon.png?v=13" />
     <link rel="manifest" href="manifest.webmanifest?v=13" />
     <meta name="theme-color" content="#0c1f1d" />
+    <link rel="stylesheet" href="src/styles/235-hesabno-text-root-and-display-stability.css?v=36" />
 </head>
   <body class="bg-stone-900 text-stone-100 antialiased selection:bg-emerald-500 selection:text-white">
     <div id="root"></div>
-  <script src="src/scripts/065-hesabno-shortcut-category-migration.js?v=13"></script>
-  <script src="src/scripts/066-inline.js?v=13"></script>
-  <script src="src/scripts/067-inline.js?v=13"></script>
-<script src="src/scripts/068-hesabno-loan-logo-asset.js?v=13"></script>
-<script src="src/scripts/069-hesabno-bank-usage-enhanced.js?v=13"></script>
-<script src="src/scripts/070-hesabno-light-report-fix.js?v=13"></script>
-<script src="src/scripts/071-hesabno-soft-motion.js?v=13"></script>
-<script src="src/scripts/072-hesabno-transaction-visuals.js?v=13"></script>
-<script src="src/scripts/073-hesabno-navigation-history.js?v=13"></script>
-<script src="src/scripts/074-hesabno-page-open-close-motion-script.js?v=13"></script><script src="src/scripts/075-hesabno-settings-cards-notification-tabs-script.js?v=13"></script><script src="src/scripts/076-hesabno-inline-check-alert-options-script.js?v=13"></script><script src="src/scripts/077-hesabno-project-family-management.js?v=13"></script>
-<script src="src/scripts/078-hesabno-final-polish.js?v=13"></script>
-<script src="src/scripts/079-hesabno-full-page-side-motion-script.js?v=13"></script><script src="src/scripts/080-hesabno-account-picker-fullscreen-script.js?v=13"></script><link rel="stylesheet" href="src/styles/081-hesabno-reversal-and-light-meta.css?v=13" /><link rel="stylesheet" href="src/styles/082-hesabno-report-light-header.css?v=13" /><link rel="stylesheet" href="src/styles/083-hesabno-chart-edge-tooltip.css?v=13" /><link rel="stylesheet" href="src/styles/084-hesabno-chart-tooltip-default.css?v=13" /><link rel="stylesheet" href="src/styles/085-hesabno-trial-balance-layout.css?v=13" /><link rel="stylesheet" href="src/styles/086-hesabno-document-catalog-picker.css?v=13" /><script src="src/scripts/087-hesabno-document-catalog-picker-script.js?v=13"></script><link rel="stylesheet" href="src/styles/088-hesabno-report-chart-colors.css?v=13" /><link rel="stylesheet" href="src/styles/089-hesabno-fixed-dashboard-styles.css?v=13" /><script src="src/scripts/090-hesabno-fixed-dashboard.js?v=16"></script><script src="src/scripts/091-hesabno-duplicate-page-close.js?v=13"></script>
- <script src="src/scripts/092-hesabno-back-only-close-controls.js?v=13"></script>
- <script src="src/scripts/093-hesabno-account-transaction-icons.js?v=13"></script>
- <script src="src/scripts/094-hesabno-check-system-accounts.js?v=14"></script>
- <script src="src/scripts/095-hesabno-remove-fixed-widgets.js?v=14"></script>
- <script src="src/scripts/096-hesabno-check-form-fix.js?v=13"></script>
- <link rel="stylesheet" href="src/styles/097-hesabno-account-statement-styles.css?v=13" />
- <script src="src/scripts/098-hesabno-account-statement-fix.js?v=13"></script>
-  <script src="src/scripts/099-hesabno-hide-account-code-metadata.js?v=13"></script>
- <link rel="stylesheet" href="src/styles/100-hesabno-transaction-day-header-styles.css?v=13" />
-  <script src="src/scripts/101-hesabno-transaction-day-header-fix.js?v=13"></script>
- <script src="src/scripts/102-hesabno-trend-chart-fix.js?v=13"></script><link rel="stylesheet" href="src/styles/103-hesabno-blur-override.css?v=13" /><script src="src/scripts/104-hesabno-counterparty-transaction-icons.js?v=13"></script>
-  <script src="src/scripts/105-hesabno-relative-date-labels.js?v=14"></script>
-  <script src="src/scripts/106-hesabno-selected-bank-icons.js?v=13"></script>
-  <script src="src/scripts/107-hesabno-empty-home-widgets.js?v=13"></script>
-  <script src="src/scripts/108-hesabno-complete-reset-flow.js?v=13"></script>
-  <script src="src/scripts/109-hesabno-family-project-report-fix.js?v=13"></script>
-  <script src="src/scripts/110-hesabno-check-entry-policy.js?v=13"></script>
-  <script src="src/scripts/111-hesabno-check-settlement-flow.js?v=13"></script>
-  <script src="src/scripts/112-hesabno-loan-installment-enhancements.js?v=13"></script>
-  <script src="src/scripts/113-hesabno-loan-form-cleanup.js?v=13"></script>
-  <script src="src/scripts/114-hesabno-loan-manual-installments.js?v=13"></script>
-  <script src="src/scripts/115-hesabno-check-status-and-due-date-fix.js?v=13"></script>
-  <script src="src/scripts/116-hesabno-dashboard-calendar-fix.js?v=13"></script>
-  <script src="src/scripts/117-hesabno-dashboard-calendar-picker.js?v=13"></script>
-  <script src="src/scripts/118-hesabno-dashboard-calendar-close-fix.js?v=13"></script>
-  <script src="src/scripts/119-hesabno-payambank-routing.js?v=13"></script>
-  <script src="src/scripts/120-hesabno-payambank-preview.js?v=13"></script>
-  <script src="src/scripts/121-hesabno-simple-report-detail-list.js?v=13"></script>
-  <script src="src/scripts/122-hesabno-simple-report-tooltip-zones.js?v=13"></script>
-  <link rel="stylesheet" href="src/styles/123-hesabno-slower-motion.css?v=13" />
-  <link rel="stylesheet" href="src/styles/124-hesabno-motion-stability.css?v=13" />
-  <link rel="stylesheet" href="src/styles/125-hesabno-motion-performance.css?v=13" />
-  <link rel="stylesheet" href="src/styles/126-hesabno-compact-widget-actions-style.css?v=13" />
-  <script src="src/scripts/127-hesabno-compact-widget-actions.js?v=13"></script>
-  <script src="src/scripts/128-hesabno-loan-stable-enhancements.js?v=13"></script>
-  <script src="src/scripts/129-hesabno-final-transaction-card-guard.js?v=13"></script>
-  <script src="src/scripts/130-hesabno-compound-document-meta.js?v=13"></script>
-  <script src="src/scripts/131-hesabno-compound-title-summary.js?v=13"></script>
-  <script src="src/scripts/132-hesabno-payment-refund-workflow.js?v=13"></script>
-  <script src="src/scripts/133-hesabno-native-payment-refund-form.js?v=13"></script>
-  <script src="src/scripts/134-hesabno-check-return-resolution.js?v=13"></script>
-  <script src="src/scripts/135-hesabno-check-status-actions.js?v=13"></script>
-  <script src="src/scripts/136-hesabno-check-fee-policy.js?v=13"></script>
-  <script src="src/scripts/137-hesabno-loan-preview-clarity.js?v=13"></script>
-  <script src="src/scripts/138-hesabno-check-card-status-colors.js?v=13"></script>
-  <script src="src/scripts/139-hesabno-report-bank-logo-and-description.js?v=13"></script>
-  <script src="src/scripts/140-hesabno-check-card-layout.js?v=13"></script>
-  <link rel="stylesheet" href="src/styles/141-hesabno-restore-transaction-check-status.css?v=13" />
-  <script src="src/scripts/142-hesabno-check-settlement-date.js?v=13"></script>
-  <script src="src/scripts/143-hesabno-check-status-lock.js?v=13"></script>
-  <script src="src/scripts/144-hesabno-check-return-confirm.js?v=13"></script>
-  <script src="src/scripts/145-hesabno-canonical-transaction-metadata.js?v=13"></script>
-  <script src="src/scripts/146-hesabno-check-entry-layout.js?v=13"></script>
-  <script src="src/scripts/147-hesabno-hide-section-card-badges.js?v=13"></script>
-  <script src="src/scripts/148-hesabno-bank-opening-balance-unit.js?v=13"></script>
-  <link rel="stylesheet" href="src/styles/149-hesabno-today-transactions-style.css?v=13" />
-  <script src="src/scripts/150-hesabno-today-transactions-presentation.js?v=13"></script>
-  <link rel="stylesheet" href="src/styles/151-hesabno-period-transaction-presentation-style.css?v=13" />
-  <script src="src/scripts/152-hesabno-period-transaction-presentation.js?v=13"></script>
-  <link rel="stylesheet" href="src/styles/153-hesabno-signed-money-direction.css?v=13" />
-  <script src="src/scripts/154-hesabno-global-currency-and-signed-money.js?v=13"></script>
-  <link rel="stylesheet" href="src/styles/155-hesabno-account-statement-transaction-styles.css?v=13" />
-  <script src="src/scripts/156-hesabno-account-statement-transaction-fix.js?v=13"></script>
-  <link rel="stylesheet" href="src/styles/157-hesabno-dashboard-category-account-icons.css?v=13" />
-  <link rel="stylesheet" href="src/styles/158-hesabno-dashboard-category-widget-compact.css?v=13" />
-  <script src="src/scripts/159-hesabno-horizontal-category-compound-split.js?v=13"></script>
-  <script src="src/scripts/160-hesabno-report-compound-leg-details.js?v=13"></script>
-  <link rel="stylesheet" href="src/styles/161-hesabno-category-report-account-icons-style.css?v=13" />
-  <script src="src/scripts/162-hesabno-category-report-account-icons.js?v=13"></script>
-  <link rel="stylesheet" href="src/styles/163-hesabno-financial-resources-report-style.css?v=13" />
-  <script src="src/scripts/164-hesabno-financial-resources-report.js?v=13"></script>
-  <link rel="stylesheet" href="src/styles/165-hesabno-daily-report-presentation-style.css?v=13" />
-  <script src="src/scripts/166-hesabno-daily-report-presentation.js?v=13"></script>
-  <link rel="stylesheet" href="src/styles/167-hesabno-balance-report-remove-extra-descriptions.css?v=13" />
-  <script src="src/scripts/168-hesabno-balance-report-remove-extra-descriptions-script.js?v=13"></script>
-  <link rel="stylesheet" href="src/styles/169-hesabno-balance-detail-codes-and-panel.css?v=13" />
-  <script src="src/scripts/170-hesabno-balance-detail-codes-and-panel-script.js?v=13"></script>
-  <script src="src/scripts/171-hesabno-capital-opening-balance-detail.js?v=13"></script>
-  <link rel="stylesheet" href="src/styles/172-hesabno-statement-picker-remove-helper-copy.css?v=13" />
-  <script src="src/scripts/173-hesabno-statement-picker-copy.js?v=13"></script>
-  <link rel="stylesheet" href="src/styles/174-hesabno-report-account-picker-copy-styles.css?v=13" />
-  <script src="src/scripts/175-hesabno-report-account-picker-copy.js?v=13"></script>
-  <link rel="stylesheet" href="src/styles/176-hesabno-detail-column-chart-layout.css?v=13" />
-  <script src="src/scripts/177-hesabno-detail-column-chart-fix.js?v=13"></script>
-  <link rel="stylesheet" href="src/styles/178-hesabno-global-breakdown-copy-layout.css?v=13" />
-  <script src="src/scripts/179-hesabno-global-breakdown-copy-fix.js?v=13"></script>
-  <link rel="stylesheet" href="src/styles/180-hesabno-advanced-reports-no-search.css?v=13" />
-  <link rel="stylesheet" href="src/styles/181-hesabno-hide-subsidiary-account-codes-global.css?v=13" />
-  <script src="src/scripts/182-hesabno-hide-subsidiary-account-codes-global-scrip.js?v=13"></script>
-  <link rel="stylesheet" href="src/styles/183-hesabno-report-selection-label-spacing.css?v=13" />
-  <script src="src/scripts/184-hesabno-report-selection-label-spacing-script.js?v=13"></script>
-  <link rel="stylesheet" href="src/styles/185-hesabno-account-statement-frame-and-column-alignme.css?v=13" />
-  <script src="src/scripts/186-hesabno-report-metric-number-fit.js?v=13"></script>
-  <link rel="stylesheet" href="src/styles/187-hesabno-summary-account-statement-cleanup-styles.css?v=13" />
-  <script src="src/scripts/188-hesabno-summary-account-statement-cleanup.js?v=13"></script>
-  <script src="src/scripts/189-hesabno-recent-transaction-account-logos.js?v=13"></script>
-  <script src="src/scripts/190-hesabno-daily-report-account-label-dedupe.js?v=13"></script>
-  <script src="src/scripts/191-hesabno-donut-category-icons.js?v=13"></script>
-  <script src="src/scripts/192-hesabno-transaction-account-detail-wrap.js?v=13"></script>
-  <script src="src/scripts/193-hesabno-loan-installment-form-cleanup.js?v=13"></script>
-  <script src="src/scripts/194-hesabno-loan-linked-transaction-actions.js?v=13"></script>
-  <script src="src/scripts/195-hesabno-loan-purchase-status-tabs.js?v=13"></script>
-  <link rel="stylesheet" href="src/styles/196-hesabno-installment-purchase-cleanup.css?v=13" />
-  <script src="src/scripts/197-hesabno-installment-purchase-cleanup-script.js?v=13"></script>
-  <script src="src/scripts/198-hesabno-accessible-form-fields.js?v=13"></script>
-<link rel="stylesheet" href="src/styles/199-hesabno-menu-accessibility-styles.css?v=13" />
-<script src="src/scripts/200-hesabno-menu-accessibility-and-discovery.js?v=13"></script>
+  <script defer src="src/scripts/065-hesabno-shortcut-category-migration.js?v=13"></script>
+  <script defer src="src/scripts/066-inline.js?v=13"></script>
+  <script defer src="src/scripts/067-inline.js?v=59"></script>
+<script defer src="src/scripts/068-hesabno-loan-logo-asset.js?v=13"></script>
+<script defer src="src/scripts/069-hesabno-bank-usage-enhanced.js?v=18"></script>
+<script defer src="src/scripts/070-hesabno-light-report-fix.js?v=13"></script>
+<script defer src="src/scripts/071-hesabno-soft-motion.js?v=15"></script>
+<script defer src="src/scripts/072-hesabno-transaction-visuals.js?v=13"></script>
+<script defer src="src/scripts/073-hesabno-navigation-history.js?v=16"></script>
+<script defer src="src/scripts/074-hesabno-page-open-close-motion-script.js?v=14"></script><script defer src="src/scripts/075-hesabno-settings-cards-notification-tabs-script.js?v=14"></script><script defer src="src/scripts/076-hesabno-inline-check-alert-options-script.js?v=14"></script><script defer src="src/scripts/077-hesabno-project-family-management.js?v=14"></script>
+<script defer src="src/scripts/078-hesabno-final-polish.js?v=17"></script>
+<script defer src="src/scripts/079-hesabno-full-page-side-motion-script.js?v=15"></script><script defer src="src/scripts/080-hesabno-account-picker-fullscreen-script.js?v=14"></script><link rel="stylesheet" href="src/styles/060-reports-and-motion.css?v=1" /><script defer src="src/scripts/087-hesabno-document-catalog-picker-script.js?v=14"></script><script defer src="src/scripts/090-hesabno-fixed-dashboard.js?v=19"></script><script defer src="src/scripts/091-hesabno-duplicate-page-close.js?v=13"></script>
+ <script defer src="src/scripts/092-hesabno-back-only-close-controls.js?v=13"></script>
+ <script defer src="src/scripts/093-hesabno-account-transaction-icons.js?v=14"></script>
+ <script defer src="src/scripts/094-hesabno-check-system-accounts.js?v=14"></script>
+ <script defer src="src/scripts/095-hesabno-remove-fixed-widgets.js?v=14"></script>
+ <script defer src="src/scripts/096-hesabno-check-form-fix.js?v=13"></script>
+ <script defer src="src/scripts/098-hesabno-account-statement-fix.js?v=14"></script>
+  <script defer src="src/scripts/099-hesabno-hide-account-code-metadata.js?v=13"></script>
+  <script defer src="src/scripts/101-hesabno-transaction-day-header-fix.js?v=17"></script>
+ <script defer src="src/scripts/102-hesabno-trend-chart-fix.js?v=13"></script><script defer src="src/scripts/104-hesabno-counterparty-transaction-icons.js?v=15"></script>
+  <script defer src="src/scripts/105-hesabno-relative-date-labels.js?v=16"></script>
+  <script defer src="src/scripts/106-hesabno-selected-bank-icons.js?v=15"></script>
+  <script defer src="src/scripts/107-hesabno-empty-home-widgets.js?v=13"></script>
+  <script defer src="src/scripts/108-hesabno-complete-reset-flow.js?v=15"></script>
+  <script defer src="src/scripts/109-hesabno-family-project-report-fix.js?v=14"></script>
+  <script defer src="src/scripts/110-hesabno-check-entry-policy.js?v=14"></script>
+  <script defer src="src/scripts/111-hesabno-check-settlement-flow.js?v=13"></script>
+  <script defer src="src/scripts/112-hesabno-loan-installment-enhancements.js?v=14"></script>
+  <script defer src="src/scripts/113-hesabno-loan-form-cleanup.js?v=14"></script>
+  <script defer src="src/scripts/114-hesabno-loan-manual-installments.js?v=14"></script>
+  <script defer src="src/scripts/115-hesabno-check-status-and-due-date-fix.js?v=16"></script>
+  <script defer src="src/scripts/116-hesabno-dashboard-calendar-fix.js?v=16"></script>
+  <script defer src="src/scripts/117-hesabno-dashboard-calendar-picker.js?v=13"></script>
+  <script defer src="src/scripts/118-hesabno-dashboard-calendar-close-fix.js?v=13"></script>
+  <script defer src="src/scripts/119-hesabno-payambank-routing.js?v=13"></script>
+  <script defer src="src/scripts/120-hesabno-payambank-preview.js?v=13"></script>
+  <script defer src="src/scripts/121-hesabno-simple-report-detail-list.js?v=23"></script>
+  <script defer src="src/scripts/122-hesabno-simple-report-tooltip-zones.js?v=15"></script>
+  <script defer src="src/scripts/127-hesabno-compact-widget-actions.js?v=14"></script>
+  <script defer src="src/scripts/128-hesabno-loan-stable-enhancements.js?v=14"></script>
+  <script defer src="src/scripts/129-hesabno-final-transaction-card-guard.js?v=15"></script>
+  <script defer src="src/scripts/130-hesabno-compound-document-meta.js?v=15"></script>
+  <script defer src="src/scripts/131-hesabno-compound-title-summary.js?v=15"></script>
+  <script defer src="src/scripts/132-hesabno-payment-refund-workflow.js?v=14"></script>
+  <script defer src="src/scripts/133-hesabno-native-payment-refund-form.js?v=14"></script>
+  <script defer src="src/scripts/134-hesabno-check-return-resolution.js?v=13"></script>
+  <script defer src="src/scripts/135-hesabno-check-status-actions.js?v=14"></script>
+  <script defer src="src/scripts/136-hesabno-check-fee-policy.js?v=14"></script>
+  <script defer src="src/scripts/137-hesabno-loan-preview-clarity.js?v=15"></script>
+  <script defer src="src/scripts/138-hesabno-check-card-status-colors.js?v=15"></script>
+  <script defer src="src/scripts/139-hesabno-report-bank-logo-and-description.js?v=18"></script>
+  <script defer src="src/scripts/140-hesabno-check-card-layout.js?v=15"></script>
+  <script defer src="src/scripts/142-hesabno-check-settlement-date.js?v=16"></script>
+  <script defer src="src/scripts/143-hesabno-check-status-lock.js?v=14"></script>
+  <script defer src="src/scripts/144-hesabno-check-return-confirm.js?v=14"></script>
+  <script defer src="src/scripts/145-hesabno-canonical-transaction-metadata.js?v=17"></script>
+  <script defer src="src/scripts/146-hesabno-check-entry-layout.js?v=14"></script>
+  <script defer src="src/scripts/147-hesabno-hide-section-card-badges.js?v=14"></script>
+  <script defer src="src/scripts/148-hesabno-bank-opening-balance-unit.js?v=15"></script>
+  <script defer src="src/scripts/150-hesabno-today-transactions-presentation.js?v=14"></script>
+  <script defer src="src/scripts/152-hesabno-period-transaction-presentation.js?v=15"></script>
+  <link rel="stylesheet" href="src/styles/070-report-layouts.css?v=1" />
+  <script defer src="src/scripts/154-hesabno-global-currency-and-signed-money.js?v=15"></script>
+  <script defer src="src/scripts/156-hesabno-account-statement-transaction-fix.js?v=16"></script>
+  <script defer src="src/scripts/159-hesabno-horizontal-category-compound-split.js?v=14"></script>
+  <script defer src="src/scripts/160-hesabno-report-compound-leg-details.js?v=15"></script>
+  <script defer src="src/scripts/162-hesabno-category-report-account-icons.js?v=14"></script>
+  <script defer src="src/scripts/164-hesabno-financial-resources-report.js?v=14"></script>
+  <script defer src="src/scripts/166-hesabno-daily-report-presentation.js?v=14"></script>
+  <script defer src="src/scripts/168-hesabno-balance-report-remove-extra-descriptions-script.js?v=14"></script>
+  <script defer src="src/scripts/170-hesabno-balance-detail-codes-and-panel-script.js?v=14"></script>
+  <script defer src="src/scripts/171-hesabno-capital-opening-balance-detail.js?v=14"></script>
+  <script defer src="src/scripts/173-hesabno-statement-picker-copy.js?v=14"></script>
+  <script defer src="src/scripts/175-hesabno-report-account-picker-copy.js?v=14"></script>
+  <script defer src="src/scripts/177-hesabno-detail-column-chart-fix.js?v=14"></script>
+  <script defer src="src/scripts/179-hesabno-global-breakdown-copy-fix.js?v=14"></script>
+  <script defer src="src/scripts/182-hesabno-hide-subsidiary-account-codes-global-scrip.js?v=14"></script>
+  <script defer src="src/scripts/184-hesabno-report-selection-label-spacing-script.js?v=14"></script>
+  <script defer src="src/scripts/186-hesabno-report-metric-number-fit.js?v=14"></script>
+  <link rel="stylesheet" href="src/styles/080-report-cleanups.css?v=1" />
+  <script defer src="src/scripts/188-hesabno-summary-account-statement-cleanup.js?v=14"></script>
+  <script defer src="src/scripts/189-hesabno-recent-transaction-account-logos.js?v=14"></script>
+  <script defer src="src/scripts/190-hesabno-daily-report-account-label-dedupe.js?v=13"></script>
+  <script defer src="src/scripts/191-hesabno-donut-category-icons.js?v=13"></script>
+  <script defer src="src/scripts/192-hesabno-transaction-account-detail-wrap.js?v=13"></script>
+  <script defer src="src/scripts/193-hesabno-loan-installment-form-cleanup.js?v=15"></script>
+  <script defer src="src/scripts/194-hesabno-loan-linked-transaction-actions.js?v=13"></script>
+  <script defer src="src/scripts/195-hesabno-loan-purchase-status-tabs.js?v=15"></script>
+  <script defer src="src/scripts/197-hesabno-installment-purchase-cleanup-script.js?v=14"></script>
+  <script defer src="src/scripts/198-hesabno-accessible-form-fields.js?v=14"></script>
+<script defer src="src/scripts/200-hesabno-menu-accessibility-and-discovery.js?v=14"></script>
 
-  <script src="src/scripts/201-hesabno-linked-document-lock.js?v=13"></script>
-  <script src="src/scripts/202-hesabno-transaction-list-polish.js?v=13"></script>
-  <script src="src/scripts/203-hesabno-accessibility-and-encrypted-backup.js?v=13"></script>
-<script src="src/scripts/204-hesabno-parmis-bridge.js?v=13"></script>
-<script src="src/scripts/205-hesabno-reset-safety-restore.js?v=13"></script>
-<link rel="stylesheet" href="src/styles/206-hesabno-day-line-style.css?v=13" />
-<script src="src/scripts/207-hesabno-day-line.js?v=13"></script>
-<script src="src/scripts/208-hesabno-home-canceled-check-filter.js?v=13"></script>
+  <script defer src="src/scripts/201-hesabno-linked-document-lock.js?v=15"></script>
+  <script defer src="src/scripts/202-hesabno-transaction-list-polish.js?v=16"></script>
+  <script defer src="src/scripts/203-hesabno-accessibility-and-encrypted-backup.js?v=15"></script>
+<script defer src="src/scripts/204-hesabno-parmis-bridge.js?v=16"></script>
+<script defer src="src/scripts/205-hesabno-reset-safety-restore.js?v=13"></script>
+<script defer src="src/scripts/207-hesabno-day-line.js?v=14"></script>
+<script defer src="src/scripts/208-hesabno-home-canceled-check-filter.js?v=14"></script>
 
-<link rel="stylesheet" href="src/styles/209-hesabno-hide-user-and-fast-tabs.css?v=13" />
-<link rel="stylesheet" href="src/styles/210-hesabno-motion.css?v=14" />
-<script src="src/scripts/901-light-theme-contrast.js?v=13"></script>
-  <script src="src/scripts/210-hesabno-fullpage-layers.js?v=14"></script>
-  <script src="src/scripts/211-hesabno-bank-form-helper-cleanup.js?v=13"></script>
-  <script src="src/scripts/212-hesabno-more-section-cleanup.js?v=13"></script>
-  <script src="src/scripts/213-hesabno-payambank-sample-patterns-hide.js?v=13"></script>
-  <script src="src/scripts/214-hesabno-numeric-keyboard.js?v=14"></script>
-  <script src="src/scripts/215-hesabno-tab-home-transition.js?v=13"></script>
-  <script src="src/scripts/216-hesabno-fullpage-exit.js?v=13"></script>
-<script src="src/scripts/217-hesabno-first-run-profile.js?v=16"></script>
-  <script src="src/scripts/218-hesabno-hide-compound-correction-action.js?v=1"></script>
-  <script src="src/scripts/219-hesabno-tab-scroll-reset.js?v=1"></script>
-  <script src="src/scripts/220-hesabno-stable-tab-geometry.js?v=1"></script>
+<script defer src="src/scripts/901-light-theme-contrast.js?v=17"></script>
+  <script defer src="src/scripts/210-hesabno-fullpage-layers.js?v=16"></script>
+  <script defer src="src/scripts/211-hesabno-bank-form-helper-cleanup.js?v=15"></script>
+  <script defer src="src/scripts/212-hesabno-more-section-cleanup.js?v=14"></script>
+  <script defer src="src/scripts/213-hesabno-payambank-sample-patterns-hide.js?v=14"></script>
+  <script defer src="src/scripts/214-hesabno-numeric-keyboard.js?v=20"></script>
+  <script defer src="src/scripts/225-hesabno-colorful-keypad.js?v=4"></script>
+  <script defer src="src/scripts/215-hesabno-tab-home-transition.js?v=13"></script>
+  <script defer src="src/scripts/216-hesabno-fullpage-exit.js?v=14"></script>
+<script defer src="src/scripts/217-hesabno-first-run-profile.js?v=23"></script>
+  <script defer src="src/scripts/218-hesabno-hide-compound-correction-action.js?v=2"></script>
+  <script defer src="src/scripts/219-hesabno-tab-scroll-reset.js?v=1"></script>
+  <script defer src="src/scripts/220-hesabno-stable-tab-geometry.js?v=1"></script>
+<script defer src="src/scripts/221-hesabno-report-account-detail-layout.js?v=4"></script>
+  <script defer src="src/scripts/223-hesabno-date-action-contrast.js?v=5"></script>
+  <script defer src="src/scripts/235-hesabno-text-root-and-display-stability.js?v=2"></script>
 </body>
 </html>

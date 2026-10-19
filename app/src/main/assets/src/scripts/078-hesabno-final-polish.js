@@ -74,19 +74,17 @@
     card.id = "hesabno-health-card"; card.className = "hesabno-health-card";
     card.innerHTML = '<strong>بررسی سلامت داده‌ها</strong><p>قبل از ریست یا بازیابی، مطمئن شوید بخش‌های ذخیره‌شده قابل خواندن هستند.</p><button type="button" data-health-check>بررسی سلامت داده‌ها</button><span data-health-result></span>';
     card.querySelector("[data-health-check]").addEventListener("click", function () {
-      var keys = ["hesabno:transactions", "hesabno:accounts", "hesabno:accounts_v5", "hesabno:loans", "hesabno:installments", "hesabno:budgets", "hesabno:shortcuts"];
+      var keys = ["hesabno:transactions", "hesabno:accounts", "hesabno:accounts_v5", "hesabno:checks", "hesabno:check_settlement_dates", "hesabno:loans", "hesabno:installments", "hesabno:recurring_rules", "hesabno:budgets", "hesabno:fiscal_years", "hesabno:shortcuts", "hesabno:familyMembers", "hesabno:family_members", "hesabno:projects", "hesabno:homeWidgets", "hesabno:projectMeta", "hesabno:familyMemberMeta", "hesabno:payambank:inbox", "hesabno:payambank:custom_patterns", "hesabno:user_profile", "hesabno:local_snapshots", "hesabno:exported_files"];
       var valid = 0, invalid = 0;
       keys.forEach(function (key) { var raw = window.__safeGet ? __safeGet(key) : localStorage.getItem(key); if (!raw) return; try { JSON.parse(raw); valid += 1; } catch (error) { invalid += 1; } });
       var result = card.querySelector("[data-health-result]");
       result.textContent = invalid ? "خطا در " + invalid + " بخش" : valid ? valid + " بخش سالم است ✓" : "داده‌ای برای بررسی وجود ندارد";
-      result.style.color = invalid ? "#d66f67" : "#2c9d8b";
+      result.setAttribute("data-health-state", invalid ? "invalid" : "ok");
     });
     box.appendChild(card);
   };
   (function(){
-    if (!document.getElementById("hn-toast-style")) { var st=document.createElement("style"); st.id="hn-toast-style";
-      st.textContent='.hesabno-undo-toast{display:none!important}.hn-toast{position:fixed;left:50%;bottom:calc(88px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:99999;width:min(92vw,420px);background:rgba(28,25,23,.97);color:#f5f5f4;border:1px solid rgba(120,113,108,.35);border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.45);overflow:hidden;direction:rtl;font-size:13px;touch-action:pan-y;transition:opacity .3s,transform .3s;animation:hnIn .25s ease-out}.hn-toast-row{display:flex;align-items:center;gap:10px;padding:12px 14px}.hn-toast-row span{flex:1;line-height:1.6}.hn-toast-row button{flex:none;background:rgba(16,185,129,.15);color:#34d399;border:0;border-radius:10px;padding:6px 12px;font-weight:700;font-size:12px;cursor:pointer;font-family:inherit}.hn-toast-bar{height:3px;background:#34d399;transform-origin:right;animation:hnBar linear forwards}@keyframes hnBar{from{transform:scaleX(1)}to{transform:scaleX(0)}}@keyframes hnIn{from{opacity:0;transform:translate(-50%,12px)}to{opacity:1;transform:translate(-50%,0)}}';
-      document.head.appendChild(st); }
+    /* قواعد ظاهری توست (.hn-toast) و پنهان‌سازی .hesabno-undo-toast در بستهٔ ۲۳۵ قرار دارد. */
     var pendingUndo=null, pendingTimer=null;
     var show=function(label, undo){
       document.querySelectorAll(".hn-toast").forEach(function(n){n.remove();});
@@ -110,5 +108,5 @@
   })();
   var enhance = function () { profileClean(); addMoreCategories(); setupHealthCard(); setupResetWarning(); };
   enhance();
-  if (document.body) new MutationObserver(enhance).observe(document.body, { childList: true, subtree: true });
+  if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, enhance);
 })();

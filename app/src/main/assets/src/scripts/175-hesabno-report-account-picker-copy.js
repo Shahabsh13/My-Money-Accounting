@@ -23,7 +23,7 @@
             if (clean(pickerHeading.textContent) !== title) pickerHeading.textContent = title;
             var pickerHeader = pickerHeading.closest("header");
             if (pickerHeader) pickerHeader.querySelectorAll("p").forEach(function (paragraph) {
-              paragraph.dataset.hesabnoReportPickerDescription = "true";
+              if (paragraph.dataset.hesabnoReportPickerDescription !== "true") paragraph.dataset.hesabnoReportPickerDescription = "true";
             });
           }
         }
@@ -34,14 +34,14 @@
           if (!originalGroup && text.indexOf(prefix) !== 0) return;
           if (!originalGroup && text.indexOf(prefix) === 0) {
             originalGroup = text.slice(prefix.length).replace(/^«|»$/gu, "").trim();
-            if (originalGroup) paragraph.dataset.hesabnoReportAggregateGroup = originalGroup;
+            if (originalGroup && paragraph.dataset.hesabnoReportAggregateGroup !== originalGroup) paragraph.dataset.hesabnoReportAggregateGroup = originalGroup;
           }
           var groupName = activeGroup || originalGroup;
           if (!groupName) return;
           var shortTitle = /^کل\s/u.test(groupName) ? groupName : "کل " + groupName;
           if (text !== shortTitle) paragraph.textContent = shortTitle;
           if (paragraph.parentElement) paragraph.parentElement.querySelectorAll("p").forEach(function (description) {
-            if (description !== paragraph) description.dataset.hesabnoReportAggregateDescription = "true";
+            if (description !== paragraph && description.dataset.hesabnoReportAggregateDescription !== "true") description.dataset.hesabnoReportAggregateDescription = "true";
           });
         });
       });
@@ -49,8 +49,9 @@
     var frame = 0;
     var schedule = function () {
       if (frame) return;
-      frame = requestAnimationFrame(function () { frame = 0; update(); });
+      frame = 1;
+      Promise.resolve().then(function () { frame = 0; update(); });
     };
     update();
-    if (document.body) new MutationObserver(schedule).observe(document.body, { childList: true, characterData: true, attributes: true, attributeFilter: ["class"], subtree: true });
+    if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, characterData: true, attributes: true, attributeFilter: ["class"], subtree: true }, schedule);
   })();

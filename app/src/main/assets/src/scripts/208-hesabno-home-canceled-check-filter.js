@@ -48,24 +48,25 @@
           hide = matches.length === 1;
         }
         if (hide) {
-          row.setAttribute("data-hesabno-canceled-home-check", "true");
-          row.setAttribute("aria-hidden", "true");
-          row.style.setProperty("display", "none", "important");
+          if (row.getAttribute("data-hesabno-canceled-home-check") !== "true") row.setAttribute("data-hesabno-canceled-home-check", "true");
+          if (row.getAttribute("aria-hidden") !== "true") row.setAttribute("aria-hidden", "true");
+          if (row.style.getPropertyValue("display") !== "none") row.style.setProperty("display", "none", "important");
         } else {
-          row.removeAttribute("data-hesabno-canceled-home-check");
-          row.removeAttribute("aria-hidden");
-          row.style.removeProperty("display");
+          if (row.hasAttribute("data-hesabno-canceled-home-check")) row.removeAttribute("data-hesabno-canceled-home-check");
+          if (row.hasAttribute("aria-hidden")) row.removeAttribute("aria-hidden");
+          if (row.style.getPropertyValue("display")) row.style.removeProperty("display");
           visible += 1;
         }
       });
       var badge = Array.from(heading.querySelectorAll("span")).find(function (node) {
         return /سند$/.test(clean(node.textContent));
       });
-      if (visible && badge) badge.textContent = visible.toLocaleString("fa-IR") + " سند";
+      var nextBadgeText = visible.toLocaleString("fa-IR") + " سند";
+      if (visible && badge && badge.textContent !== nextBadgeText) badge.textContent = nextBadgeText;
       else if (!visible && badge) badge.remove();
       var empty = section.querySelector(":scope > [data-hesabno-home-empty]");
       if (!visible && rows.length) {
-        list.style.setProperty("display", "none", "important");
+        if (list.style.getPropertyValue("display") !== "none") list.style.setProperty("display", "none", "important");
         if (!empty) {
           empty = document.createElement("div");
           empty.dataset.hesabnoHomeEmpty = "true";
@@ -74,7 +75,7 @@
           section.insertBefore(empty, list.nextSibling);
         }
       } else {
-        list.style.removeProperty("display");
+        if (list.style.getPropertyValue("display")) list.style.removeProperty("display");
         if (empty) empty.remove();
       }
     });
@@ -83,9 +84,9 @@
   var schedule = function () {
     if (queued) return;
     queued = true;
-    setTimeout(function () { queued = false; sync(); }, 0);
+    Promise.resolve().then(function () { queued = false; sync(); });
   };
   sync();
-  if (document.body) new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true, characterData: true });
+  if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true, characterData: true }, schedule);
   window.addEventListener("storage", schedule);
 })();

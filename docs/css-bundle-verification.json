@@ -1,0 +1,203 @@
+{
+  "root": "/home/user/My-Money-Accounting",
+  "at": "2026-10-16T19:53:29.192Z",
+  "cascadeEquality": {
+    "equal": true,
+    "firstMismatch": -1,
+    "rulesBefore": 2736,
+    "rulesAfter": 2736,
+    "hashBefore": "23bcc8df8caafa092edaf08b6674a3d0f1ae958a715be28760468e5ca67bbb59",
+    "hashAfter": "23bcc8df8caafa092edaf08b6674a3d0f1ae958a715be28760468e5ca67bbb59"
+  },
+  "files": {
+    "before": 99,
+    "after": 10,
+    "standalones": [
+      "043-hesabno-page-open-close-motion.css",
+      "235-hesabno-text-root-and-display-stability.css"
+    ],
+    "bundles": [
+      {
+        "name": "010-core-base.css",
+        "note": "پایه: متغیرهای ریشه، فونت محلی و بسته‌ی اصلی inline",
+        "sources": [
+          "002-inline.css",
+          "011-hesabno-local-font.css",
+          "012-inline.css"
+        ],
+        "sourceBytes": 534493,
+        "bundleBytes": 534827
+      },
+      {
+        "name": "020-core-fixes.css",
+        "note": "لایه‌های اصلاحی هسته (چیدمان، موبایل، پیش‌فرض‌ها)",
+        "sources": [
+          "013-inline.css",
+          "014-inline.css",
+          "015-inline.css",
+          "016-inline.css",
+          "017-inline.css",
+          "018-inline.css",
+          "019-inline.css",
+          "020-inline.css",
+          "021-inline.css",
+          "022-inline.css",
+          "023-inline.css",
+          "026-inline.css",
+          "027-inline.css",
+          "028-inline.css",
+          "030-inline.css",
+          "031-inline.css",
+          "032-inline.css",
+          "033-inline.css",
+          "034-inline.css",
+          "035-inline.css",
+          "036-inline.css",
+          "037-inline.css",
+          "038-inline.css",
+          "039-inline.css",
+          "040-inline.css",
+          "041-hesabno-light-balance.css",
+          "042-hesabno-tab-motion.css"
+        ],
+        "sourceBytes": 34640,
+        "bundleBytes": 35973
+      },
+      {
+        "name": "030-light-settings-fixes.css",
+        "note": "اصلاحات حالت روشن و تنظیمات (044 و 045؛ 043 عمداً جدا است)",
+        "sources": [
+          "044-hesabno-light-settings-accounts.css",
+          "045-hesabno-light-settings-divider-lines.css"
+        ],
+        "sourceBytes": 718,
+        "bundleBytes": 1116
+      },
+      {
+        "name": "040-settings-and-validation.css",
+        "note": "تنظیمات، هشدارهای اعتبارسنجی، فریم‌های اعلان و پانویس‌ها",
+        "sources": [
+          "046-hesabno-settings-cards-notification-tabs.css",
+          "047-hesabno-inline-check-alert-options.css",
+          "048-hesabno-toast-and-notification-badge-fix.css",
+          "049-hesabno-mobile-typography.css",
+          "050-hesabno-project-family-management.css",
+          "051-hesabno-final-polish.css",
+          "052-hesabno-full-page-side-motion.css",
+          "053-hesabno-account-picker-fullscreen.css",
+          "054-hesabno-inline-validation-warnings.css",
+          "055-hesabno-inline-validation-warnings-v2.css",
+          "056-hesabno-inline-validation-warnings-v3.css",
+          "057-hesabno-account-header-light-mode.css",
+          "058-hesabno-fullscreen-selection-modals.css",
+          "060-hesabno-accessibility-fixes.css",
+          "062-hesabno-stable-page-geometry.css",
+          "063-hesabno-modal-on-top.css",
+          "064-hesabno-semantic-footnotes.css"
+        ],
+        "sourceBytes": 44659,
+        "bundleBytes": 46423
+      },
+      {
+        "name": "050-late-legacy-overrides.css",
+        "note": "بازنویسی‌های پایانی دوره‌ی قدیم (۹۰۰–۹۷۰) که پیش از لایه‌ی ۲۳۵ لینک شده‌اند",
+        "sources": [
+          "900-light-theme-contrast.css",
+          "950-amount-box-height.css",
+          "960-sticky-submit.css",
+          "965-bank-form-sticky-footer.css",
+          "970-note-textarea.css"
+        ],
+        "sourceBytes": 3118,
+        "bundleBytes": 3687
+      },
+      {
+        "name": "060-reports-and-motion.css",
+        "note": "گزارش‌ها، نمودارها و لایه‌های حرکت/پایداری حرکت",
+        "sources": [
+          "081-hesabno-reversal-and-light-meta.css",
+          "082-hesabno-report-light-header.css",
+          "083-hesabno-chart-edge-tooltip.css",
+          "084-hesabno-chart-tooltip-default.css",
+          "085-hesabno-trial-balance-layout.css",
+          "086-hesabno-document-catalog-picker.css",
+          "088-hesabno-report-chart-colors.css",
+          "089-hesabno-fixed-dashboard-styles.css",
+          "097-hesabno-account-statement-styles.css",
+          "100-hesabno-transaction-day-header-styles.css",
+          "103-hesabno-blur-override.css",
+          "123-hesabno-slower-motion.css",
+          "124-hesabno-motion-stability.css",
+          "125-hesabno-motion-performance.css",
+          "126-hesabno-compact-widget-actions-style.css",
+          "141-hesabno-restore-transaction-check-status.css",
+          "149-hesabno-today-transactions-style.css",
+          "151-hesabno-period-transaction-presentation-style.css"
+        ],
+        "sourceBytes": 42550,
+        "bundleBytes": 44343
+      },
+      {
+        "name": "070-report-layouts.css",
+        "note": "چیدمان گزارش‌ها، صورتحساب و جداول تفصیلی",
+        "sources": [
+          "153-hesabno-signed-money-direction.css",
+          "155-hesabno-account-statement-transaction-styles.css",
+          "157-hesabno-dashboard-category-account-icons.css",
+          "158-hesabno-dashboard-category-widget-compact.css",
+          "161-hesabno-category-report-account-icons-style.css",
+          "163-hesabno-financial-resources-report-style.css",
+          "165-hesabno-daily-report-presentation-style.css",
+          "167-hesabno-balance-report-remove-extra-descriptions.css",
+          "169-hesabno-balance-detail-codes-and-panel.css",
+          "172-hesabno-statement-picker-remove-helper-copy.css",
+          "174-hesabno-report-account-picker-copy-styles.css",
+          "176-hesabno-detail-column-chart-layout.css",
+          "178-hesabno-global-breakdown-copy-layout.css",
+          "180-hesabno-advanced-reports-no-search.css",
+          "181-hesabno-hide-subsidiary-account-codes-global.css",
+          "183-hesabno-report-selection-label-spacing.css",
+          "185-hesabno-account-statement-frame-and-column-alignme.css"
+        ],
+        "sourceBytes": 20675,
+        "bundleBytes": 22702
+      },
+      {
+        "name": "080-report-cleanups.css",
+        "note": "پاک‌سازی‌ها و اصلاحات پایانی گزارش‌ها و دسترسی‌پذیری",
+        "sources": [
+          "187-hesabno-summary-account-statement-cleanup-styles.css",
+          "196-hesabno-installment-purchase-cleanup.css",
+          "199-hesabno-menu-accessibility-styles.css",
+          "206-hesabno-day-line-style.css",
+          "209-hesabno-hide-user-and-fast-tabs.css",
+          "210-hesabno-motion.css",
+          "222-hesabno-report-account-detail-layout.css",
+          "224-hesabno-date-action-contrast.css"
+        ],
+        "sourceBytes": 12166,
+        "bundleBytes": 13099
+      }
+    ]
+  },
+  "bytes": {
+    "before": 698432,
+    "after": 707583,
+    "addedComments": 9150
+  },
+  "appearanceLayer": {
+    "source": "task-12",
+    "inBundle": "235-hesabno-text-root-and-display-stability.css",
+    "note": "هر مقدار بصری در یک لایه؛ JS فقط کلاس معنایی می‌گذارد.",
+    "bytes": 131726,
+    "rules": 610
+  },
+  "currentState": {
+    "files": 10,
+    "hash": "a9ac9af1460a8e46eeb9593506220e8c5297b61d8fa98be12b4c31db6766e1cd",
+    "note": "وضعیت امروز روی دیسک: ادغام بی‌افت (۲۷۳۶ قاعده) + لایهٔ ظاهر (455 قاعده).",
+    "rules": 3346,
+    "bytes": 837577
+  },
+  "generatedAt": "2026-10-18T19:35:25.231Z"
+}

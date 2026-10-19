@@ -209,7 +209,7 @@
     var schedule = function () {
       if (pending) return;
       pending = true;
-      window.setTimeout(function () { pending = false; sync(); }, 0);
+      Promise.resolve().then(function () { pending = false; sync(); });
     };
     document.addEventListener("click", function (event) {
       var button = event.target && event.target.closest ? event.target.closest("button") : null;

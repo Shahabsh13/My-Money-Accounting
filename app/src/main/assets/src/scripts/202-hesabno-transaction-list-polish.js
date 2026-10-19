@@ -13,17 +13,7 @@
     };
     var documentNumber = function (item) { return item && (item.documentNumber || item.id); };
     var sameReference = function (left, right) { return left != null && right != null && latin(left).trim() === latin(right).trim(); };
-    var style = document.createElement("style");
-    style.textContent =
-      "html[data-theme='light'] [data-hesabno-correction-link-row]{display:flex!important;align-items:center!important;justify-content:flex-start!important;direction:rtl!important;gap:6px!important;margin-inline-start:auto!important;color:#4c1d95!important;background:#f3e8ff!important;border:1px solid #c4b5fd!important;border-radius:8px!important;padding:3px 6px!important}" +
-      "html[data-theme='light'] [data-hesabno-correction-link-row] svg{color:#6d28d9!important}" +
-      "html[data-theme='light'] [data-hesabno-correction-link-row] button{color:#fff!important;background:#6d28d9!important;border:1px solid #5b21b6!important;border-radius:6px!important}" +
-      "html[data-theme='light'] [data-hesabno-correction-link-row] button:hover,html[data-theme='light'] [data-hesabno-correction-link-row] button:active{color:#fff!important;background:#4c1d95!important;border-color:#4c1d95!important}" +
-      "html[data-theme='light'] article[id^='tx-card-'] button[data-hesabno-check-correction-link]{color:#fff!important;background:#5b21b6!important;border:1px solid #4c1d95!important;box-shadow:0 1px 3px rgba(76,29,149,.24)!important}" +
-      "html[data-theme='light'] article[id^='tx-card-'] button[data-hesabno-check-correction-link]:hover,html[data-theme='light'] article[id^='tx-card-'] button[data-hesabno-check-correction-link]:active,html[data-theme='light'] article[id^='tx-card-'] button[data-hesabno-check-correction-link]:focus-visible{color:#fff!important;background:#3b0764!important;border-color:#3b0764!important;outline:2px solid #a78bfa!important;outline-offset:1px!important}" +
-      "html[data-theme='dark'] article[id^='tx-card-'] button[data-hesabno-check-correction-link]{color:#faf5ff!important;background:#6d28d9!important;border:1px solid #c4b5fd!important}" +
-      "html[data-theme='dark'] article[id^='tx-card-'] button[data-hesabno-check-correction-link]:hover,html[data-theme='dark'] article[id^='tx-card-'] button[data-hesabno-check-correction-link]:active,html[data-theme='dark'] article[id^='tx-card-'] button[data-hesabno-check-correction-link]:focus-visible{color:#fff!important;background:#5b21b6!important;border-color:#ddd6fe!important;outline:2px solid #a78bfa!important;outline-offset:1px!important}";
-    (document.head || document.documentElement).appendChild(style);
+    /* ظاهر ردیف لینک سند اصلاحی و نشان‌های چک برگشتی در بستهٔ ۲۳۵ (لایهٔ ظاهر) قرار دارد. */
     var mergeGroups = function (first, second) {
       var firstHeader = first.querySelector(":scope > .hesabno-transaction-day-header");
       var secondHeader = second.querySelector(":scope > .hesabno-transaction-day-header");
@@ -138,10 +128,22 @@
         metadata.style.setProperty("direction", "rtl", "important");
         metadata.style.setProperty("column-gap", "6px", "important");
         if (link.parentElement !== metadata) metadata.appendChild(link);
-        if (sourceLink && sourceLink.parentElement !== metadata) {
-          sourceLink.parentElement.style.display = "none";
-          sourceLink.parentElement.setAttribute("aria-hidden", "true");
+        if (sourceLink && sourceLink !== link) {
+          if (sourceLink.parentElement !== metadata) {
+            sourceLink.parentElement.style.display = "none";
+            sourceLink.parentElement.setAttribute("aria-hidden", "true");
+          } else {
+            sourceLink.setAttribute("data-hesabno-metadata-duplicate", "true");
+            sourceLink.setAttribute("aria-hidden", "true");
+            sourceLink.tabIndex = -1;
+          }
         }
+        metadata.querySelectorAll("button[data-hesabno-footnote-kind='corrected']").forEach(function (button) {
+          if (button === link) return;
+          button.setAttribute("data-hesabno-metadata-duplicate", "true");
+          button.setAttribute("aria-hidden", "true");
+          button.tabIndex = -1;
+        });
         article.querySelectorAll("button").forEach(function (button) {
           if (button === link || !/^سند اصلاحی\s*#/u.test(clean(button.textContent))) return;
           if (!button.hasAttribute("data-hesabno-check-correction-original-display")) {
@@ -179,8 +181,7 @@
           if (!canceled) {
             canceled = document.createElement("span");
             canceled.setAttribute("data-hesabno-returned-effect", "true");
-            canceled.className = "rounded-md border px-1.5 py-0.5 text-[9px] font-black";
-            canceled.style.cssText = "flex:0 0 auto;border-color:#fda4af;background:#fff1f2;color:#b4233a";
+            canceled.className = "rounded-md border px-1.5 py-0.5 text-[9px] font-black hesabno-returned-effect-chip";
             row.appendChild(canceled);
           }
           var paidAmount = items.filter(function (entry) {
@@ -197,8 +198,7 @@
           if (!correction) {
             correction = document.createElement("span");
             correction.setAttribute("data-hesabno-returned-correction", "true");
-            correction.className = "rounded-md border px-1.5 py-0.5 text-[9px] font-bold";
-            correction.style.cssText = "flex:0 1 auto;max-width:48%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border-color:#c4b5fd;background:#f3e8ff;color:#5b21b6";
+            correction.className = "rounded-md border px-1.5 py-0.5 text-[9px] font-bold hesabno-returned-correction-chip";
             row.appendChild(correction);
           }
           var correctionText = "اصلاحیه " + (item.check.correctionDate || "") + (item.check.correctionDescription ? " · " + item.check.correctionDescription : "");
@@ -227,8 +227,7 @@
             paymentLink = document.createElement("button");
             paymentLink.type = "button";
             paymentLink.setAttribute("data-hesabno-check-replacement-link", "true");
-            paymentLink.className = "shrink-0 rounded-md border px-1.5 py-0.5 text-[9px] font-bold";
-            paymentLink.style.cssText = "border-color:#7dd3fc;background:#e0f2fe;color:#075985";
+            paymentLink.className = "shrink-0 rounded-md border px-1.5 py-0.5 text-[9px] font-bold hesabno-check-replacement-chip";
             paymentLink.addEventListener("click", function (event) {
               event.preventDefault();
               event.stopPropagation();
@@ -260,8 +259,8 @@
     var schedule = function () {
       if (queued) return;
       queued = true;
-      window.requestAnimationFrame(sync);
+      Promise.resolve().then(sync);
     };
     sync();
-    if (document.body) new MutationObserver(schedule).observe(document.body, { childList: true, characterData: true, subtree: true });
+    if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, characterData: true, subtree: true }, schedule);
   })();

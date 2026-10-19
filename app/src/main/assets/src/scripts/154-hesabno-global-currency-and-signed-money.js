@@ -59,6 +59,10 @@
         });
         document.querySelectorAll("span,p,strong,b,small,div,button,li,td,th,label").forEach(function (node) {
           if (isRaw(node) || isCurrencyChoice(node, node.textContent)) return;
+          if (node.querySelector("svg,img,p,div,button")) {
+            if (node.hasAttribute("data-hesabno-money-rtl")) node.removeAttribute("data-hesabno-money-rtl");
+            return;
+          }
           // هر دو عبارت منظم علامت (+ − – یا -) لازم دارند؛ اگر متن علامت ندارد، خواندن innerText (که باعث چیدمان می‌شود) لازم نیست
           if (!/[+\-−–]/.test(node.textContent)) return;
           var text = clean(node.innerText || node.textContent);
@@ -70,9 +74,9 @@
             text = reordered;
           }
           if (signedAmount.test(text)) {
-            node.removeAttribute("data-hesabno-money-ltr");
-            node.setAttribute("data-hesabno-money-rtl", "true");
-            node.setAttribute("dir", "rtl");
+            if (node.hasAttribute("data-hesabno-money-ltr")) node.removeAttribute("data-hesabno-money-ltr");
+            if (node.getAttribute("data-hesabno-money-rtl") !== "true") node.setAttribute("data-hesabno-money-rtl", "true");
+            if (node.getAttribute("dir") !== "rtl") node.setAttribute("dir", "rtl");
           }
         });
       };
@@ -83,18 +87,13 @@
         window.queueMicrotask(function () { queued = false; sync(); });
       };
       sync();
-      if (document.body) new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true, characterData: true });
+      if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true, characterData: true }, schedule);
       window.addEventListener("storage", function (event) { if (!event.key || event.key === currencyKey) schedule(); });
+      /* به‌جای پیچیدن Storage.prototype.setItem، مشترک نگهبان نوشتن می‌شود (مرحله ۶.۲) */
       try {
-        var originalSetItem = Storage.prototype.setItem;
-        if (!originalSetItem.__hesabnoCurrencySync) {
-          var wrappedSetItem = function (key, value) {
-            var result = originalSetItem.call(this, key, value);
-            if (key === currencyKey) schedule();
-            return result;
-          };
-          wrappedSetItem.__hesabnoCurrencySync = true;
-          Storage.prototype.setItem = wrappedSetItem;
+        var writeGuard = window.__hesabnoStorageGuard;
+        if (writeGuard && typeof writeGuard.onWrite === "function") {
+          writeGuard.onWrite(function (change) { if (change.key === currencyKey) schedule(); });
         }
       } catch (error) {}
     })();

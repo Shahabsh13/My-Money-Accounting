@@ -402,7 +402,9 @@
           var attachmentInput = accountView.querySelector("[data-hesabno-return-attachment-input]");
           var attachmentPreview = accountView.querySelector("[data-hesabno-return-attachment-preview]");
           var attachmentError = accountView.querySelector("[data-hesabno-return-attachment-error]");
-          var attachment = editPayment && editPayment.attachment ? String(editPayment.attachment) : "";
+          var attachment = editPayment && editPayment.attachment
+            ? (window.__hesabnoResolveAttachment ? window.__hesabnoResolveAttachment(String(editPayment.attachment)) : String(editPayment.attachment))
+            : "";
           var attachmentName = editPayment && editPayment.attachmentName ? String(editPayment.attachmentName) : "";
           var attachmentLoading = false;
           var renderAttachment = function () {
@@ -442,6 +444,27 @@
             if (!file) return;
             if (!/^image\//i.test(file.type || "")) { attachmentError.textContent = "فقط فایل تصویری انتخاب کنید."; attachmentError.classList.remove("hidden"); attachmentInput.value = ""; return; }
             attachmentError.classList.add("hidden"); attachmentLoading = true; accountSaveButton.disabled = true;
+            if (typeof window.__hesabnoReadAndCompressImage === "function") {
+              window.__hesabnoReadAndCompressImage(
+                file,
+                function (compressed) {
+                  if (typeof compressed === "string" && compressed) {
+                    attachment = compressed;
+                    attachmentName = file.name || "تصویر فیش";
+                    renderAttachment();
+                  }
+                  attachmentLoading = false;
+                  accountSaveButton.disabled = !accounts.length || remaining <= 0;
+                },
+                function () {
+                  attachmentLoading = false;
+                  accountSaveButton.disabled = !accounts.length || remaining <= 0;
+                  attachmentError.textContent = "خواندن تصویر انجام نشد؛ دوباره تلاش کنید.";
+                  attachmentError.classList.remove("hidden");
+                }
+              );
+              return;
+            }
             var reader = new FileReader();
             reader.onload = function () { if (typeof reader.result === "string") { attachment = reader.result; attachmentName = file.name || "تصویر فیش"; renderAttachment(); } attachmentLoading = false; accountSaveButton.disabled = !accounts.length || remaining <= 0; };
             reader.onerror = function () { attachmentLoading = false; accountSaveButton.disabled = !accounts.length || remaining <= 0; attachmentError.textContent = "خواندن تصویر انجام نشد؛ دوباره تلاش کنید."; attachmentError.classList.remove("hidden"); };
@@ -530,7 +553,10 @@
              var amount = Number(String(paymentAmount.value || "").replace(/[۰-۹]/g, function (digit) { return String("۰۱۲۳۴۵۶۷۸۹".indexOf(digit)); }).replace(/[^0-9]/g, "")) * currencyFactor;
              if (!amount || amount > remaining) { paymentError.textContent = "مبلغ باید بیشتر از صفر و حداکثر برابر ماندهٔ بدهی باشد."; paymentError.classList.remove("hidden"); return; }
               if (attachmentLoading) { paymentError.textContent = "لطفاً تا پایان بارگذاری تصویر صبر کنید."; paymentError.classList.remove("hidden"); return; }
-              var details = { notes: accountView.querySelector("[data-hesabno-return-payment-notes]").value, attachment: attachment, attachmentName: attachmentName };
+              var storedAttachment = attachment && typeof window.__hesabnoSaveAttachment === "function"
+                ? window.__hesabnoSaveAttachment(attachment)
+                : attachment;
+              var details = { notes: accountView.querySelector("[data-hesabno-return-payment-notes]").value, attachment: storedAttachment, attachmentName: attachmentName };
               var saved = active.editingPaymentId
                 ? saveReplacementPaymentEdit(active.editingPaymentId, select.value, paymentDate.value, amount, details)
                 : window.__hesabnoResolveReturnedCheck(active.transactionId, "account", select.value, paymentDate.value, amount, "", details);

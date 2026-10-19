@@ -33,10 +33,42 @@
     var activeMain = null;
     var activeMode = null;
     var previewObserver = null;
+    var markFieldInvalid = function (field, isInvalid) {
+      if (!field) return;
+      if (isInvalid) {
+        field.setAttribute("aria-invalid", "true");
+        field.setAttribute("data-hesabno-invalid", "true");
+        field.classList.add("border-rose-500/80", "bg-rose-500/5", "ring-1", "ring-rose-500/30");
+      } else {
+        field.removeAttribute("aria-invalid");
+        field.removeAttribute("data-hesabno-invalid");
+        field.classList.remove("border-rose-500/80", "bg-rose-500/5", "ring-1", "ring-rose-500/30");
+      }
+    };
+    var syncSubmittedInvalidFields = function (main, fields) {
+      if (!main || main.dataset.hesabnoSubmitAttempted !== "true") return;
+      var requiredInputs = Array.from(main.querySelectorAll("input[required], textarea[required], select[required]"));
+      requiredInputs.forEach(function (inp) {
+        if (fields && inp === fields.count) {
+          var countBad = main.dataset.hesabnoManualCountEntered !== "true" || !amount(inp.value);
+          markFieldInvalid(inp, countBad);
+          return;
+        }
+        if (fields && inp === fields.installment) {
+          var instBad = main.dataset.hesabnoManualInstallmentEntered !== "true" || !amount(inp.value);
+          markFieldInvalid(inp, instBad);
+          return;
+        }
+        var isNumeric = inp.getAttribute("dir") === "ltr" || (inp.className && inp.className.indexOf("font-mono") !== -1);
+        var bad = isNumeric ? !amount(inp.value) : !clean(inp.value);
+        markFieldInvalid(inp, bad);
+      });
+    };
     var resetSession = function (main) {
       if (!main) return;
       main.dataset.hesabnoManualCountEntered = "false";
       main.dataset.hesabnoManualInstallmentEntered = "false";
+      main.dataset.hesabnoSubmitAttempted = "false";
       var error = main.querySelector("[data-hesabno-loan-installments-error]");
       if (error) error.remove();
     };
@@ -46,6 +78,7 @@
       if (!fields) return;
       if (main.dataset.hesabnoManualCountEntered !== "true") setRaw(fields.count, "");
       if (main.dataset.hesabnoManualInstallmentEntered !== "true") setRaw(fields.installment, "");
+      syncSubmittedInvalidFields(main, fields);
       var rows = Array.from(main.querySelectorAll("div")).filter(function (node) { return node.children.length === 2; });
       var installmentPreview = rows.find(function (node) { return node.children[0] && clean(node.children[0].textContent).startsWith("مبلغ هر قسط:"); });
       var countEntered = main.dataset.hesabnoManualCountEntered === "true";
@@ -110,8 +143,9 @@
         activeMode = fields.purchase ? "create" : clean(fields.name.value) ? "edit" : "create";
         resetSession(main);
         if (activeMode === "create") {
-          previewObserver = new MutationObserver(function () { clearUntouched(main); });
-          previewObserver.observe(main, { childList: true, subtree: true, characterData: true });
+          /* لایه‌ی مشترک MutationObserver (مرحله ۴): هدف، عنصر main است (گره‌ی غیریکتا؛ کلید
+             رجیستری با WeakMap روی خودِ گره ساخته می‌شود تا به گره‌ی اشتباه وصل نشود). */
+          previewObserver = window.__hesabnoDom.watch(main, { childList: true, subtree: true, characterData: true }, function () { clearUntouched(main); });
         }
       }
       if (activeMode !== "create") return;
@@ -120,8 +154,9 @@
         main.addEventListener("input", function (event) {
           var live = findFields(main);
           if (!live) return;
-          if (event.isTrusted && event.target === live.count) main.dataset.hesabnoManualCountEntered = amount(live.count.value) ? "true" : "false";
-          if (event.isTrusted && event.target === live.installment) main.dataset.hesabnoManualInstallmentEntered = amount(live.installment.value) ? "true" : "false";
+          if (event.target === live.count) main.dataset.hesabnoManualCountEntered = amount(live.count.value) ? "true" : "false";
+          if (event.target === live.installment) main.dataset.hesabnoManualInstallmentEntered = amount(live.installment.value) ? "true" : "false";
+          syncSubmittedInvalidFields(main, live);
           if (event.target.matches("input, select, textarea")) scheduleClear(main);
           if (main.dataset.hesabnoManualCountEntered === "true" && main.dataset.hesabnoManualInstallmentEntered === "true") {
             var error = main.querySelector("[data-hesabno-loan-installments-error]");
@@ -139,12 +174,10 @@
       var button = event.target && event.target.closest ? event.target.closest("button") : null;
       var fields = findFields(main);
       if (!button || !fields || button !== fields.submit || activeMain !== main || activeMode !== "create") return;
-      if (showError(main, fields)) {
-        event.preventDefault();
-        event.stopPropagation();
-        event.stopImmediatePropagation();
-      }
+      main.dataset.hesabnoSubmitAttempted = "true";
+      syncSubmittedInvalidFields(main, fields);
+      showError(main, fields);
     }, true);
     sync();
-    if (document.body) new MutationObserver(sync).observe(document.body, { childList: true, subtree: true });
+    if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, sync);
   })();

@@ -12,7 +12,7 @@
       if (clean(node.textContent) === "هیچ حساب بانکی تعریف نشده است.") node.textContent = "هنوز حساب بانکی تعریف نشده است؛ از بخش حساب‌ها بانک خود را اضافه کنید.";
     });
     document.querySelectorAll(".fixed.inset-0").forEach(function (overlay) {
-      var text = clean(overlay.innerText);
+      var text = clean(overlay.innerText || overlay.textContent);
       var isProject = text.indexOf("انتخاب پروژه") !== -1;
       var isFamily = text.indexOf("انتخاب عضو خانواده") !== -1;
       if (!isProject && !isFamily) return;
@@ -32,5 +32,5 @@
     });
   };
   enhance();
-  if (document.body) new MutationObserver(enhance).observe(document.body, { childList: true, subtree: true });
+  if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, enhance);
 })();

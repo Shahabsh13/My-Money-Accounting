@@ -19,14 +19,17 @@
       if (!page) return;
       Array.from(page.querySelectorAll("p")).forEach(function (paragraph) {
         var text = clean(paragraph.textContent);
-        if (text === headerDescription || cardDescriptions.has(text)) paragraph.dataset.hesabnoBalanceReportExtraDescription = "true";
+        if ((text === headerDescription || cardDescriptions.has(text)) && paragraph.dataset.hesabnoBalanceReportExtraDescription !== "true") {
+          paragraph.dataset.hesabnoBalanceReportExtraDescription = "true";
+        }
       });
     };
     var frame = 0;
     var schedule = function () {
       if (frame) return;
-      frame = requestAnimationFrame(function () { frame = 0; hideDescriptions(); });
+      frame = 1;
+      Promise.resolve().then(function () { frame = 0; hideDescriptions(); });
     };
     hideDescriptions();
-    if (document.body) new MutationObserver(schedule).observe(document.body, { childList: true, characterData: true, subtree: true });
+    if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, characterData: true, subtree: true }, schedule);
   })();

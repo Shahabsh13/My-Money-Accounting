@@ -10,14 +10,16 @@
         if (!section) return;
         var toggle = section.querySelector("button");
         if (isCheckForm && toggle && String(toggle.className || "").includes("bg-emerald-500")) toggle.click();
-        section.style.display = isCheckForm ? "none" : "";
-        section.setAttribute("data-hesabno-check-fee-section", isCheckForm ? "hidden" : "visible");
+        var nextDisplay = isCheckForm ? "none" : "";
+        if (section.style.display !== nextDisplay) section.style.display = nextDisplay;
+        var nextState = isCheckForm ? "hidden" : "visible";
+        if (section.getAttribute("data-hesabno-check-fee-section") !== nextState) section.setAttribute("data-hesabno-check-fee-section", nextState);
       });
     };
     var schedule = function () {
       if (scheduled) return;
       scheduled = true;
-      window.setTimeout(sync, 0);
+      Promise.resolve().then(sync);
     };
     sync();
     document.addEventListener("click", schedule, true);

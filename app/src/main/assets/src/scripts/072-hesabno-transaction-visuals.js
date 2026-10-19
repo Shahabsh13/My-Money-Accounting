@@ -17,5 +17,5 @@
     });
   }
   bindToasts();
-  if (document.body) new MutationObserver(bindToasts).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
+  if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] }, bindToasts);
 })();

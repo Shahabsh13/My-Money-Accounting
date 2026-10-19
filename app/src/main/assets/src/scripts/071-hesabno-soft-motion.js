@@ -55,7 +55,7 @@
 
   function markTabs() {
     document.querySelectorAll('button').forEach(function (button) {
-      if (isNavigationControl(button)) button.classList.add('hesabno-tab-motion');
+      if (isNavigationControl(button) && !button.classList.contains('hesabno-tab-motion')) button.classList.add('hesabno-tab-motion');
     });
   }
 
@@ -68,11 +68,14 @@
         element.classList.add('hesabno-toast-motion');
       } else if (classes.indexOf('inset-0') !== -1 || classes.indexOf('z-40') !== -1) {
         element.classList.add('hesabno-overlay-motion');
-        var dialog = Array.from(element.querySelectorAll('div')).find(function (child) {
-          var rect = child.getBoundingClientRect();
-          return rect.width > 260 && rect.height > 120 && typeof child.className === 'string' && child.className.indexOf('rounded') !== -1;
-        });
-        if (dialog) dialog.classList.add('hesabno-dialog-motion');
+        /* فقط خودِ دیالوگ انیمیشن بگیرد؛ قبلاً اولین «div بزرگ گردگوشه» داخل لایه
+           انتخاب می‌شد که اغلب یک کارت داخلی بود و بعد از نقاشی، ۱۲px/۳٪ جابه‌جا می‌شد. */
+        var dialog = element.querySelector('[role="dialog"]');
+        if (!dialog) {
+          var child = element.firstElementChild;
+          if (child && child.tagName === 'DIV' && typeof child.className === 'string' && child.className.indexOf('rounded') !== -1) dialog = child;
+        }
+        if (dialog && !/(^|\s)hesabno-dialog-motion(\s|$)/.test(String(dialog.className || ''))) dialog.classList.add('hesabno-dialog-motion');
       }
     });
   }
@@ -122,7 +125,9 @@
   function scheduleMotion() {
     if (motionQueued) return;
     motionQueued = true;
-    requestAnimationFrame(function () { motionQueued = false; enhance(); });
+    /* microtask: کلاس انیمیشن پیش از اولین نقاشیِ همان فریم ست می‌شود؛ با rAF،
+       لایه یک فریم کامل دیده می‌شد و بعد از جا شروع به حرکت می‌کرد. */
+    Promise.resolve().then(function () { motionQueued = false; enhance(); });
   }
-  if (document.body) new MutationObserver(scheduleMotion).observe(document.body, { childList: true, subtree: true });
+  if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, scheduleMotion);
 })();

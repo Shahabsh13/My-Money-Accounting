@@ -29,6 +29,19 @@
    };
    ensure("اسناد دریافتنی", "asset", "106");
    ensure("اسناد پرداختنی", "liability", "206");
+    /* نگهبان مهاجرت (۶.۰): سه نوشتن با هم اتمی می‌شوند؛ اگر یکی شکست بخورد، همه بازگردانی می‌شوند */
+    if (window.__hesabnoMigration) {
+      window.__hesabnoMigration.run(
+        "094-check-system-accounts",
+        ["hesabno:accounts_v5", "hesabno:accounts", key],
+        function (db) {
+          db.set("hesabno:accounts_v5", JSON.stringify(accounts));
+          db.set("hesabno:accounts", JSON.stringify(accounts));
+          db.set(key, "done");
+        }
+      );
+      return;
+    }
     set("hesabno:accounts_v5", JSON.stringify(accounts));
     set("hesabno:accounts", JSON.stringify(accounts));
     set(key, "done");

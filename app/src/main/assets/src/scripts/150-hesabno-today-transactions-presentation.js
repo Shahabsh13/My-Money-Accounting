@@ -15,8 +15,8 @@
       };
       var hide = function (element) {
         if (!element) return;
-        element.setAttribute("data-hesabno-today-hidden", "true");
-        element.setAttribute("aria-hidden", "true");
+        if (element.getAttribute("data-hesabno-today-hidden") !== "true") element.setAttribute("data-hesabno-today-hidden", "true");
+        if (element.getAttribute("aria-hidden") !== "true") element.setAttribute("aria-hidden", "true");
       };
       var sync = function () {
         var list = accounts();
@@ -41,15 +41,16 @@
             var categoryPart = group === "expense" ? parts[2] : parts[0];
             var arrowPart = parts[1];
             var picture = pictureFor(categoryPart.textContent, group, list);
-            if (picture) icon.setAttribute("data-hesabno-today-category-icon", picture);
-            else icon.removeAttribute("data-hesabno-today-category-icon");
+            if (picture) {
+              if (icon.getAttribute("data-hesabno-today-category-icon") !== picture) icon.setAttribute("data-hesabno-today-category-icon", picture);
+            } else if (icon.hasAttribute("data-hesabno-today-category-icon")) icon.removeAttribute("data-hesabno-today-category-icon");
             hide(titleLine && Array.from(titleLine.children).find(function (child) {
               return child.tagName === "SPAN" && child.textContent.trim().charAt(0) === "#";
             }));
             hide(categoryPart);
             hide(arrowPart);
-            paymentLine.setAttribute("data-hesabno-today-payment", group);
-            if (accountPart) accountPart.style.color = "#a8a29e";
+            if (paymentLine.getAttribute("data-hesabno-today-payment") !== group) paymentLine.setAttribute("data-hesabno-today-payment", group);
+            if (accountPart && accountPart.style.color !== "rgb(168, 162, 158)" && accountPart.style.color !== "#a8a29e") accountPart.style.color = "#a8a29e";
             var amountLine = row.children[2];
             var lines = amountLine ? Array.from(amountLine.children).filter(function (child) { return child.tagName === "P"; }) : [];
             hide(lines[lines.length - 1]);
@@ -63,6 +64,6 @@
         Promise.resolve().then(function () { queued = false; sync(); });
       };
       sync();
-      if (document.body) new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true, characterData: true });
+      if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true, characterData: true }, schedule);
       window.addEventListener("storage", schedule);
     })();

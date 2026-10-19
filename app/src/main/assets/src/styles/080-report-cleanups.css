@@ -1,0 +1,199 @@
+/* بسته‌ی 080-report-cleanups.css | پاک‌سازی‌ها و اصلاحات پایانی گزارش‌ها و دسترسی‌پذیری
+   ادغام 8 فایل با همان ترتیب آبشار: 187-hesabno-summary-account-statement-cleanup-styles.css 196-hesabno-installment-purchase-cleanup.css 199-hesabno-menu-accessibility-styles.css 206-hesabno-day-line-style.css 209-hesabno-hide-user-and-fast-tabs.css 210-hesabno-motion.css 222-hesabno-report-account-detail-layout.css 224-hesabno-date-action-contrast.css */
+/* = 187-hesabno-summary-account-statement-cleanup-styles.css = */
+#root main [data-hesabno-summary-header="true"] h1 {
+      flex-wrap: nowrap !important;
+      white-space: nowrap !important;
+    }
+    #root main [data-hesabno-summary-change-account="true"] {
+      flex: 0 0 auto !important;
+      flex-wrap: nowrap !important;
+      white-space: nowrap !important;
+      font-size: 9px !important;
+      line-height: 1.2 !important;
+      padding: 3px 6px !important;
+    }
+    #root main [data-hesabno-summary-change-account="true"] > span {
+      white-space: nowrap !important;
+    }
+    .hesabno-summary-account-icon {
+      flex: 0 0 auto;
+      font-size: 13px;
+      line-height: 1;
+    }
+    .hesabno-summary-account-name {
+      display: block;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    #root main [data-hesabno-summary-statement-rows="true"] {
+      border-radius: 14px !important;
+      overflow: hidden !important;
+    }
+/* = 196-hesabno-installment-purchase-cleanup.css = */
+[data-hesabno-optional-store-provider-field="true"] { display: none !important; }
+/* = 199-hesabno-menu-accessibility-styles.css = */
+main section[data-hesabno-profile-button]:focus-visible{outline:3px solid #168267;outline-offset:3px}
+/* = 206-hesabno-day-line-style.css = */
+main div.sticky:has(> div > .hesabno-transaction-day-date), main div.sticky.hesabno-transaction-day-header, main div.sticky.hesabno-day-line{border:0!important;box-shadow:none!important;display:flex!important;align-items:center!important;gap:10px!important;padding:8px 12px!important;backdrop-filter:none!important;border-radius:.9rem!important}
+main div.sticky:has(> div > .hesabno-transaction-day-date) .hesabno-transaction-day-count, main div.sticky.hesabno-transaction-day-header .hesabno-transaction-day-count, main div.sticky.hesabno-day-line .hesabno-transaction-day-count, main div.sticky:has(> div > .hesabno-transaction-day-date) .hesabno-transaction-day-total, main div.sticky.hesabno-transaction-day-header .hesabno-transaction-day-total, main div.sticky.hesabno-day-line .hesabno-transaction-day-total{display:none!important}
+main div.sticky:has(> div > .hesabno-transaction-day-date) .hesabno-transaction-day-date, main div.sticky.hesabno-transaction-day-header .hesabno-transaction-day-date, main div.sticky.hesabno-day-line .hesabno-transaction-day-date{font-weight:700!important;font-size:13px!important;color:#64748b!important;white-space:nowrap!important;background:none!important;padding:0!important}
+.hesabno-day-rule{flex:1 1 auto;height:1px;background:rgba(100,116,139,.35);min-width:20px}
+.hesabno-day-balance{font-size:12px;font-weight:700;white-space:nowrap;color:#a16207}
+.hesabno-day-balance.neg{color:#dc2626}
+html[data-theme="dark"] main div.sticky:has(> div > .hesabno-transaction-day-date) .hesabno-transaction-day-date, html[data-theme="dark"] main div.sticky.hesabno-transaction-day-header .hesabno-transaction-day-date, html[data-theme="dark"] main div.sticky.hesabno-day-line .hesabno-transaction-day-date{color:#cbd5e1!important}
+html[data-theme="dark"] .hesabno-day-rule{background:rgba(148,163,184,.34)}
+html[data-theme="dark"] .hesabno-day-balance{color:#fbbf24}
+html[data-theme="dark"] .hesabno-day-balance.neg{color:#f87171}
+/* = 209-hesabno-hide-user-and-fast-tabs.css = */
+.hesabno-tab-shell,
+main.hesabno-page-enter,
+main.hesabno-page-open-up,
+main.hesabno-tab-horizontal-in,
+main.hesabno-content-swap{animation:none!important}
+/* = 210-hesabno-motion.css = */
+/* ── حرکت‌ها: لایه‌های ۲۱۰ (تمام‌صفحه)، ۲۱۵ (تب خانه)، ۲۱۶ (خروج) در یک فایل ── */
+/* Large selection/form overlays open as full-page screens (not floating panels). */
+.hesabno-fullpage-layer {
+  --hesabno-page-bg: #0c0a09;
+  position: fixed !important;
+  inset: 0 !important;
+  top: 0 !important; right: 0 !important; bottom: 0 !important; left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  align-items: stretch !important;
+  justify-content: stretch !important;
+  border-radius: 0 !important;
+  background-color: var(--hesabno-page-bg) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  overflow: hidden !important;
+}
+html[data-theme="light"] .hesabno-fullpage-layer { --hesabno-page-bg: #eef3f6; }
+.hesabno-fullpage-layer > :first-child {
+  width: 100% !important;
+  max-width: none !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  max-height: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+html body .hesabno-fullpage-layer.fixed.inset-0 { background-color: var(--hesabno-page-bg) !important; }
+html[data-theme="light"] body .hesabno-fullpage-layer.fixed.inset-0 { background-color: #eef3f6 !important; }
+
+/* Bank-account form: the footer («ثبت و ذخیره بانک») always sits at the bottom of the screen. */
+.hesabno-fullpage-layer > .hesabno-bank-form-page { display: flex !important; flex-direction: column !important; }
+.hesabno-bank-form-page > :nth-child(2) { flex: 1 1 auto !important; min-height: 0 !important; overflow-y: auto !important; }
+.hesabno-bank-form-page > :last-child { margin-top: auto !important; position: sticky !important; bottom: 0 !important; }
+
+/* جابه‌جایی بین خانه و تب‌ها عمداً بدون انیمیشن است تا از پرش/لرزش جلوگیری شود. */
+/* فاصله‌ی بالای محتوا در خانه با بقیه‌ی تب‌ها یکسان است. */
+main.hesabno-dashboard-main { padding-top: 1rem !important; }
+
+/* لایه ۲۱۶: کپی خروج صفحه‌ی تمام‌صفحه (فقط نمایشی). */
+@keyframes hesabnoFullpageExit {
+  from { opacity: 1; transform: translate3d(0, 0, 0); }
+  to   { opacity: 0; transform: translate3d(0, 18px, 0); }
+}
+.hesabno-fullpage-ghost {
+  position: fixed !important;
+  top: 0 !important; right: 0 !important; bottom: 0 !important; left: 0 !important;
+  width: 100% !important; height: 100% !important;
+  max-width: none !important; max-height: none !important;
+  margin: 0 !important; z-index: 60 !important;
+  pointer-events: none !important;
+  background-color: var(--hesabno-page-bg, #0c0a09) !important;
+  backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+  overflow: hidden !important;
+  animation: hesabnoFullpageExit 240ms cubic-bezier(.55, .05, .68, .19) both !important;
+  will-change: opacity, transform;
+}
+html[data-theme="light"] .hesabno-fullpage-ghost { --hesabno-page-bg: #eef3f6; background-color: #eef3f6 !important; }
+.hesabno-fullpage-ghost button, .hesabno-fullpage-ghost input, .hesabno-fullpage-ghost select,
+.hesabno-fullpage-ghost textarea, .hesabno-fullpage-ghost a { pointer-events: none !important; }
+@media (prefers-reduced-motion: reduce) { .hesabno-fullpage-ghost { animation: none !important; } }
+
+/* پاپ‌آپ کوچک: فقط محو شدن (بدون تغییر پس‌زمینه‌ی خود پاپ‌آپ). */
+@keyframes hesabnoOverlayExit {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+.hesabno-overlay-ghost {
+  position: fixed !important;
+  top: 0 !important; right: 0 !important; bottom: 0 !important; left: 0 !important;
+  z-index: 60 !important;
+  pointer-events: none !important;
+  animation: hesabnoOverlayExit 180ms ease-in both !important;
+  will-change: opacity;
+}
+.hesabno-overlay-ghost * { pointer-events: none !important; }
+@media (prefers-reduced-motion: reduce) { .hesabno-overlay-ghost { animation: none !important; } }
+
+/* اعلان بالای صفحه (toast): کپی خروج، محو و کمی به بالا. */
+@keyframes hesabnoToastExit {
+  from { opacity: 1; transform: translate3d(0, 0, 0); }
+  to   { opacity: 0; transform: translate3d(0, -8px, 0); }
+}
+.hesabno-toast-ghost {
+  animation: hesabnoToastExit 200ms ease-in both !important;
+  pointer-events: none !important;
+  will-change: opacity, transform;
+}
+@media (prefers-reduced-motion: reduce) { .hesabno-toast-ghost { animation: none !important; } }
+/* = 222-hesabno-report-account-detail-layout.css = */
+#root main [data-hesabno-report-account-detail-title] {
+  display: flex; align-items: center; justify-content: flex-start;
+  width: calc(100% - 2rem); max-width: 42rem; min-height: 3.25rem;
+  margin: 0 auto .65rem; color: var(--text-primary, #263b45);
+  font-size: 1.1rem; font-weight: 900; direction: rtl; text-align: right;
+}
+html[data-theme="light"] #root main [data-hesabno-report-account-detail-title] { color: #243f4c; }
+.hesabno-account-statement-panel[data-hesabno-report-account-detail="true"] {
+  width: 100%; max-width: 44rem; margin-inline: auto; padding: .35rem 0 1rem;
+  border: 1px solid #a8bdc8; border-radius: 1.35rem;
+  background: linear-gradient(145deg, #e9f2f6, #dfeaf0);
+  box-shadow: 0 5px 18px rgba(34, 61, 74, .10);
+}
+.hesabno-account-statement-panel[data-hesabno-report-account-detail="true"] > header,
+.hesabno-account-statement-panel[data-hesabno-report-account-detail="true"] > header + div,
+.hesabno-account-statement-panel[data-hesabno-report-account-detail="true"] .hesabno-statement-columns {
+  width: calc(100% - 1.1rem) !important; max-width: none !important;
+}
+.hesabno-account-statement-panel[data-hesabno-report-account-detail="true"] [data-hesabno-statement-card="true"] {
+  margin: .45rem auto !important; padding: .8rem .75rem !important;
+  border: 1px solid #b2c6d0 !important; border-radius: 1rem !important;
+  background: #f8fbfc !important; box-shadow: 0 3px 10px rgba(34, 61, 74, .09) !important;
+}
+.hesabno-account-statement-panel[data-hesabno-report-account-detail="true"] .hesabno-statement-counterparty-name { font-size: .83rem; }
+.hesabno-account-statement-panel[data-hesabno-report-account-detail="true"] .hesabno-statement-description { font-size: .72rem; }
+html[data-theme="dark"] .hesabno-account-statement-panel[data-hesabno-report-account-detail="true"] {
+  border-color: #405a66; background: linear-gradient(145deg, #1c2c36, #233842);
+}
+html[data-theme="dark"] .hesabno-account-statement-panel[data-hesabno-report-account-detail="true"] [data-hesabno-statement-card="true"] {
+  border-color: #405a66 !important; background: #1b2b35 !important;
+}
+@media (max-width: 420px) {
+  .hesabno-account-statement-panel[data-hesabno-report-account-detail="true"] > header,
+  .hesabno-account-statement-panel[data-hesabno-report-account-detail="true"] > header + div,
+  .hesabno-account-statement-panel[data-hesabno-report-account-detail="true"] .hesabno-statement-columns {
+    width: calc(100% - .75rem) !important;
+  }
+}
+/* = 224-hesabno-date-action-contrast.css = */
+html[data-theme="light"] article[id^="tx-card-"] button[data-hesabno-action-kind="edit"]{background:#e8f8ef!important;border:1px solid #86efac!important;color:#047857!important}
+html[data-theme="light"] article[id^="tx-card-"] button[data-hesabno-action-kind="correction"]{background:#fff7ed!important;border:1px solid #fdba74!important;color:#9a3412!important}
+html[data-theme="light"] article[id^="tx-card-"] button[data-hesabno-action-kind="delete"]{background:#fff1f2!important;border:1px solid #fda4af!important;color:#be123c!important}
+html[data-theme="dark"] article[id^="tx-card-"] button[data-hesabno-action-kind="edit"]{background:#123a2c!important;border:1px solid #267653!important;color:#a7f3d0!important}
+html[data-theme="dark"] article[id^="tx-card-"] button[data-hesabno-action-kind="correction"]{background:#422d16!important;border:1px solid #a16207!important;color:#fcd9a0!important}
+html[data-theme="dark"] article[id^="tx-card-"] button[data-hesabno-action-kind="delete"]{background:#451b24!important;border:1px solid #9f384b!important;color:#fecdd3!important}
+article[id^="tx-card-"] button[data-hesabno-action-kind]{border-radius:9px!important;font-weight:800!important}
+html[data-theme="light"] .hesabno-transaction-day-header .hesabno-transaction-day-date,html[data-theme="light"] [data-hesabno-period-date="true"],html[data-theme="light"] [data-hesabno-relative-date],html[data-theme="light"] .hesabno-statement-date-cell{color:#526875!important;opacity:1!important}
+html[data-theme="dark"] .hesabno-transaction-day-header .hesabno-transaction-day-date,html[data-theme="dark"] [data-hesabno-period-date="true"],html[data-theme="dark"] [data-hesabno-relative-date],html[data-theme="dark"] .hesabno-statement-date-cell{color:#b9cbd4!important;opacity:1!important}

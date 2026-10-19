@@ -1,8 +1,6 @@
 (function () {
     var clean = function (value) { return String(value || "").replace(/\s+/g, " ").trim(); };
-    var badgeStyle = document.createElement("style");
-    badgeStyle.textContent = '[data-hesabno-section-card-badge-hidden="true"]{display:none!important}';
-    document.head.appendChild(badgeStyle);
+    /* قاعدهٔ [data-hesabno-section-card-badge-hidden="true"] در بستهٔ ۲۳۵ قرار دارد. */
     var hasBadgeShape = function (node, radiusClass, fontSizeClass) {
       var classes = String(node.className || "");
       return node.tagName === "SPAN" && classes.indexOf("px-2") !== -1 && classes.indexOf("py-0.5") !== -1 &&
@@ -26,5 +24,5 @@
       });
     };
     sync();
-    if (document.body) new MutationObserver(sync).observe(document.body, { childList: true, subtree: true });
+    if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, sync);
   })();

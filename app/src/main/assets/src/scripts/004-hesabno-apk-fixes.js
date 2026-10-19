@@ -6,8 +6,7 @@ try{var ls=window.localStorage,o=oG.call(ls,OLD);if(o!==null){var cur=oG.call(ls
 SP.getItem=function(k){return oG.call(this,mapK(k))};
 SP.setItem=function(k,v){if(k===OLD&&oG.call(this,NEW)===String(v))return;return oS.call(this,mapK(k),v)};
 SP.removeItem=function(k){return oR.call(this,mapK(k))};}catch(e){try{console.warn("[hesabno]",e)}catch(_){}}
-/* ذخیره‌سازی پر شد: هشدار به کاربر به جای شکست بی‌صدا */
-try{var qS=Storage.prototype.setItem,qW=0;Storage.prototype.setItem=function(k,v){try{return qS.call(this,k,v)}catch(err){if(err&&(err.name==="QuotaExceededError"||err.code===22)&&Date.now()-qW>10000){qW=Date.now();setTimeout(function(){window.alert("فضای ذخیره‌سازی پر شده و آخرین تغییر ذخیره نشد.\nلطفاً از اطلاعات پشتیبان بگیرید و داده‌های قدیمی را پاک کنید.")},0)}throw err}};}catch(e){try{console.warn("[hesabno]",e)}catch(_){}}
+/* هشدار «فضا پر شد» به 000a-hesabno-storage-write-guard.js منتقل شد تا از اولین نوشتن بوت فعال باشد */
 
 /* 6) پنجره‌های پیام داخل برنامه به جای alert/confirm */
 var nAlert=window.alert&&window.alert.bind(window),nConfirm=window.confirm&&window.confirm.bind(window);

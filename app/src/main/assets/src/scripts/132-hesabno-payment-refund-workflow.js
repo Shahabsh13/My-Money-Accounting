@@ -189,13 +189,13 @@
           }
           return;
         }
-        if (item.type !== "expense" || item.method === "check" || item.isReversal) return;
+        if (item.type !== "expense" || item.method === "check" || item.isReversal || item.isCompound) return;
         var linked = refundEntries(items, item), blocked = relatedCorrection(items, item);
         var left = Math.max(0, (Number(item.amount) || 0) - refundedTotal(items, item));
         var native = Array.from(article.querySelectorAll("button")).find(function (button) { return button.title === "ثبت سند اصلاحی برای این سند" || button.hasAttribute("data-hesabno-payment-refund-action"); });
         if (native && left > 0 && !blocked) {
-          native.setAttribute("data-hesabno-payment-refund-action", "true");
-          native.title = "اصلاح سند / برگشت وجه";
+          if (native.getAttribute("data-hesabno-payment-refund-action") !== "true") native.setAttribute("data-hesabno-payment-refund-action", "true");
+          if (native.title !== "اصلاح سند / برگشت وجه") native.title = "اصلاح سند / برگشت وجه";
           var label = native.querySelector("span");
           if (label && label.textContent !== "اصلاحی / برگشت وجه") label.textContent = "اصلاحی / برگشت وجه";
           return;
@@ -220,7 +220,7 @@
     var schedule = function () {
       if (scheduled) return;
       scheduled = true;
-      window.setTimeout(function () { scheduled = false; syncCards(); }, 0);
+      Promise.resolve().then(function () { scheduled = false; syncCards(); });
     };
     document.addEventListener("click", function (event) {
       if (bypass) return;
@@ -245,7 +245,7 @@
       openModal(button, item, null);
     }, true);
     syncCards();
-    if (document.body) new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true });
+    if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, schedule);
     var resume = "";
     try { resume = sessionStorage.getItem("hesabno:payment-refund-resume") || ""; sessionStorage.removeItem("hesabno:payment-refund-resume"); } catch (error) {}
     if (resume === "transactions") window.setTimeout(function () {

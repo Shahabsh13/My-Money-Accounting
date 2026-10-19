@@ -31,13 +31,8 @@
       input.dispatchEvent(new Event("input", { bubbles: true }));
       input.dispatchEvent(new Event("change", { bubbles: true }));
     };
-    var ensureStyle = function () {
-      if (document.querySelector("style[data-hesabno-loan-stable-style]")) return;
-      var style = document.createElement("style");
-      style.setAttribute("data-hesabno-loan-stable-style", "true");
-       style.textContent = "[data-hesabno-loan-installment-section='true']{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:.75rem;align-items:end}[data-hesabno-loan-installment-section='true']>*{min-width:0;grid-column:1/-1!important;width:100%!important}[data-hesabno-interest-wrap='true'],[data-hesabno-principal-toman]{display:none!important}";
-      if (document.head) document.head.appendChild(style);
-    };
+    /* قواعد پایدار فرم وام در بستهٔ ۲۳۵ (لایهٔ ظاهر) قرار دارد. */
+    var ensureStyle = function () {};
     var hideSummary = function (input) {
       var field = input && input.closest(".space-y-1\\.5");
       var summary = field && Array.from(field.querySelectorAll("span")).find(function (node) {

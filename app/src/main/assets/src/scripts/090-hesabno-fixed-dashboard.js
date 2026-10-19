@@ -268,25 +268,18 @@
     var registered = inbox.filter(function (item) { return item && item.isRegistered; }).length;
     return [inbox.length, pending, registered];
   };
-  var formatNumbers = function (root, dashboardFont) {
+  var formatNumbers = function (root) {
     var hasDigits = /[0-9\u0660-\u0669\u06f0-\u06f9]/;
     var numericValue = /^(?:[+\-−]\s*)?(?:[%٪]\s*)?[0-9\u0660-\u0669\u06f0-\u06f9]+(?:[،,٫٬.:\/-][0-9\u0660-\u0669\u06f0-\u06f9]+)*[%٪]?(?:\s*(?:ریال|تومان))?$/;
-    var numberFont = '"IRANSans", "IRANSansFaNum", "Vazirmatn", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    /* ظاهر ارقام در بستهٔ ۰۶۰ تعریف شده است؛ این‌جا فقط کلاس معنایی می‌گذاریم. */
     var setNumberFont = function (node) {
-      node.classList.add("hesabno-unified-number-font");
-      if (node.style.getPropertyValue("font-family").indexOf("IRANSans") !== -1) return;
-      node.style.setProperty("font-family", numberFont, "important");
-      node.style.setProperty("font-variant-numeric", "tabular-nums", "important");
+      if (!node.classList.contains("hesabno-unified-number-font")) node.classList.add("hesabno-unified-number-font");
     };
     root.querySelectorAll(".hesabno-unified-number-font").forEach(function (node) {
       var text = (node.textContent || "").trim();
       if (numericValue.test(text)) setNumberFont(node);
       else {
         node.classList.remove("hesabno-unified-number-font");
-        if (node.style.getPropertyValue("font-family").indexOf("Vazirmatn") === -1) {
-          node.style.setProperty("font-family", dashboardFont, "important");
-          node.style.setProperty("font-variant-numeric", "normal", "important");
-        }
       }
     });
     var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, function (node) {
@@ -317,13 +310,9 @@
     var hero = main && main.querySelector(".dashboard-hero-card");
     if (!main || !hero) return;
     main.classList.add("hesabno-dashboard-main");
-    var dashboardFont = '"Vazirmatn", system-ui, sans-serif';
-    main.style.setProperty("font-family", dashboardFont, "important");
-    main.querySelectorAll("*").forEach(function (node) {
-      if (node.classList.contains("hesabno-unified-number-font")) return;
-      if (node.style.getPropertyValue("font-family").indexOf("Vazirmatn") !== -1) return;
-      node.style.setProperty("font-family", dashboardFont, "important");
-    });
+    /* ظاهر اینجاست: فونت کل داشبورد در بستهٔ ۲۳۵ (لایهٔ ظاهر) تعریف شده و با
+       کلاس hesabno-dashboard-main اعمال می‌شود. قبلاً همین‌جا روی صدها گره
+       font-family نوشته می‌شد (۵۷۶ نوشتن در ۲.۵ ثانیه). */
     var heroSub = hero.querySelector(".hero-sub");
     var balanceRow = hero.querySelector(".hero-balance-value") && hero.querySelector(".hero-balance-value").parentElement;
     if (heroSub && balanceRow) {
@@ -357,14 +346,13 @@
       if (anchor && anchor.nextSibling) anchor.parentNode.insertBefore(wrapper, anchor.nextSibling);
       else if (anchor) anchor.parentNode.appendChild(wrapper);
       else return;
-      buildCards(wrapper);
     }
     var signature = JSON.stringify([getCheckCounts(), getSmsCounts()]);
     if (wrapper.dataset.hesabnoSignature !== signature) {
       wrapper.dataset.hesabnoSignature = signature;
       buildCards(wrapper);
     }
-    formatNumbers(main, dashboardFont);
+    formatNumbers(main);
     } finally {
       if (dashboardObserver && document.body) dashboardObserver.observe(document.body, { childList: true, subtree: true });
     }
@@ -376,8 +364,9 @@
     // همه‌ی تغییرات همان burst را قبل از paint در یک پاس جمع می‌کند.
     Promise.resolve().then(function () { motionQueued = false; enhance(); });
   }
-  dashboardObserver = new MutationObserver(scheduleDashboardEnhance);
-  if (document.body) dashboardObserver.observe(document.body, { childList: true, subtree: true });
+  /* لایه‌ی مشترک MutationObserver (مرحله ۴): dashboardObserver نماینده‌ی ثبت است و همان
+     disconnect/observe چرخه‌ی همیشگی را پشتیبانی می‌کند (بدون ساخته‌شدن observer مستقل). */
+  if (document.body) dashboardObserver = window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, scheduleDashboardEnhance);
   enhance();
   document.addEventListener("click", function (event) {
     var toggle = event.target && event.target.closest ? event.target.closest('button[title="تغییر نحوه محاسبه موجودی در صفحه داشبورد"]') : null;

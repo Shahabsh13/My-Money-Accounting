@@ -1,6 +1,6 @@
 (function () {
     var clean = function (value) { return String(value == null ? "" : value).replace(/\s+/g, " ").trim(); };
-    var mark = function (node, key) { if (node) node.dataset[key] = "true"; };
+    var mark = function (node, key) { if (node && node.dataset[key] !== "true") node.dataset[key] = "true"; };
     var fix = function () {
       Array.from(document.querySelectorAll("h3")).forEach(function (heading) {
         var title = clean(heading.textContent);
@@ -35,9 +35,10 @@
     var frame = 0;
     var schedule = function () {
       if (frame) return;
-      frame = requestAnimationFrame(function () { frame = 0; fix(); });
+      frame = 1;
+      Promise.resolve().then(function () { frame = 0; fix(); });
     };
     fix();
-    if (document.body) new MutationObserver(schedule).observe(document.body, { childList: true, characterData: true, subtree: true });
+    if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, characterData: true, subtree: true }, schedule);
     window.addEventListener("resize", schedule, { passive: true });
   })();

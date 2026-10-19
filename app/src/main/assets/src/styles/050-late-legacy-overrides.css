@@ -1,0 +1,90 @@
+/* بسته‌ی 050-late-legacy-overrides.css | بازنویسی‌های پایانی دوره‌ی قدیم (۹۰۰–۹۷۰) که پیش از لایه‌ی ۲۳۵ لینک شده‌اند
+   ادغام 5 فایل با همان ترتیب آبشار: 900-light-theme-contrast.css 950-amount-box-height.css 960-sticky-submit.css 965-bank-form-sticky-footer.css 970-note-textarea.css */
+/* = 900-light-theme-contrast.css = */
+/* حالت روشن: متن‌های خیلی ریز و نازک را خواناتر می‌کند.
+   (کنتراست رنگ در فایل src/scripts/901-light-theme-contrast.js تنظیم می‌شود) */
+html[data-theme="light"] main [class*="text-[10px]"],
+html[data-theme="light"] main [class*="text-[10.5px]"] {
+  font-size: 12px !important;
+  line-height: 1.5 !important;
+}
+html[data-theme="light"] main [class*="text-[11px]"] {
+  font-size: 12.5px !important;
+  line-height: 1.5 !important;
+}
+html[data-theme="light"] main span:not([class*="font-"]),
+html[data-theme="light"] main p:not([class*="font-"]),
+html[data-theme="light"] main label:not([class*="font-"]) {
+  font-weight: 500;
+}
+html[data-theme="light"] main [class*="text-stone-2"],
+html[data-theme="light"] main [class*="text-stone-3"],
+html[data-theme="light"] main [class*="text-stone-4"] {
+  color: #475569 !important;
+}
+/* = 950-amount-box-height.css = */
+/* کادر مبلغ تراکنش: برچسب درست بالای کادر، و عدد با اندازهٔ مناسب */
+section:has(input.text-3xl[inputmode="numeric"]) {
+  padding-top: 16px !important;
+  padding-bottom: 16px !important;
+  min-height: 0;
+}
+section:has(input.text-3xl[inputmode="numeric"]) > :first-child {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+section:has(input.text-3xl[inputmode="numeric"]) > div.flex:has(input) {
+  min-height: 60px;
+  align-items: center;
+}
+section:has(input.text-3xl[inputmode="numeric"]) > :first-child {
+  min-height: 0 !important;
+  height: auto !important;
+}
+input.text-3xl[inputmode="numeric"] {
+  font-size: 2.1rem !important;
+  line-height: 1.25 !important;
+  height: 60px !important;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+/* = 960-sticky-submit.css = */
+/* دکمهٔ «ثبت سند» همیشه پایین صفحه بماند، حتی وقتی بالای فرم هستید */
+main form:has(> * button[type="submit"]),
+main form:has(button[type="submit"]) {
+  padding-bottom: 96px !important;
+}
+main form button[type="submit"].py-3\.5 {
+  position: fixed !important;
+  left: 50% !important;
+  transform: translateX(-50%);
+  bottom: max(12px, env(safe-area-inset-bottom)) !important;
+  width: min(calc(100% - 32px), 28rem) !important;
+  z-index: 60;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35) !important;
+}
+/* = 965-bank-form-sticky-footer.css = */
+/* فرم تعریف حساب بانکی: نوار «انصراف» و «ثبت و ذخیره» پایین کادر فرم بماند.
+   کادر فرم خودش اسکرول می‌شود و نوار دکمه‌ها فرزند مستقیم آن است. */
+div[class*="max-h-[94vh]"] > div[class*="pt-3"][class*="border-t"] {
+  position: sticky;
+  bottom: 0;
+  z-index: 20;
+  background-color: inherit;
+  padding-bottom: max(4px, env(safe-area-inset-bottom));
+  margin-top: 0;
+}
+/* = 970-note-textarea.css = */
+/* توضیحات: متن راهنمای داخل کادر در یک خط جا شود */
+textarea[placeholder^="توضیحاتی"] {
+  font-size: 12px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis;
+}
+textarea[placeholder^="توضیحاتی"]::placeholder {
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

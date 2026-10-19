@@ -7,9 +7,9 @@
   var clean = function (value) { return String(value || "").replace(/\s+/g, " ").trim(); };
   var same = function (a, b) { return clean(a).toLocaleLowerCase() === clean(b).toLocaleLowerCase(); };
   var escapeHtml = function (value) { return String(value).replace(/[&<>"']/g, function (char) { if (char === "&") return "&amp;"; if (char === "<") return "&lt;"; if (char === ">") return "&gt;"; if (char.charCodeAt(0) === 34) return "&quot;"; return "&#039;"; }); };
-  var read = function (type) { try { var value = JSON.parse(localStorage.getItem(keyFor(type)) || "null"); return Array.isArray(value) ? value : defaults[type].slice(); } catch (error) { return defaults[type].slice(); } };
+  var read = function (type) { try { var value = JSON.parse(localStorage.getItem(keyFor(type)) || (type === "members" ? localStorage.getItem("hesabno:family_members") : "null") || "null"); return Array.isArray(value) ? value : defaults[type].slice(); } catch (error) { return defaults[type].slice(); } };
   var readMeta = function (type) { try { var value = JSON.parse(localStorage.getItem(metaKey(type)) || "null"); return value && typeof value === "object" ? value : {}; } catch (error) { return {}; } };
-  var write = function (type, items, meta) { localStorage.setItem(keyFor(type), JSON.stringify(items)); localStorage.setItem(metaKey(type), JSON.stringify(meta)); };
+  var write = function (type, items, meta) { localStorage.setItem(keyFor(type), JSON.stringify(items)); if (type === "members") localStorage.setItem("hesabno:family_members", JSON.stringify(items)); localStorage.setItem(metaKey(type), JSON.stringify(meta)); };
   var itemMeta = function (type, name, index) { var meta = readMeta(type)[name] || {}; return { icon: meta.icon || icons[type][index % icons[type].length], description: meta.description || "" }; };
   var usedNames = function (type) {
     var found = new Set();
@@ -87,5 +87,5 @@
     card.addEventListener("click", open); target.parentElement.insertBefore(card, target.nextSibling);
   };
   addCard();
-  if (document.body) new MutationObserver(addCard).observe(document.body, { childList: true, subtree: true });
+  if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, addCard);
 })();

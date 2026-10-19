@@ -1,11 +1,6 @@
 (function () {
     var clean = function (value) { return String(value || "").replace(/\s+/g, " ").trim(); };
-    if (!document.querySelector("style[data-hesabno-check-due-style]")) {
-      var style = document.createElement("style");
-      style.setAttribute("data-hesabno-check-due-style", "true");
-       style.textContent = ".hesabno-check-due-badge{font-size:10px!important;font-weight:700!important;padding:2px 6px!important;line-height:1.3!important;border-radius:7px;background:#fff5cf!important;border:1px solid #d7b45b!important;color:#8a5d0c!important;white-space:nowrap}.hesabno-check-status-corrected{font-weight:700!important}[data-hesabno-tx-status-source]{display:none!important}[data-hesabno-tx-status-meta][data-hesabno-tx-status]::after{content:attr(data-hesabno-tx-status);display:inline-flex;align-items:center;gap:4px;flex:0 0 auto;white-space:nowrap;padding:2px 6px;border-radius:5px;background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.35);color:#087f68;font-size:9px;font-weight:800}article[id^='tx-card-'] > div > div:first-child > div.grow > div[class~='gap-1.5'][class~='flex-wrap'] > span{display:none!important}";
-      document.head.appendChild(style);
-    }
+    /* ظاهر نشان سررسید و وضعیت چک در بستهٔ ۲۳۵ (لایهٔ ظاهر) قرار دارد. */
     var fixDueDate = function () {
       document.querySelectorAll("#field-due-date").forEach(function (section) {
         var label = Array.from(section.querySelectorAll("label span")).find(function (node) { return clean(node.textContent).includes("تاریخ سررسید چک"); });
@@ -84,7 +79,7 @@
       var ensureTransactionMetaRow = function (article) {
         var shell = article.firstElementChild;
         if (!shell) return null;
-        var anchor = shell.querySelector(".hesabno-tx-project-chip, .hesabno-tx-family-chip") || shell.querySelector("[data-hesabno-tx-status-badge]");
+        var anchor = shell.querySelector(".hesabno-tx-project-chip, .hesabno-tx-family-chip, :is(button, span)[data-hesabno-footnote-kind]") || shell.querySelector("[data-hesabno-tx-status-badge]");
         var existing = shell.querySelector("[data-hesabno-tx-status-meta], [data-hesabno-tx-metadata-row]");
         var row = shell.querySelector("[data-hesabno-metadata-canonical='true']") || anchor && anchor.parentElement;
         if (row && existing && existing !== row) {
@@ -102,27 +97,33 @@
       var moveTransactionCheckStatus = function () {
         var labels = ["چک در جریان", "چک برگشتی", "چک پاس‌شده", "چک وصول‌شده", "خوابیده در بانک", "چک مسترد"];
         document.querySelectorAll("article").forEach(function (article) {
-          var statusText = Array.from(article.querySelectorAll("span:not([data-hesabno-tx-status-badge])")).find(function (node) {
+          var shell = article.firstElementChild || article;
+          var statusText = Array.from(shell.querySelectorAll("span:not([data-hesabno-tx-status-badge]):not([data-hesabno-tx-status-source])")).find(function (node) {
             var text = clean(node.textContent);
             return labels.includes(text) && (node.childElementCount === 0 || node.querySelector("svg"));
           });
+          var sourceChip = statusText ? (statusText.parentElement && statusText.parentElement.tagName === "SPAN" ? statusText.parentElement : statusText) : null;
+          if (sourceChip) {
+            sourceChip.setAttribute("data-hesabno-tx-status-source", "true");
+            sourceChip.setAttribute("data-hesabno-metadata-duplicate", "true");
+            sourceChip.setAttribute("aria-hidden", "true");
+          }
           var articleId = article.id && article.id.indexOf("tx-card-") === 0 ? article.id : "";
           var statusKey = statusKeyFromText(statusText && statusText.textContent);
-          if (!statusKey && articleId) statusKey = statusKeyFromText(article.textContent);
           if (!statusKey && articleId) statusKey = rememberedTransactionStatus[articleId] || article.getAttribute("data-hesabno-tx-status-key") || "";
+          if (!statusKey && articleId) statusKey = statusKeyFromText(article.textContent);
           if (!statusText && !statusKey) return;
-          var statusChip = statusText ? (statusText.parentElement.tagName === "SPAN" ? statusText.parentElement : statusText) : article.querySelector("[data-hesabno-tx-status-badge]");
+          var meta = ensureTransactionMetaRow(article);
+          if (!meta) return;
+          var statusChip = article.querySelector("[data-hesabno-tx-status-badge]");
           if (!statusChip) {
             statusChip = document.createElement("span");
             statusChip.className = "inline-flex items-center gap-1 text-[9px] font-bold px-1.5 py-0.5 rounded border whitespace-nowrap shrink-0 " + statusClassForKey(statusKey);
             statusChip.textContent = statusLabelForKey(statusKey);
           }
-          var meta = ensureTransactionMetaRow(article);
-          if (!meta) return;
-          var oldBadge = article.querySelector("[data-hesabno-tx-status-badge]");
-          if (oldBadge && oldBadge !== statusChip) oldBadge.remove();
           var status = clean(statusChip.textContent) || statusLabelForKey(statusKey);
           statusChip.removeAttribute("data-hesabno-tx-status-source");
+          statusChip.removeAttribute("data-hesabno-metadata-duplicate");
            // Keep the native status-specific color classes.
           statusChip.setAttribute("data-hesabno-tx-status-badge", "true");
           meta.setAttribute("data-hesabno-tx-status-meta", "true");
@@ -145,7 +146,7 @@
     var schedule = function () {
       if (pending) return;
       pending = true;
-      window.setTimeout(function () { pending = false; sync(); }, 0);
+      Promise.resolve().then(function () { pending = false; sync(); });
     };
     sync();
       if (document.body) new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true });

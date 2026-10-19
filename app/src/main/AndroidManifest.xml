@@ -3,9 +3,26 @@
 
     <!-- فقط برای اندروید ۲۸ و پایین‌تر؛ در ۲۹+ از MediaStore استفاده می‌شود. -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+
+    <!-- دوربین برای ثبت مستقیم تصویر فیش و چک پیوست -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+
+    <!-- خواندن و دریافت خودکار پیامک‌های بانکی در بخش پیام‌بانک -->
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-feature android:name="android.hardware.telephony" android:required="false" />
+
+    <!-- ارسال اعلان و یادآوری‌های مالی و روزانه با متن دلخواه کاربر (اندروید ۱۳+) -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:allowBackup="true"
+        android:fullBackupContent="@xml/backup_rules"
+        android:dataExtractionRules="@xml/data_extraction_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -22,6 +39,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- گیرنده‌ی زمان‌سنج ۴ روز عدم ورود به برنامه و بازیابی زمان‌سنج پس از روشن شدن گوشی -->
+        <receiver
+            android:name=".MainActivity$InactivityReminderReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="com.maymoney.app.ACTION_INACTIVITY_REMINDER" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

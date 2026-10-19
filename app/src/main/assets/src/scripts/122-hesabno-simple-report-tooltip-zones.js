@@ -1,11 +1,6 @@
 (function () {
-    var style = function () {
-      if (document.querySelector("style[data-hesabno-simple-report-tooltip-zones-style]")) return;
-      var node = document.createElement("style");
-      node.setAttribute("data-hesabno-simple-report-tooltip-zones-style", "true");
-      node.textContent = "[data-hesabno-daily-tooltip-position='left']{left:0!important;right:auto!important;transform:none!important;align-items:flex-start!important}[data-hesabno-daily-tooltip-position='center']{left:50%!important;right:auto!important;transform:translateX(-50%)!important;align-items:center!important}[data-hesabno-daily-tooltip-position='right']{left:auto!important;right:0!important;transform:none!important;align-items:flex-end!important}";
-      document.head.appendChild(node);
-    };
+    /* قواعد جایگاه حباب نمودار روزانه در بستهٔ ۲۳۵ قرار دارد. */
+    var style = function () {};
     var sync = function () {
       var columns = Array.from(document.querySelectorAll("button")).filter(function (button) {
         var className = String(button.className || "");
@@ -17,9 +12,15 @@
         var tooltip = button.querySelector("div.whitespace-nowrap");
         if (!tooltip) return;
         var position = index < columns.length / 3 ? "left" : index >= columns.length * 2 / 3 ? "right" : "center";
-        tooltip.setAttribute("data-hesabno-daily-tooltip-position", position);
+        if (tooltip.getAttribute("data-hesabno-daily-tooltip-position") !== position) tooltip.setAttribute("data-hesabno-daily-tooltip-position", position);
       });
     };
+    var queued = false;
+    var schedule = function () {
+      if (queued) return;
+      queued = true;
+      Promise.resolve().then(function () { queued = false; sync(); });
+    };
     sync();
-     if (document.body) new MutationObserver(function () { window.setTimeout(sync, 0); }).observe(document.body, { childList: true, subtree: true });
+    if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, schedule);
   })();

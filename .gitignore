@@ -10,3 +10,8 @@
 .cxx
 keystore.properties
 *.apk
+
+# وابستگی‌های نصبی npm نباید در مخزن ذخیره شوند (CI با npm ci نصب می‌کند)
+/node_modules
+/.tmp
+

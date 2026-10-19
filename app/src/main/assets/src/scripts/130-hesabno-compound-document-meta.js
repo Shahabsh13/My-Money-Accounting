@@ -11,7 +11,7 @@
       return text && text.parentElement && text.parentElement.tagName === "SPAN" && clean(text.parentElement.textContent) === "سند مرکب" ? text.parentElement : text;
     };
     var ensureRow = function (article) {
-      var anchor = article.querySelector(".hesabno-tx-project-chip, .hesabno-tx-family-chip, [data-hesabno-tx-status-badge]");
+      var anchor = article.querySelector(".hesabno-tx-project-chip, .hesabno-tx-family-chip, :is(button, span)[data-hesabno-footnote-kind], [data-hesabno-tx-status-badge]");
       var row = article.querySelector("[data-hesabno-metadata-canonical='true']") || anchor && anchor.parentElement || article.querySelector("[data-hesabno-tx-status-meta], [data-hesabno-tx-metadata-row]");
       if (row) return row;
       var shell = article.firstElementChild;
@@ -24,14 +24,23 @@
     };
     var sync = function () {
       document.querySelectorAll("article[id^='tx-card-']").forEach(function (article) {
-        var badge = findCompoundBadge(article);
-        if (!badge) return;
+        var source = findCompoundBadge(article);
+        if (!source) return;
         var row = ensureRow(article);
         if (!row) return;
-        badge.setAttribute("data-hesabno-compound-badge", "true");
+        var badge = article.querySelector("[data-hesabno-compound-badge]");
+        if (!badge) {
+          badge = source.cloneNode(true);
+          badge.setAttribute("data-hesabno-compound-badge", "true");
+        }
+        if (source !== badge) {
+          source.setAttribute("data-hesabno-metadata-duplicate", "true");
+          source.setAttribute("aria-hidden", "true");
+        }
+        if (badge.getAttribute("data-hesabno-compound-badge") !== "true") badge.setAttribute("data-hesabno-compound-badge", "true");
         if (badge.parentElement !== row) row.appendChild(badge);
       });
     };
     sync();
-     if (document.body) new MutationObserver(sync).observe(document.body, { childList: true, subtree: true });
+     if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, sync);
   })();

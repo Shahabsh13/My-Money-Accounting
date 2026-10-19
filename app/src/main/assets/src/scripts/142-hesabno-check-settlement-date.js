@@ -539,13 +539,8 @@
     window.__hesabnoGetSettlementDate = function () {
       return readModalDate(findModal());
     };
-    var ensureDisplayStyle = function () {
-      if (document.querySelector("style[data-hesabno-settlement-date-style]")) return;
-      var style = document.createElement("style");
-      style.setAttribute("data-hesabno-settlement-date-style", "true");
-      style.textContent = "[data-hesabno-settlement-date-field]{margin-top:.65rem;padding:.65rem .75rem;border:1px solid rgba(16,185,129,.28);border-radius:.8rem;background:rgba(16,185,129,.06);display:grid;gap:.35rem}[data-hesabno-settlement-date-field] label{font-size:11px;font-weight:800;color:#4f635e}[data-hesabno-settlement-date-field] input{width:100%;padding:.55rem .65rem;border:1px solid rgba(148,163,184,.45);border-radius:.65rem;background:#fff;color:#26343b;font-family:ui-monospace,monospace;font-size:13px;text-align:center;outline:none}[data-hesabno-settlement-date-field] input:focus{border-color:#22a879;box-shadow:0 0 0 2px rgba(34,168,121,.15)}[data-hesabno-settlement-date-field] small{font-size:10px;color:#71828b}html[data-theme='dark'] [data-hesabno-settlement-date-field] label{color:#b8cec7}html[data-theme='dark'] [data-hesabno-settlement-date-field] input{background:#1c232c;color:#e2edf1;border-color:rgba(100,116,139,.6)}[data-hesabno-check-settlement-display]{margin-top:.35rem;padding-top:.3rem;border-top:1px solid rgba(16,185,129,.2)}[data-hesabno-check-settlement-display] [data-hesabno-check-settlement-label]{display:block;font-size:10px;line-height:1.3;color:#16805f;font-weight:800}[data-hesabno-check-settlement-display] [data-hesabno-check-settlement-value]{display:block;margin-top:.1rem;font-size:11px;line-height:1.35;color:#167257;font-weight:900}html[data-theme='dark'] [data-hesabno-check-settlement-display] [data-hesabno-check-settlement-label],html[data-theme='dark'] [data-hesabno-check-settlement-display] [data-hesabno-check-settlement-value]{color:#75d6b2}[data-hesabno-dashboard-settlement-row]{color:#167257;font-weight:800;font-size:11px}[data-hesabno-tx-settlement-display]{font-size:9px!important;font-weight:800!important;color:#167257!important;background:rgba(16,185,129,.09)!important;border:1px solid rgba(16,185,129,.22)!important;padding:.15rem .35rem!important;border-radius:.35rem!important;white-space:nowrap!important}html[data-theme='dark'] [data-hesabno-tx-settlement-display]{color:#75d6b2!important;background:rgba(16,185,129,.12)!important;border-color:rgba(52,211,153,.28)!important}";
-      if (document.head) document.head.appendChild(style);
-    };
+    /* قواعد ظاهری تاریخ تسویه/وصول چک در بستهٔ ۲۳۵ قرار دارد. */
+    var ensureDisplayStyle = function () {};
     var articleItem = function (article) {
       var articleId = article && article.id && article.id.indexOf("tx-card-") === 0 ? article.id.slice("tx-card-".length) : "";
       if (articleId) {
@@ -572,7 +567,10 @@
       var settlement = settlementFor(item);
       var dueValue = dueLabel && dueLabel.nextElementSibling;
       var numericDueDate = displayDate(item.check.dueDate);
-      if (dueValue && numericDueDate !== "—" && clean(dueValue.textContent) !== numericDueDate) dueValue.textContent = numericDueDate;
+      if (dueValue) {
+        if (!dueValue.hasAttribute("data-hesabno-check-due-value")) dueValue.setAttribute("data-hesabno-check-due-value", "true");
+        if (numericDueDate !== "—" && clean(dueValue.textContent) !== numericDueDate) dueValue.textContent = numericDueDate;
+      }
       var node = due.querySelector("[data-hesabno-check-settlement-display]");
       if (!node) {
         node = document.createElement("div");
@@ -621,7 +619,7 @@
     var schedule = function () {
       if (scheduled) return;
       scheduled = true;
-      window.requestAnimationFrame(function () { scheduled = false; sync(); });
+      Promise.resolve().then(function () { scheduled = false; sync(); });
     };
     sync();
     window.addEventListener("hesabno:settlement-date-updated", schedule);

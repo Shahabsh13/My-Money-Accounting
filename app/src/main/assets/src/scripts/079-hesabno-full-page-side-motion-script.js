@@ -10,15 +10,24 @@
   };
   var markOpen = function () {
     var next = target();
-    if (!next) { active = null; return; }
+    if (!next) {
+      if (active) active.classList.remove("hesabno-full-page-side-exit", "hesabno-full-page-side-open");
+      active = null;
+      return;
+    }
     if (active === next && next.classList.contains("hesabno-full-page-side-open")) return;
     active = next;
     next.classList.remove("hesabno-full-page-side-exit", "hesabno-full-page-side-open");
     void next.offsetWidth;
     next.classList.add("hesabno-full-page-side-open");
   };
-  var observer = new MutationObserver(function () { requestAnimationFrame(markOpen); });
-  observer.observe(root, { childList: true, subtree: true });
+  var queued = false;
+  var schedule = function () {
+    if (queued) return;
+    queued = true;
+    Promise.resolve().then(function () { queued = false; markOpen(); });
+  };
+  var observer = window.__hesabnoDom.watch(root, { childList: true, subtree: true }, schedule);
   document.addEventListener("click", function (event) {
     var button = event.target && event.target.closest ? event.target.closest('button[title="بازگشت"]') : null;
     if (!button || button.getAttribute("aria-label") || replaying) return;
@@ -35,6 +44,7 @@
          if (typeof window.__hesabnoHoldBackNavigation === "function") window.__hesabnoHoldBackNavigation();
          button.click();
        }
+       page.classList.remove("hesabno-full-page-side-exit", "hesabno-full-page-side-open");
        replaying = false;
      }, 420);
   }, true);

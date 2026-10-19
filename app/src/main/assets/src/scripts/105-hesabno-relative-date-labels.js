@@ -56,8 +56,10 @@
         if (!/^\s*[۰-۹0-9]{4}[\/-][۰-۹0-9]{1,2}[\/-][۰-۹0-9]{1,2}\s*$/.test(raw)) return;
         // The expenses/income modal owns this date and intentionally keeps it numeric.
         // Avoid racing its formatter (152), which otherwise makes the date flicker.
-        if (node.hasAttribute && node.hasAttribute("data-hesabno-period-date")) return;
+        if (node.hasAttribute && (node.hasAttribute("data-hesabno-period-date") || node.hasAttribute("data-hesabno-check-settlement-value") || node.hasAttribute("data-hesabno-check-due-value"))) return;
+        if (node.previousElementSibling && clean(node.previousElementSibling.textContent).replace(/[：:]$/u, "") === "تاریخ سررسید") return;
         if (node.closest && node.closest(".hesabno-statement-date-cell")) return;
+        if (node.closest && node.closest("[data-hesabno-simple-report-native]")) return;
         var modal = node.closest && node.closest("div.max-w-md");
         var heading = modal && modal.querySelector("header h2");
         if (heading && clean(heading.textContent).indexOf("هزینه‌ها و درآمدها") !== -1) return;
@@ -72,5 +74,5 @@
       return formatDate(text) || toFa(text);
     };
     enhance();
-    if (document.body) new MutationObserver(enhance).observe(document.body, { childList: true, subtree: true, characterData: true });
+    if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true, characterData: true }, enhance);
   })();

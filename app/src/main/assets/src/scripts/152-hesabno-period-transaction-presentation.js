@@ -173,8 +173,14 @@
         var projectChip = Array.from(footer.querySelectorAll("span")).find(function (node) {
           return node.getAttribute("data-hesabno-period-project") === "true" || (node.classList.contains("bg-purple-950/60") && node.querySelector("svg"));
         });
-        if (projectChip) projectChip.setAttribute("data-hesabno-period-project", "true");
-        else if (project) {
+        if (!project) {
+          if (projectChip && !projectChip.querySelector("svg")) projectChip.remove();
+        } else if (projectChip) {
+          projectChip.setAttribute("data-hesabno-period-project", "true");
+          if (!projectChip.querySelector("svg") && projectChip.textContent !== "پروژه: " + project) {
+            projectChip.textContent = "پروژه: " + project;
+          }
+        } else {
           projectChip = document.createElement("span");
           projectChip.className = "px-1.5 py-0.5 rounded bg-purple-950/60 border border-purple-800/40 text-purple-300 font-bold shrink-0";
           projectChip.setAttribute("data-hesabno-period-project", "true");
@@ -335,10 +341,10 @@
       var schedule = function () {
         if (queued) return;
         queued = true;
-        requestAnimationFrame(function () { queued = false; sync(); });
+        Promise.resolve().then(function () { queued = false; sync(); });
       };
       sync();
-      if (document.body) new MutationObserver(function () { sync(); }).observe(document.body, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ["class"] });
+      if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ["class"] }, function () { sync(); });
       document.addEventListener("click", function (event) {
         var target = event.target;
         var button = target && target.closest ? target.closest("button") : null;

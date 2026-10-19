@@ -6,21 +6,22 @@
       });
       if (!main) return;
       Array.from(main.querySelectorAll("p")).forEach(function (paragraph) {
-        if (clean(paragraph.textContent) === "گردش اسناد و مانده لحظه‌ای") paragraph.dataset.hesabnoStatementExtraDescription = "true";
+        if (clean(paragraph.textContent) === "گردش اسناد و مانده لحظه‌ای" && paragraph.dataset.hesabnoStatementExtraDescription !== "true") paragraph.dataset.hesabnoStatementExtraDescription = "true";
       });
       Array.from(main.querySelectorAll("span")).forEach(function (span) {
         var text = clean(span.textContent);
         if (text === "انتخاب حساب یا گروه جهت مشاهده صورت‌حساب" || text === "انتخاب حساب یا گروه") span.textContent = "انتخاب حساب";
         else if (text === "جهت مشاهده صورت‌حساب، حساب یا گروه مورد نظر را انتخاب نمایید") {
-          span.dataset.hesabnoStatementExtraDescription = "true";
+          if (span.dataset.hesabnoStatementExtraDescription !== "true") span.dataset.hesabnoStatementExtraDescription = "true";
         }
       });
     };
     var frame = 0;
     var schedule = function () {
       if (frame) return;
-      frame = requestAnimationFrame(function () { frame = 0; update(); });
+      frame = 1;
+      Promise.resolve().then(function () { frame = 0; update(); });
     };
     update();
-    if (document.body) new MutationObserver(schedule).observe(document.body, { childList: true, characterData: true, subtree: true });
+    if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, characterData: true, subtree: true }, schedule);
   })();

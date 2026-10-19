@@ -10,8 +10,8 @@
         if (clean(label.textContent) !== "نام فروشگاه / ارائه‌دهنده / طرف حساب (اختیاری)") return;
         var field = label.parentElement;
         if (!field) return;
-        field.dataset.hesabnoOptionalStoreProviderField = "true";
-        field.setAttribute("aria-hidden", "true");
+        if (field.dataset.hesabnoOptionalStoreProviderField !== "true") field.dataset.hesabnoOptionalStoreProviderField = "true";
+        if (field.getAttribute("aria-hidden") !== "true") field.setAttribute("aria-hidden", "true");
       });
       Array.from(main.querySelectorAll("div.rounded-3xl.p-4 p")).forEach(function (summary) {
         var text = clean(summary.textContent);
@@ -20,14 +20,15 @@
         if (!parts) return;
         var simpleText = "تاریخ ثبت: " + parts[1].trim() + " • " + parts[2] + " " + parts[3];
         if (summary.textContent !== simpleText) summary.textContent = simpleText;
-        summary.dataset.hesabnoInstallmentSummaryDateCount = "true";
+        if (summary.dataset.hesabnoInstallmentSummaryDateCount !== "true") summary.dataset.hesabnoInstallmentSummaryDateCount = "true";
       });
     };
     var frame = 0;
     var schedule = function () {
       if (frame) return;
-      frame = requestAnimationFrame(function () { frame = 0; update(); });
+      frame = 1;
+      Promise.resolve().then(function () { frame = 0; update(); });
     };
     update();
-    if (document.body) new MutationObserver(schedule).observe(document.body, { childList: true, characterData: true, subtree: true });
+    if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, characterData: true, subtree: true }, schedule);
   })();

@@ -1,8 +1,0 @@
-/* Keep loan registration overlays within the desktop app frame. */
-@media (min-width: 640px) {
-  main > .fixed.inset-0.z-50:has(input[placeholder="مبلغ قسط"]) {
-    position: absolute !important;
-    bottom: calc(32px + 4vh) !important;
-    height: auto !important;
-  }
-}

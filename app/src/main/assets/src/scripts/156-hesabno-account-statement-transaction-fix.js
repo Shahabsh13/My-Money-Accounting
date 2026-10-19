@@ -69,12 +69,24 @@
       }
       return matches[0] || null;
     };
-    var counterpartyFor = function (transaction, accounts, selectedName) {
+    var counterpartyFor = function (transaction, accounts, selectedName, card) {
       var type = clean(transaction && transaction.type).toLowerCase();
       var selected = clean(selectedName).toLowerCase();
+      var fromText = clean(card && card.dataset && card.dataset.hesabnoFromText);
+      var toText = clean(card && card.dataset && card.dataset.hesabnoToText);
       var partyName = "";
       var partyAccount = null;
-      if (type === "income" || type === "expense") {
+      if (toText === "هزینه کارمزد بانکی") {
+        partyName = toText;
+        partyAccount = accounts.find(function (item) { return item && clean(item.name) === partyName; }) || null;
+      } else if (transaction && transaction.isCompound && (fromText || toText)) {
+        var fromLower = fromText.toLowerCase();
+        var toLower = toText.toLowerCase();
+        var fromMatch = fromLower && selected && (fromLower === selected || fromLower.indexOf(selected) !== -1 || selected.indexOf(fromLower) !== -1);
+        var toMatch = toLower && selected && (toLower === selected || toLower.indexOf(selected) !== -1 || selected.indexOf(toLower) !== -1);
+        partyName = fromMatch ? toText : toMatch ? fromText : toText || fromText;
+        partyAccount = accounts.find(function (item) { return item && clean(item.name) === partyName; }) || null;
+      } else if (type === "income" || type === "expense") {
         var candidates = [transaction.counterparty, transaction.payee, transaction.merchant, transaction.category, transaction.title]
           .map(clean).filter(Boolean);
         for (var i = 0; i < candidates.length && !partyAccount; i += 1) {
@@ -84,6 +96,13 @@
           }) || null;
         }
         partyName = partyAccount ? clean(partyAccount.name) : candidates[0] || "";
+        if (selected && partyName && partyName.toLowerCase() === selected) {
+          var fallbackAccount = accountName(transaction.account || transaction.sourceAccount || transaction.destinationAccount || fromText || toText, accounts);
+          if (fallbackAccount && fallbackAccount.toLowerCase() !== selected) {
+            partyName = fallbackAccount;
+            partyAccount = accounts.find(function (item) { return item && clean(item.name) === partyName; }) || null;
+          }
+        }
       } else {
         var source = accountName(transaction.sourceAccount || transaction.fromAccount || transaction.account, accounts);
         var destination = accountName(transaction.destinationAccount || transaction.toAccount, accounts);
@@ -132,7 +151,9 @@
       return row;
     };
     var enhanceDescription = function (card, transaction) {
-      var notes = transaction.hasManualDescription === false ? "" : clean(transaction.notes || transaction.description);
+      if (card.dataset.hesabnoReportCompoundDescription === "true") return;
+      var allowDescription = card.dataset.hesabnoShowDescription !== "false";
+      var notes = !allowDescription || transaction.hasManualDescription === false ? "" : clean(transaction.notes || transaction.description);
       var row = Array.from(card.children).find(function (node) {
         return node.dataset.hesabnoStatementDescription === "true" || clean(node.textContent).indexOf("توضیحات:") === 0;
       });
@@ -189,6 +210,12 @@
       });
     };
     var enhanceMetadata = function (card, transaction) {
+      if (card.dataset.hesabnoShowMetadata === "false") {
+        Array.from(card.children).filter(function (node) {
+          return node.dataset.hesabnoStatementMetadata === "true" || node.classList.contains("flex-wrap");
+        }).forEach(function (node) { node.remove(); });
+        return;
+      }
       var project = clean(transaction.project);
       var family = familyName(transaction.familyMember);
       var metadataRows = Array.from(card.children).filter(function (node) { return node.classList.contains("flex-wrap"); });
@@ -209,7 +236,9 @@
         return project && text.indexOf(project) !== -1 || family && text.indexOf(family) !== -1 || /پروژه|عضو خانواده/u.test(text);
       }).forEach(function (node) { node.remove(); });
       var projectChip = Array.from(row.children).find(function (chip) {
+        if (chip.dataset.hesabnoStatementFamily === "true" || chip.classList.contains("hesabno-statement-family-chip")) return false;
         var text = clean(chip.textContent);
+        if (/^عضو(?:\s*خانواده)?\s*:/u.test(text)) return false;
         return chip.dataset.hesabnoStatementProject === "true" || chip.classList.contains("hesabno-statement-project-chip") || project && text.indexOf(project) !== -1;
       });
       if (!project) {
@@ -254,7 +283,10 @@
         if (projectLabel.textContent !== "پروژه: " + project) projectLabel.textContent = "پروژه: " + project;
       }
       var familyChip = Array.from(row.children).find(function (chip) {
-        return chip.dataset.hesabnoStatementFamily === "true" || chip.classList.contains("hesabno-statement-family-chip") || family && clean(chip.textContent).indexOf(family) !== -1;
+        if (chip === projectChip || chip.dataset.hesabnoStatementProject === "true" || chip.classList.contains("hesabno-statement-project-chip")) return false;
+        var text = clean(chip.textContent);
+        if (/^پروژه\s*:/u.test(text)) return false;
+        return chip.dataset.hesabnoStatementFamily === "true" || chip.classList.contains("hesabno-statement-family-chip") || family && text.indexOf(family) !== -1;
       });
       if (!family) {
         if (familyChip) familyChip.remove();
@@ -321,7 +353,13 @@
       var oldFlow = Array.from(card.children).find(function (node) {
         return clean(node.textContent).indexOf("مبدأ:") !== -1 && clean(node.textContent).indexOf("مقصد:") !== -1;
       });
-      var party = counterpartyFor(transaction, accounts, selectedName);
+      if (oldFlow) {
+        var fromSide = Array.from(oldFlow.children).find(function (node) { return clean(node.textContent).indexOf("مبدأ:") === 0; });
+        var toSide = Array.from(oldFlow.children).find(function (node) { return clean(node.textContent).indexOf("مقصد:") === 0; });
+        if (!card.dataset.hesabnoFromText && fromSide) card.dataset.hesabnoFromText = clean(fromSide.textContent).replace(/^مبدأ:\s*/, "");
+        if (!card.dataset.hesabnoToText && toSide) card.dataset.hesabnoToText = clean(toSide.textContent).replace(/^مقصد:\s*/, "");
+      }
+      var party = counterpartyFor(transaction, accounts, selectedName, card);
       var partyKey = party.name + "|" + party.icon + "|" + party.image;
       var partyRow = Array.from(card.children).find(function (node) { return node.dataset.hesabnoCounterpartyRow === "true"; });
       if (!partyRow || partyRow.dataset.hesabnoPartyKey !== partyKey) {
@@ -340,9 +378,10 @@
       var transactions = readArray("hesabno:transactions");
       var accounts = readArray("hesabno:accounts_v5");
       document.querySelectorAll(".hesabno-account-statement-panel").forEach(function (panel) {
-        var lists = Array.from(panel.querySelectorAll("div.grow.overflow-y-auto"));
+        var lists = Array.from(panel.querySelectorAll("div.grow.overflow-y-auto, div.px-3.space-y-1\\.5"));
         var list = lists.find(function (node) {
           return Array.from(node.children).some(function (card) {
+            if (card.classList.contains("hesabno-statement-opening-balance")) return false;
             var text = clean(card.textContent);
             return card.dataset.hesabnoStatementCard === "true" || text.indexOf("مبدأ:") !== -1 && text.indexOf("مقصد:") !== -1;
           });
@@ -350,6 +389,7 @@
         if (!list) return;
         var selectedName = panel.dataset.hesabnoStatementAccount || "";
         var cards = Array.from(list.children).filter(function (card) {
+          if (card.classList.contains("hesabno-statement-opening-balance")) return false;
           var text = clean(card.textContent);
           return card.dataset.hesabnoStatementCard === "true" || text.indexOf("مبدأ:") !== -1 && text.indexOf("مقصد:") !== -1;
         });
@@ -382,8 +422,9 @@
     var frame = 0;
     var schedule = function () {
       if (frame) return;
-      frame = requestAnimationFrame(function () { frame = 0; enhance(); });
+      frame = 1;
+      Promise.resolve().then(function () { frame = 0; enhance(); });
     };
     enhance();
-    if (document.body) new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true });
+    if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, schedule);
   })();

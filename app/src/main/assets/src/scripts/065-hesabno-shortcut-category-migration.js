@@ -11,6 +11,13 @@
           changed = true;
         }
       });
-      if (changed) window.localStorage.setItem(key, JSON.stringify(shortcuts));
+      if (!changed) return;
+      var value = JSON.stringify(shortcuts);
+      /* نگهبان مهاجرت (۶.۰): نوشتن + تأیید خواندن دوباره + بازگردانی خودکار در صورت شکست */
+      if (window.__hesabnoMigration) {
+        window.__hesabnoMigration.run("065-shortcut-category", [key], function (db) { db.set(key, value); });
+        return;
+      }
+      window.localStorage.setItem(key, value);
     } catch (error) {}
   })();

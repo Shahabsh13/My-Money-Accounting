@@ -66,17 +66,8 @@
           section.querySelectorAll("[data-hesabno-interest-wrap]").forEach(function (node) { node.remove(); });
         }
       };
-    var ensureLoanFormStyles = function () {
-      if (document.querySelector("style[data-hesabno-loan-installment-style]")) return;
-      var style = document.createElement("style");
-      style.setAttribute("data-hesabno-loan-installment-style", "true");
-       style.textContent = "[data-hesabno-loan-amount-section='true']{display:block!important}[data-hesabno-loan-amount-section='true']>*{min-width:0;width:100%!important}[data-hesabno-loan-installment-section='true']{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:.75rem;align-items:end}[data-hesabno-loan-installment-section='true']>*{min-width:0;grid-column:1/-1!important;width:100%!important}[data-hesabno-interest-wrap='true']{display:none!important}[data-hesabno-principal-toman]{display:block;direction:rtl;text-align:left;margin:0 2px 6px;color:#94a3b8;font-size:11px;font-weight:700;min-height:16px}[data-hesabno-principal-toman]:empty{display:none}";
-      document.head.appendChild(style);
-      var safeStyle = document.createElement("style");
-      safeStyle.setAttribute("data-hesabno-check-card-layout-safe-style", "true");
-      safeStyle.textContent = "[data-hesabno-check-info-grid]>[data-hesabno-check-info-due]{order:1!important}[data-hesabno-check-info-grid]>[data-hesabno-check-amount-box]{order:2!important}[data-hesabno-check-info-grid]>[data-hesabno-check-number-box]{order:3!important}[data-hesabno-check-info-grid]>[data-hesabno-check-info-account]{order:4!important}[data-hesabno-check-status-display]{display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:.35rem!important}[data-hesabno-check-status-display]>*{display:none!important}[data-hesabno-check-status-display]::before{content:'وضعیت چک:';color:#667684;font-size:11px;font-weight:800}[data-hesabno-check-status-display='in-progress']::after{content:'در جریان'}[data-hesabno-check-status-display='passed']::after{content:'پاس‌شده'}[data-hesabno-check-status-display='bounced']::after{content:'برگشت خورده'}[data-hesabno-check-status-display='refunded']::after{content:'مسترد شده'}[data-hesabno-check-status-display='bank-hold']::after{content:'خوابیده در بانک'}[data-hesabno-check-status-display]::after{font-size:11px;font-weight:900}[data-hesabno-check-info-grid]::before,[data-hesabno-check-info-grid]::after{display:flex;align-items:center;min-width:0;min-height:0;padding:.625rem;border-radius:.75rem;overflow:hidden;white-space:pre-line;font-size:12px;line-height:1.45;font-weight:900;color:#2d3a45;background:rgba(241,245,249,.8);border:1px solid rgba(148,163,184,.35)}[data-hesabno-check-info-grid]::before{content:'مبلغ چک\\A' attr(data-hesabno-check-amount);order:2}[data-hesabno-check-info-grid]::after{content:'شماره چک\\A' attr(data-hesabno-check-number);order:3}html[data-theme='dark'] [data-hesabno-check-info-grid]::before,html[data-theme='dark'] [data-hesabno-check-info-grid]::after{color:#e2edf1;background:rgba(28,35,44,.8);border-color:rgba(100,116,139,.45)}html[data-theme='dark'] [data-hesabno-check-status-display]::before{color:#9bb0b9}";
-      document.head.appendChild(safeStyle);
-    };
+    /* قواعد فرم وام و اقساط در بستهٔ ۲۳۵ (لایهٔ ظاهر) قرار دارد. */
+    var ensureLoanFormStyles = function () {};
     var updatePrincipalConversion = function (main, principal) {
       var conversion = main && main.querySelector("[data-hesabno-principal-toman]");
       var relative = principal && principal.closest(".relative");

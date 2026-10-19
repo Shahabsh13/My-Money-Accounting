@@ -10,7 +10,7 @@
       var header = heading.parentElement && heading.parentElement.parentElement;
       var daily = panel.children[1];
       var saveButton = Array.from(panel.querySelectorAll("button")).find(function (button) { return button.textContent.trim() === "ذخیره اعلان‌ها"; });
-      var checkButton = Array.from(panel.querySelectorAll("button")).find(function (button) { return button.textContent.trim() === "تنظیم هشدار سررسید چک‌ها"; });
+      var checkButton = Array.from(panel.querySelectorAll("button")).find(function (button) { var t = button.textContent.trim(); return t === "تنظیم هشدار چک وام و قسط" || t === "تنظیم هشدار سررسید چک‌ها"; });
       if (!header || !daily || !saveButton || !checkButton) return;
 
       var tabs = document.createElement("div");
@@ -23,16 +23,16 @@
       var checksTab = document.createElement("button");
       checksTab.type = "button";
       checksTab.className = "hesabno-notification-tab";
-      checksTab.textContent = "چک‌ها";
+      checksTab.textContent = "چک وام و قسط";
       tabs.append(dailyTab, checksTab);
 
       var checkPanel = document.createElement("div");
       checkPanel.className = "hesabno-notification-check-panel";
-      checkPanel.innerHTML = "<strong>هشدار سررسید چک‌ها</strong><p>برای دریافت یادآوری چک‌های نزدیک به سررسید، هشدارهای چک را جداگانه تنظیم کنید.</p>";
+      checkPanel.innerHTML = "<strong>چک وام و قسط</strong><p>چند روز قبل از موعد سررسید چک، وام و قسط هشدار داده شود؟</p>";
       var checkProxy = document.createElement("button");
       checkProxy.type = "button";
       checkProxy.className = checkButton.className;
-      checkProxy.textContent = "تنظیم هشدار سررسید چک‌ها";
+      checkProxy.textContent = "تنظیم هشدار چک وام و قسط";
       checkProxy.addEventListener("click", function () { checkButton.click(); });
       checkPanel.appendChild(checkProxy);
 
@@ -54,6 +54,6 @@
       setTab("daily");
     });
   };
-  new MutationObserver(setup).observe(root, { childList: true, subtree: true });
+  window.__hesabnoDom.watch(root, { childList: true, subtree: true }, setup);
   setup();
 })();

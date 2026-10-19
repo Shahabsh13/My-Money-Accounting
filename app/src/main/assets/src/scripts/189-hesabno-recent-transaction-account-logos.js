@@ -59,13 +59,7 @@
     var enhance = function () {
       var transactions = read("hesabno:transactions");
       var accounts = read("hesabno:accounts_v5");
-      var styleId = "hesabno-recent-account-logo-style";
-      if (!document.getElementById(styleId)) {
-        var style = document.createElement("style");
-        style.id = styleId;
-        style.textContent = ".hesabno-recent-account-logo{overflow:hidden;background:rgba(148,163,184,.12)!important;border-color:rgba(148,163,184,.32)!important}.hesabno-recent-account-logo img{width:34px;height:34px;object-fit:contain}.hesabno-recent-account-logo span{font-size:22px;line-height:1}html[data-theme=light] .hesabno-recent-account-logo,html.theme-light .hesabno-recent-account-logo{background:#fff!important;border-color:#cad8de!important}";
-        document.head.appendChild(style);
-      }
+      /* ظاهر .hesabno-recent-account-logo در بستهٔ ۲۳۵ (لایهٔ ظاهر) است؛ این‌جا فقط کلاس معنایی. */
       document.querySelectorAll("h2").forEach(function (heading) {
         if (clean(heading.textContent) !== "آخرین تراکنش‌ها") return;
         var card = heading.closest("section") || heading.closest("div.rounded-3xl");
@@ -107,6 +101,6 @@
       Promise.resolve().then(function () { queued = false; enhance(); });
     };
     enhance();
-    new MutationObserver(schedule).observe(document, { childList: true, characterData: true, subtree: true });
+    window.__hesabnoDom.watch(document, { childList: true, characterData: true, subtree: true }, schedule);
     window.addEventListener("storage", schedule);
   })();

@@ -95,8 +95,8 @@
     var schedule = function () {
       if (scheduled) return;
       scheduled = true;
-      window.requestAnimationFrame(function () { scheduled = false; render(); });
+      Promise.resolve().then(function () { scheduled = false; render(); });
     };
     render();
-    if (document.body) new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true });
+    if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, schedule);
   })();
