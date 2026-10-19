@@ -1306,6 +1306,11 @@ public class MainActivity extends ComponentActivity {
          * زیرنویس ریز: «یادآوری ثبت روزانه»
          */
         @JavascriptInterface
+        public String getNotificationHistoryJson() {
+            return getSharedPreferences(CLOUD_PREFS, MODE_PRIVATE).getString("notification_history", "[]");
+        }
+
+        @JavascriptInterface
         public boolean showNotification(final String title, final String message) {
             return showNotificationWithTarget(title, message, "home");
         }
@@ -1440,6 +1445,22 @@ public class MainActivity extends ComponentActivity {
             intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.putExtra("hesabno_open_dashboard", true);
             intent.putExtra("hesabno_open_target", safeTarget);
+            String historyId = java.util.UUID.randomUUID().toString();
+            synchronized (MainActivity.class) {
+                android.content.SharedPreferences prefs = context.getSharedPreferences(CLOUD_PREFS, android.content.Context.MODE_PRIVATE);
+                org.json.JSONArray history = new org.json.JSONArray(prefs.getString("notification_history", "[]"));
+                org.json.JSONObject entry = new org.json.JSONObject();
+                entry.put("id", historyId);
+                entry.put("title", title);
+                entry.put("body", message);
+                entry.put("target", safeTarget);
+                entry.put("createdAt", System.currentTimeMillis());
+                history.put(entry);
+                prefs.edit().putString("notification_history", history.toString()).apply();
+            }
+            intent.putExtra("hesabno_notification_id", historyId);
+            intent.setData(android.net.Uri.parse("maymoney://notification/" + historyId));
+
             int reqCode = "checks".equals(safeTarget) ? 1002 : 1001;
             int flags = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
                     ? (android.app.PendingIntent.FLAG_UPDATE_CURRENT | android.app.PendingIntent.FLAG_IMMUTABLE)
@@ -1502,6 +1523,7 @@ public class MainActivity extends ComponentActivity {
     private void handleNotificationDashboardIntent(Intent intent) {
         if (intent == null || !intent.getBooleanExtra("hesabno_open_dashboard", false)) return;
         final String target = intent.getStringExtra("hesabno_open_target");
+        final String notificationId = intent.getStringExtra("hesabno_notification_id");
         intent.removeExtra("hesabno_open_dashboard");
         intent.removeExtra("hesabno_open_target");
         if (webView == null) return;
@@ -1510,6 +1532,8 @@ public class MainActivity extends ComponentActivity {
             public void run() {
                 try {
                     if (webView != null) {
+                        if (notificationId != null) webView.evaluateJavascript(
+                            "window.HnNotificationCenter?.sync();window.HnNotificationCenter?.readNative(" + org.json.JSONObject.quote(notificationId) + ");", null);
                         if ("checks".equals(target)) {
                             webView.evaluateJavascript("window.__hesabnoPendingNotificationTarget='checks';if(typeof window.__hesabnoOpenChecksFromNotification==='function')window.__hesabnoOpenChecksFromNotification();", null);
                         } else if ("loans".equals(target)) {
