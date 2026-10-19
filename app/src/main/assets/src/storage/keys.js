@@ -26,6 +26,7 @@
   "use strict";
 
   var AVAILABLE = [
+    { key: "hesabno:notification-center:v1", backend: "local", type: "json", scope: "internal", backup: false, owner: "000b", note: "تاریخچه اعلان‌ها و وضعیت خوانده‌شدن روی این دستگاه" },
     /* ── داده‌ی کاربر (backup = در فهرست پشتیبان ریست کامل) ── */
     { key: "hesabno:accounts", backend: "local", type: "json", scope: "data", backup: true, owner: "004", note: "نسخه‌ی قدیمی حساب‌ها؛ ۱۰۸ هم می‌نویسد" },
     { key: "hesabno:accounts_v5", backend: "local", type: "json", scope: "data", backup: true, owner: "000", note: "منبع اصلی حساب‌ها" },
