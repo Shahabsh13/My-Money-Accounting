@@ -18,3 +18,12 @@ test('advanced filter has only back/reset header actions and compact date placeh
  assert.ok(!header.includes('"h1"'));assert.ok(!header.includes('bg-purple-800'));
  assert.ok(!advanced.includes('۱۴۰۵/۰۶/'));assert.ok(advanced.includes('hesabno-filter-category-field'));
 });
+test('advanced Apply shares transaction-submit positioning and reserves scroll space',()=>{
+ const s=fs.readFileSync('app/src/main/assets/src/scripts/067-inline.js','utf8');
+ const start=s.indexOf('return c==="advanced"?'),end=s.indexOf('نشان دادن گزارش با بازه زمانی :',start),advanced=s.slice(start,end);
+ assert.ok(advanced.includes('className:"hesabno-sticky-page-submit w-full'));
+ assert.ok(advanced.includes('className:"hesabno-filter-submit-footer"'));
+ const css=fs.readFileSync('app/src/main/assets/src/styles/235-hesabno-text-root-and-display-stability.css','utf8');
+ assert.match(css,/\.hesabno-advanced-filter > \.grow\s*\{\s*padding-bottom: calc\(96px/);
+ assert.ok(css.includes('body:has(.hesabno-advanced-filter) nav.fixed'));
+});

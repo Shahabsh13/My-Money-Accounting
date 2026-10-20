@@ -107,6 +107,11 @@
     for (var i = 0; i < els.length; i++) {
       var el = els[i];
       if (el.closest("[data-hn-dialog]")) continue;
+      // These money colors are contrast-tested at their explicit 14px size. Do not darken them again.
+      if (el.closest('[data-hesabno-transaction-amount][data-hesabno-amount-tone="income"], [data-hesabno-transaction-amount][data-hesabno-amount-tone="expense"]')) {
+        if (el.hasAttribute(MARK) || el.hasAttribute("data-hn-lc-opaque")) clearMark(el);
+        continue;
+      }
       if (el.closest("[data-hesabno-simple-report-native]")) continue;
       if (el.closest("[data-hesabno-metadata-canonical], [data-hesabno-tx-metadata-row], [data-hesabno-footnote-kind], [data-hesabno-compound-badge], [data-hesabno-tx-status-badge], [data-hesabno-check-correction-link], [data-hesabno-returned-effect], [data-hesabno-returned-correction], [data-hesabno-check-replacement-link], .hesabno-tx-project-chip, .hesabno-tx-family-chip, .hesabno-canonical-meta-chip, .hesabno-footnote-action-chip, .hesabno-day-balance")) {
         if (el.hasAttribute(MARK) || el.hasAttribute("data-hn-lc-opaque")) clearMark(el);

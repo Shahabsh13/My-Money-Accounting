@@ -764,7 +764,7 @@
     var slides = [
       {
         t: "دسترسی راحت",
-        b: "موجودی کل، درآمد و هزینهی ماهانه، نمودار سرفصل‌ها و میانبرهای سریع را در یک نگاه ببین.",
+        b: "موجودی کل، درآمد و هزینهٔ ماهانه، نمودار سرفصل‌ها و میانبرهای سریع را در یک نگاه ببین.",
         svg: '<svg viewBox="0 0 200 160" fill="none"><defs><linearGradient id="t1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#134e4a"/><stop offset="1" stop-color="#0f2a2e"/></linearGradient></defs><rect x="35" y="8" width="130" height="134" rx="26" fill="url(#t1)" stroke="#2b5b58" stroke-width="1.5"/><rect x="52" y="26" width="26" height="18" rx="7" fill="#0f2127" stroke="#244047"/><rect x="82" y="26" width="26" height="18" rx="7" fill="#0f2127" stroke="#244047"/><rect x="112" y="26" width="26" height="18" rx="7" fill="#0f2127" stroke="#244047"/><path d="M52 116 L78 94 L100 104 L124 76 L148 86" stroke="#6ee7b7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="124" cy="76" r="4" fill="#34d399"/><path d="M50 120 h100" stroke="#2b5b58" stroke-width="2" stroke-linecap="round"/></svg>'
       },
       {
@@ -774,7 +774,7 @@
       },
       {
         t: "تحلیل راحت",
-        b: "مقایسهی ماهانه، توزیع هزینه‌ها و درآمدها و میانگین روزانه را ببین.",
+        b: "مقایسهٔ ماهانه، توزیع هزینه‌ها و درآمدها و میانگین روزانه را ببین.",
         svg: '<svg viewBox="0 0 200 160" fill="none"><defs><linearGradient id="t3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#134e4a"/><stop offset="1" stop-color="#0f2a2e"/></linearGradient><linearGradient id="b3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2dd4bf"/><stop offset="1" stop-color="#0d9488"/></linearGradient></defs><rect x="35" y="8" width="130" height="134" rx="26" fill="url(#t3)" stroke="#2b5b58" stroke-width="1.5"/><rect x="56" y="84" width="16" height="36" rx="5" fill="url(#b3)" opacity=".55"/><rect x="80" y="68" width="16" height="52" rx="5" fill="url(#b3)" opacity=".8"/><rect x="104" y="90" width="16" height="30" rx="5" fill="url(#b3)"/><rect x="128" y="58" width="16" height="62" rx="5" fill="#fbbf24"/><path d="M62 78 L86 62 L110 72 L134 50" stroke="#a7f3d0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="134" cy="50" r="3.5" fill="#6ee7b7"/><path d="M52 122 h100" stroke="#2b5b58" stroke-width="2" stroke-linecap="round"/></svg>'
       },
       {

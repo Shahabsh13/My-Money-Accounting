@@ -194,10 +194,10 @@
   },
   "currentState": {
     "files": 10,
-    "hash": "32365f8f72d9dd1a7ab30c797ea418041932abd9f9bc9820fd65e13917b29de7",
+    "hash": "5af7659586b815aa3f377f44017c8ab12090a9ff04db3da420369d5f9179f2b7",
     "note": "وضعیت امروز روی دیسک: ادغام بی‌افت (۲۷۳۶ قاعده) + لایهٔ ظاهر (455 قاعده).",
-    "rules": 3368,
-    "bytes": 837577
+    "rules": 3386,
+    "bytes": 843871
   },
   "generatedAt": "2026-10-18T19:35:25.231Z",
   "onboardingCompact": {
@@ -205,11 +205,27 @@
     "addedRules": 4
   },
   "transactionFilter": {
-    "addedRules": 11,
+    "addedRules": 16,
     "note": "Compact date inputs and explicit attachment checkbox state."
   },
   "onboardingSimplification": {
     "addedRules": 7,
     "note": "Remove redundant first-run headers and contain input widths."
+  },
+  "transactionAmountColors": {
+    "addedRules": 2,
+    "note": "Explicit vivid and contrast-tested income/expense amount colors."
+  },
+  "transactionSearch": {
+    "addedRules": 2,
+    "note": "Compact transaction-search typography."
+  },
+  "globalPlaceholderHints": {
+    "addedRules": 1,
+    "note": "All input and textarea placeholder hints use a fixed 12px size; entered values unchanged."
+  },
+  "trendDetail": {
+    "addedRules": 8,
+    "note": "Grouped daily bars and compact single-date detail card."
   }
 }
