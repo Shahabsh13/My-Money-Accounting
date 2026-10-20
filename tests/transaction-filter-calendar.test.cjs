@@ -22,10 +22,10 @@ for(const mode of ['basic','advanced'])test(`${mode}: both date fields open a mo
   assert.ok(input);assert.equal(input.props.readOnly,true);
   const parent=nodes.find(n=>[n.props?.children].flat(Infinity).includes(input));
   assert.equal(typeof parent.props.onClick,'function');parent.props.onClick();
-  nodes=h.nodes(h.render());let picker=nodes.find(n=>n.type==='Nk');
+  nodes=h.nodes(h.render());let picker=nodes.find(n=>n.type==='ul');
   assert.ok(picker,'calendar must be mounted in both modes');assert.equal(picker.props.open,true);
-  picker.props.onChange(value);picker.props.onClose();
-  nodes=h.nodes(h.render());picker=nodes.find(n=>n.type==='Nk');assert.equal(picker.props.open,false);
+  picker.props.onConfirm('1405/07/01','1405/07/28');
+  nodes=h.nodes(h.render());picker=nodes.find(n=>n.type==='ul');assert.equal(picker.props.open,false);
   assert.equal(nodes.find(n=>n.type==='input'&&n.props['aria-label']===label).props.value,value);
   assert.equal(h.applied,null);
  }
@@ -37,7 +37,7 @@ for(const mode of ['basic','advanced'])test(`${mode}: keyboard opens calendar an
  const h=setup(mode);let nodes=h.nodes(h.render());
  const input=nodes.find(n=>n.type==='input'&&n.props['aria-label']==='از تاریخ');let prevented=false;
  input.props.onKeyDown({key:'Enter',preventDefault(){prevented=true;}});assert.equal(prevented,true);
- const picker=h.nodes(h.render()).find(n=>n.type==='Nk');assert.equal(picker.props.open,true);picker.props.onClose();
+ const picker=h.nodes(h.render()).find(n=>n.type==='ul');assert.equal(picker.props.open,true);picker.props.onClose();
  nodes=h.nodes(h.render());assert.equal(nodes.find(n=>n.type==='input'&&n.props['aria-label']==='از تاریخ').props.value,'');
  assert.equal(h.applied,null);
 });

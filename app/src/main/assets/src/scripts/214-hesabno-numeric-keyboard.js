@@ -86,6 +86,8 @@
   function isMoneyInput(input) {
     if (!input || input.tagName !== "INPUT" || input.disabled) return false;
     if (input.closest && input.closest("[data-hesabno-amount-keyboard-ui='true']")) return false;
+    // Explicit text fields (e.g. loan/installment names) must not match money hints.
+    if (input.getAttribute(FIELD_MARK) === "false") return false;
     if (input.getAttribute(FIELD_MARK) === "true") return true;
     var type = (input.getAttribute("type") || "text").toLowerCase();
     if (SKIP_TYPES.indexOf(type) !== -1) return false;

@@ -4728,3 +4728,47 @@ html body .hesabno-advanced-filter-header button { min-height: 44px; cursor: poi
 #hesabno-first-run .hesabno-fr-sub:empty,
 #hesabno-first-run .hesabno-fr-err:empty { display: none; }
 #hesabno-first-run .hesabno-fr-title { font-size: 18px !important; margin-bottom: 12px; }
+
+/* Explicit semantic money colors: keep transaction amounts vivid, not contrast-auto-darkened. */
+html[data-theme="light"] [data-hesabno-transactions-page] [data-hesabno-transaction-amount][data-hesabno-amount-tone="income"] {
+  color: #00752b !important; font-size: 14px !important; line-height: 1.5 !important;
+}
+html[data-theme="light"] [data-hesabno-transactions-page] [data-hesabno-transaction-amount][data-hesabno-amount-tone="expense"] {
+  color: #c90025 !important; font-size: 14px !important; line-height: 1.5 !important;
+}
+
+/* Advanced Apply follows the shared fixed transaction-submit geometry, not a floating footer. */
+html body .hesabno-advanced-filter > .grow {
+  padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)) !important;
+}
+html body .hesabno-advanced-filter > .hesabno-filter-submit-footer {
+  position: fixed; inset-inline: 0; bottom: 0; height: 80px; pointer-events: none;
+  background: #1c1917; border-top: 1px solid #44403c;
+}
+html[data-theme="light"] body .hesabno-advanced-filter > .hesabno-filter-submit-footer {
+  background: #eef3f6; border-top-color: #cbd5e1;
+}
+html body .hesabno-filter-submit-footer button { pointer-events: auto; }
+body:has(.hesabno-advanced-filter) nav.fixed { visibility: hidden; pointer-events: none; }
+
+/* Keep transaction search short and compact even under global input typography rules. */
+html body [data-hesabno-transaction-search] { font-size: 12px !important; min-width: 0; }
+html body [data-hesabno-transaction-search]::placeholder { font-size: 12px !important; }
+
+
+
+/* Compact daily chart details: a single date and aligned currency values. */
+html body .hesabno-trend-detail { padding: 12px; border-radius: 16px; border: 1px solid rgba(128,128,128,.25); background: rgba(128,128,128,.04); font-size: 12px; }
+html body .hesabno-trend-detail-heading { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
+html body .hesabno-trend-detail-values > div { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 5px 0; }
+html body .hesabno-trend-detail .hesabno-trend-income { color: #34d399 !important; }
+html body .hesabno-trend-detail .hesabno-trend-expense { color: #fb7185 !important; }
+html[data-theme="light"] body .hesabno-trend-detail .hesabno-trend-income { color: #00752b !important; }
+html[data-theme="light"] body .hesabno-trend-detail .hesabno-trend-expense { color: #c90025 !important; }
+html body .hesabno-trend-detail .hesabno-trend-net { border-top: 1px solid rgba(128,128,128,.25); margin-top: 6px; padding-top: 10px; font-weight: 700; }
+
+/* Placeholder hints only: one consistent size across all fields. */
+html body input[placeholder]::placeholder,
+html body textarea[placeholder]::placeholder {
+  font-size: 12px !important;
+}

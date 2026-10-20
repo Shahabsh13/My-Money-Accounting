@@ -236,3 +236,27 @@ test('all money categories use the internal keypad but loan counts, rates and id
   }
  } finally {await settleAndClose(dom);}
 });
+
+test('loan and installment names keep text keyboard in create and populated edit mode', async () => {
+  const dom = mount(); const { window } = dom;
+  for (const value of ['', 'وام مسکن', 'خرید اقساطی بیمه']) {
+    const field = window.document.createElement('input');
+    field.type = 'text'; field.value = value;
+    field.placeholder = 'مثلاً وام مسکن، تسهیلات بانک مهر...';
+    field.setAttribute('data-hesabno-amount-keyboard-field', 'false');
+    window.document.body.appendChild(field);
+    await settleAndClose(dom);
+    const event = new window.Event('pointerdown', { bubbles: true, cancelable: true });
+    field.dispatchEvent(event);
+    assert.equal(event.defaultPrevented, false);
+    assert.equal(field.readOnly, false);
+    assert.notEqual(field.getAttribute('inputmode'), 'none');
+    assert.equal(field.value, value);
+    field.focus();
+    assert.equal(window.document.activeElement, field);
+    const panel = window.document.querySelector('#hesabno-amount-keyboard');
+    assert.ok(!panel || panel.hidden, 'name focus must not open the amount keypad');
+    field.remove();
+  }
+  await settleAndClose(dom);
+});

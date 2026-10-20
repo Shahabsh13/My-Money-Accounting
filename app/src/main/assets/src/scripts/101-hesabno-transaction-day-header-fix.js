@@ -17,6 +17,7 @@
       var group = header.parentElement;
       if (!total || !group) return;
       var currentText = clean(total.textContent);
+      if (/[•●]/.test(currentText)) return; // Never reveal corrected amounts while values are hidden.
       var priorText = total.getAttribute("data-hesabno-corrected-total");
       var priorCorrection = Number(total.getAttribute("data-hesabno-total-correction")) || 0;
       var base = amountValue(currentText) - (priorText === currentText ? priorCorrection : 0);
