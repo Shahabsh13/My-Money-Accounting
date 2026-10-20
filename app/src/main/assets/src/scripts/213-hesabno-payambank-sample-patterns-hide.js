@@ -2,7 +2,7 @@
   // پیامبانک > الگوها: توضیح بالای صفحه و دو الگوی نمونه‌ی پیش‌فرض (بانک آینده، بانک رفاه کارگران) پنهان می‌شوند.
   // داده‌ها پاک نمی‌شوند؛ فقط در نمایش مخفی می‌شوند.
   var HIDE_TEXT = 'تعریف الگو و فرمت جدید';
-  var SAMPLE_TITLES = ['بانک آینده', 'بانک رفاه کارگران'];
+  var SAMPLE_TITLES = []; // User-defined patterns must remain visible, for every bank.
   function clean(value) { return String(value || '').replace(/\s+/g, ' ').trim(); }
   function hide(el) {
     if (el.dataset.hesabnoHidden === '1') return;
