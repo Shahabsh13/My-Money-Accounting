@@ -122,7 +122,8 @@
       var isFooterSubmit = Boolean(btn.closest(".hesabno-sticky-form-footer")) && txt.indexOf("انصراف") === -1 && txt.indexOf("بستن") === -1 && txt.indexOf("حذف") === -1;
       var isFormSubmit = btn.type === "submit" || isFooterSubmit || /^(ثبت|ذخیره|ایجاد|تایید و صدور)/.test(txt);
       if (!isFormSubmit) return;
-      if (/^(ثبت وام جدید|ثبت قسط جدید|ثبت میانبر جدید|ثبت چک جدید|ثبت تراکنش|ثبت مجدد سند|ارسال الگوی جدید)$/.test(txt)) return;
+      /* فرم وام/قسط اعتبارسنجی و پیام خطای خودش را دارد؛ قرمزکردن موازی فقط گمراه‌کننده است. */
+      if (/^(ثبت وام جدید|ثبت وام و زمان‌بندی اقساط|ثبت خرید اقساطی و ایجاد اقساط|ثبت تعهد و ایجاد اقساط|ثبت صندوق قرعه‌کشی و ایجاد سهم‌ها|ثبت قسط جدید|ثبت میانبر جدید|ثبت چک جدید|ثبت تراکنش|ثبت مجدد سند|ارسال الگوی جدید|ذخیره تغییرات)$/.test(txt)) return;
       var scope = btn.closest("form");
       if (!scope) {
         var footer = btn.closest(".hesabno-sticky-form-footer");
