@@ -759,7 +759,7 @@ test('dashboard widgets and transaction card icons use CSS appearance rules with
 
         const permsListEl = frOverlay.querySelector('[data-hesabno-fr-perms-list="true"]');
         assert.ok(permsListEl, 'لیست دسترسی‌ها در مرحله سوم فرم ورود باید وجود داشته باشد');
-        for (const permKey of ['notifications', 'sms', 'camera', 'storage', 'biometrics', 'clipboard']) {
+        for (const permKey of ['notifications', 'sms', 'camera', 'storage']) {
           const itemEl = permsListEl.querySelector(`[data-hesabno-fr-perm-item="${permKey}"]`);
           const reasonEl = permsListEl.querySelector(`[data-hesabno-fr-perm-reason="${permKey}"]`);
           const swEl = permsListEl.querySelector(`[data-hesabno-fr-perm-key="${permKey}"]`);
@@ -768,8 +768,8 @@ test('dashboard widgets and transaction card icons use CSS appearance rules with
         }
 
         // بررسی وجود دکمه «رد کردن» زیر لیست دسترسی‌ها و رفتن به فرم بعدی (یادآوری روزانه، چک و وام و واحد پول)
-        const skipPermsBtn = frOverlay.querySelector('[data-hesabno-fr-skip-perms="true"]');
-        assert.ok(skipPermsBtn && (skipPermsBtn.textContent || '').includes('رد کردن'),
+        const skipPermsBtn = frOverlay.querySelector('[data-hesabno-fr-next-from-perms="true"]');
+        assert.ok(skipPermsBtn && (skipPermsBtn.textContent || '').includes('بعدی'),
           'زیر لیست دسترسی‌ها باید گزینه «رد کردن» وجود داشته باشد');
         skipPermsBtn.click();
         assert.equal(frCard.getAttribute('data-hesabno-fr-active-step'), 'preferences',

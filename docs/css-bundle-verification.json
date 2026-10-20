@@ -194,10 +194,14 @@
   },
   "currentState": {
     "files": 10,
-    "hash": "a9ac9af1460a8e46eeb9593506220e8c5297b61d8fa98be12b4c31db6766e1cd",
+    "hash": "1ffc797cc884206820d1a4037f8dc6764e144ca1d0eb9f3bcdd504228bc5660c",
     "note": "وضعیت امروز روی دیسک: ادغام بی‌افت (۲۷۳۶ قاعده) + لایهٔ ظاهر (455 قاعده).",
-    "rules": 3346,
+    "rules": 3350,
     "bytes": 837577
   },
-  "generatedAt": "2026-10-18T19:35:25.231Z"
+  "generatedAt": "2026-10-18T19:35:25.231Z",
+  "onboardingCompact": {
+    "note": "Intentional compact first-run UI; historical cascade-equality proof unchanged.",
+    "addedRules": 4
+  }
 }

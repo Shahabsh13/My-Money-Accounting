@@ -98,11 +98,11 @@ test('the merge evidence artifact records a verified, equal cascade', () => {
   assert.equal(verification.cascadeEquality.equal, true, 'برابری ترتیب آبشار باید تأیید شده باشد');
   assert.equal(verification.cascadeEquality.rulesBefore, verification.cascadeEquality.rulesAfter);
   assert.equal(verification.cascadeEquality.hashBefore, verification.cascadeEquality.hashAfter);
-  /* لایهٔ ظاهر (task-12) تنها تغییری است که بعد از ادغام آمده؛ شمارشش باید ثبت شده باشد. */
+  /* تغییرهای عمدی پس از ادغام جداگانه ثبت می‌شوند؛ مدرک تاریخی ادغام ثابت می‌ماند. */
   assert.equal(verification.appearanceLayer.rules, 610, 'لایهٔ ظاهر 500 قاعده دارد');
   assert.equal(verification.currentState.rules,
-    verification.cascadeEquality.rulesAfter + verification.appearanceLayer.rules,
-    'وضعیت فعلی = ادغام بی‌افت + لایهٔ ظاهر');
+    verification.cascadeEquality.rulesAfter + verification.appearanceLayer.rules + (verification.onboardingCompact?.addedRules || 0),
+    'وضعیت فعلی = ادغام بی‌افت + لایهٔ ظاهر + اصلاح فرم شروع');
   assert.equal(verification.files.before, 99);
   assert.equal(verification.files.after, 10);
 });

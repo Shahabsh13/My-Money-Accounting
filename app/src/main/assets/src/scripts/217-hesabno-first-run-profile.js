@@ -75,7 +75,7 @@
 
     var rSub = document.createElement("p");
     rSub.className = "hesabno-fr-sub";
-    rSub.textContent = "اگر قبلاً از برنامه استفاده کرده‌اید، همین الان اطلاعات خود را از گوگل درایو برگردانید؛ یا به مرحله ثبت مشخصات بروید.";
+    rSub.textContent = "پشتیبان دارید؟ بازیابی کنید؛ وگرنه ادامه دهید.";
 
     var gdriveBox = document.createElement("div");
     gdriveBox.className = "hesabno-fr-gdrive-box";
@@ -84,13 +84,13 @@
     gdriveBtn.type = "button";
     gdriveBtn.className = "hesabno-fr-gdrive-btn";
     gdriveBtn.setAttribute("data-hesabno-fr-gdrive-btn", "true");
-    gdriveBtn.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg><span>بازیابی اطلاعات از گوگل درایو (Google Drive)</span>';
+    gdriveBtn.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg><span>بازیابی از گوگل درایو</span>';
 
     var fileBtn = document.createElement("button");
     fileBtn.type = "button";
     fileBtn.className = "hesabno-fr-file-btn";
     fileBtn.setAttribute("data-hesabno-fr-file-btn", "true");
-    fileBtn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>انتخاب فایل پشتیبان از حافظه گوشی (.json)</span>';
+    fileBtn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>انتخاب فایل پشتیبان</span>';
 
     var fileInput = document.createElement("input");
     fileInput.type = "file";
@@ -110,7 +110,7 @@
     goProfileBtn.type = "button";
     goProfileBtn.className = "hesabno-fr-submit";
     goProfileBtn.setAttribute("data-hesabno-fr-go-profile", "true");
-    goProfileBtn.innerHTML = 'کاربر جدید هستم · ورود اطلاعات کاربری <span class="hesabno-fr-submit-arrow" aria-hidden="true">←</span>';
+    goProfileBtn.innerHTML = 'شروع بدون پشتیبان <span class="hesabno-fr-submit-arrow" aria-hidden="true">←</span>';
 
     restoreView.appendChild(rStep);
     restoreView.appendChild(rTitle);
@@ -128,10 +128,10 @@
     step.textContent = "شروع کار  ·  مرحله ۲ از ۳";
     var title = document.createElement("h1");
     title.className = "hesabno-fr-title";
-    title.textContent = "به حساب‌وکتابت خوش آمدی";
+    title.textContent = "خوش آمدید";
     var sub = document.createElement("p");
     sub.className = "hesabno-fr-sub";
-    sub.textContent = "اول خودت را معرفی کن؛ بعد از این، برنامه با نام خودت از تو استقبال می‌کند.";
+    sub.textContent = "نام خود را وارد کنید.";
 
     function field(id, label, placeholder, required, type) {
       var wrap = document.createElement("div");
@@ -158,13 +158,13 @@
     submit.type = "submit";
     submit.className = "hesabno-fr-submit";
     submit.setAttribute("data-hesabno-fr-submit-profile", "true");
-    submit.innerHTML = 'ادامه و تنظیم دسترسی‌ها <span class="hesabno-fr-submit-arrow" aria-hidden="true">←</span>';
+    submit.innerHTML = 'ادامه <span class="hesabno-fr-submit-arrow" aria-hidden="true">←</span>';
 
     var backToRestoreBtn = document.createElement("button");
     backToRestoreBtn.type = "button";
     backToRestoreBtn.className = "hesabno-fr-back-restore";
     backToRestoreBtn.setAttribute("data-hesabno-fr-back-restore", "true");
-    backToRestoreBtn.innerHTML = '<span aria-hidden="true">→</span><span>قبلاً نسخه پشتیبان دارم · بازگشت به بازیابی از گوگل درایو</span>';
+    backToRestoreBtn.innerHTML = '<span aria-hidden="true">→</span><span>بازگشت به بازیابی</span>';
 
     var privacy = document.createElement("p");
     privacy.className = "hesabno-fr-privacy";
@@ -195,42 +195,32 @@
 
     var pTitle = document.createElement("h1");
     pTitle.className = "hesabno-fr-title";
-    pTitle.textContent = "دسترسی‌های مورد نیاز برنامه";
+    pTitle.textContent = "دسترسی‌های برنامه";
 
     var pSub = document.createElement("p");
     pSub.className = "hesabno-fr-sub";
-    pSub.textContent = "برای کارکرد کامل یادآورها، پیامبانک و پیوست رسیدها، دسترسی‌های مورد نظرتان را فعال کنید.";
+    pSub.textContent = "اختیاری‌اند؛ بعداً هم قابل تغییرند.";
 
     var permDefs = [
       {
         key: "notifications",
-        title: "اعلان‌ها و نوتیفیکیشن",
-        reason: "برای یادآوری سررسید چک صیادی، موعد پرداخت اقساط وام، اعلان دریافت پیامک بانکی و یادآور ثبت روزانه."
+        title: "اعلان‌ها",
+        reason: "یادآوری چک، اقساط و ثبت روزانه"
       },
       {
         key: "sms",
-        title: "پیامک‌ها (پیامبانک بانکی)",
-        reason: "برای تشخیص خودکار پیامک‌های واریز و برداشت بانکی و پر کردن فوری مبلغ و نام بانک در فرم ثبت سند."
+        title: "پیامک بانکی",
+        reason: "خواندن پیامک‌های واریز و برداشت"
       },
       {
         key: "camera",
-        title: "دوربین و اسکن رسیدها",
-        reason: "برای عکس گرفتن مستقیم از برگه چک صیادی، فاکتورهای خرید و فیش‌های بانکی جهت پیوست به سند مالی."
+        title: "دوربین",
+        reason: "عکس‌گرفتن از رسید و چک"
       },
       {
         key: "storage",
-        title: "حافظه و ذخیره‌سازی فایل‌ها",
-        reason: "برای ذخیره امن پایگاه‌داده آفلاین، تصاویر پیوست اسناد و تهیه فایل پشتیبان و خروجی اکسل روی دستگاه."
-      },
-      {
-        key: "biometrics",
-        title: "سنسور اثر انگشت و بیومتریک",
-        reason: "برای ورود سریع و محافظت از حریم خصوصی اطلاعات مالی شما با اثر انگشت یا تشخیص چهره گوشی."
-      },
-      {
-        key: "clipboard",
-        title: "کلیپ‌بورد و حافظه موقت متن",
-        reason: "برای چسباندن سریع متن پیامک بانکی یا شماره کارت و شبا در بخش پیامبانک و فرم ثبت تراکنش."
+        title: "فایل‌ها و پشتیبان",
+        reason: "ذخیرهٔ پشتیبان و خروجی گزارش‌ها"
       }
     ];
 
@@ -314,6 +304,7 @@
       sw.type = "button";
       sw.className = "hesabno-fr-perm-switch";
       sw.setAttribute("role", "switch");
+      sw.setAttribute("aria-label", def.title);
       sw.setAttribute("aria-checked", "false");
       sw.setAttribute("data-hesabno-fr-perm-key", def.key);
       var knob = document.createElement("span");
@@ -339,21 +330,6 @@
       permNodes[def.key] = { item: item, sw: sw, badge: badge };
     });
 
-    var grantAllBtn = document.createElement("button");
-    grantAllBtn.type = "button";
-    grantAllBtn.className = "hesabno-fr-grant-all-btn";
-    grantAllBtn.setAttribute("data-hesabno-fr-grant-all", "true");
-    grantAllBtn.textContent = "درخواست و فعال‌سازی همه دسترسی‌ها";
-    grantAllBtn.addEventListener("click", function () {
-      var st = readCurrentPermsState();
-      permDefs.forEach(function (def) {
-        if (!st[def.key] && typeof window.__hesabnoRequestDevicePermission === "function") {
-          window.__hesabnoRequestDevicePermission(def.key, function () { syncPermsUi(); });
-        }
-      });
-      syncPermsUi();
-    });
-
     var restoredFromBackup = false;
 
     var nextFromPermsBtn = document.createElement("button");
@@ -362,26 +338,21 @@
     nextFromPermsBtn.setAttribute("data-hesabno-fr-next-from-perms", "true");
     nextFromPermsBtn.innerHTML = 'ادامه <span class="hesabno-fr-submit-arrow" aria-hidden="true">←</span>';
 
-    var skipPermsBtn = document.createElement("button");
-    skipPermsBtn.type = "button";
-    skipPermsBtn.className = "hesabno-fr-skip-btn";
-    skipPermsBtn.setAttribute("data-hesabno-fr-skip-perms", "true");
-    skipPermsBtn.textContent = "رد کردن";
-
     var backToProfileBtn = document.createElement("button");
     backToProfileBtn.type = "button";
     backToProfileBtn.className = "hesabno-fr-back-restore";
     backToProfileBtn.setAttribute("data-hesabno-fr-back-profile", "true");
-    backToProfileBtn.innerHTML = '<span aria-hidden="true">→</span><span>بازگشت به ویرایش مشخصات کاربری</span>';
+    backToProfileBtn.textContent = "قبلی";
 
     permissionsView.appendChild(pStep);
     permissionsView.appendChild(pTitle);
     permissionsView.appendChild(pSub);
     permissionsView.appendChild(permsList);
-    permissionsView.appendChild(grantAllBtn);
-    permissionsView.appendChild(nextFromPermsBtn);
-    permissionsView.appendChild(skipPermsBtn);
-    permissionsView.appendChild(backToProfileBtn);
+    var permissionsNav = document.createElement("div");
+    permissionsNav.className = "hesabno-fr-permissions-nav";
+    permissionsNav.appendChild(backToProfileBtn);
+    permissionsNav.appendChild(nextFromPermsBtn);
+    permissionsView.appendChild(permissionsNav);
 
     // ── مرحله ۴: فرم زمان یادآوری اعلان روزانه، چک و وام و انتخاب واحد پول ──
     var preferencesView = document.createElement("div");
@@ -571,7 +542,6 @@
     }
 
     nextFromPermsBtn.addEventListener("click", proceedFromPermissions);
-    skipPermsBtn.addEventListener("click", proceedFromPermissions);
     backToPermsBtn.addEventListener("click", function () {
       showStep("permissions");
     });
@@ -583,15 +553,17 @@
       } else if (stepName === "permissions") {
         syncPermsUi();
         pStep.textContent = restoredFromBackup ? "بازیابی حساب  ·  تنظیم دسترسی‌های گوشی" : "شروع کار  ·  مرحله ۳";
-        nextFromPermsBtn.innerHTML = restoredFromBackup
-          ? 'تأیید و ورود به برنامه <span class="hesabno-fr-submit-arrow" aria-hidden="true">←</span>'
-          : 'ادامه <span class="hesabno-fr-submit-arrow" aria-hidden="true">←</span>';
-        nextFromPermsBtn.focus();
+        nextFromPermsBtn.textContent = "بعدی";
+        pTitle.setAttribute("tabindex", "-1");
+        pTitle.focus({ preventScroll: true });
       } else if (stepName === "preferences") {
-        finishBtn.focus();
+        prefTitle.setAttribute("tabindex", "-1");
+        prefTitle.focus({ preventScroll: true });
       } else {
-        gdriveBtn.focus();
+        gdriveBtn.focus({ preventScroll: true });
       }
+      card.scrollTop = 0;
+      overlay.scrollTop = 0;
     }
 
     function applyBackupJsonString(rawJson) {
@@ -673,7 +645,10 @@
           applyBackupJsonString(window.__hesabnoCloudDriveState.payload);
           return;
         }
-        fileInput.click();
+        rStatus.textContent = "فایل پشتیبان را از سایت درایو دانلود کنید؛ سپس «انتخاب فایل پشتیبان» را بزنید.";
+        if (window.confirm("گوگل درایو در دسترس نیست. سایت درایو باز شود؟ پس از دانلود پشتیبان به برنامه برگردید.")) {
+          window.open("https://drive.google.com/", "_blank", "noopener,noreferrer");
+        }
       } catch (err) {
         rStatus.setAttribute("data-state", "error");
         rStatus.textContent = "امکان باز کردن گوگل درایو وجود ندارد.";

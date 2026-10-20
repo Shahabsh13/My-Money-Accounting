@@ -277,7 +277,7 @@ test('index.html loads the guard module and installer before every app script', 
   assert.ok(installerAt < legacyAt);
 });
 
-test('live boot: guard installed before first write, 18 boot writes, real quota handled', async (t) => {
+test('live boot: guard installed before first write, 19 boot writes, real quota handled', async (t) => {
   const probe = path.join(root, 'tools/bench/storage-guard-probe.cjs');
   let raw;
   try {
@@ -295,21 +295,21 @@ test('live boot: guard installed before first write, 18 boot writes, real quota 
   assert.equal(result.writeSubscribers, 3, '۱۴۵/۱۴۸/۱۵۴ باید مشترک شده باشند');
   assert.equal(result.setsItemOwnWrappers, 0, 'هیچ وصله‌ی قدیمی روی setItem نباید بماند');
 
-  /* ۱۸ فراخوانی نوشتن بوت، همان عدد پیش از این مرحله — نگهبان نوشتن اضافه نمی‌کند */
-  assert.equal(result.bootStats.writes, 18);
+  /* ۱۸ نوشتن قبلی + نشانگر یک‌باره اصلاح سنجاق صندوق؛ خود نگهبان نوشتنی اضافه نمی‌کند. */
+  assert.equal(result.bootStats.writes, 19);
   assert.equal(result.bootStats.failures, 0);
 
   /*
-   * ۶.۳: دو نوشتن بی‌تغییر حذف می‌شود (۳۱٬۱۱۷ بایتی accounts_v5 از هسته ۰۶۷ + یک ۴ بایتی)،
-   * و عکس نهایی ذخیره‌سازی باید بایت‌به‌بایت همان عکس پیش از ۶.۳ باشد.
+   * ۶.۳: دو نوشتن بی‌تغییر حذف می‌شود (۳۱٬۱۱۸ بایتی accounts_v5 از هسته ۰۶۷ + یک ۴ بایتی)،
+   * عکس نهایی شامل pinned=false صندوق (+۱ بایت) و نشانگر مهاجرت (+۱ بایت) است.
    */
   assert.equal(result.bootStats.skipped, 2);
-  assert.equal(result.bootStats.skippedBytes, 31121);
-  assert.equal(result.snapshot.count, 13);
-  assert.equal(result.snapshot.bytes, 31221);
-  assert.equal(result.snapshot.digest, 'efc2a5f4ee282147666f3b38e698c9c8464dc2623e77f4b70436f212b440fc0a',
-    'داده‌ی نهایی ذخیره‌سازی نباید هیچ تغییری کرده باشد');
-  assert.equal(result.snapshot.accountsHash, 'afd98a93b5ed4c61');
+  assert.equal(result.bootStats.skippedBytes, 31122);
+  assert.equal(result.snapshot.count, 14);
+  assert.equal(result.snapshot.bytes, 31223);
+  assert.equal(result.snapshot.digest, 'a333b4f857ab029d066f097c71057186458441e5d7e93363eb640b545251a934',
+    'داده‌ی نهایی باید فقط اصلاح عمدی سنجاق صندوق و نشانگر مهاجرت را داشته باشد');
+  assert.equal(result.snapshot.accountsHash, 'ff97075cf3e9c63a');
   assert.equal(result.subscribersFired, 2, 'دو نوشتن آزمایشی باید دو بار مشترک را صدا بزنند');
 
   const quota = result.quota;
