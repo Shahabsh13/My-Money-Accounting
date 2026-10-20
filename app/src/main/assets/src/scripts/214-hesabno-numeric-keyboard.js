@@ -8,6 +8,10 @@
   var NUMERIC_HINTS = /مبلغ|شماره|کارت|شبا|iban|مانده|موجودی|تعداد|درصد|رقم|سقف|قیمت|کد|روز|ماه|سال|تاریخ|زمان|ساعت|عدد|نرخ|سود|کارمزد|تومان|ریال|amount|number|price|card|account/i;
   var EXCLUDE_NON_MONEY = /شماره.?کارت|شماره.?حساب|شبا|iban|کد.?ملی|تلفن|موبایل|رمز.?عبور|(?:^|\s)رمز(?:\s|$)|password|تاریخ|ساعت|زمان|search|جستجو|نام.?حساب|عنوان/i;
   var NON_AMOUNT_HINTS = /تعداد|درصد|نرخ|مدت|شماره|count|percent|rate|duration|loan.?name|loan.?title|installment.?number/i;
+  /* فیلدهای متنی آزاد: هرگز نباید فقط به‌خاطر واژه‌ای مثل «شماره پیگیری» در placeholder
+     یا «وام» در برچسب، کیبورد عددی یا کیبورد مبلغ بگیرند. */
+  var FREE_TEXT_HINTS = /نام|عنوان|توضیح|یادداشت|شرح|آدرس|ایمیل|فروشگاه|ارائه.?دهنده|طرف.?حساب|ضامن|پیگیری|کالا|دسته|دلیل|بابت|note|memo|title|description|name/i;
+  var INFERRED_INPUTMODE = "data-hesabno-numkb-inferred";
   var SKIP_TYPES = ["checkbox", "radio", "file", "range", "color", "hidden", "submit", "button", "reset", "password", "email", "search"];
   var activeInput = null;
   var panel = null;
@@ -97,6 +101,15 @@
     // Identity/date/count/rate fields never become money inputs just because a label mentions a loan.
     if (EXCLUDE_NON_MONEY.test(hints) || NON_AMOUNT_HINTS.test(hints)) return false;
     return MONEY_HINTS.test(hints);
+  }
+
+  /* قفل کهنه‌ای که ۲۲۵ یا نسخه‌های قبلی روی فیلد متنی گذاشته‌اند پاک می‌شود تا
+     کیبورد متنی برگردد. فقط روی فیلدهایی که صریحاً «غیرمبلغ» علامت خورده‌اند اجرا می‌شود. */
+  function repairExplicitTextField(input) {
+    if (!input || input.getAttribute(FIELD_MARK) !== "false") return;
+    if (input.readOnly === true) input.readOnly = false;
+    if (input.hasAttribute("readonly")) input.removeAttribute("readonly");
+    if (input.getAttribute("inputmode") === "none") input.removeAttribute("inputmode");
   }
 
   function markMoneyInput(input) {
@@ -407,7 +420,7 @@
     }
   }
 
-  function hideKeyboard(blurInput) {
+  function hideKeyboard(blurInput, preserveNativeKeyboard) {
     var oldInput = activeInput;
     activeInput = null;
     draftTouched = false;
@@ -417,7 +430,7 @@
     if (blurInput && oldInput && oldInput.isConnected && document.activeElement === oldInput) {
       oldInput.blur();
     }
-    dismissNativeKeyboard();
+    if (!preserveNativeKeyboard) dismissNativeKeyboard();
   }
 
   function confirmAmount() {
@@ -454,15 +467,29 @@
       if (input.closest && input.closest("[data-hesabno-amount-keyboard-ui='true']")) return;
       var type = (input.getAttribute("type") || "text").toLowerCase();
       if (SKIP_TYPES.indexOf(type) !== -1 || input.disabled) return;
+      /* فیلدی که صریحاً «غیرمبلغ» علامت خورده (نام وام/قسط و مانند آن) نباید هیچ قفل یا
+         inputmode ای از نسخه‌های قبلی با خود داشته باشد. */
+      repairExplicitTextField(input);
       var money = input.getAttribute(FIELD_MARK) === "true" || isMoneyInput(input);
       if (money) {
         markMoneyInput(input);
         return;
       }
+      var hints = inputHints(input);
+      var explicitNumeric = type === "number" || type === "tel" || input.getAttribute("dir") === "ltr";
+      if (!explicitNumeric && FREE_TEXT_HINTS.test(hints)) {
+        /* اگر خودمان قبلاً روی این فیلد عددی گذاشته بودیم، پس بگیریم. */
+        if (input.getAttribute(INFERRED_INPUTMODE) === "numeric" && input.getAttribute("inputmode") === "numeric") {
+          input.removeAttribute("inputmode");
+        }
+        input.removeAttribute(INFERRED_INPUTMODE);
+        return;
+      }
       if (input.getAttribute("inputmode") === "numeric") return;
-      var numeric = type === "number" || type === "tel" || input.getAttribute("dir") === "ltr" || NUMERIC_HINTS.test(inputHints(input));
-      if (!numeric || /جستجو|search/i.test(inputHints(input))) return;
+      var numeric = explicitNumeric || NUMERIC_HINTS.test(hints);
+      if (!numeric || /جستجو|search/i.test(hints)) return;
       input.setAttribute("inputmode", "numeric");
+      input.setAttribute(INFERRED_INPUTMODE, "numeric");
     });
     if (panel && !panel.hidden && (!activeInput || !activeInput.isConnected)) hideKeyboard(false);
     else syncUntouchedDraft();
@@ -480,6 +507,7 @@
   function handleFocusIn(event) {
     var target = event.target;
     if (panel && panel.contains(target)) return;
+    if (target && target.tagName === "INPUT") repairExplicitTextField(target);
     if (target && target.tagName === "INPUT" && (target.getAttribute(FIELD_MARK) === "true" || isMoneyInput(target))) {
       if (target.readOnly !== true) target.readOnly = true;
       if (target.getAttribute("readonly") !== "readonly") target.setAttribute("readonly", "readonly");
@@ -488,7 +516,8 @@
       dismissNativeKeyboard();
       activateInput(target, true);
     } else if (panel && !panel.hidden) {
-      hideKeyboard(false);
+      /* فیلد متنی تازه فوکوس گرفته؛ کیبورد مبلغ بسته شود ولی فوکوس/کیبورد بومی حفظ شود. */
+      hideKeyboard(false, true);
     }
   }
 
@@ -507,6 +536,7 @@
     var target = event.target;
     if (panel && panel.contains(target)) return;
     var input = target && target.closest ? target.closest("input") : null;
+    if (input) repairExplicitTextField(input);
     if (input && (input.getAttribute(FIELD_MARK) === "true" || isMoneyInput(input))) {
       if (input.readOnly !== true) input.readOnly = true;
       if (input.getAttribute("readonly") !== "readonly") input.setAttribute("readonly", "readonly");

@@ -88,6 +88,29 @@
     });
     observer.observe(document.documentElement, { childList: true, subtree: true });
 
+    // فقط نشانه‌های خودِ فیلد؛ متن ظرفِ والد نباید در تشخیص دخالت کند.
+    function fieldHints(input) {
+      return [
+        input.getAttribute("placeholder") || "",
+        input.getAttribute("aria-label") || "",
+        input.getAttribute("name") || "",
+        input.id || ""
+      ].join(" ");
+    }
+
+    // نام/عنوان/توضیحات/یادداشت و مانند این‌ها فیلد متنی‌اند، حتی اگر در نمونه‌ی
+    // placeholder یا برچسبشان واژه‌ی «وام» یا «قسط» آمده باشد.
+    function isFreeTextField(hints) {
+      return /نام|عنوان|توضیح|یادداشت|شرح|آدرس|ایمیل|فروشگاه|ارائه.?دهنده|طرف.?حساب|ضامن|پیگیری|کالا|دسته|دلیل|بابت|note|memo|title|description|name/i.test(hints);
+    }
+
+    function unlockTextField(input) {
+      if (!input) return;
+      if (input.readOnly === true) input.readOnly = false;
+      if (input.hasAttribute("readonly")) input.removeAttribute("readonly");
+      if (input.getAttribute("inputmode") === "none") input.removeAttribute("inputmode");
+    }
+
     // Global listener to dismiss native keyboard on any interaction with money inputs or keypad
     function onTouchOrPointer(e) {
       var target = e.target;
@@ -99,15 +122,20 @@
       }
       var input = target.closest ? target.closest("input") : null;
       if (input) {
-        var placeholder = input.getAttribute("placeholder") || "";
-        var ariaLabel = input.getAttribute("aria-label") || "";
-        var name = input.getAttribute("name") || "";
-        var id = input.id || "";
+        var marker = input.getAttribute("data-hesabno-amount-keyboard-field");
+        var hints = fieldHints(input);
+        if (marker === "false") {
+          // فیلدهایی که اسکریپت ۲۱۴ صریحاً «غیرمبلغ» علامت زده‌اند (نام وام/قسط، عنوان، توضیحات)
+          // هرگز قفل نمی‌شوند؛ قفل کهنه‌ی نسخه‌های قبلی هم برداشته می‌شود تا کیبورد متنی برگردد.
+          unlockTextField(input);
+          return;
+        }
         // فقط نشانه‌های خودِ فیلد یا علامت کیبورد مبلغ (اسکریپت ۲۱۴)؛ متن ظرفِ والد
         // باعث می‌شد هر فیلد داخل کارتی که کلمه‌ی «مبلغ» دارد قفل شود.
-        var isMoney = input.getAttribute("data-hesabno-amount-keyboard-field") === "true" ||
-                      /مانده|موجودی|مبلغ|قیمت|قسط|وام|افتتاحیه|تنخواه|تومان|ریال|amount|balance/i.test(placeholder + " " + ariaLabel + " " + name + " " + id);
-        var isExcluded = /شماره.?کارت|شماره.?حساب|شبا|iban|نام.?حساب|کد.?ملی|تلفن/i.test(placeholder + " " + ariaLabel);
+        var isMoney = marker === "true" ||
+                      (!isFreeTextField(hints) &&
+                        /مانده|موجودی|مبلغ|قیمت|قسط|وام|افتتاحیه|تنخواه|تومان|ریال|amount|balance/i.test(hints));
+        var isExcluded = /شماره.?کارت|شماره.?حساب|شبا|iban|نام.?حساب|کد.?ملی|تلفن/i.test(hints);
         if (isMoney && !isExcluded) {
           if (input.readOnly !== true) input.readOnly = true;
           if (input.getAttribute("readonly") !== "readonly") input.setAttribute("readonly", "readonly");
