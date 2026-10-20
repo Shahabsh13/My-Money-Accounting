@@ -222,3 +222,17 @@ test('keypad syncs untouched draft when edit-mode useEffect populates input valu
   await settleAndClose(dom);
 });
 
+
+test('all money categories use the internal keypad but loan counts, rates and identifiers do not', async () => {
+ const dom=mount(),w=dom.window,d=w.document;
+ try {
+  const amounts=['مبلغ وام','مبلغ قسط','موجودی اولیه صندوق','مانده اولیه بانک','بودجه','سقف هزینه','مبلغ از','مبلغ تا','کارمزد','کل بازپرداخت','مبلغ ماهانه'];
+  const ordinary=['تعداد اقساط وام','نرخ سود وام','درصد سود','شماره چک','شماره کارت','شماره موبایل','تاریخ سررسید قسط','نام حساب','عنوان وام'];
+  for(const [labels,isAmount] of [[amounts,true],[ordinary,false]]) for(const label of labels){
+   const wrap=d.createElement('label'),input=d.createElement('input');wrap.appendChild(d.createTextNode(label));wrap.appendChild(input);d.body.appendChild(wrap);
+   const event=new w.Event('pointerdown',{bubbles:true,cancelable:true});input.dispatchEvent(event);
+   assert.equal(event.defaultPrevented,isAmount,label);assert.equal(input.readOnly,isAmount,label);
+   if(isAmount){assert.equal(input.getAttribute('inputmode'),'none',label);d.querySelector('[data-hkap-action="confirm"]').click();}
+  }
+ } finally {await settleAndClose(dom);}
+});

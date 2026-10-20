@@ -106,3 +106,16 @@ test('default cash unpin migration preserves other pins and allows later manual 
  assert.equal(JSON.parse(w.localStorage.getItem('hesabno:accounts_v5'))[0].pinned,true);
  }finally{dom.window.close();}
 });
+test('profile onboarding has one short heading, no branding or progress copy, and two navigation actions',()=>{
+ const dom=new JSDOM('',{url:'https://app.test/',runScripts:'outside-only'});
+ try{
+  const w=dom.window;w.localStorage.setItem('hesabno:first_run_profile_done','1');
+  w.eval(fs.readFileSync(root+'src/scripts/217-hesabno-first-run-profile.js','utf8'));
+  const overlay=w.__hesabnoOpenFirstRunWizard('profile'),profile=overlay.querySelector('[data-hesabno-fr-view="profile"]');
+  assert.equal(overlay.querySelector('.hesabno-fr-brand'),null);assert.equal(overlay.querySelector('.hesabno-fr-glow'),null);
+  assert.equal(overlay.querySelector('.hesabno-fr-step'),null);assert.equal(profile.querySelector('h1').textContent,'مشخصات شما');
+  assert.equal(profile.querySelector('.hesabno-fr-sub').textContent,'');
+  assert.deepEqual([...profile.querySelectorAll('.hesabno-fr-permissions-nav button')].map(el=>el.textContent),['قبلی','بعدی']);
+  assert.equal(profile.querySelectorAll('input').length,3);
+ }finally{dom.window.close();}
+});

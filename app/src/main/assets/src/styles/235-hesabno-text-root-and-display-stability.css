@@ -4679,3 +4679,52 @@ button[data-hesabno-invalid="true"] {
   font-size: 13px;
   border-radius: 12px;
 }
+
+/* Compact transaction-filter dates and an unambiguous native attachment checkbox. */
+html body .hesabno-filter-date-range > div { min-width: 0; }
+html body .hesabno-filter-date-range input {
+  min-width: 0 !important; width: 100% !important; box-sizing: border-box;
+  font-size: 12px !important; padding: 10px 12px 10px 32px !important;
+}
+html body .hesabno-filter-date-range input::placeholder { font-size: 12px !important; }
+html body .hesabno-filter-attachment-toggle input[type="checkbox"] {
+  appearance: auto !important; -webkit-appearance: checkbox !important;
+  width: 20px !important; height: 20px !important; min-width: 20px;
+  accent-color: #008047; margin: 0; cursor: pointer;
+}
+html[data-theme="light"] body .hesabno-filter-attachment-toggle span {
+  color: #253441 !important;
+}
+
+/* Advanced-filter content must shrink within phone-width fields. */
+html body .hesabno-advanced-filter input {
+  min-width: 0 !important; max-width: 100%; box-sizing: border-box;
+  font-size: 12px !important; line-height: 1.6 !important;
+}
+html body .hesabno-advanced-filter input::placeholder { font-size: 12px !important; }
+html body .hesabno-advanced-filter .hesabno-filter-category-field { min-width: 0; }
+html body .hesabno-advanced-filter .hesabno-filter-category-field input {
+  flex: 1 1 0%; width: 0; background: transparent !important;
+  text-overflow: ellipsis;
+}
+html body .hesabno-advanced-filter-header {
+  width: 100%; max-width: none; box-sizing: border-box;
+  background: transparent !important; color: inherit !important;
+}
+html body .hesabno-advanced-filter-header button { min-height: 44px; cursor: pointer; }
+
+/* Minimal onboarding; contain intrinsic form widths instead of allowing sideways panning. */
+#hesabno-first-run .hesabno-fr-card { min-width: 0; overflow-x: hidden; }
+#hesabno-first-run .hesabno-fr-card *,
+#hesabno-first-run .hesabno-fr-card *::before,
+#hesabno-first-run .hesabno-fr-card *::after { box-sizing: border-box; }
+#hesabno-first-run .hesabno-fr-view,
+#hesabno-first-run .hesabno-fr-field { min-width: 0; max-width: 100%; }
+#hesabno-first-run .hesabno-fr-input {
+  min-width: 0 !important; max-width: 100% !important;
+  padding: 10px 12px !important; min-height: 44px; font-size: 14px !important;
+}
+#hesabno-first-run button { min-width: 0; max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
+#hesabno-first-run .hesabno-fr-sub:empty,
+#hesabno-first-run .hesabno-fr-err:empty { display: none; }
+#hesabno-first-run .hesabno-fr-title { font-size: 18px !important; margin-bottom: 12px; }
