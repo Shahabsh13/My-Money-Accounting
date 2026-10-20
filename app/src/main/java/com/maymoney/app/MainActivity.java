@@ -56,6 +56,11 @@ public class MainActivity extends ComponentActivity {
     private static final String KEY_CLOUD_URI = "cloud_drive_uri";
     private static final String KEY_CLOUD_NAME = "cloud_drive_name";
     private static final String KEY_CLOUD_LAST_SYNC = "cloud_drive_last_sync";
+    private volatile boolean appInForeground;
+    private final java.util.concurrent.ExecutorService rollingBackupExecutor = java.util.concurrent.Executors.newSingleThreadExecutor();
+    private final java.util.concurrent.atomic.AtomicBoolean rollingBackupBusy = new java.util.concurrent.atomic.AtomicBoolean(false);
+    private static final String KEY_ROLLING_BACKUP_URI = "rolling_backup_uri";
+    private static final String ROLLING_BACKUP_NAME = "MyMoney-AutoBackup.json";
     private final Object autoBackupLock = new Object();
     private final Object attachmentLock = new Object();
     private final Object sqlStoreLock = new Object();
@@ -72,13 +77,13 @@ public class MainActivity extends ComponentActivity {
             + "return null;var labels=['بازگشت','برگشت','انصراف','بستن'];var list=scope.querySelectorAll('button,[role=\"butto"
             + "n\"]');for(var i=list.length-1;i>=0;i--){var el=list[i];if(!visible(el))continue;var vals=[el.getAttribute('ari"
             + "a-label'),el.getAttribute('title'),el.innerText,el.textContent];for(var j=0;j<vals.length;j++){var label=Strin"
-            + "g(vals[j]||'').replace(/\\s+/g,' ').trim();if(labels.indexOf(label)!==-1)return el;}}return null;}\ntry{var fr=d"
+            + "g(vals[j]||'').replace(/\\s+/g,' ').trim();if(labels.indexOf(label)!==-1)return el;}}return null;}\ntry{if(typeof window.__hesabnoDismissExitDialog==='function'&&window.__hesabnoDismissExitDialog()){done();return;}}catch(e){}\ntry{var fr=d"
             + "ocument.getElementById('hesabno-first-run');if(fr){fr.parentNode.removeChild(fr);done();return;}}catch(e){}\ntr"
             + "y{var h=window.__hesabnoNavigateBack;if(typeof h==='function'&&h()){done();return;}}catch(e){}\ntry{var layers="
             + "document.querySelectorAll('.hesabno-fullpage-layer,[role=\"dialog\"],[aria-modal=\"true\"]');for(var i=layers.leng"
             + "th-1;i>=0;i--){if(!visible(layers[i]))continue;var lb=findBackButton(layers[i]);if(lb){lb.click();done();retur"
             + "n;}}var b=findBackButton(document.querySelector('main')||document);if(b){b.click();done();return;}}catch(e){}\n"
-            + "try{var shouldExit=window.confirm('آیا می‌خواهید از برنامه خارج شوید؟');done();if(shouldExit&&window.HnBridge)"
+            + "try{if(typeof window.__hesabnoConfirmExit==='function'){window.__hesabnoConfirmExit();done();return;}var shouldExit=window.confirm('آیا می‌خواهید از برنامه خارج شوید؟');done();if(shouldExit&&window.HnBridge)"
             + "window.HnBridge.exitApp();}catch(e){done();}\n})();";
 
     private WebView webView;
@@ -629,6 +634,7 @@ public class MainActivity extends ComponentActivity {
 
     @Override
     protected void onPause() {
+        appInForeground = false;
         recordUserActivityAndSchedule4DayReminder(this);
         if (smsReceiverRegistered) {
             try {
@@ -656,12 +662,14 @@ public class MainActivity extends ComponentActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        appInForeground = true;
         if (webView != null) {
             webView.onResume();
             try {
                 webView.evaluateJavascript("if(typeof window.__hesabnoRefreshPermissionsState==='function')window.__hesabnoRefreshPermissionsState();", null);
             } catch (Exception ignored) {}
         }
+        scheduleDailyReminder(this);
         recordUserActivityAndSchedule4DayReminder(this);
         handleNotificationDashboardIntent(getIntent());
         registerSmsReceiverIfPermitted();
@@ -684,6 +692,7 @@ public class MainActivity extends ComponentActivity {
 
     @Override
     protected void onDestroy() {
+        rollingBackupExecutor.shutdown(); // Let an already accepted write finish; never interrupt it.
         if (webView != null) {
             webView.destroy();
         }
@@ -814,6 +823,45 @@ public class MainActivity extends ComponentActivity {
          * (شامل‌شده در Android Auto Backup برای بازیابی خودکار پس از حذف و نصب مجدد)
          * و همگام‌سازی خودکار با فایل ماندگار انتخاب‌شده در حافظه گوشی / گوگل درایو.
          */
+        /** Queues a silent rolling backup. A true result means accepted, not yet written. */
+        @JavascriptInterface
+        public boolean saveRollingBackup(final String jsonPayload) {
+            if (!appInForeground || jsonPayload == null || !rollingBackupBusy.compareAndSet(false, true)) return false;
+            try {
+                rollingBackupExecutor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            synchronized (MainActivity.class) {
+                                boolean ok = writeRollingBackup(jsonPayload);
+                                android.content.SharedPreferences.Editor status = getSharedPreferences(CLOUD_PREFS, MODE_PRIVATE).edit();
+                                status.putString("rolling_backup_error", ok ? "" : "write_failed");
+                                if (ok) status.putLong("rolling_backup_last_success", System.currentTimeMillis());
+                                status.apply();
+                            }
+                        } finally { rollingBackupBusy.set(false); }
+                    }
+                });
+                return true;
+            } catch (java.util.concurrent.RejectedExecutionException e) {
+                rollingBackupBusy.set(false);
+                return false;
+            }
+        }
+
+        @JavascriptInterface
+        public boolean saveExitBackup(String jsonPayload) {
+            try {
+                org.json.JSONObject backup = new org.json.JSONObject(jsonPayload);
+                if (!(backup.opt("accounts") instanceof org.json.JSONArray)
+                        || !(backup.opt("transactions") instanceof org.json.JSONArray)) return false;
+                String stamp = new java.text.SimpleDateFormat("yyyyMMdd-HHmmss-SSS", java.util.Locale.US).format(new java.util.Date());
+                boolean saved = saveToDownloads("MyMoney-Backup-" + stamp + ".json", jsonPayload.getBytes("UTF-8"), true);
+                if (saved) toast("پشتیبان در Downloads/My Money/Backups ذخیره شد");
+                return saved;
+            } catch (Exception e) { return false; }
+        }
+
         @JavascriptInterface
         public boolean saveAutoBackup(String jsonPayload) {
             boolean ok = writeAutoBackupFile(jsonPayload);
@@ -995,24 +1043,31 @@ public class MainActivity extends ComponentActivity {
                             cloudDriveRestorePicker.launch(driveIntent);
                             return;
                         }
-                        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                        intent.addCategory(Intent.CATEGORY_OPENABLE);
-                        intent.setType("*/*");
-                        intent.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{"application/json", "text/plain", "application/octet-stream"});
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            intent.putExtra(android.provider.DocumentsContract.EXTRA_INITIAL_URI,
-                                    Uri.parse("content://com.google.android.apps.docs.storage/root"));
-                        }
-                        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
-                                | Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-                                | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
-                        cloudDriveRestorePicker.launch(intent);
+                        showCloudDriveWebsiteFallback();
                     } catch (Exception e) {
-                        toast("امکان باز کردن گوگل درایو وجود ندارد");
+                        showCloudDriveWebsiteFallback();
                     }
                 }
             });
             return true;
+        }
+
+        private void showCloudDriveWebsiteFallback() {
+            new android.app.AlertDialog.Builder(MainActivity.this)
+                    .setTitle("گوگل درایو در دسترس نیست")
+                    .setMessage("سایت درایو را باز کنید و فایل پشتیبان را دانلود کنید؛ سپس به برنامه برگردید و «انتخاب فایل پشتیبان» را بزنید.")
+                    .setPositiveButton("باز کردن سایت درایو", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            try {
+                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://drive.google.com/")));
+                            } catch (Exception e) {
+                                toast("مرورگر در دسترس نیست؛ نشانی drive.google.com را در مرورگر باز کنید");
+                            }
+                        }
+                    })
+                    .setNegativeButton("بازگشت", null)
+                    .show();
         }
 
         /**
@@ -1370,10 +1425,31 @@ public class MainActivity extends ComponentActivity {
                         .putString("daily_reminder_title", customTitle != null ? customTitle : "")
                         .putString("daily_reminder_message", customMessage != null ? customMessage : "")
                         .apply();
+                scheduleDailyReminder(MainActivity.this);
                 return true;
             } catch (Exception e) {
                 return false;
             }
+        }
+
+        @JavascriptInterface
+        public boolean saveFinancialReminderPlan(String payload) {
+            try {
+                org.json.JSONObject plan = new org.json.JSONObject(payload);
+                org.json.JSONArray entries = plan.getJSONArray("entries");
+                if (entries.length() > 10000) return false;
+                for (int i = 0; i < entries.length(); i++) {
+                    org.json.JSONObject entry = entries.getJSONObject(i);
+                    String target = entry.getString("target");
+                    if (!"checks".equals(target) && !"loans".equals(target)) return false;
+                    entry.getLong("dueDay");
+                    entry.getString("id");
+                }
+                getSharedPreferences(CLOUD_PREFS, MODE_PRIVATE).edit()
+                        .putString("financial_reminder_plan", plan.toString()).apply();
+                scheduleDailyReminder(MainActivity.this);
+                return true;
+            } catch (Exception e) { return false; }
         }
 
         /**
@@ -1383,6 +1459,93 @@ public class MainActivity extends ComponentActivity {
         public boolean scheduleInactivityReminder() {
             recordUserActivityAndSchedule4DayReminder(MainActivity.this);
             return true;
+        }
+    }
+
+    public static final String ACTION_DAILY_REMINDER = "com.maymoney.app.ACTION_DAILY_REMINDER";
+
+    public static void scheduleDailyReminder(android.content.Context context) {
+        try {
+            android.content.SharedPreferences prefs = context.getSharedPreferences(CLOUD_PREFS, MODE_PRIVATE);
+            android.app.AlarmManager alarms = (android.app.AlarmManager) context.getSystemService(ALARM_SERVICE);
+            if (alarms == null) return;
+            Intent intent = new Intent(context, DailyReminderReceiver.class).setAction(ACTION_DAILY_REMINDER);
+            android.app.PendingIntent pending = android.app.PendingIntent.getBroadcast(context, 4020, intent,
+                    android.app.PendingIntent.FLAG_UPDATE_CURRENT | android.app.PendingIntent.FLAG_IMMUTABLE);
+            alarms.cancel(pending);
+            org.json.JSONObject plan = new org.json.JSONObject(prefs.getString("financial_reminder_plan", "{}"));
+            boolean financial = plan.optBoolean("enabled", true) && plan.optJSONArray("entries") != null
+                    && plan.optJSONArray("entries").length() > 0;
+            if (!prefs.getBoolean("daily_reminder_enabled", false) && !financial) return;
+            String time = financial ? plan.optString("time", "21:00") : prefs.getString("daily_reminder_time", "21:00");
+            if (time == null || !time.matches("(?:[01][0-9]|2[0-3]):[0-5][0-9]")) time = "21:00";
+            java.util.Calendar next = java.util.Calendar.getInstance();
+            next.set(java.util.Calendar.HOUR_OF_DAY, Integer.parseInt(time.substring(0, 2)));
+            next.set(java.util.Calendar.MINUTE, Integer.parseInt(time.substring(3, 5)));
+            next.set(java.util.Calendar.SECOND, 0);
+            next.set(java.util.Calendar.MILLISECOND, 0);
+            if (next.getTimeInMillis() <= System.currentTimeMillis()) next.add(java.util.Calendar.DATE, 1);
+            // No special exact-alarm access is assumed; Android may defer this in battery-saving mode.
+            alarms.setAndAllowWhileIdle(android.app.AlarmManager.RTC_WAKEUP, next.getTimeInMillis(), pending);
+        } catch (Exception ignored) {}
+    }
+
+    private static void deliverFinancialReminders(android.content.Context context) {
+        try {
+            android.content.SharedPreferences prefs = context.getSharedPreferences(CLOUD_PREFS, MODE_PRIVATE);
+            org.json.JSONObject plan = new org.json.JSONObject(prefs.getString("financial_reminder_plan", "{}"));
+            if (!plan.optBoolean("enabled", true)) return;
+            org.json.JSONArray entries = plan.optJSONArray("entries");
+            if (entries == null) return;
+            java.util.Calendar local = java.util.Calendar.getInstance();
+            java.util.Calendar utc = java.util.Calendar.getInstance(java.util.TimeZone.getTimeZone("UTC"));
+            utc.clear();
+            utc.set(local.get(java.util.Calendar.YEAR), local.get(java.util.Calendar.MONTH), local.get(java.util.Calendar.DAY_OF_MONTH));
+            long today = utc.getTimeInMillis() / 86400000L;
+            org.json.JSONObject delivered = new org.json.JSONObject(prefs.getString("financial_reminder_delivered", "{}"));
+            if (delivered.optLong("day", -1) != today) delivered = new org.json.JSONObject().put("day", today);
+            for (int i = 0; i < entries.length(); i++) {
+                org.json.JSONObject item = entries.getJSONObject(i);
+                long diff = item.getLong("dueDay") - today;
+                int days = Math.max(1, item.optInt("days", 3));
+                boolean check = "checks".equals(item.getString("target"));
+                boolean due = diff == 0 || (diff == 1 && days >= 1)
+                        || (check && diff == 2 && days >= 2)
+                        || (diff == days && days >= (check ? 3 : 2))
+                        || (diff < 0 && (-diff - 1) % 3 == 0);
+                String id = item.getString("id");
+                if (!due || delivered.optBoolean(id, false)) continue;
+                String prefix = diff < 0 ? "سررسید گذشته • " : diff == 0 ? "امروز • " : "تا سررسید: " + diff + " روز • ";
+                if (postStaticNotification(context, item.optString("title"), prefix + item.optString("body"), item.getString("target"))) {
+                    delivered.put(id, true);
+                    prefs.edit().putString("financial_reminder_delivered", delivered.toString()).apply();
+                }
+            }
+        } catch (Exception ignored) {}
+    }
+
+    public static class DailyReminderReceiver extends android.content.BroadcastReceiver {
+        @Override
+        public void onReceive(android.content.Context context, Intent intent) {
+            if (context == null || intent == null) return;
+            String action = intent.getAction();
+            if (ACTION_DAILY_REMINDER.equals(action)) {
+                android.content.SharedPreferences prefs = context.getSharedPreferences(CLOUD_PREFS, MODE_PRIVATE);
+                if (prefs.getBoolean("daily_reminder_enabled", false)) {
+                    String title = prefs.getString("daily_reminder_title", "");
+                    String message = prefs.getString("daily_reminder_message", "");
+                    postStaticNotification(context,
+                            title == null || title.trim().isEmpty() ? "یادآوری ثبت روزانه" : title,
+                            message == null || message.trim().isEmpty() ? "تراکنش‌های امروز را ثبت کنید." : message);
+                }
+                deliverFinancialReminders(context);
+            } else if (!Intent.ACTION_BOOT_COMPLETED.equals(action)
+                    && !Intent.ACTION_TIME_CHANGED.equals(action)
+                    && !Intent.ACTION_TIMEZONE_CHANGED.equals(action)
+                    && !Intent.ACTION_MY_PACKAGE_REPLACED.equals(action)) {
+                return;
+            }
+            scheduleDailyReminder(context);
         }
     }
 
@@ -2258,7 +2421,73 @@ public class MainActivity extends ComponentActivity {
         }
     }
 
+    /** Write a complete new snapshot before discarding the previous public backup. No UI or permission prompts. */
+    private boolean writeRollingBackup(String payload) {
+        Uri staged = null;
+        boolean published = false;
+        try {
+            org.json.JSONObject backup = new org.json.JSONObject(payload);
+            if (!(backup.opt("accounts") instanceof org.json.JSONArray)
+                    || !(backup.opt("transactions") instanceof org.json.JSONArray)) return false;
+            byte[] bytes = payload.getBytes("UTF-8");
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                android.content.SharedPreferences prefs = getSharedPreferences(CLOUD_PREFS, MODE_PRIVATE);
+                String previous = prefs.getString(KEY_ROLLING_BACKUP_URI, "");
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Downloads.DISPLAY_NAME, "MyMoney-AutoBackup-writing.json");
+                values.put(MediaStore.Downloads.MIME_TYPE, "application/json");
+                values.put(MediaStore.Downloads.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS + "/My Money/Backups");
+                values.put(MediaStore.Downloads.IS_PENDING, 1);
+                staged = getContentResolver().insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values);
+                if (staged == null) return false;
+                try (OutputStream out = getContentResolver().openOutputStream(staged, "w")) {
+                    if (out == null) throw new java.io.IOException("No output stream");
+                    out.write(bytes);
+                    out.flush();
+                }
+                // Publish the fully written replacement before touching the last successful backup.
+                ContentValues ready = new ContentValues();
+                ready.put(MediaStore.Downloads.IS_PENDING, 0);
+                if (getContentResolver().update(staged, ready, null, null) != 1) return false;
+                published = true;
+                if (!prefs.edit().putString(KEY_ROLLING_BACKUP_URI, staged.toString()).commit()) return false;
+                if (previous != null && !previous.isEmpty()) {
+                    try { getContentResolver().delete(Uri.parse(previous), null, null); }
+                    catch (Exception ignored) { /* Keep both valid copies if deletion fails. */ }
+                }
+                ContentValues name = new ContentValues();
+                name.put(MediaStore.Downloads.DISPLAY_NAME, ROLLING_BACKUP_NAME);
+                return getContentResolver().update(staged, name, null, null) == 1;
+            }
+            // Older Android: only write when permission is already granted; no surprise prompts.
+            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) return false;
+            File folder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "My Money/Backups");
+            if (!folder.exists() && !folder.mkdirs()) return false;
+            android.util.AtomicFile file = new android.util.AtomicFile(new File(folder, ROLLING_BACKUP_NAME));
+            FileOutputStream stream = null;
+            try {
+                stream = file.startWrite();
+                stream.write(bytes);
+                file.finishWrite(stream);
+                return true;
+            } catch (Exception e) {
+                if (stream != null) file.failWrite(stream);
+                return false;
+            }
+        } catch (Exception e) {
+            return false;
+        } finally {
+            if (staged != null && !published) {
+                try { getContentResolver().delete(staged, null, null); } catch (Exception ignored) {}
+            }
+        }
+    }
+
     private boolean saveToDownloads(String name, byte[] data) {
+        return saveToDownloads(name, data, false);
+    }
+
+    private boolean saveToDownloads(String name, byte[] data, boolean exitBackup) {
         String safeName = (name == null || name.trim().isEmpty() ? "hesabno-backup.json" : name.trim())
                 .replaceAll("[^\\w\\-. ]", "_");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -2266,7 +2495,7 @@ public class MainActivity extends ComponentActivity {
                 ContentValues values = new ContentValues();
                 values.put(MediaStore.Downloads.DISPLAY_NAME, safeName);
                 values.put(MediaStore.Downloads.MIME_TYPE, safeName.endsWith(".json") ? "application/json" : "application/octet-stream");
-                values.put(MediaStore.Downloads.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS);
+                values.put(MediaStore.Downloads.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS + (exitBackup ? "/My Money/Backups" : ""));
                 Uri uri = getContentResolver().insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values);
                 if (uri == null) return false;
                 OutputStream out = getContentResolver().openOutputStream(uri);
@@ -2276,7 +2505,7 @@ public class MainActivity extends ComponentActivity {
                 } finally {
                     out.close();
                 }
-                toast("پشتیبان در «دانلودها» ذخیره شد:\n" + safeName);
+                toast("پشتیبان در " + (exitBackup ? "Downloads/My Money/Backups" : "Downloads") + " ذخیره شد:\n" + safeName);
                 return true;
             } catch (Exception e) {
                 return false;
@@ -2284,6 +2513,8 @@ public class MainActivity extends ComponentActivity {
         }
         // اندروید ۲۸ و پایین‌تر: مجوز نوشتن لازم است
         if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            // Exit backup must fail visibly rather than write elsewhere after a deferred permission grant.
+            if (exitBackup) return false;
             pendingBackupName = safeName;
             pendingBackupData = data;
             runOnUiThread(new Runnable() {
@@ -2294,18 +2525,23 @@ public class MainActivity extends ComponentActivity {
             });
             return false;
         }
-        return writeFileToDownloads(safeName, data);
+        return writeFileToDownloads(safeName, data, exitBackup);
     }
 
     private boolean writeFileToDownloads(String safeName, byte[] data) {
+        return writeFileToDownloads(safeName, data, false);
+    }
+
+    private boolean writeFileToDownloads(String safeName, byte[] data, boolean exitBackup) {
         FileOutputStream out = null;
         try {
             File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+            if (exitBackup) dir = new File(dir, "My Money/Backups");
             if (!dir.exists() && !dir.mkdirs()) return false;
             File file = new File(dir, safeName);
             out = new FileOutputStream(file);
             out.write(data);
-            toast("پشتیبان در «دانلودها» ذخیره شد:\n" + safeName);
+            toast("پشتیبان در " + (exitBackup ? "Downloads/My Money/Backups" : "Downloads") + " ذخیره شد:\n" + safeName);
             return true;
         } catch (Exception e) {
             return false;

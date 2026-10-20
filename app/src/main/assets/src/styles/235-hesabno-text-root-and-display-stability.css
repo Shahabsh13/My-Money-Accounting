@@ -4664,3 +4664,18 @@ button[data-hesabno-invalid="true"] {
 #hesabno-first-run .hesabno-fr-back-restore {
   min-height: 44px;
 }
+
+/* Two compact navigation actions; optional permissions never block Next. */
+#hesabno-first-run .hesabno-fr-permissions-nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 12px;
+}
+#hesabno-first-run .hesabno-fr-permissions-nav > button {
+  margin: 0;
+  padding: 8px 12px;
+  min-height: 44px;
+  font-size: 13px;
+  border-radius: 12px;
+}

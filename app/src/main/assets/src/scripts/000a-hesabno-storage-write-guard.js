@@ -844,8 +844,8 @@
       return entries;
     }
 
-    function flushAutoBackup() {
-      if (syncTimer) {
+    function flushAutoBackup(forExit) {
+      if (forExit !== "rolling" && syncTimer) {
         window.clearTimeout(syncTimer);
         syncTimer = 0;
       }
@@ -859,7 +859,7 @@
         }
         var attMap = exportAttachmentsMap();
         var serializedState = JSON.stringify({ e: entries, a: Object.keys(attMap).sort() });
-        if (serializedState === lastSerializedEntries) return true;
+        if (forExit !== true && forExit !== "rolling" && serializedState === lastSerializedEntries) return true;
         var parseKey = function (name, fallback) {
           try {
             var rawVal = entries[name];
@@ -886,8 +886,12 @@
           entries: entries,
           attachments: attMap,
         });
-        var saved = !!bridge.saveAutoBackup(payload);
-        if (saved) lastSerializedEntries = serializedState;
+        var saved = forExit === true
+          ? (typeof bridge.saveExitBackup === "function" && bridge.saveExitBackup(payload) === true)
+          : forExit === "rolling"
+            ? (typeof bridge.saveRollingBackup === "function" && bridge.saveRollingBackup(payload) === true)
+            : !!bridge.saveAutoBackup(payload);
+        if (saved && forExit !== true && forExit !== "rolling") lastSerializedEntries = serializedState;
         return saved;
       } catch (ignored) {
         return false;

@@ -221,16 +221,6 @@
         key: "storage",
         title: "فایل‌ها و پشتیبان",
         reason: "ذخیرهٔ پشتیبان و خروجی گزارش‌ها"
-      },
-      {
-        key: "biometrics",
-        title: "اثر انگشت",
-        reason: "بازکردن قفل با اثر انگشت یا چهره"
-      },
-      {
-        key: "clipboard",
-        title: "حافظهٔ کپی",
-        reason: "چسباندن متن پیامک، کارت و شبا"
       }
     ];
 
@@ -340,21 +330,6 @@
       permNodes[def.key] = { item: item, sw: sw, badge: badge };
     });
 
-    var grantAllBtn = document.createElement("button");
-    grantAllBtn.type = "button";
-    grantAllBtn.className = "hesabno-fr-grant-all-btn";
-    grantAllBtn.setAttribute("data-hesabno-fr-grant-all", "true");
-    grantAllBtn.textContent = "درخواست همهٔ دسترسی‌ها";
-    grantAllBtn.addEventListener("click", function () {
-      var st = readCurrentPermsState();
-      permDefs.forEach(function (def) {
-        if (!st[def.key] && typeof window.__hesabnoRequestDevicePermission === "function") {
-          window.__hesabnoRequestDevicePermission(def.key, function () { syncPermsUi(); });
-        }
-      });
-      syncPermsUi();
-    });
-
     var restoredFromBackup = false;
 
     var nextFromPermsBtn = document.createElement("button");
@@ -363,26 +338,21 @@
     nextFromPermsBtn.setAttribute("data-hesabno-fr-next-from-perms", "true");
     nextFromPermsBtn.innerHTML = 'ادامه <span class="hesabno-fr-submit-arrow" aria-hidden="true">←</span>';
 
-    var skipPermsBtn = document.createElement("button");
-    skipPermsBtn.type = "button";
-    skipPermsBtn.className = "hesabno-fr-skip-btn";
-    skipPermsBtn.setAttribute("data-hesabno-fr-skip-perms", "true");
-    skipPermsBtn.textContent = "رد کردن";
-
     var backToProfileBtn = document.createElement("button");
     backToProfileBtn.type = "button";
     backToProfileBtn.className = "hesabno-fr-back-restore";
     backToProfileBtn.setAttribute("data-hesabno-fr-back-profile", "true");
-    backToProfileBtn.innerHTML = '<span aria-hidden="true">→</span><span>بازگشت</span>';
+    backToProfileBtn.textContent = "قبلی";
 
     permissionsView.appendChild(pStep);
     permissionsView.appendChild(pTitle);
     permissionsView.appendChild(pSub);
     permissionsView.appendChild(permsList);
-    permissionsView.appendChild(grantAllBtn);
-    permissionsView.appendChild(nextFromPermsBtn);
-    permissionsView.appendChild(skipPermsBtn);
-    permissionsView.appendChild(backToProfileBtn);
+    var permissionsNav = document.createElement("div");
+    permissionsNav.className = "hesabno-fr-permissions-nav";
+    permissionsNav.appendChild(backToProfileBtn);
+    permissionsNav.appendChild(nextFromPermsBtn);
+    permissionsView.appendChild(permissionsNav);
 
     // ── مرحله ۴: فرم زمان یادآوری اعلان روزانه، چک و وام و انتخاب واحد پول ──
     var preferencesView = document.createElement("div");
@@ -572,7 +542,6 @@
     }
 
     nextFromPermsBtn.addEventListener("click", proceedFromPermissions);
-    skipPermsBtn.addEventListener("click", proceedFromPermissions);
     backToPermsBtn.addEventListener("click", function () {
       showStep("permissions");
     });
@@ -584,9 +553,7 @@
       } else if (stepName === "permissions") {
         syncPermsUi();
         pStep.textContent = restoredFromBackup ? "بازیابی حساب  ·  تنظیم دسترسی‌های گوشی" : "شروع کار  ·  مرحله ۳";
-        nextFromPermsBtn.innerHTML = restoredFromBackup
-          ? 'تأیید و ورود به برنامه <span class="hesabno-fr-submit-arrow" aria-hidden="true">←</span>'
-          : 'ادامه <span class="hesabno-fr-submit-arrow" aria-hidden="true">←</span>';
+        nextFromPermsBtn.textContent = "بعدی";
         pTitle.setAttribute("tabindex", "-1");
         pTitle.focus({ preventScroll: true });
       } else if (stepName === "preferences") {
@@ -678,7 +645,10 @@
           applyBackupJsonString(window.__hesabnoCloudDriveState.payload);
           return;
         }
-        fileInput.click();
+        rStatus.textContent = "فایل پشتیبان را از سایت درایو دانلود کنید؛ سپس «انتخاب فایل پشتیبان» را بزنید.";
+        if (window.confirm("گوگل درایو در دسترس نیست. سایت درایو باز شود؟ پس از دانلود پشتیبان به برنامه برگردید.")) {
+          window.open("https://drive.google.com/", "_blank", "noopener,noreferrer");
+        }
       } catch (err) {
         rStatus.setAttribute("data-state", "error");
         rStatus.textContent = "امکان باز کردن گوگل درایو وجود ندارد.";
