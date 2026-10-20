@@ -61,10 +61,14 @@
 
     function computeAttachmentId(dataUrl) {
       var str = String(dataUrl || "");
+      // Bounded memoization avoids hashing repeated receipt strings in bulk imports.
+      var cache = computeAttachmentId.cache || (computeAttachmentId.cache = new Map());
+      if (cache.has(str)) return cache.get(str);
       var h1 = 0x811c9dc5;
       var h2 = 0x01000193;
       var len = str.length;
-      var step = len > 4096 ? Math.floor(len / 2048) : 1;
+      // Hash every byte: sampling caused different receipt images to share an ID.
+      var step = 1;
       for (var i = 0; i < len; i += step) {
         var c = str.charCodeAt(i);
         h1 ^= c;
@@ -72,7 +76,19 @@
         h2 ^= (c + i) & 0xff;
         h2 = Math.imul(h2, 0x85ebca6b);
       }
-      return "att_" + len.toString(36) + "_" + (h1 >>> 0).toString(36) + (h2 >>> 0).toString(36);
+      var id = "att_" + len.toString(36) + "_" + (h1 >>> 0).toString(36) + (h2 >>> 0).toString(36);
+      var budget = 2 * 1024 * 1024;
+      if (len <= budget) {
+        var used = computeAttachmentId.cacheChars || 0;
+        while (used + len > budget && cache.size) {
+          var oldest = cache.keys().next().value;
+          used -= oldest.length;
+          cache.delete(oldest);
+        }
+        cache.set(str, id);
+        computeAttachmentId.cacheChars = used + len;
+      }
+      return id;
     }
 
     function openAttIdb() {

@@ -43,7 +43,11 @@ jobs:
         run: |
           SDKMANAGER="$(find "$ANDROID_HOME/cmdline-tools" -type f -name sdkmanager | head -n 1)"
           test -n "$SDKMANAGER"
+          # yes may exit with SIGPIPE once sdkmanager has read enough answers.
+          # Preserve sdkmanager's status, not yes's, under GitHub's bash -e -o pipefail.
+          set +o pipefail
           yes | "$SDKMANAGER" --licenses
+          set -o pipefail
           "$SDKMANAGER" --install 'platform-tools' 'platforms;android-35' 'build-tools;35.0.0'
 
       - name: Build debug APK

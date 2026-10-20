@@ -15,3 +15,8 @@ keystore.properties
 /node_modules
 /.tmp
 
+
+# Signing secrets must never be committed.
+*.jks
+*.keystore
+*.aab
