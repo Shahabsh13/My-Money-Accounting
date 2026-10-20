@@ -4,9 +4,10 @@
   var BACKDROP_ID = PANEL_ID + "-backdrop";
   var FIELD_MARK = "data-hesabno-amount-keyboard-field";
   var UI_MARK = "data-hesabno-amount-keyboard-ui";
-  var MONEY_HINTS = /مبلغ|مانده|موجودی|قیمت|کارمزد|سود|قسط|وام|افتتاحیه|تنخواه|تومان|ریال|amount|balance|price|fee|installment|principal|opening.?balance/i;
+  var MONEY_HINTS = /مبلغ|مانده|موجودی|قیمت|کارمزد|سود|قسط|وام|افتتاحیه|تنخواه|تومان|ریال|amount|balance|price|fee|installment|principal|opening.?balance|بودجه|سقف|طلب|بدهی|budget|debt|بازپرداخت|سرمایه|بدهکار|بستانکار|repayment|capital/i;
   var NUMERIC_HINTS = /مبلغ|شماره|کارت|شبا|iban|مانده|موجودی|تعداد|درصد|رقم|سقف|قیمت|کد|روز|ماه|سال|تاریخ|زمان|ساعت|عدد|نرخ|سود|کارمزد|تومان|ریال|amount|number|price|card|account/i;
-  var EXCLUDE_NON_MONEY = /شماره.?کارت|شماره.?حساب|شبا|iban|کد.?ملی|تلفن|موبایل|رمز|تاریخ|ساعت|زمان|search|جستجو|نام.?حساب|عنوان/i;
+  var EXCLUDE_NON_MONEY = /شماره.?کارت|شماره.?حساب|شبا|iban|کد.?ملی|تلفن|موبایل|رمز.?عبور|(?:^|\s)رمز(?:\s|$)|password|تاریخ|ساعت|زمان|search|جستجو|نام.?حساب|عنوان/i;
+  var NON_AMOUNT_HINTS = /تعداد|درصد|نرخ|مدت|شماره|count|percent|rate|duration|loan.?name|loan.?title|installment.?number/i;
   var SKIP_TYPES = ["checkbox", "radio", "file", "range", "color", "hidden", "submit", "button", "reset", "password", "email", "search"];
   var activeInput = null;
   var panel = null;
@@ -91,13 +92,8 @@
     if (input.id === "field-amount-input") return true;
 
     var hints = inputHints(input);
-    // Explicit money inputs
-    if (/مانده.?اولیه|موجودی.?اولیه|مبلغ|قسط|وام|افتتاحیه|تنخواه/.test(hints)) {
-      return true;
-    }
-    if (EXCLUDE_NON_MONEY.test(hints)) {
-      return false;
-    }
+    // Identity/date/count/rate fields never become money inputs just because a label mentions a loan.
+    if (EXCLUDE_NON_MONEY.test(hints) || NON_AMOUNT_HINTS.test(hints)) return false;
     return MONEY_HINTS.test(hints);
   }
 

@@ -42,23 +42,7 @@
     var glow = document.createElement("div");
     glow.className = "hesabno-fr-glow";
     glow.setAttribute("aria-hidden", "true");
-    card.appendChild(glow);
 
-    var brand = document.createElement("div");
-    brand.className = "hesabno-fr-brand";
-    var mark = document.createElement("div");
-    mark.className = "hesabno-fr-mark";
-    mark.innerHTML = '<svg viewBox="0 0 48 48" width="32" height="32" fill="none" aria-hidden="true"><rect x="8" y="7" width="25" height="34" rx="6" stroke="#d1fae5" stroke-width="2" transform="rotate(-7 8 7)"/><path d="M15 18h12M15 23h8M16 31v-4m6 4v-8m6 8v-12" stroke="#6ee7b7" stroke-width="2.6" stroke-linecap="round"/><circle cx="34" cy="31" r="10" fill="#34d399" stroke="#0d3833" stroke-width="2"/><path d="m29.5 31 3 3 6-6.5" stroke="#073b31" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-    var brandText = document.createElement("div");
-    brandText.className = "hesabno-fr-brand-text";
-    var brandName = document.createElement("div");
-    brandName.className = "hesabno-fr-brand-name";
-    brandName.textContent = "MY MONEY";
-    var brandCaption = document.createElement("div");
-    brandCaption.className = "hesabno-fr-brand-caption";
-    brandCaption.textContent = "مدیریت مالی، ساده‌تر";
-    brandText.appendChild(brandName); brandText.appendChild(brandCaption); brand.appendChild(mark); brand.appendChild(brandText);
-    card.appendChild(brand);
 
     // ── مرحله ۱ از ۲: صفحه بازیابی از گوگل درایو / فایل پشتیبان (قبل از وارد کردن اطلاعات) ──
     var restoreView = document.createElement("div");
@@ -112,9 +96,7 @@
     goProfileBtn.setAttribute("data-hesabno-fr-go-profile", "true");
     goProfileBtn.innerHTML = 'شروع بدون پشتیبان <span class="hesabno-fr-submit-arrow" aria-hidden="true">←</span>';
 
-    restoreView.appendChild(rStep);
     restoreView.appendChild(rTitle);
-    restoreView.appendChild(rSub);
     restoreView.appendChild(gdriveBox);
     restoreView.appendChild(goProfileBtn);
 
@@ -128,10 +110,10 @@
     step.textContent = "شروع کار  ·  مرحله ۲ از ۳";
     var title = document.createElement("h1");
     title.className = "hesabno-fr-title";
-    title.textContent = "خوش آمدید";
+    title.textContent = "مشخصات شما";
     var sub = document.createElement("p");
     sub.className = "hesabno-fr-sub";
-    sub.textContent = "نام خود را وارد کنید.";
+    sub.textContent = "";
 
     function field(id, label, placeholder, required, type) {
       var wrap = document.createElement("div");
@@ -158,13 +140,13 @@
     submit.type = "submit";
     submit.className = "hesabno-fr-submit";
     submit.setAttribute("data-hesabno-fr-submit-profile", "true");
-    submit.innerHTML = 'ادامه <span class="hesabno-fr-submit-arrow" aria-hidden="true">←</span>';
+    submit.textContent = 'بعدی';
 
     var backToRestoreBtn = document.createElement("button");
     backToRestoreBtn.type = "button";
     backToRestoreBtn.className = "hesabno-fr-back-restore";
     backToRestoreBtn.setAttribute("data-hesabno-fr-back-restore", "true");
-    backToRestoreBtn.innerHTML = '<span aria-hidden="true">→</span><span>بازگشت به بازیابی</span>';
+    backToRestoreBtn.textContent = 'قبلی';
 
     var privacy = document.createElement("p");
     privacy.className = "hesabno-fr-privacy";
@@ -174,15 +156,16 @@
     lock.innerHTML = '<svg viewBox="0 0 20 20" width="15" height="15" fill="none" aria-hidden="true"><rect x="4" y="8" width="12" height="9" rx="2" stroke="#6ee7b7" stroke-width="1.5"/><path d="M7 8V6a3 3 0 0 1 6 0v2" stroke="#6ee7b7" stroke-width="1.5" stroke-linecap="round"/></svg>';
     privacy.appendChild(lock); privacy.appendChild(document.createTextNode(privacyText));
 
-    profileView.appendChild(step);
     profileView.appendChild(title);
     profileView.appendChild(sub);
     profileView.appendChild(first.wrap);
     profileView.appendChild(last.wrap);
     profileView.appendChild(mobile.wrap);
-    profileView.appendChild(submit);
-    profileView.appendChild(backToRestoreBtn);
-    profileView.appendChild(privacy);
+    var profileNav = document.createElement("div");
+    profileNav.className = "hesabno-fr-permissions-nav";
+    profileNav.appendChild(backToRestoreBtn);
+    profileNav.appendChild(submit);
+    profileView.appendChild(profileNav);
 
     // ── مرحله ۳ از ۳: لیست دسترسی‌ها همراه با دلیل نیاز به هر دسترسی (پس از تکمیل اطلاعات) ──
     var permissionsView = document.createElement("div");
@@ -344,7 +327,6 @@
     backToProfileBtn.setAttribute("data-hesabno-fr-back-profile", "true");
     backToProfileBtn.textContent = "قبلی";
 
-    permissionsView.appendChild(pStep);
     permissionsView.appendChild(pTitle);
     permissionsView.appendChild(pSub);
     permissionsView.appendChild(permsList);
@@ -496,9 +478,7 @@
     backToPermsBtn.setAttribute("data-hesabno-fr-back-perms", "true");
     backToPermsBtn.innerHTML = '<span aria-hidden="true">→</span><span>بازگشت به مرحله دسترسی‌ها</span>';
 
-    preferencesView.appendChild(prefStep);
     preferencesView.appendChild(prefTitle);
-    preferencesView.appendChild(prefSub);
     preferencesView.appendChild(prefsBox);
     preferencesView.appendChild(finishBtn);
     preferencesView.appendChild(backToPermsBtn);
