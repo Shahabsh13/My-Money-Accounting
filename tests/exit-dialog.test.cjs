@@ -70,3 +70,22 @@ test('exit backups use the app Downloads subfolder without changing ordinary exp
  assert.ok(java.includes('Environment.DIRECTORY_DOWNLOADS + (exitBackup ? "/My Money/Backups" : "")'));
  assert.ok(java.includes('if (exitBackup) dir = new File(dir, "My Money/Backups");'));
 });
+test('exit overlay blurs the still-mounted page instead of painting an opaque background',()=>{
+ const dom=setup();try{
+ const w=dom.window;
+ const page=w.document.querySelector('#previous');
+ // jsdom's CSSOM does not implement backdrop-filter; record the real browser API calls.
+ const properties=[],original=w.CSSStyleDeclaration.prototype.setProperty;
+ w.CSSStyleDeclaration.prototype.setProperty=function(name,value,priority){properties.push([name,value,priority]);return original.call(this,name,value,priority);};
+ const style=w.document.createElement('style');style.textContent='[data-hn-dialog] { background: white !important; }';w.document.head.appendChild(style);
+ w.__hesabnoConfirmExit();
+ const overlay=w.document.querySelector('[data-hn-exit-dialog]');
+ assert.ok(properties.some(([name,value,priority])=>name==='backdrop-filter'&&value==='blur(8px)'&&priority==='important'));
+ assert.ok(properties.some(([name,value,priority])=>name==='-webkit-backdrop-filter'&&value==='blur(8px)'&&priority==='important'));
+ assert.equal(overlay.style.getPropertyPriority('background'),'important');
+ assert.match(overlay.style.background,/rgba\(8, 20, 24, 0\.3\)/);
+ assert.ok(w.document.contains(page));
+ w.__hesabnoDismissExitDialog();assert.ok(w.document.contains(page));
+ assert.equal(w.document.querySelector('[data-hn-exit-dialog]'),null);
+ }finally{dom.window.close();}
+});
