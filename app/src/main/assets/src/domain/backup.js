@@ -257,6 +257,7 @@
 
     var previous = new Map();
     var applied = [];
+    var completed = 0;
     var keys = plan.writes.map(function (write) { return write.key; }).concat(plan.deletes);
 
     try {
@@ -265,17 +266,20 @@
       }
       for (var writeIndex = 0; writeIndex < plan.writes.length; writeIndex += 1) {
         var write = plan.writes[writeIndex];
-        storage.setItem(write.key, write.value);
+        // Include the current operation even if an adapter mutates and then throws.
         applied.push(write.key);
+        storage.setItem(write.key, write.value);
+        completed += 1;
         if (storage.getItem(write.key) !== write.value) throw new Error("verify failed: " + write.key);
       }
       for (var deleteIndex = 0; deleteIndex < plan.deletes.length; deleteIndex += 1) {
         var key = plan.deletes[deleteIndex];
-        storage.removeItem(key);
         applied.push(key);
+        storage.removeItem(key);
+        completed += 1;
         if (storage.getItem(key) !== null) throw new Error("verify failed: " + key);
       }
-      return { ok: true, applied: applied.length, rolledBack: false, error: null };
+      return { ok: true, applied: completed, rolledBack: false, error: null };
     } catch (error) {
       var rollbackOk = true;
       for (var rollbackIndex = applied.length - 1; rollbackIndex >= 0; rollbackIndex -= 1) {
@@ -284,6 +288,7 @@
         try {
           if (oldValue === null || oldValue === undefined) storage.removeItem(rollbackKey);
           else storage.setItem(rollbackKey, oldValue);
+          if (storage.getItem(rollbackKey) !== (oldValue == null ? null : oldValue)) rollbackOk = false;
         } catch (rollbackError) {
           rollbackOk = false;
         }
@@ -293,7 +298,7 @@
       }
       return {
         ok: false,
-        applied: applied.length,
+        applied: completed,
         rolledBack: rollbackOk,
         error: String((error && error.message) || error),
       };

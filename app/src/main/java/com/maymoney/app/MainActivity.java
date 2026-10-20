@@ -82,6 +82,9 @@ public class MainActivity extends ComponentActivity {
             + "window.HnBridge.exitApp();}catch(e){done();}\n})();";
 
     private WebView webView;
+    private boolean webPageReady;
+    private String pendingOpenTarget;
+    private String pendingOpenNotificationId;
     private final Handler handler = new Handler(Looper.getMainLooper());
 
     // نمایش کوتاه و پویا از آیکون در شروع هر بار اجرای تازه‌ی Activity
@@ -349,7 +352,14 @@ public class MainActivity extends ComponentActivity {
 
         webView.setWebViewClient(new WebViewClient() {
             @Override
+            public void onPageStarted(WebView view, String url, android.graphics.Bitmap favicon) {
+                webPageReady = false;
+            }
+
+            @Override
             public void onPageFinished(WebView view, String url) {
+                webPageReady = isTrustedAppUrl(Uri.parse(url));
+                dispatchPendingNotification();
                 if (startupSplash != null && !startupSplashDismissed) {
                     startupPageLoaded = true;
                     dismissStartupSplashWhenReady(false);
@@ -373,14 +383,12 @@ public class MainActivity extends ComponentActivity {
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 Uri uri = request.getUrl();
                 String scheme = uri.getScheme();
-                if (APP_HOST.equals(uri.getHost())
-                        || "blob".equals(scheme) || "data".equals(scheme) || "about".equals(scheme)) {
-                    return false;
-                }
-                // لینک‌های بیرونی در مرورگر باز شوند
-                try {
-                    startActivity(new Intent(Intent.ACTION_VIEW, uri));
-                } catch (Exception ignored) {
+                if (isTrustedAppUrl(uri)) return false;
+                // Never navigate a privileged WebView to user-supplied HTML/data/blob URLs.
+                if ("https".equals(scheme) || "http".equals(scheme)
+                        || "mailto".equals(scheme) || "tel".equals(scheme)) {
+                    try { startActivity(new Intent(Intent.ACTION_VIEW, uri)); }
+                    catch (Exception ignored) {}
                 }
                 return true;
             }
@@ -656,6 +664,10 @@ public class MainActivity extends ComponentActivity {
         }
         recordUserActivityAndSchedule4DayReminder(this);
         handleNotificationDashboardIntent(getIntent());
+        registerSmsReceiverIfPermitted();
+    }
+
+    private void registerSmsReceiverIfPermitted() {
         if (!smsReceiverRegistered && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
                 && checkSelfPermission(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED) {
             try {
@@ -714,6 +726,7 @@ public class MainActivity extends ComponentActivity {
             boolean granted = grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED;
             notifyPermissionResultToWeb("sms", granted);
             if (granted) {
+                registerSmsReceiverIfPermitted();
                 String json = queryBankSmsFromDevice(120);
                 deliverSmsBatchToWeb(json);
                 toast("مجوز دسترسی به پیامک‌های بانکی فعال شد");
@@ -1520,36 +1533,33 @@ public class MainActivity extends ComponentActivity {
         return postStaticNotification(this, title, message, "home");
     }
 
+    private static boolean isTrustedAppUrl(Uri uri) {
+        return uri != null && "https".equals(uri.getScheme()) && APP_HOST.equals(uri.getHost())
+                && (uri.getPort() == -1 || uri.getPort() == 443)
+                && "/assets/index.html".equals(uri.getPath()) && uri.getUserInfo() == null;
+    }
+
     private void handleNotificationDashboardIntent(Intent intent) {
         if (intent == null || !intent.getBooleanExtra("hesabno_open_dashboard", false)) return;
-        final String target = intent.getStringExtra("hesabno_open_target");
-        final String notificationId = intent.getStringExtra("hesabno_notification_id");
+        String target = intent.getStringExtra("hesabno_open_target");
+        pendingOpenTarget = target == null ? "home" : target;
+        pendingOpenNotificationId = intent.getStringExtra("hesabno_notification_id");
         intent.removeExtra("hesabno_open_dashboard");
         intent.removeExtra("hesabno_open_target");
-        if (webView == null) return;
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    if (webView != null) {
-                        if (notificationId != null) webView.evaluateJavascript(
-                            "window.HnNotificationCenter?.sync();window.HnNotificationCenter?.readNative(" + org.json.JSONObject.quote(notificationId) + ");", null);
-                        if ("checks".equals(target)) {
-                            webView.evaluateJavascript("window.__hesabnoPendingNotificationTarget='checks';if(typeof window.__hesabnoOpenChecksFromNotification==='function')window.__hesabnoOpenChecksFromNotification();", null);
-                        } else if ("loans".equals(target)) {
-                            webView.evaluateJavascript("window.__hesabnoPendingNotificationTarget='loans';if(typeof window.__hesabnoOpenLoansFromNotification==='function')window.__hesabnoOpenLoansFromNotification();", null);
-                        } else if (target != null && target.startsWith("sms:")) {
-                            String smsId = target.substring(4);
-                            webView.evaluateJavascript("window.__hesabnoPendingNotificationTarget=" + org.json.JSONObject.quote(target)
-                                    + ";if(typeof window.__hesabnoOpenSmsFromNotification==='function')window.__hesabnoOpenSmsFromNotification("
-                                    + org.json.JSONObject.quote(smsId) + ");", null);
-                        } else {
-                            webView.evaluateJavascript("window.__hesabnoPendingNotificationTarget='home';if(typeof window.__hesabnoOpenDashboardFromNotification==='function')window.__hesabnoOpenDashboardFromNotification();", null);
-                        }
-                    }
-                } catch (Exception ignored) {}
-            }
-        }, 180L);
+        intent.removeExtra("hesabno_notification_id");
+        dispatchPendingNotification();
+    }
+
+    private void dispatchPendingNotification() {
+        if (!webPageReady || webView == null || pendingOpenTarget == null) return;
+        String target = pendingOpenTarget;
+        String notificationId = pendingOpenNotificationId;
+        pendingOpenTarget = null;
+        pendingOpenNotificationId = null;
+        // The JS inbox waits for React routes and marks read only after successful navigation.
+        webView.evaluateJavascript("window.HnNotificationCenter?.handleNativeClick("
+                + (notificationId == null ? "null" : org.json.JSONObject.quote(notificationId))
+                + "," + org.json.JSONObject.quote(target) + ");", null);
     }
 
     private void launchCameraIntent() {

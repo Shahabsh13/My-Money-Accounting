@@ -74,9 +74,10 @@
       restoreKeys.forEach(function (key) { previous[key] = readRaw(key); });
       try {
         restoreKeys.forEach(function (key) {
+          // Storage adapters may write before reporting an error; roll this key back too.
+          applied.push(key);
           if (data[key] === null) removeRaw(key);
           else writeRaw(key, data[key]);
-          applied.push(key);
           if (readRaw(key) !== data[key]) throw new Error("Backup restore verification failed for " + key);
         });
       } catch (error) {

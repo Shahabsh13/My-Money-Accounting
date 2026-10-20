@@ -44,7 +44,7 @@
         <receiver
             android:name=".MainActivity$InactivityReminderReceiver"
             android:enabled="true"
-            android:exported="true">
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="com.maymoney.app.ACTION_INACTIVITY_REMINDER" />
