@@ -4697,11 +4697,19 @@ html[data-theme="light"] body .hesabno-filter-attachment-toggle span {
 }
 
 /* Advanced-filter content must shrink within phone-width fields. */
-html body .hesabno-advanced-filter input {
+html body .hesabno-advanced-filter input,
+html body .hesabno-advanced-filter select,
+html body .hesabno-advanced-filter textarea {
   min-width: 0 !important; max-width: 100%; box-sizing: border-box;
   font-size: 12px !important; line-height: 1.6 !important;
 }
-html body .hesabno-advanced-filter input::placeholder { font-size: 12px !important; }
+html body .hesabno-advanced-filter input::placeholder,
+html body .hesabno-advanced-filter textarea::placeholder { font-size: 12px !important; }
+/* انتخابگر پروژه/اعضا هم‌قد و هم‌اندازهٔ برچسب‌های همان ردیف باشد (نه ۱۶px سراسری). */
+html body .hesabno-advanced-filter select {
+  padding: 6px 10px !important; border-radius: 10px !important;
+  min-height: 32px; text-align: right; direction: rtl;
+}
 html body .hesabno-advanced-filter .hesabno-filter-category-field { min-width: 0; }
 html body .hesabno-advanced-filter .hesabno-filter-category-field input {
   flex: 1 1 0%; width: 0; background: transparent !important;
@@ -4712,6 +4720,26 @@ html body .hesabno-advanced-filter-header {
   background: transparent !important; color: inherit !important;
 }
 html body .hesabno-advanced-filter-header button { min-height: 44px; cursor: pointer; }
+
+/* فیلدهای فرم (ورودی/انتخابگر/متن چندخطی) اندازهٔ کلاس خودشان را بگیرند، نه
+   ۱۶px سراسریِ 010-core-base؛ وگرنه متن جست‌وجو و انتخابگرها کنار برچسب‌های
+   ۱۲pxی برنامه درشت و ناهماهنگ دیده می‌شود. */
+html body select { font-size: 13px !important; }
+html body input.text-xs,
+html body textarea.text-xs,
+html body select.text-xs { font-size: 12px !important; }
+html body input.text-sm,
+html body textarea.text-sm,
+html body select.text-sm { font-size: 14px !important; }
+html body input.text-\[10px\],
+html body textarea.text-\[10px\],
+html body select.text-\[10px\] { font-size: 10px !important; }
+html body input.text-\[11px\],
+html body textarea.text-\[11px\],
+html body select.text-\[11px\] { font-size: 11px !important; }
+html body input.text-base,
+html body textarea.text-base,
+html body select.text-base { font-size: 16px !important; }
 
 /* Minimal onboarding; contain intrinsic form widths instead of allowing sideways panning. */
 #hesabno-first-run .hesabno-fr-card { min-width: 0; overflow-x: hidden; }
