@@ -47,6 +47,10 @@
       var parenthetical = text.match(/^[\(（]\s*(\d+)\s*[\)）](?:\s*[•·,|].*)?$/);
       return !!(parenthetical && accountsByCode.has(parenthetical[1]));
     };
+    // قاعده‌ی ثابت: کد فقط داخل خودِ حساب (صورت‌حساب/جزئیات) مجاز است
+    var insideAccount = function (node) {
+      return !!(node.closest && node.closest('.hesabno-account-statement-panel, [data-hesabno-report-account-detail], [data-hesabno-statement-account], [data-hesabno-account-detail]'));
+    };
     // نام‌های نرمال‌شده یک‌بار در هر به‌روزرسانی ساخته می‌شوند (کش موقت)
     var normNames = new Map();
     var allDigitCodes = false;
@@ -116,7 +120,7 @@
         if (code) accountsByCode.set(code, account);
       });
       Array.from(document.querySelectorAll('[data-hesabno-subsidiary-account-code="true"]')).forEach(function (node) {
-        if (!isCodeDisplay(node, accountsByCode)) delete node.dataset.hesabnoSubsidiaryAccountCode;
+        if (!isCodeDisplay(node, accountsByCode) || insideAccount(node)) delete node.dataset.hesabnoSubsidiaryAccountCode;
       });
       if (!accountsByCode.size) return;
       normNames = new Map();
@@ -126,6 +130,7 @@
         if (!/^\d+$/.test(code)) allDigitCodes = false;
       });
       Array.from(document.querySelectorAll("span, p, small, strong, em, td, th, option, div, li, label, a, button")).forEach(function (node) {
+        if (insideAccount(node)) return;
         if (replaceCodeOnlyOption(node, accountsByCode)) return;
         if (stripInlineAccountCode(node, accountsByCode)) return;
         if (isCodeDisplay(node, accountsByCode) && node.dataset.hesabnoSubsidiaryAccountCode !== "true") node.dataset.hesabnoSubsidiaryAccountCode = "true";

@@ -150,7 +150,7 @@
               <button type="button" data-hesabno-return-account-open class="w-full flex items-center justify-between gap-2.5 px-3.5 py-2.5 rounded-2xl bg-stone-900 border border-stone-700/80 hover:bg-stone-850 text-right transition cursor-pointer active:scale-99">
                 <span class="flex items-center gap-2.5 min-w-0">
                   <span data-hesabno-return-account-picture class="w-8 h-8 rounded-xl bg-stone-800 border border-stone-700 flex items-center justify-center text-base shrink-0">🏷️</span>
-                  <span class="min-w-0"><span data-hesabno-return-account-name class="block text-xs font-bold text-stone-100 truncate"></span><span data-hesabno-return-account-code class="mt-0.5 block text-[10px] text-stone-400 font-mono"></span></span>
+                  <span class="min-w-0"><span data-hesabno-return-account-name class="block text-xs font-bold text-stone-100 truncate"></span></span>
                 </span>
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 text-stone-400"><path d="m6 9 6 6 6-6"></path></svg>
               </button>
@@ -212,7 +212,6 @@
           var accountSaveButton = accountView.querySelector("[data-hesabno-return-account-save]");
           var accountOpen = accountView.querySelector("[data-hesabno-return-account-open]");
           var accountNameLabel = accountView.querySelector("[data-hesabno-return-account-name]");
-          var accountCodeLabel = accountView.querySelector("[data-hesabno-return-account-code]");
           var accountPicture = accountView.querySelector("[data-hesabno-return-account-picture]");
           if (editPayment) accountSaveButton.textContent = "ذخیره تغییرات پرداخت";
           accounts.forEach(function (account) { var option = document.createElement("option"); option.value = account.name; option.textContent = account.name; select.appendChild(option); });
@@ -221,7 +220,6 @@
           var renderAccountSelection = function () {
             var chosen = accounts.find(function (account) { return account.name === select.value; });
             accountNameLabel.textContent = chosen ? chosen.name : "انتخاب حساب بانکی یا صندوق...";
-            accountCodeLabel.textContent = chosen && chosen.code ? "کد " + chosen.code : "";
             accountPicture.textContent = chosen && chosen.picture || (chosen && chosen.group === "cash" ? "💵" : "🏦");
           };
           renderAccountSelection();
@@ -236,7 +234,7 @@
             overlay.className = "fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm p-0 sm:p-4 animate-in fade-in duration-150 hesabno-fullscreen-selector-overlay";
             var panel = document.createElement("div");
             panel.className = "w-full max-w-2xl h-[94vh] sm:h-[88vh] sm:max-h-[740px] rounded-t-3xl sm:rounded-3xl bg-stone-900 border-t sm:border border-stone-700/80 shadow-2xl flex flex-col overflow-hidden text-stone-100 hesabno-fullscreen-selector";
-            panel.innerHTML = `<header class="flex items-center gap-3 px-4 py-3 border-b border-stone-800 shrink-0 bg-stone-900 z-10"><button type="button" data-account-picker-close class="p-2 rounded-xl text-stone-400 hover:text-stone-100 hover:bg-stone-800 transition" aria-label="بازگشت">‹</button><div class="grow min-w-0"><h1 class="text-base sm:text-lg font-black text-stone-100 truncate">انتخاب حساب پرداخت</h1><p class="text-xs text-stone-400 truncate">حساب بانکی یا صندوقی را که پرداخت از آن انجام شده انتخاب کنید.</p></div><button type="button" data-account-picker-close class="p-2 rounded-xl text-stone-400 hover:text-stone-100 hover:bg-stone-800 transition" aria-label="بستن">×</button></header><div class="bg-stone-900/95 pt-2 pb-2 px-4 border-b border-stone-800/80 space-y-2 shadow-xs shrink-0 z-10"><div class="flex gap-1.5"><button type="button" data-account-group="bank" class="grow px-3 py-2 rounded-xl text-xs font-bold transition">🏦 بانک</button><button type="button" data-account-group="cash" class="grow px-3 py-2 rounded-xl text-xs font-bold transition">💵 صندوق</button></div><div class="relative"><input data-account-search type="text" class="w-full bg-stone-800/90 border border-stone-700/60 rounded-xl pr-3 pl-8 py-2 text-xs text-stone-100 placeholder:text-stone-500 focus:outline-none focus:border-emerald-500 transition" placeholder="جستجو"><button type="button" data-account-search-clear class="hidden absolute left-2.5 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-200">×</button></div></div><div class="flex items-center justify-between text-[11px] text-stone-400 px-4 py-1.5 bg-stone-900 border-b border-stone-800/80 shrink-0"><span data-account-count></span><span data-account-root class="font-mono text-[10px] bg-stone-800 px-2 py-0.5 rounded-md border border-stone-700"></span></div><div data-account-list class="flex-1 min-h-0 overflow-y-auto px-4 py-3 space-y-2 no-scrollbar"></div>`;
+            panel.innerHTML = `<header class="flex items-center gap-3 px-4 py-3 border-b border-stone-800 shrink-0 bg-stone-900 z-10"><button type="button" data-account-picker-close class="p-2 rounded-xl text-stone-400 hover:text-stone-100 hover:bg-stone-800 transition" aria-label="بازگشت">‹</button><div class="grow min-w-0"><h1 class="text-base sm:text-lg font-black text-stone-100 truncate">انتخاب حساب پرداخت</h1><p class="text-xs text-stone-400 truncate">حساب بانکی یا صندوقی را که پرداخت از آن انجام شده انتخاب کنید.</p></div><button type="button" data-account-picker-close class="p-2 rounded-xl text-stone-400 hover:text-stone-100 hover:bg-stone-800 transition" aria-label="بستن">×</button></header><div class="bg-stone-900/95 pt-2 pb-2 px-4 border-b border-stone-800/80 space-y-2 shadow-xs shrink-0 z-10"><div class="flex gap-1.5"><button type="button" data-account-group="bank" class="grow px-3 py-2 rounded-xl text-xs font-bold transition">🏦 بانک</button><button type="button" data-account-group="cash" class="grow px-3 py-2 rounded-xl text-xs font-bold transition">💵 صندوق</button></div><div class="relative"><input data-account-search type="text" class="w-full bg-stone-800/90 border border-stone-700/60 rounded-xl pr-3 pl-8 py-2 text-xs text-stone-100 placeholder:text-stone-500 focus:outline-none focus:border-emerald-500 transition" placeholder="جستجو"><button type="button" data-account-search-clear class="hidden absolute left-2.5 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-200">×</button></div></div><div class="flex items-center justify-between text-[11px] text-stone-400 px-4 py-1.5 bg-stone-900 border-b border-stone-800/80 shrink-0"><span data-account-count></span></div><div data-account-list class="flex-1 min-h-0 overflow-y-auto px-4 py-3 space-y-2 no-scrollbar"></div>`;
             overlay.appendChild(panel); document.body.appendChild(overlay); accountPicker = overlay;
             var search = panel.querySelector("[data-account-search]");
             var list = panel.querySelector("[data-account-list]");
@@ -289,7 +287,6 @@
               });
               search.placeholder = "جستجو";
               panel.querySelector("[data-account-count]").textContent = filtered.length.toLocaleString("fa-IR") + " سرفصل/حساب";
-              panel.querySelector("[data-account-root]").textContent = "کد ریشه: " + (state.group === "cash" ? "110" : "120");
               panel.querySelector("[data-account-search-clear]").classList.toggle("hidden", !state.query);
               list.replaceChildren();
               var quickAccounts = accounts.filter(function (account) { return account.pinned && account.active !== false; });
@@ -322,8 +319,7 @@
                 row.appendChild(accountIcon(account, 36));
                 var details = document.createElement("span"); details.className = "grow min-w-0";
                 var name = document.createElement("p"); name.className = "font-bold text-xs truncate " + (chosen ? "text-emerald-300 font-black" : "text-stone-100"); name.textContent = account.name;
-                var code = document.createElement("p"); code.className = "text-[10px] text-stone-400 font-mono mt-0.5"; code.textContent = "کد " + (account.code || "");
-                details.append(name, code);
+                details.appendChild(name);
                 if (account.description) { var description = document.createElement("p"); description.className = "text-[10px] text-stone-500 truncate mt-0.5"; description.textContent = account.description; details.appendChild(description); }
                 row.appendChild(details);
                 var trailing = document.createElement("div"); trailing.className = "flex items-center gap-1.5 shrink-0";
