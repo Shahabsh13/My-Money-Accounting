@@ -1,13 +1,15 @@
 /*
- * قاعدهٔ ثابت: «کد» فقط داخل خودِ حساب
+ * قاعدهٔ ثابت: کد حساب هیچ‌جا به کاربر نشان داده نمی‌شود
  *
- * کاربر: «کد ریشه رو قرار بود از همه جا بردای و فقط تو دل حساب وجود داشته باشه».
+ * کاربر: «کد ریشه رو قرار بود از همه جا بردای و فقط تو دل حساب وجود داشته باشه»
+ * و بعد روشن کرد: «اون حساب کد داره ولی فقط برای کاربر نمایش داده نشه».
+ * یعنی کد شناسهٔ داخلی داده است و حتی داخل صورت‌حساب/جزئیات حساب هم نباید دیده شود.
  * این آزمون سه چیز را قفل می‌کند:
  *   ۱. هیچ لایه‌ای (جز بستهٔ اصلی ۰۶۷) برچسب «کد …» / «کد ریشه …» نمی‌سازد؛
  *      بقیهٔ برچسب‌های باقی‌مانده را فقط لایهٔ ۰۹۹ پنهان می‌کند.
  *   ۲. پنل «پرداخت جایگزین چک برگشتی» (۱۴۴) و انتخابگر حسابش هیچ کدی نشان نمی‌دهند.
- *   ۳. شمارش‌های «N سرفصل/حساب» و «تفصیلی N» پنهان نمی‌شوند و داخل صورت‌حساب
- *      (پنل حساب) کد دست‌نخورده می‌ماند.
+ *   ۳. شمارش‌های «N سرفصل/حساب» و «تفصیلی N» پنهان نمی‌شوند، ولی «کد …» حتی داخل
+ *      صورت‌حساب هم پنهان می‌ماند.
  */
 const test = require('node:test');
 const assert = require('node:assert/strict');
@@ -92,9 +94,13 @@ test('صفحهٔ حساب‌ها کد نشان نمی‌دهد ولی شمارش
   assert.ok(detail, 'برچسب «تفصیلی N» باید دیده شود');
 });
 
-test('لایهٔ ۰۹۹ کد را بیرون حساب پنهان می‌کند و داخل صورت‌حساب نگه می‌دارد', { timeout: 90000 }, async (t) => {
+test('لایهٔ ۰۹۹ کد را همه‌جا پنهان می‌کند، حتی داخل صورت‌حساب', { timeout: 90000 }, async (t) => {
   if (!hasJsdom) return t.skip('jsdom در دسترس نیست');
-  const dom = await bootApp({ storage: FIRST_RUN_DONE });
+  const accounts = [
+    { id: 101, group: 'cash', code: '11001', name: 'صندوق اصلی', active: true, parentId: null },
+    { id: 102, group: 'expense', code: '50101', name: 'خرید روزانه', active: true, parentId: 50 },
+  ];
+  const dom = await bootApp({ storage: { ...FIRST_RUN_DONE, 'hesabno:accounts_v5': JSON.stringify(accounts) } });
   t.after(() => closeApp(dom));
   const { window } = dom;
   const { document } = window;
@@ -114,10 +120,28 @@ test('لایهٔ ۰۹۹ کد را بیرون حساب پنهان می‌کند �
   const rootCode = make('span', 'کد ریشه: 110/120', host);
   const withDetails = make('p', 'کد 501 · ۳ حساب تفصیلی', host);
   const countLine = make('p', '۹۲ سرفصل/حساب', host);
+  const codingLine = make('p', 'کدینگ سرفصل: 501', host);
   const statement = document.createElement('div');
   statement.className = 'hesabno-account-statement-panel';
   host.appendChild(statement);
   const insideCode = make('p', 'کد 11001', statement);
+  const insideCoding = make('span', 'کد ریشه: 110', statement);
+
+  /* نشان کدِ بدون برچسب (سرصفحهٔ صورت‌حساب/ردیف تراز): کدِ مونو کنار نام همان حساب */
+  const header = document.createElement('div');
+  header.className = 'flex items-center gap-2';
+  host.appendChild(header);
+  const badge = make('span', '11001', header);
+  badge.className = 'text-[10px] font-mono bg-stone-800 text-stone-400 px-1.5 py-0.5 rounded';
+  const badgeName = make('h3', 'صندوق اصلی', header);
+
+  /* مبلغ هم‌شماره با کد نباید با کد اشتباه گرفته شود (ستون عددی) */
+  const amountRow = document.createElement('div');
+  amountRow.className = 'flex items-center gap-2';
+  host.appendChild(amountRow);
+  const amount = make('span', '11001', amountRow);
+  amount.className = 'text-xs font-bold font-mono tabular-nums';
+  const amountName = make('span', 'صندوق اصلی', amountRow);
 
   await wait(500);
   assert.equal(plainCode.style.display, 'none', '«کد 11001» بیرون از حساب باید پنهان شود');
@@ -125,7 +149,17 @@ test('لایهٔ ۰۹۹ کد را بیرون حساب پنهان می‌کند �
   assert.equal(normalize(withDetails.textContent), 'تفصیلی ۳', 'ردیف کد باید به «تفصیلی N» تبدیل شود');
   assert.notEqual(withDetails.style.display, 'none', '«تفصیلی N» باید دیده شود');
   assert.notEqual(countLine.style.display, 'none', 'شمارش «N سرفصل/حساب» نباید پنهان شود');
-  assert.notEqual(insideCode.style.display, 'none', 'داخل صورت‌حساب، کد حساب باید بماند');
+  assert.equal(codingLine.style.display, 'none', '«کدینگ سرفصل: 501» هم کد است و باید پنهان شود');
+  assert.equal(insideCode.style.display, 'none', 'داخل صورت‌حساب هم کد حساب نباید به کاربر نشان داده شود');
+  assert.equal(insideCoding.style.display, 'none', '«کد ریشه» داخل صورت‌حساب هم باید پنهان شود');
+  assert.equal(badge.getAttribute('data-hesabno-subsidiary-account-code'), 'true',
+    'نشان کدِ بدون برچسب کنار نام حساب باید پنهان شود');
+  assert.equal(isVisible(window, badge), false, 'کد کنار نام حساب نباید دیده شود');
+  assert.notEqual(amount.getAttribute('data-hesabno-subsidiary-account-code'), 'true',
+    'مبلغ هم‌شماره با کد حساب نباید به‌عنوان کد پنهان شود');
+  assert.equal(isVisible(window, amount), true, 'مبلغ باید دیده شود');
+  assert.notEqual(badgeName.style.display, 'none', 'نام حساب نباید پنهان شود');
+  assert.notEqual(amountName.style.display, 'none', 'نام حساب کنار مبلغ نباید پنهان شود');
 
   /* متن همان گره با رندر بعدی برنامه عوض می‌شود؛ کد جدید باید دوباره پنهان شود */
   plainCode.textContent = 'کد ۱۲۰۰۲';
