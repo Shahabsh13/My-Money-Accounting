@@ -5,7 +5,6 @@
 005	script	src/scripts/005-hesabno-storage-capability.js	4609 bytes
 006	script	src/scripts/006-hesabno-loan-document-number-migration.js	1962 bytes
 007	script	src/scripts/007-hesabno-loan-received-description-migration.js	1383 bytes
-008	script	src/scripts/008-hesabno-hide-daily-trend-widget.js	807 bytes
 009	script	src/scripts/009-hesabno-payambank-sample-cleanup.js	1272 bytes
 010	script	src/scripts/010-hesabno-rial-default.js	823 bytes
 011	style	src/styles/011-hesabno-local-font.css	612981 bytes

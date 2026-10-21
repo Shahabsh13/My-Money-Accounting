@@ -103,7 +103,7 @@
           exportDate: new Date().toISOString(),
           timestamp: Date.now(),
           currency: (window.__safeGet && window.__safeGet("hesabno:currency")) || "rial",
-          numberFormat: (window.__safeGet && window.__safeGet("hesabno:number_format")) || "slash",
+          numberFormat: (window.__safeGet && (window.__safeGet("hesabno:numFormat") || window.__safeGet("hesabno:number_format"))) || "comma",
           accounts: readJson("hesabno:accounts_v5", readJson("hesabno:accounts", [])),
           transactions: readJson("hesabno:transactions", []),
           checks: readJson("hesabno:checks", []),
