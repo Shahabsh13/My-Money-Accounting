@@ -47,6 +47,21 @@
       var parenthetical = text.match(/^[\(（]\s*(\d+)\s*[\)）](?:\s*[•·,|].*)?$/);
       return !!(parenthetical && accountsByCode.has(parenthetical[1]));
     };
+    /* نشانِ کد کنار نام حساب (بدون برچسب «کد») — مثل سرصفحهٔ صورت‌حساب یا ردیف تراز.
+       فقط وقتی کد است که: قالب مونو داشته باشد و نام همان حساب دقیقاً کنارش رندر شده باشد.
+       مبلغ‌ها معمولاً در بلوک جدا و با واحد پول/برچسب می‌آیند و این شرط را رد نمی‌کنند. */
+    var isAccountCodeBadge = function (node, accountsByCode) {
+      if (node.tagName === "OPTION") return false;
+      var className = String(node.className || "");
+      if (!/\bfont-mono\b/.test(className)) return false;
+      /* ستون‌های عددیِ تراز/صورت‌حساب (مبلغ) با tabular-nums می‌آیند؛ کد نیستند */
+      if (/\btabular-nums\b/.test(className)) return false;
+      var text = asciiDigits(clean(node.textContent));
+      var match = text.match(/^[\(（]?\s*(\d+)\s*[\)）]?$/) || text.match(/^کد\s*[:：]?\s*(\d+)$/);
+      var account = match && accountsByCode.get(match[1]);
+      if (!account) return false;
+      return accountNameNearby(node, account);
+    };
     // نام‌های نرمال‌شده یک‌بار در هر به‌روزرسانی ساخته می‌شوند (کش موقت)
     var normNames = new Map();
     var allDigitCodes = false;
@@ -108,17 +123,19 @@
       return true;
     };
     var update = function () {
-      var accountsByCode = new Map();
+      var accountsByCode = new Map(), allByCode = new Map();
       readAccounts().filter(function (account) {
-        return account && account.parentId != null && account.code != null;
+        return account && account.code != null && account.code !== "";
       }).forEach(function (account) {
         var code = asciiDigits(account.code).trim();
-        if (code) accountsByCode.set(code, account);
+        if (!code) return;
+        allByCode.set(code, account);
+        if (account.parentId != null) accountsByCode.set(code, account);
       });
       Array.from(document.querySelectorAll('[data-hesabno-subsidiary-account-code="true"]')).forEach(function (node) {
-        if (!isCodeDisplay(node, accountsByCode)) delete node.dataset.hesabnoSubsidiaryAccountCode;
+        if (!isCodeDisplay(node, accountsByCode) && !isAccountCodeBadge(node, allByCode)) delete node.dataset.hesabnoSubsidiaryAccountCode;
       });
-      if (!accountsByCode.size) return;
+      if (!accountsByCode.size && !allByCode.size) return;
       normNames = new Map();
       allDigitCodes = true;
       accountsByCode.forEach(function (account, code) {
@@ -128,7 +145,10 @@
       Array.from(document.querySelectorAll("span, p, small, strong, em, td, th, option, div, li, label, a, button")).forEach(function (node) {
         if (replaceCodeOnlyOption(node, accountsByCode)) return;
         if (stripInlineAccountCode(node, accountsByCode)) return;
-        if (isCodeDisplay(node, accountsByCode) && node.dataset.hesabnoSubsidiaryAccountCode !== "true") node.dataset.hesabnoSubsidiaryAccountCode = "true";
+        if (node.dataset.hesabnoSubsidiaryAccountCode === "true") return;
+        if (isCodeDisplay(node, accountsByCode) || isAccountCodeBadge(node, allByCode)) {
+          node.dataset.hesabnoSubsidiaryAccountCode = "true";
+        }
       });
     };
     var frame = 0;

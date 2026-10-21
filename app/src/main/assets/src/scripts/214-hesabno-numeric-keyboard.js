@@ -433,6 +433,16 @@
     if (!preserveNativeKeyboard) dismissNativeKeyboard();
   }
 
+  /* قلاب عمومی برای دکمه‌ی بک گوشی: اگر کیبورد مبلغ باز است فقط همان بسته شود. */
+  window.__hesabnoAmountKeyboardOpen = function () {
+    return !!(panel && !panel.hidden);
+  };
+  window.__hesabnoCloseAmountKeyboard = function () {
+    if (!panel || panel.hidden) return false;
+    hideKeyboard(false);
+    return true;
+  };
+
   function confirmAmount() {
     if (!activeInput) return;
     /* یک‌بار نوشتن، یک‌بار رویداد؛ بعد بستن */

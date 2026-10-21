@@ -79,6 +79,10 @@ public class MainActivity extends ComponentActivity {
             + "a-label'),el.getAttribute('title'),el.innerText,el.textContent];for(var j=0;j<vals.length;j++){var label=Strin"
             + "g(vals[j]||'').replace(/\\s+/g,' ').trim();if(labels.indexOf(label)!==-1)return el;}}return null;}\ntry{if(typeof window.__hesabnoDismissExitDialog==='function'&&window.__hesabnoDismissExitDialog()){done();return;}}catch(e){}\ntry{var fr=d"
             + "ocument.getElementById('hesabno-first-run');if(fr){fr.parentNode.removeChild(fr);done();return;}}catch(e){}\ntr"
+            // ۱) کیبورد داخلی مبلغ باز است؟ فقط همان بسته شود و صفحه دست‌نخورده بماند.
+            + "y{if(typeof window.__hesabnoCloseAmountKeyboard==='function'&&window.__hesabnoCloseAmountKeyboard()){done();return;}}catch(e){}\ntr"
+            // ۲) انتخابگر حساب یا دیالوگ رویی باز است؟ اول همان بسته شود (نه ناوبری صفحه).
+            + "y{if(typeof window.__hesabnoCloseTopLayer==='function'&&window.__hesabnoCloseTopLayer()){done();return;}}catch(e){}\ntr"
             + "y{var h=window.__hesabnoNavigateBack;if(typeof h==='function'&&h()){done();return;}}catch(e){}\ntry{var layers="
             + "document.querySelectorAll('.hesabno-fullpage-layer,[role=\"dialog\"],[aria-modal=\"true\"]');for(var i=layers.leng"
             + "th-1;i>=0;i--){if(!visible(layers[i]))continue;var lb=findBackButton(layers[i]);if(lb){lb.click();done();retur"
