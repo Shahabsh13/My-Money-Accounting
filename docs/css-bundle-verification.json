@@ -194,10 +194,10 @@
   },
   "currentState": {
     "files": 10,
-    "hash": "5af7659586b815aa3f377f44017c8ab12090a9ff04db3da420369d5f9179f2b7",
-    "note": "وضعیت امروز روی دیسک: ادغام بی‌افت (۲۷۳۶ قاعده) + لایهٔ ظاهر (455 قاعده).",
-    "rules": 3386,
-    "bytes": 843871
+    "hash": "ce196f5ee30ceed5f9e3bfc0f60481fd83a665bbd9c01aa743a7f7efbd3fba44",
+    "note": "وضعیت امروز روی دیسک: ادغام بی‌افت (۲۷۳۶ قاعده) + لایهٔ ظاهر (455 قاعده) + اصلاح اندازهٔ انتخابگرها (۷ قاعده).",
+    "rules": 3393,
+    "bytes": 845325
   },
   "generatedAt": "2026-10-18T19:35:25.231Z",
   "onboardingCompact": {
@@ -227,5 +227,9 @@
   "trendDetail": {
     "addedRules": 8,
     "note": "Grouped daily bars and compact single-date detail card."
+  },
+  "advancedFilterTypography": {
+    "addedRules": 7,
+    "note": "Advanced transaction filter drops the unused event row and sizes its fields at 12px; form fields (input/textarea/select) follow their text-* class instead of the global 16px rule."
   }
 }

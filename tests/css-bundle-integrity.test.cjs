@@ -101,7 +101,7 @@ test('the merge evidence artifact records a verified, equal cascade', () => {
   /* تغییرهای عمدی پس از ادغام جداگانه ثبت می‌شوند؛ مدرک تاریخی ادغام ثابت می‌ماند. */
   assert.equal(verification.appearanceLayer.rules, 610, 'لایهٔ ظاهر 500 قاعده دارد');
   assert.equal(verification.currentState.rules,
-    verification.cascadeEquality.rulesAfter + verification.appearanceLayer.rules + (verification.onboardingCompact?.addedRules || 0) + (verification.transactionFilter?.addedRules || 0) + (verification.onboardingSimplification?.addedRules || 0) + (verification.transactionAmountColors?.addedRules || 0) + (verification.transactionSearch?.addedRules || 0) + (verification.globalPlaceholderHints?.addedRules || 0) + (verification.trendDetail?.addedRules || 0),
+    verification.cascadeEquality.rulesAfter + verification.appearanceLayer.rules + (verification.onboardingCompact?.addedRules || 0) + (verification.transactionFilter?.addedRules || 0) + (verification.onboardingSimplification?.addedRules || 0) + (verification.transactionAmountColors?.addedRules || 0) + (verification.transactionSearch?.addedRules || 0) + (verification.globalPlaceholderHints?.addedRules || 0) + (verification.trendDetail?.addedRules || 0) + (verification.advancedFilterTypography?.addedRules || 0),
     'وضعیت فعلی = ادغام بی‌افت + لایهٔ ظاهر + اصلاح فرم شروع');
   assert.equal(verification.files.before, 99);
   assert.equal(verification.files.after, 10);
