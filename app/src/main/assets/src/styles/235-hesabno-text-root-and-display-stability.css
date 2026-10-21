@@ -4741,6 +4741,18 @@ html body input.text-base,
 html body textarea.text-base,
 html body select.text-base { font-size: 16px !important; }
 
+/* دو کادر مسیر سند («پرداخت به / دریافت از» و «از حساب / به حساب») لبه‌هایشان
+   موازی باشد: ستون برچسب عرض کمینهٔ ثابت می‌گیرد تا هر دو کادر هم‌عرض شوند. */
+main > form.px-4.pt-4.space-y-4 section:has(#field-party) > div:not(:first-child) > label {
+  flex: 0 0 auto !important;
+  min-width: 4.25rem !important;
+  margin: 0 !important;
+  white-space: nowrap !important;
+}
+main > form.px-4.pt-4.space-y-4 section:has(#field-party) > div:not(:first-child):has(> label + button + p) {
+  grid-template-columns: minmax(4.25rem, max-content) minmax(0, 1fr) !important;
+}
+
 /* Minimal onboarding; contain intrinsic form widths instead of allowing sideways panning. */
 #hesabno-first-run .hesabno-fr-card { min-width: 0; overflow-x: hidden; }
 #hesabno-first-run .hesabno-fr-card *,
@@ -4784,16 +4796,6 @@ html body [data-hesabno-transaction-search] { font-size: 12px !important; min-wi
 html body [data-hesabno-transaction-search]::placeholder { font-size: 12px !important; }
 
 
-
-/* Compact daily chart details: a single date and aligned currency values. */
-html body .hesabno-trend-detail { padding: 12px; border-radius: 16px; border: 1px solid rgba(128,128,128,.25); background: rgba(128,128,128,.04); font-size: 12px; }
-html body .hesabno-trend-detail-heading { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
-html body .hesabno-trend-detail-values > div { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 5px 0; }
-html body .hesabno-trend-detail .hesabno-trend-income { color: #34d399 !important; }
-html body .hesabno-trend-detail .hesabno-trend-expense { color: #fb7185 !important; }
-html[data-theme="light"] body .hesabno-trend-detail .hesabno-trend-income { color: #00752b !important; }
-html[data-theme="light"] body .hesabno-trend-detail .hesabno-trend-expense { color: #c90025 !important; }
-html body .hesabno-trend-detail .hesabno-trend-net { border-top: 1px solid rgba(128,128,128,.25); margin-top: 6px; padding-top: 10px; font-weight: 700; }
 
 /* Placeholder hints only: one consistent size across all fields. */
 html body input[placeholder]::placeholder,

@@ -1,6 +1,6 @@
 {
   "root": "/home/user/My-Money-Accounting",
-  "at": "2026-10-16T19:53:29.192Z",
+  "at": "2026-10-21T09:17:35Z",
   "cascadeEquality": {
     "equal": true,
     "firstMismatch": -1,
@@ -194,10 +194,10 @@
   },
   "currentState": {
     "files": 10,
-    "hash": "ce196f5ee30ceed5f9e3bfc0f60481fd83a665bbd9c01aa743a7f7efbd3fba44",
-    "note": "وضعیت امروز روی دیسک: ادغام بی‌افت (۲۷۳۶ قاعده) + لایهٔ ظاهر (455 قاعده) + اصلاح اندازهٔ انتخابگرها (۷ قاعده).",
-    "rules": 3393,
-    "bytes": 845325
+    "rules": 3387,
+    "bytes": 844944,
+    "hash": "df9a7dbd8f70761586429dc8d5435fc62502d1cb18b631fb740d83fb5bdd5c37",
+    "note": "وضعیت امروز روی دیسک: ادغام بی‌افت (۲۷۳۶ قاعده) + لایهٔ ظاهر (۶۱۰ قاعده) + اصلاح‌های ثبت‌شدهٔ بعدی (۴۱ قاعده؛ ۸ قاعدهٔ کارت جزئیات نمودار روند با حذف ویجت برداشته شد)."
   },
   "generatedAt": "2026-10-18T19:35:25.231Z",
   "onboardingCompact": {
@@ -225,11 +225,15 @@
     "note": "All input and textarea placeholder hints use a fixed 12px size; entered values unchanged."
   },
   "trendDetail": {
-    "addedRules": 8,
-    "note": "Grouped daily bars and compact single-date detail card."
+    "addedRules": 0,
+    "note": "کارت جزئیات نمودار روند روزانه با حذف کامل ویجت از برنامه برداشته شد؛ هر ۸ قاعدهٔ قبلی هم از لایهٔ ۲۳۵ پاک شدند."
   },
   "advancedFilterTypography": {
     "addedRules": 7,
     "note": "Advanced transaction filter drops the unused event row and sizes its fields at 12px; form fields (input/textarea/select) follow their text-* class instead of the global 16px rule."
+  },
+  "paymentRouteAlignment": {
+    "addedRules": 2,
+    "note": "دو کادر «پرداخت به / دریافت از» و «از حساب / به حساب» در فرم ثبت سند ستون برچسب هم‌عرض (۴٫۲۵rem) می‌گیرند تا لبه‌های کادرها موازی بمانند — هم در حالت عادی و هم در حالت خطای درون‌کادری."
   }
 }

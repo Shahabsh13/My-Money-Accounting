@@ -183,10 +183,10 @@
                 <div class="flex items-center justify-between gap-2">
                   <div class="flex items-center gap-2.5">
                     <span class="text-lg text-emerald-400">▣</span>
-                    <div><p class="font-bold text-xs text-stone-200">تصویر فیش / سند پیوست</p><p class="text-[10px] text-stone-400">عکس رسید بانکی، فاکتور یا پیوست سند</p></div>
+                    <div><p class="font-bold text-xs text-stone-200">تصویر فیش / سند پیوست</p></div>
                   </div>
                   <label class="px-3 py-1.5 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-200 text-xs font-bold cursor-pointer transition border border-stone-700/80 flex items-center gap-1.5 shadow-xs shrink-0">
-                    <span class="text-emerald-400">＋</span><span>انتخاب تصویر فیش</span><input data-hesabno-return-attachment-input type="file" accept="image/*" hidden>
+                    <span class="text-emerald-400">＋</span><span class="whitespace-nowrap">انتخاب تصویر</span><input data-hesabno-return-attachment-input type="file" accept="image/*" hidden>
                   </label>
                 </div>
                 <div data-hesabno-return-attachment-preview></div>
