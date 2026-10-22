@@ -34,6 +34,14 @@ const seedTransactions = [
   { id: 5, type: 'expense', amount: 500000, date: persianToday, title: 'اجاره‌بها', category: 'اجاره‌بها', account: 'بانک دی', documentNumber: 5 },
 ];
 
+function clickRendered(window, element) {
+  if (!element) return;
+  const propsKey = Object.keys(element).find((key) => key.startsWith('__reactProps$'));
+  const handler = propsKey && element[propsKey].onClick;
+  if (handler) handler({ target: element, currentTarget: element, preventDefault() {}, stopPropagation() {} });
+  else element.click();
+}
+
 const jsdomStubs = (window) => {
   window.ResizeObserver = class {
     observe() {}
@@ -441,29 +449,29 @@ test('dashboard widgets and transaction card icons use CSS appearance rules with
       window.localStorage.setItem('hesabno:familyMembers', JSON.stringify(['امیر']));
       const moreOptsBtn = Array.from(document.querySelectorAll('form button')).find((b) => b.textContent.includes('گزینه‌ها و امکانات بیشتر'));
       if (moreOptsBtn) {
-        moreOptsBtn.click();
+        clickRendered(window, moreOptsBtn);
         await wait(60);
       }
       const projectLabel = Array.from(document.querySelectorAll('form label')).find((l) => l.textContent.includes('انتساب به پروژه'));
       const projectBtn = projectLabel && projectLabel.parentElement.querySelector('button');
       assert.ok(projectBtn, 'دکمه انتخاب پروژه باید در فرم ویرایش وجود داشته باشد');
-      projectBtn.click();
+      clickRendered(window, projectBtn);
       await wait(80);
       assert.ok(document.getElementById('root').innerHTML.length > 0, 'کلیک روی انتخاب پروژه نباید باعث سیاه شدن صفحه شود');
       const projectOpt = Array.from(document.querySelectorAll('.hesabno-catalog-picker-overlay button')).find((b) => b.textContent.trim() === 'پروژه بازسازی');
       assert.ok(projectOpt, 'پروژه تعریف‌شده باید در لیست انتخاب پروژه نمایش داده شود');
-      projectOpt.click();
+      clickRendered(window, projectOpt);
       await wait(60);
       assert.equal(projectBtn.textContent.trim(), 'پروژه بازسازی');
 
       const familyLabel = Array.from(document.querySelectorAll('form label')).find((l) => l.textContent.includes('عضو خانواده'));
       const familyBtn = familyLabel && familyLabel.parentElement.querySelector('button');
       assert.ok(familyBtn, 'دکمه انتخاب عضو خانواده باید در فرم ویرایش وجود داشته باشد');
-      familyBtn.click();
+      clickRendered(window, familyBtn);
       await wait(80);
       const familyOpt = Array.from(document.querySelectorAll('.hesabno-catalog-picker-overlay button')).find((b) => b.textContent.trim() === 'امیر');
       assert.ok(familyOpt, 'عضو خانواده جدید باید بلافاصله در لیست انتخاب عضو خانواده نمایش داده شود');
-      familyOpt.click();
+      clickRendered(window, familyOpt);
       await wait(60);
       assert.equal(familyBtn.textContent.trim(), 'امیر');
 
