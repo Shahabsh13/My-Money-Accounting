@@ -10,6 +10,8 @@ test('تقویم‌های تکی فرم و قسط وام پایین‌چسب، �
   const bundle = read('src/scripts/067-inline.js');
   assert.match(bundle, /alignItems:"flex-end"[\s\S]{0,300}backdropFilter:"blur\(16px\) saturate\(120%\)"/,
     'تقویم مشترک فرم تراکنش و تاریخ قسط وام باید با استایل درون‌خطی پایین‌چسب و blur باشد');
+  assert.ok(bundle.includes('w1.exports.createPortal(e.jsx("div",{id:"persian-datepicker-backdrop"'),
+    'لایهٔ تقویم باید به body پورتال شود تا transform و overflow فرم روی آن اثر نگذارد');
   assert.ok(bundle.includes('id:"datepicker-close-button"') && bundle.includes('"aria-label":"بستن تقویم"'),
     'تقویم مشترک فرم تراکنش و تاریخ قسط وام باید ضربدر دسترس‌پذیر داشته باشد');
 });
