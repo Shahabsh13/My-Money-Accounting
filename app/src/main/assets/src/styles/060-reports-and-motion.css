@@ -371,7 +371,7 @@ html[data-theme="light"] .hesabno-dashboard-check-item-direction { color: #168f7
 .hesabno-dashboard-check-item-top strong,
 .hesabno-dashboard-check-item-bottom > span,
 .hesabno-simple-report-amount {
-  font-family: "IRANSans", "IRANSansFaNum", "Vazirmatn", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-family: "Vazirmatn", "IRANSans", "IRANSansFaNum", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
   font-variant-numeric: tabular-nums !important;
 }
 /* = 097-hesabno-account-statement-styles.css = */
