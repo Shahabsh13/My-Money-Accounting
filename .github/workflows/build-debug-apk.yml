@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - build/debug-apk-workflow
+      - arena/cd7db8e3-my-money-accounting
   pull_request:
     branches:
       - main
