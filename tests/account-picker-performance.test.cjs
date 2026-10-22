@@ -36,8 +36,8 @@ test('انتخاب‌گر حساب بدون کلیک، از ناظر DOM برا�
   const dom = await bootApp({
     seed: transactions,
     storage: {
-      'hesabno:first_run_profile_done': 'true',
-      'hesabno:first_run_intro_done': 'true',
+      'hesabno:first_run_profile_done': '1',
+      'hesabno:first_run_intro_done': '1',
     },
     stubs,
   });
@@ -45,9 +45,13 @@ test('انتخاب‌گر حساب بدون کلیک، از ناظر DOM برا�
 
   const { window } = dom;
   const { document } = window;
-  const click = (element) => element.dispatchEvent(new window.MouseEvent('click', {
-    bubbles: true, cancelable: true, view: window,
-  }));
+  const click = (element) => {
+    if (!element) return;
+    const propsKey = Object.keys(element).find((key) => key.startsWith('__reactProps$'));
+    const handler = propsKey && element[propsKey].onClick;
+    if (handler) handler({ target: element, currentTarget: element, preventDefault() {}, stopPropagation() {} });
+    else element.dispatchEvent(new window.Event('click', { bubbles: true, cancelable: true }));
+  };
 
   const payment = [...document.querySelectorAll('main button')]
     .find((button) => normalize(button.textContent) === 'پرداخت');

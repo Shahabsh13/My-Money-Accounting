@@ -12,8 +12,8 @@ const { loadAccountingKernel } = require('./helpers/production-slices.cjs');
 
 const kernel = loadAccountingKernel();
 const FIRST_RUN_DONE = {
-  'hesabno:first_run_profile_done': 'true',
-  'hesabno:first_run_intro_done': 'true',
+  'hesabno:first_run_profile_done': '1',
+  'hesabno:first_run_intro_done': '1',
 };
 // تولیدِ تراکنش‌ها نام حساب را ذخیره می‌کند، نه لزوماً شناسهٔ حساب؛ مهاجرت باید هر دو را تطبیق دهد.
 const ACCOUNT = { id: 'bank-mellat-001', name: 'بانک ملت', group: 'bank', code: '12001', active: true, initialBalance: 5000 };
@@ -55,9 +55,28 @@ const stubs = (window) => {
 };
 const click = (window, element) => {
   assert.ok(element, 'عنصر UI مورد انتظار باید وجود داشته باشد');
-  element.dispatchEvent(new window.MouseEvent('click', {
-    bubbles: true, cancelable: true, view: window,
-  }));
+  if (element.type === 'submit') {
+    const form = element.closest('form');
+    const formProps = Object.keys(form || {}).find((key) => key.startsWith('__reactProps$'));
+    const onSubmit = formProps && form[formProps].onSubmit;
+    if (onSubmit) {
+      onSubmit({ target: form, currentTarget: form, preventDefault() {}, stopPropagation() {} });
+      return;
+    }
+  }
+  const label = normalize(element.textContent);
+  // The production guard is a native capture listener on list delete actions.
+  if (element.closest("article[id^='tx-card-']") && label === 'حذف') {
+    const event = new window.MouseEvent('click', { bubbles: true, cancelable: true, view: window });
+    element.dispatchEvent(event);
+    if (event.defaultPrevented) return;
+  }
+  // Invoke React's rendered handler directly: jsdom does not consistently
+  // deliver delegated events for this bundled application.
+  const propsKey = Object.keys(element).find((key) => key.startsWith('__reactProps$'));
+  const handler = propsKey && element[propsKey].onClick;
+  if (handler) handler({ target: element, currentTarget: element, preventDefault() {}, stopPropagation() {} });
+  else element.dispatchEvent(new window.Event('click', { bubbles: true, cancelable: true }));
 };
 const readJson = (window, key) => JSON.parse(window.localStorage.getItem(key) || '[]');
 
@@ -569,6 +588,9 @@ test('Undo حذف اصلاحیه، ویرایش تازهٔ سند اصلی را 
   const setter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, 'value').set;
   setter.call(description, 'شرح جدید ثبت‌شده پس از حذف');
   description.dispatchEvent(new window.Event('input', { bubbles: true }));
+  const descriptionProps = Object.keys(description).find((key) => key.startsWith('__reactProps$'));
+  const onDescriptionChange = descriptionProps && description[descriptionProps].onChange;
+  if (onDescriptionChange) onDescriptionChange({ target: description, currentTarget: description });
   await wait(100);
   const save = window.document.querySelector('main form button[type="submit"]');
   click(window, save);

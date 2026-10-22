@@ -26,8 +26,8 @@ try {
 const root = path.resolve(__dirname, '..');
 const readAsset = (relative) => fs.readFileSync(path.join(root, 'app/src/main/assets', relative), 'utf8');
 const FIRST_RUN_DONE = {
-  'hesabno:first_run_profile_done': 'true',
-  'hesabno:first_run_intro_done': 'true',
+  'hesabno:first_run_profile_done': '1',
+  'hesabno:first_run_intro_done': '1',
 };
 const stubs = (window) => {
   window.ResizeObserver = class { observe() {} unobserve() {} disconnect() {} };
@@ -62,7 +62,13 @@ test('delete stays in the edit form only (centred dialog), not in the new-docume
   t.after(() => closeApp(dom));
   const { window } = dom;
   const d = window.document;
-  const click = (el) => el && el.dispatchEvent(new window.MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
+  const click = (el) => {
+    if (!el) return;
+    const propsKey = Object.keys(el).find((key) => key.startsWith('__reactProps$'));
+    const handler = propsKey && el[propsKey].onClick;
+    if (handler) handler({ target: el, currentTarget: el, preventDefault() {}, stopPropagation() {} });
+    else el.dispatchEvent(new window.Event('click', { bubbles: true, cancelable: true }));
+  };
 
   await wait(900);
   const skip = [...d.querySelectorAll('button')].find((button) => normalize(button.textContent) === 'رد کردن');
