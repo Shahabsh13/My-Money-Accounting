@@ -11,6 +11,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const vm = require('node:vm');
 
 const { bootApp, closeApp, wait, normalize } = require('./helpers/app-boot.cjs');
 
@@ -180,4 +181,169 @@ test('دکمه‌ی بک اندروید قلاب‌های کیبورد و لای
 
   const accessible = fs.readFileSync(path.join(root, 'app/src/main/assets/src/scripts/198-hesabno-accessible-form-fields.js'), 'utf8');
   assert.match(accessible, /ثبت وام و زمان‌بندی اقساط/, 'فرم وام نباید قرمزکردن موازی داشته باشد');
+});
+
+function makeBackLayer(attributes, closeAttributes, order) {
+  let connected = true;
+  let closeClicks = 0;
+  const has = (attrs, name) => Object.prototype.hasOwnProperty.call(attrs, name);
+  const get = (attrs, name) => has(attrs, name) ? attrs[name] : null;
+  const closeButton = {
+    get isConnected() { return connected; },
+    getClientRects: () => connected ? [{}] : [],
+    hasAttribute: (name) => has(closeAttributes, name),
+    getAttribute: (name) => get(closeAttributes, name),
+    click: () => { closeClicks += 1; connected = false; },
+  };
+  const layer = {
+    id: get(attributes, 'id') || '',
+    hidden: false,
+    classList: { contains: () => false },
+    get isConnected() { return connected; },
+    getClientRects: () => connected ? [{}] : [],
+    hasAttribute: (name) => has(attributes, name),
+    getAttribute: (name) => get(attributes, name),
+    compareDocumentPosition(other) {
+      if (this === other) return 0;
+      return order < other.__order ? 4 : 2;
+    },
+    querySelector(selector) {
+      if (selector === 'header') return null;
+      if (selector === '[data-hesabno-date-picker-close="true"], [data-hesabno-settlement-datepicker-close], [data-return-date-close]') {
+        return closeButton.hasAttribute('data-hesabno-date-picker-close') || closeButton.hasAttribute('data-hesabno-settlement-datepicker-close') || closeButton.hasAttribute('data-return-date-close') ? closeButton : null;
+      }
+      const match = selector.match(/^button\[(aria-label|title)="([^"]+)"\]$/);
+      return match && closeButton.getAttribute(match[1]) === match[2] ? closeButton : null;
+    },
+    querySelectorAll(selector) { return selector === 'button' ? [closeButton] : []; },
+    __order: order,
+  };
+  return { layer, closeButton, reopen() { connected = true; }, get closeClicks() { return closeClicks; } };
+}
+
+function bootBackPriorityFixture(layers) {
+  let navigationCalls = 0;
+  const formState = { date: '1405/07/30', cancelled: false };
+  const document = {
+    querySelectorAll(selector) {
+      return layers.map((item) => item.layer).filter((layer) => {
+        if (!layer.isConnected) return false;
+        if (selector === '[role="dialog"][aria-modal="true"]') {
+          return layer.getAttribute('role') === 'dialog' && layer.getAttribute('aria-modal') === 'true';
+        }
+        const marker = selector.match(/^\[(data-[\w-]+)="true"\]$/);
+        return marker && layer.getAttribute(marker[1]) === 'true';
+      });
+    },
+  };
+  const window = {
+    __hesabnoCloseAmountKeyboard: () => false,
+    __hesabnoNavigateBack: () => {
+      navigationCalls += 1;
+      formState.date = '1405/08/01';
+      formState.cancelled = true;
+      return true;
+    },
+  };
+  const source = fs.readFileSync(path.join(root, 'app/src/main/assets/src/scripts/237-hesabno-back-priority.js'), 'utf8');
+  vm.runInNewContext(source, { window, document });
+  return { window, formState, get navigationCalls() { return navigationCalls; } };
+}
+
+/* Mirrors the order in MainActivity.BACK_JS; this is a JS simulation, not a device test. */
+function dispatchAndroidBack(window) {
+  if (typeof window.__hesabnoCloseAmountKeyboard === 'function' && window.__hesabnoCloseAmountKeyboard()) return true;
+  if (typeof window.__hesabnoCloseTopLayer === 'function' && window.__hesabnoCloseTopLayer()) return true;
+  return typeof window.__hesabnoNavigateBack === 'function' && window.__hesabnoNavigateBack();
+}
+
+test('Back-priority controller closes each of the three date-picker layers before navigation (mock DOM)', () => {
+  const cases = [
+    ['data-hesabno-settlement-datepicker', 'data-hesabno-settlement-datepicker-close', false],
+    ['data-hesabno-return-date-picker', 'data-return-date-close', true],
+    ['data-hesabno-transaction-datepicker', 'data-hesabno-date-picker-close', false],
+  ];
+  for (const [layerMarker, closeMarker, modal] of cases) {
+    const attributes = { [layerMarker]: 'true' };
+    if (modal) Object.assign(attributes, { role: 'dialog', 'aria-modal': 'true' });
+    const picker = makeBackLayer(attributes, { [closeMarker]: '' }, 1);
+    const fixture = bootBackPriorityFixture([picker]);
+
+    assert.equal(dispatchAndroidBack(fixture.window), true, `${layerMarker}: Back باید رسیدگی شود`);
+    assert.equal(picker.layer.isConnected, false, `${layerMarker}: فقط خود تقویم باید بسته شود`);
+    assert.equal(picker.closeClicks, 1, `${layerMarker}: باید دکمهٔ بستن خود تقویم کلیک شود`);
+    assert.equal(fixture.navigationCalls, 0, `${layerMarker}: ناوبری صفحه نباید اجرا شود`);
+    assert.equal(fixture.formState.date, '1405/07/30', `${layerMarker}: تاریخ نباید تغییر کند`);
+    assert.equal(fixture.formState.cancelled, false, `${layerMarker}: فرم زیرین نباید لغو شود`);
+  }
+});
+
+test('Android BACK_JS order closes a picker once, then restores the original navigation on the next Back', () => {
+  const picker = makeBackLayer(
+    { 'data-hesabno-transaction-datepicker': 'true' },
+    { 'data-hesabno-date-picker-close': 'true' },
+    1,
+  );
+  const fixture = bootBackPriorityFixture([picker]);
+
+  assert.equal(dispatchAndroidBack(fixture.window), true, 'اولین Back باید فقط picker را ببندد');
+  assert.equal(picker.layer.isConnected, false);
+  assert.equal(picker.closeClicks, 1);
+  assert.equal(fixture.navigationCalls, 0, 'اولین Back نباید به navigation برسد');
+  assert.equal(fixture.formState.date, '1405/07/30', 'اولین Back نباید تاریخ را تغییر دهد');
+  assert.equal(fixture.formState.cancelled, false, 'فرم زیرین نباید با اولین Back لغو شود');
+
+  assert.equal(dispatchAndroidBack(fixture.window), true, 'Back بعدی باید handler قبلی navigation را اجرا کند');
+  assert.equal(picker.closeClicks, 1, 'همان picker نباید دوباره بسته یا handler آن تکراری اجرا شود');
+  assert.equal(fixture.navigationCalls, 1);
+  assert.equal(fixture.formState.date, '1405/08/01', 'تغییر فرم فقط از مسیر navigation شبیه‌سازی‌شده انجام شود');
+});
+
+test('repeated picker open/Back-close cycles handle one Back each without stale handlers', () => {
+  const picker = makeBackLayer(
+    { 'data-hesabno-transaction-datepicker': 'true' },
+    { 'data-hesabno-date-picker-close': 'true' },
+    1,
+  );
+  const fixture = bootBackPriorityFixture([picker]);
+
+  for (let cycle = 1; cycle <= 3; cycle += 1) {
+    if (cycle > 1) picker.reopen();
+    assert.equal(dispatchAndroidBack(fixture.window), true, `چرخهٔ ${cycle}: Back باید فقط picker را ببندد`);
+    assert.equal(picker.layer.isConnected, false, `چرخهٔ ${cycle}: picker باید بسته شود`);
+    assert.equal(picker.closeClicks, cycle, `چرخهٔ ${cycle}: دقیقاً یک close باید اجرا شود`);
+    assert.equal(fixture.navigationCalls, 0, `چرخهٔ ${cycle}: navigation نباید زودتر اجرا شود`);
+    assert.equal(fixture.formState.date, '1405/07/30', `چرخهٔ ${cycle}: تاریخ باید ثابت بماند`);
+  }
+
+  assert.equal(dispatchAndroidBack(fixture.window), true, 'پس از بسته‌بودن picker، Back به مسیر عادی برسد');
+  assert.equal(picker.closeClicks, 3, 'پس از بسته‌شدن، handler یتیمی نباید picker را دوباره ببندد');
+  assert.equal(fixture.navigationCalls, 1);
+});
+
+test('a later overlay remains the Back target while the shared date picker is underneath', () => {
+  const picker = makeBackLayer(
+    { 'data-hesabno-transaction-datepicker': 'true' },
+    { 'data-hesabno-date-picker-close': 'true' },
+    1,
+  );
+  const upperLayer = makeBackLayer(
+    { role: 'dialog', 'aria-modal': 'true' },
+    { 'aria-label': 'بستن' },
+    2,
+  );
+  const fixture = bootBackPriorityFixture([picker, upperLayer]);
+
+  assert.equal(fixture.window.__hesabnoCloseTopLayer(), true);
+  assert.equal(upperLayer.layer.isConnected, false, 'ابتدا باید لایهٔ DOM بالاتر بسته شود');
+  assert.equal(picker.layer.isConnected, true, 'تقویم زیرین نباید زودتر بسته شود');
+  assert.equal(fixture.window.__hesabnoCloseTopLayer(), true);
+  assert.equal(picker.layer.isConnected, false, 'در Back بعدی باید تقویم بسته شود');
+});
+
+test('when neither target date picker is open, the existing Back navigation path is preserved', () => {
+  const fixture = bootBackPriorityFixture([]);
+
+  assert.equal(dispatchAndroidBack(fixture.window), true);
+  assert.equal(fixture.navigationCalls, 1, 'بدون تقویم باز باید تابع ناوبری قبلی اجرا شود');
 });

@@ -27,12 +27,8 @@
     Promise.resolve().then(function () { queued = false; enhance(); });
   };
   enhance();
+  // MutationObserver handles inserted/updated pickers; avoid a synchronous document-wide scan on every click.
   if (document.body && window.__hesabnoDom && window.__hesabnoDom.watch) {
     window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, scheduleMicrotask);
   }
-  var schedule = function () {
-    enhance();
-    scheduleMicrotask();
-  };
-  document.addEventListener('click', schedule, true);
 })();

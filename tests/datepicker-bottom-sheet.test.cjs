@@ -54,6 +54,8 @@ test('date picker is a bottom sheet with a blurred scrim', { timeout: 90000 }, a
   const sheet = document.querySelector('#persian-datepicker-sheet');
   assert.ok(backdrop, 'لایه‌ی تقویم باید باز شود');
   assert.ok(sheet, 'شیت تقویم باید رندر شود');
+  assert.equal(backdrop.getAttribute('data-hesabno-transaction-datepicker'), 'true', 'لایهٔ تقویم باید marker پایدار برای Back داشته باشد');
+  assert.equal(backdrop.parentElement, document.body, 'تقویم باید خارج از فرم به body پورتال شود تا overflow یا transform فرم آن را جابه‌جا/بُرش ندهد');
 
   /* لایه: تمام‌صفحه، ثابت و چسبیده به پایین */
   assert.equal(backdrop.style.position, 'fixed', 'لایه باید fixed باشد تا با اسکرول فرم جابه‌جا نشود');
@@ -84,12 +86,35 @@ test('date picker is a bottom sheet with a blurred scrim', { timeout: 90000 }, a
   assert.ok(handle && /rounded-full/.test(handle.className), 'دسته‌ی کشیدن شیت باید وجود داشته باشد');
   assert.equal(/sm:hidden/.test(handle.className), false, 'دسته فقط در موبایل پنهان نمی‌شود؛ شیت در همه اندازه‌ها از پایین باز می‌شود');
 
+  const dateBeforeBack = document.querySelector('#tx-date-input').value;
+  assert.equal(window.__hesabnoCloseTopLayer(), true, 'اولین Back باید فقط لایهٔ تقویم را ببندد');
+  await wait(250);
+  assert.equal(document.querySelector('#persian-datepicker-backdrop'), null, 'Back باید همان picker را ببندد');
+  assert.equal(document.querySelector('#tx-date-input').value, dateBeforeBack, 'Back نباید مقدار تاریخ را تغییر دهد');
+  assert.ok(document.querySelector('#tx-date-input-container'), 'فرم زیرین باید پس از Back باز بماند');
+
+  await openDatePicker(window);
+  const closeSheet = document.querySelector('#persian-datepicker-sheet');
+  const dateBeforeDismiss = normalize(document.querySelector('#tx-date-input-container').textContent);
+  const closeButton = closeSheet && closeSheet.querySelector('#datepicker-close-button');
+  assert.ok(closeButton, 'تقویم باید دکمهٔ × برای بستن داشته باشد');
+  assert.equal(normalize(closeButton.textContent), '×');
+  assert.equal(closeButton.getAttribute('aria-label'), 'بستن تقویم');
+  assert.equal(closeButton.getAttribute('data-hesabno-date-picker-close'), 'true', 'دکمهٔ × باید marker پایدار برای Back داشته باشد');
+  closeButton.click();
+  await wait(250);
+  assert.equal(document.querySelector('#persian-datepicker-backdrop'), null, 'دکمهٔ × باید تقویم را ببندد');
+  assert.equal(normalize(document.querySelector('#tx-date-input-container').textContent), dateBeforeDismiss, 'بستن با × نباید تاریخ را تغییر دهد');
+
   /* تقویم نباید فرم را از جریان خارج یا جابه‌جا کند */
   assert.ok(document.querySelector('#tx-date-input-container'), 'فیلد تاریخ باید سر جایش بماند');
   assert.equal(document.querySelectorAll('#tx-date-input-container').length, 1, 'فیلد تاریخ نباید تکرار شود');
 
   /* انتخاب روز: تقویم بسته می‌شود و مقدار فیلد عوض می‌شود */
-  const dayButtons = [...sheet.querySelectorAll('button')].filter((button) => /^[۰-۹]{1,2}$/.test(normalize(button.textContent)));
+  await openDatePicker(window);
+  const selectionSheet = document.querySelector('#persian-datepicker-sheet');
+  assert.ok(selectionSheet, 'تقویم باید پس از بستن با × دوباره باز شود');
+  const dayButtons = [...selectionSheet.querySelectorAll('button')].filter((button) => /^[۰-۹]{1,2}$/.test(normalize(button.textContent)));
   const target = dayButtons.find((button) => normalize(button.textContent) === '۱۰') || dayButtons[9];
   assert.ok(target, 'دکمه‌ی روز باید در تقویم باشد');
   target.click();

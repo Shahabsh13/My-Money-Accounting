@@ -160,6 +160,63 @@ test('opening the keypad puts a blurred backdrop behind it and hides it on close
   await settleAndClose(dom);
 });
 
+test('outside pointer/touch closes the keypad but does not forward the click to the underlying control', async () => {
+  for (const startType of ['pointerdown', 'touchstart']) {
+    const dom = mount();
+    const { window } = dom;
+    const document = window.document;
+    const input = document.getElementById('amount');
+    input.dispatchEvent(new window.Event('pointerdown', { bubbles: true, cancelable: true }));
+
+    const panel = document.getElementById('hesabno-amount-keyboard');
+    const underlying = document.createElement('button');
+    let activations = 0;
+    let pressHandlers = 0;
+    underlying.textContent = 'زیر کیبورد';
+    underlying.addEventListener(startType, () => { pressHandlers += 1; });
+    underlying.addEventListener('click', () => { activations += 1; });
+    document.body.appendChild(underlying);
+
+    underlying.dispatchEvent(new window.Event(startType, { bubbles: true, cancelable: true }));
+    assert.equal(panel.hidden, false, `${startType}: رویداد آغاز لمس نباید پرده را پیش از click بردارد`);
+    assert.equal(pressHandlers, 0, `${startType}: handler فشردن کنترل زیرین نباید اجرا شود`);
+
+    const click = new window.MouseEvent('click', { bubbles: true, cancelable: true });
+    underlying.dispatchEvent(click); // شبیه‌سازی clickی که پس از بسته‌شدن overlay ممکن است retarget شود.
+    assert.equal(click.defaultPrevented, true, `${startType}: click زیرین باید لغو شود`);
+    assert.equal(activations, 0, `${startType}: کنترل زیرین نباید با همان لمس فعال شود`);
+    assert.equal(panel.hidden, true, `${startType}: کیبورد باید با همان لمس بسته شود`);
+
+    underlying.click();
+    assert.equal(activations, 1, 'لمس/کلیک جدید پس از بسته‌شدن کیبورد باید به کنترل برسد');
+    await settleAndClose(dom);
+  }
+});
+
+test('pressing a different money field while the keypad is open still switches the active amount', async () => {
+  const dom = mount();
+  const { window } = dom;
+  const document = window.document;
+  const first = document.getElementById('amount');
+  first.value = '125';
+  first.dispatchEvent(new window.Event('pointerdown', { bubbles: true, cancelable: true }));
+
+  const second = document.createElement('input');
+  second.placeholder = 'مبلغ بازپرداخت';
+  second.value = '2400';
+  document.getElementById('page-content').appendChild(second);
+  const event = new window.Event('pointerdown', { bubbles: true, cancelable: true });
+  second.dispatchEvent(event);
+
+  const panel = document.getElementById('hesabno-amount-keyboard');
+  assert.equal(event.defaultPrevented, true);
+  assert.equal(panel.hidden, false, 'کیبورد باید برای فیلد مبلغ دوم باز بماند');
+  assert.equal(second.readOnly, true);
+  assert.equal(panel.querySelector('[data-hkap-value]').value, '۲٬۴۰۰', 'پیش‌نویس باید از فیلد مبلغ دوم بارگیری شود');
+  assert.equal(first.value, '125', 'فیلد قبلی نباید تغییر کند');
+  await settleAndClose(dom);
+});
+
 test('physical digits edit the draft and Enter commits it', async () => {
   const dom = mount(); const { window } = dom; const input = window.document.getElementById('amount');
   input.dispatchEvent(new window.Event('pointerdown', { bubbles: true, cancelable: true }));

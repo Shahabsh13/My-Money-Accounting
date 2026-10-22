@@ -557,7 +557,17 @@
       activateInput(input, true);
       return;
     }
-    if (panel && !panel.hidden) hideKeyboard(false);
+    if (panel && !panel.hidden) {
+      if (event.type === "click") {
+        /* همان click را می‌بلعیم؛ پس از بسته‌شدن overlay به کنترل زیرین نمی‌رسد. */
+        if (event.cancelable) event.preventDefault();
+        event.stopPropagation();
+        hideKeyboard(false);
+      } else {
+        /* رویدادهای آغاز لمس/فشار نباید به handler کنترل زیرین برسند؛ overlay تا click می‌ماند. */
+        event.stopPropagation();
+      }
+    }
   }
 
   function start() {

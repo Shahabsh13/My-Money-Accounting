@@ -69,6 +69,10 @@ test('calendar close button takes its appearance from a class, not inline style'
   assert.ok(card, 'کارت تقویم باید کلاس hesabno-calendar-card را بگیرد');
   assert.equal(card.getAttribute('style'), null, 'کارت تقویم نباید style درون‌خطی داشته باشد');
   assert.equal(close.parentElement, card, 'دکمهٔ بستن باید فرزند کارت باشد');
+  const backdrop = card.closest('.fixed');
+  assert.ok(backdrop, 'تقویم باید لایهٔ پس‌زمینه داشته باشد');
+  assert.match(backdrop.className, /items-end/, 'تقویم داشبورد هم باید از پایین باز شود');
+  assert.match(backdrop.className, /backdrop-blur-md/, 'پس‌زمینهٔ تقویم داشبورد باید واضح محو شود');
 
   /* بعد از باز شدن، هیچ لایه‌ای نباید ظاهر تقویم را دوباره بنویسد. */
   let styleWrites = 0;
