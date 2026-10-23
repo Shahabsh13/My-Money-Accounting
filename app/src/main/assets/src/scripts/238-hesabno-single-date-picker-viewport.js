@@ -52,16 +52,30 @@
     var registration = { closing: false, detach: null };
     function sync() {
       if (!overlay.isConnected || registration.closing) return;
+
+      /*
+       * فقط overlayهای دارای marker تک‌تاریخ را مثل صفحه‌کلید داخلی به پایین می‌چسبانیم.
+       * important تضمین می‌کند قوانین عمومی dialog/fixed در WebView جای شیت را عوض نکنند.
+       * offsetTop را به مختصات fixed اضافه نمی‌کنیم؛ inset:0 مرجع موقعیت است.
+       */
+      if (overlay.style && typeof overlay.style.setProperty === "function") {
+        overlay.style.setProperty("position", "fixed", "important");
+        overlay.style.setProperty("top", "0px", "important");
+        overlay.style.setProperty("right", "0px", "important");
+        overlay.style.setProperty("bottom", "0px", "important");
+        overlay.style.setProperty("left", "0px", "important");
+        overlay.style.setProperty("display", "flex", "important");
+        overlay.style.setProperty("align-items", "flex-end", "important");
+        overlay.style.setProperty("justify-content", "center", "important");
+        overlay.style.setProperty("padding", "0px", "important");
+        overlay.style.setProperty("backdrop-filter", "blur(16px) saturate(120%)", "important");
+        overlay.style.setProperty("-webkit-backdrop-filter", "blur(16px) saturate(120%)", "important");
+      }
+
       var height = viewportHeight();
       if (!height || !sheet || !sheet.isConnected) return;
 
-      /*
-       * موقعیت overlay عمداً دست‌نخورده می‌ماند: خود تقویم آن را با position:fixed و
-       * inset:0 می‌سازد. WebView نیز با adjustResize و interactive-widget=resizes-content
-       * viewport را برای نوارهای سیستم/IME اندازه می‌گیرد. مخلوط‌کردن offsetTop با top/height
-       * در این‌جا دو مرجع مختصات می‌سازد و لبه‌ی پایین را از viewport جدا می‌کند.
-       * visualViewport فقط حدّ ارتفاع محتوای شیت را به‌روز می‌کند.
-       */
+      /* visualViewport فقط حدّ ارتفاع محتوای شیت را به‌روز می‌کند. */
       var maxHeight = Math.max(1, Math.floor(height * 0.86)) + "px";
       if (sheet.style.maxHeight !== maxHeight) sheet.style.maxHeight = maxHeight;
     }

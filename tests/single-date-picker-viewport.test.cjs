@@ -39,11 +39,29 @@ class FakeMutationObserver {
 
 function element(attributes = {}, children = []) {
   const classes = new Set();
+  const style = {};
+  const stylePriorities = new Map();
+  Object.defineProperties(style, {
+    setProperty: {
+      enumerable: false,
+      value(name, value, priority) {
+        const property = name === '-webkit-backdrop-filter'
+          ? 'webkitBackdropFilter'
+          : name.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
+        this[property] = String(value);
+        stylePriorities.set(name, priority || '');
+      },
+    },
+    getPropertyPriority: {
+      enumerable: false,
+      value(name) { return stylePriorities.get(name) || ''; },
+    },
+  });
   const node = {
     nodeType: 1,
     attributes,
     children,
-    style: {},
+    style,
     classList: {
       add: (name) => classes.add(name),
       remove: (name) => classes.delete(name),
@@ -133,7 +151,7 @@ function runHelper() {
   return { body, viewport, window, document, observer: FakeMutationObserver.instance, timers, frames };
 }
 
-test('single-date sheets follow the visual viewport while range and keyboard layers remain untouched', () => {
+test('single-date sheets stay bottom-anchored with blur while range and keyboard layers remain untouched', () => {
   assert.match(motionCss, /@keyframes hesabno-single-date-sheet-enter\s*\{\s*from\s*\{\s*opacity:\s*0;\s*transform:\s*translate3d\(0,\s*100%,\s*0\)/);
   assert.match(motionCss, /\.hesabno-single-date-sheet\s*\{[^}]*animation:\s*hesabno-single-date-sheet-enter\s+280ms/s);
   const { body, viewport, window, observer } = runHelper();
@@ -166,7 +184,14 @@ test('single-date sheets follow the visual viewport while range and keyboard lay
     assert.equal(overlay.style.bottom, '0px');
     assert.equal(overlay.style.left, '0px');
     assert.equal(Object.hasOwn(overlay.style, 'height'), false, 'اندازه و جای overlay باید فقط از inset:0 بیاید');
-    assert.equal(overlay.style.alignItems, undefined, 'اسکریپت viewport نباید دوباره چیدمان overlay را تعیین کند');
+    assert.equal(overlay.style.display, 'flex');
+    assert.equal(overlay.style.alignItems, 'flex-end', 'فقط شیت تک‌تاریخ باید پایین صفحه تراز شود');
+    assert.equal(overlay.style.getPropertyPriority('align-items'), 'important');
+    assert.equal(overlay.style.justifyContent, 'center');
+    assert.equal(overlay.style.padding, '0px');
+    assert.match(overlay.style.backdropFilter, /blur\(16px\)/, 'پشت شیت تک‌تاریخ باید blur داشته باشد');
+    assert.equal(overlay.style.getPropertyPriority('backdrop-filter'), 'important');
+    assert.match(overlay.style.webkitBackdropFilter, /blur\(16px\)/);
     assert.equal(sheet.style.maxHeight, '516px');
     assert.equal(sheet.style.overflowY, 'auto');
     assert.equal(sheet.classList.contains('hesabno-dialog-motion'), false);
