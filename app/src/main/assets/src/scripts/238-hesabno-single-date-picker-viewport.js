@@ -72,12 +72,29 @@
         overlay.style.setProperty("-webkit-backdrop-filter", "blur(16px) saturate(120%)", "important");
       }
 
+      if (sheet && sheet.isConnected && sheet.style && typeof sheet.style.setProperty === "function") {
+        /* خود پنل به لبهٔ پایین overlay لنگر می‌شود؛ تکیه به flex تنها در WebView کافی نبود. */
+        sheet.style.setProperty("position", "absolute", "important");
+        sheet.style.setProperty("top", "auto", "important");
+        sheet.style.setProperty("right", "0px", "important");
+        sheet.style.setProperty("bottom", "0px", "important");
+        sheet.style.setProperty("left", "0px", "important");
+        sheet.style.setProperty("margin-left", "auto", "important");
+        sheet.style.setProperty("margin-right", "auto", "important");
+        sheet.style.setProperty("width", "100%", "important");
+        sheet.style.setProperty("max-width", "384px", "important");
+      }
+
       var height = viewportHeight();
       if (!height || !sheet || !sheet.isConnected) return;
 
       /* visualViewport فقط حدّ ارتفاع محتوای شیت را به‌روز می‌کند. */
       var maxHeight = Math.max(1, Math.floor(height * 0.86)) + "px";
-      if (sheet.style.maxHeight !== maxHeight) sheet.style.maxHeight = maxHeight;
+      if (sheet.style && typeof sheet.style.setProperty === "function") {
+        sheet.style.setProperty("max-height", maxHeight, "important");
+      } else if (sheet.style.maxHeight !== maxHeight) {
+        sheet.style.maxHeight = maxHeight;
+      }
     }
 
     function onViewportResize() { sync(); }

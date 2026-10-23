@@ -10,7 +10,7 @@ test('تقویم‌های تکی فرم و قسط وام پایین‌چسب، �
   const bundle = read('src/scripts/067-inline.js');
   const html = fs.readFileSync(path.resolve(__dirname, '../app/src/main/assets/index.html'), 'utf8');
   assert.match(html, /src\/scripts\/067-inline\.js\?v=2026102301/);
-  assert.match(html, /src\/scripts\/238-hesabno-single-date-picker-viewport\.js\?v=2/);
+  assert.match(html, /src\/scripts\/238-hesabno-single-date-picker-viewport\.js\?v=3/);
   assert.match(bundle, /alignItems:"flex-end"[\s\S]{0,300}backdropFilter:"blur\(16px\) saturate\(120%\)"/,
     'تقویم مشترک فرم تراکنش و تاریخ قسط وام باید با استایل درون‌خطی پایین‌چسب و blur باشد');
   assert.ok(bundle.includes('w1.exports.createPortal(e.jsx("div",{id:"persian-datepicker-backdrop"'),

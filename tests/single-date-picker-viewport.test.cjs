@@ -192,7 +192,14 @@ test('single-date sheets stay bottom-anchored with blur while range and keyboard
     assert.match(overlay.style.backdropFilter, /blur\(16px\)/, 'پشت شیت تک‌تاریخ باید blur داشته باشد');
     assert.equal(overlay.style.getPropertyPriority('backdrop-filter'), 'important');
     assert.match(overlay.style.webkitBackdropFilter, /blur\(16px\)/);
+    assert.equal(sheet.style.position, 'absolute', 'پنل باید مستقیماً به پایینِ overlay لنگر شود');
+    assert.equal(sheet.style.top, 'auto');
+    assert.equal(sheet.style.bottom, '0px');
+    assert.equal(sheet.style.left, '0px');
+    assert.equal(sheet.style.right, '0px');
+    assert.equal(sheet.style.getPropertyPriority('position'), 'important');
     assert.equal(sheet.style.maxHeight, '516px');
+    assert.equal(sheet.style.getPropertyPriority('max-height'), 'important');
     assert.equal(sheet.style.overflowY, 'auto');
     assert.equal(sheet.classList.contains('hesabno-dialog-motion'), false);
     assert.equal(sheet.classList.contains('hesabno-single-date-sheet'), true);
