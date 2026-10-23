@@ -52,9 +52,23 @@ jobs:
           "$SDKMANAGER" --install 'platform-tools' 'platforms;android-35' 'build-tools;35.0.0'
 
       - name: Run Android unit tests
+        shell: bash
         run: |
           chmod +x ./gradlew
-          ./gradlew --no-daemon testDebugUnitTest
+          set +e
+          ./gradlew --no-daemon testDebugUnitTest --stacktrace --console=plain > gradle-test.log 2>&1
+          result=$?
+          cat gradle-test.log
+          if [ "$result" -ne 0 ]; then
+            python3 - <<'PY'
+          from pathlib import Path
+          lines = Path("gradle-test.log").read_text(errors="replace").splitlines()
+          message = "\n".join(lines[-45:])
+          message = message.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+          print(f"::error title=Gradle test failure details::{message}")
+          PY
+            exit "$result"
+          fi
 
       - name: Build debug APK
         run: ./gradlew --no-daemon assembleDebug
