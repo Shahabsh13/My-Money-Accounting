@@ -67,6 +67,13 @@ public class MainActivity extends ComponentActivity {
     private volatile NativeSqlStoreHelper sqlStoreHelper;
     private volatile String pendingCloudBackupJson;
 
+    // بررسی لایه‌های گذرا پیش از تاریخچه‌ی WebView؛ Back نباید هنگام بازبودن overlay صفحه را عوض کند.
+    private static final String BACK_PREFLIGHT_JS =
+            "(function(){try{if(typeof window.__hesabnoDismissExitDialog==='function'&&window.__hesabnoDismissExitDialog())return true;}catch(e){}"
+            + "try{var fr=document.getElementById('hesabno-first-run');if(fr){fr.parentNode.removeChild(fr);return true;}}catch(e){}"
+            + "try{if(typeof window.__hesabnoCloseAmountKeyboard==='function'&&window.__hesabnoCloseAmountKeyboard())return true;}catch(e){}"
+            + "try{if(typeof window.__hesabnoCloseTopLayer==='function'&&window.__hesabnoCloseTopLayer())return true;}catch(e){}return false;})();";
+
     // اگر برنامه‌ی وب بتواند برگشت درون‌برنامه‌ای انجام دهد، خودش اعلام می‌کند (backHandled)؛
     // وگرنه از HnBridge.exitApp خروج از برنامه را می‌خواهد.
     private static final String BACK_JS =
@@ -208,8 +215,14 @@ public class MainActivity extends ComponentActivity {
         }
     };
 
-    // دکمه‌ی برگشت
+    // دکمه‌ی برگشت: یک preflight ناهم‌زمان برای بستن overlayها، سپس history/ناوبری/خروج.
     private volatile boolean backHandled;
+    private volatile boolean backFallbackPending;
+    private boolean backPreflightPending;
+    private int backPreflightRequestId;
+    private int backFallbackRequestId;
+    private Runnable backPreflightTimeout;
+    private Runnable backFallbackTimeout;
 
     // پشتیبان معلق (اگر مجوز نوشتن برای اندروید ۲۸ و پایین‌تر هنوز داده نشده باشد)
     private volatile String pendingBackupName;
@@ -403,26 +416,11 @@ public class MainActivity extends ComponentActivity {
             }
         });
 
-        // دکمه‌ی برگشت سخت‌افزاری: ابتدا تاریخچه‌ی WebView، بعد برگشت درون‌برنامه‌ای، در نهایت خروج.
+        // Back native ابتدا لایه‌ی موقت را می‌بندد؛ سپس تاریخچه‌ی WebView و در پایان ناوبری/خروج.
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                if (webView != null && webView.canGoBack()) {
-                    webView.goBack();
-                    return;
-                }
-                if (webView == null) {
-                    finish();
-                    return;
-                }
-                backHandled = false;
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (!backHandled) finish();
-                    }
-                }, 700);
-                webView.evaluateJavascript(BACK_JS, null);
+                requestAndroidBack();
             }
         });
 
@@ -434,6 +432,74 @@ public class MainActivity extends ComponentActivity {
             }
         } else {
             webView.loadUrl(START_URL);
+        }
+    }
+
+    private void requestAndroidBack() {
+        if (backPreflightPending || backFallbackPending) return;
+        if (webView == null) {
+            finish();
+            return;
+        }
+
+        backPreflightPending = true;
+        final int requestId = ++backPreflightRequestId;
+        backPreflightTimeout = new Runnable() {
+            @Override
+            public void run() {
+                completeAndroidBackPreflight(requestId, null);
+            }
+        };
+        handler.postDelayed(backPreflightTimeout, 900);
+        try {
+            webView.evaluateJavascript(BACK_PREFLIGHT_JS, value -> completeAndroidBackPreflight(requestId, value));
+        } catch (Exception ignored) {
+            completeAndroidBackPreflight(requestId, null);
+        }
+    }
+
+    private void completeAndroidBackPreflight(int requestId, String result) {
+        if (!backPreflightPending || requestId != backPreflightRequestId) return;
+        backPreflightPending = false;
+        if (backPreflightTimeout != null) {
+            handler.removeCallbacks(backPreflightTimeout);
+            backPreflightTimeout = null;
+        }
+        if ("true".equals(result)) return;
+
+        WebView current = webView;
+        if (current != null && current.canGoBack()) {
+            current.goBack();
+            return;
+        }
+        dispatchBackToWebApp();
+    }
+
+    private void dispatchBackToWebApp() {
+        if (webView == null) {
+            finish();
+            return;
+        }
+        backHandled = false;
+        backFallbackPending = true;
+        final int requestId = ++backFallbackRequestId;
+        backFallbackTimeout = new Runnable() {
+            @Override
+            public void run() {
+                if (requestId != backFallbackRequestId || !backFallbackPending || backHandled) return;
+                backFallbackPending = false;
+                backFallbackTimeout = null;
+                finish();
+            }
+        };
+        handler.postDelayed(backFallbackTimeout, 700);
+        try {
+            webView.evaluateJavascript(BACK_JS, null);
+        } catch (Exception ignored) {
+            backFallbackPending = false;
+            if (backFallbackTimeout != null) handler.removeCallbacks(backFallbackTimeout);
+            backFallbackTimeout = null;
+            finish();
         }
     }
 
@@ -697,6 +763,14 @@ public class MainActivity extends ComponentActivity {
     @Override
     protected void onDestroy() {
         rollingBackupExecutor.shutdown(); // Let an already accepted write finish; never interrupt it.
+        backPreflightPending = false;
+        backFallbackPending = false;
+        backPreflightRequestId++;
+        backFallbackRequestId++;
+        if (backPreflightTimeout != null) handler.removeCallbacks(backPreflightTimeout);
+        if (backFallbackTimeout != null) handler.removeCallbacks(backFallbackTimeout);
+        backPreflightTimeout = null;
+        backFallbackTimeout = null;
         if (webView != null) {
             webView.destroy();
         }
@@ -793,6 +867,17 @@ public class MainActivity extends ComponentActivity {
         @JavascriptInterface
         public void backHandled() {
             backHandled = true;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (!backFallbackPending) return;
+                    backFallbackPending = false;
+                    if (backFallbackTimeout != null) {
+                        handler.removeCallbacks(backFallbackTimeout);
+                        backFallbackTimeout = null;
+                    }
+                }
+            });
         }
 
         @JavascriptInterface
