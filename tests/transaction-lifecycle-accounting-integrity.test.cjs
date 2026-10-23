@@ -8,6 +8,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { bootApp, closeApp, wait, normalize } = require('./helpers/app-boot.cjs');
+const { installFastJSDOMStyleLookup } = require('./helpers/fast-jsdom-computed-style.cjs');
 const { loadAccountingKernel } = require('./helpers/production-slices.cjs');
 
 const kernel = loadAccountingKernel();
@@ -52,6 +53,7 @@ const stubs = (window) => {
   window.Element.prototype.getBoundingClientRect = function getBoundingClientRect() {
     return { width: 300, height: 120, top: 0, left: 0, right: 300, bottom: 120, x: 0, y: 0 };
   };
+  installFastJSDOMStyleLookup(window);
 };
 const click = (window, element) => {
   assert.ok(element, 'عنصر UI مورد انتظار باید وجود داشته باشد');

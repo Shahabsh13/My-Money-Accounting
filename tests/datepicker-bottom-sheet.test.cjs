@@ -15,6 +15,17 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 
 const { bootApp, closeApp, buttonByText, wait, normalize } = require('./helpers/app-boot.cjs');
+const { installFastJSDOMStyleLookup } = require('./helpers/fast-jsdom-computed-style.cjs');
+
+function bootDatepickerApp(options = {}) {
+  return bootApp({
+    ...options,
+    stubs(window) {
+      if (typeof options.stubs === 'function') options.stubs(window);
+      installFastJSDOMStyleLookup(window);
+    },
+  });
+}
 
 let hasJsdom = true;
 try {
@@ -47,6 +58,28 @@ function openDatePicker(window) {
   return wait(450);
 }
 
+async function waitForPickerClose(document, timeoutMs = 1500) {
+  const deadline = Date.now() + timeoutMs;
+  while (document.querySelector('#persian-datepicker-backdrop') && Date.now() < deadline) {
+    await wait(25);
+  }
+  return !document.querySelector('#persian-datepicker-backdrop');
+}
+
+async function findDifferentEnabledDay(window, backdrop) {
+  const findDay = () => [...backdrop.querySelectorAll('.grid-cols-7.gap-y-2 button')]
+    .find((button) => !button.disabled && !/bg-blue-600/.test(button.className));
+  let day = findDay();
+  if (!day) {
+    const previousMonth = backdrop.querySelector('#datepicker-prev-month');
+    assert.ok(previousMonth && !previousMonth.disabled, 'ماه قبل باید برای انتخاب یک تاریخ متفاوت در دسترس باشد');
+    clickRendered(window, previousMonth);
+    await wait(100);
+    day = findDay();
+  }
+  return day;
+}
+
 test('date picker is a bottom sheet with a blurred scrim', { timeout: 90000 }, async (t) => {
   if (!hasJsdom) return t.skip('jsdom در دسترس نیست');
 
@@ -56,7 +89,7 @@ test('date picker is a bottom sheet with a blurred scrim', { timeout: 90000 }, a
       'hesabno:first_run_intro_done': '1',
     },
   };
-  let dom = await bootApp(bootOptions);
+  let dom = await bootDatepickerApp(bootOptions);
   let window = dom.window;
   let document = window.document;
   t.after(() => closeApp(dom));
@@ -101,7 +134,7 @@ test('date picker is a bottom sheet with a blurred scrim', { timeout: 90000 }, a
   assert.ok(handle && /rounded-full/.test(handle.className), 'دسته‌ی کشیدن شیت باید وجود داشته باشد');
   assert.equal(/sm:hidden/.test(handle.className), false, 'دسته فقط در موبایل پنهان نمی‌شود؛ شیت در همه اندازه‌ها از پایین باز می‌شود');
 
-  const dateBeforeBack = document.querySelector('#tx-date-input').value;
+  const dateBeforeBack = normalize(document.querySelector('#tx-date-input').textContent);
   const closeButton = sheet.querySelector('#datepicker-close-button');
   assert.ok(closeButton, 'تقویم باید دکمهٔ × برای بستن داشته باشد');
   assert.equal(normalize(closeButton.textContent), '×');
@@ -117,15 +150,16 @@ test('date picker is a bottom sheet with a blurred scrim', { timeout: 90000 }, a
   // jsdom's HTMLElement.click does not consistently reach delegated React handlers.
   backCloseButton.click = () => clickRendered(window, backCloseButton);
   assert.equal(window.__hesabnoCloseTopLayer(), true, 'اولین Back باید فقط لایهٔ تقویم را ببندد');
-  await wait(250);
-  assert.equal(document.querySelector('#persian-datepicker-backdrop'), null, 'Back باید همان picker را ببندد');
-  assert.equal(document.querySelector('#tx-date-input').value, dateBeforeBack, 'Back نباید مقدار تاریخ را تغییر دهد');
+  // The close wrapper has a 340ms animation fallback; wait for the observable UI state,
+  // with a bounded margin for React's asynchronous render in jsdom.
+  assert.equal(await waitForPickerClose(document), true, 'Back باید همان picker را ببندد');
+  assert.equal(normalize(document.querySelector('#tx-date-input').textContent), dateBeforeBack, 'Back نباید مقدار تاریخ را تغییر دهد');
   assert.ok(document.querySelector('#tx-date-input-container'), 'فرم زیرین باید پس از Back باز بماند');
 });
 
 test('× closes the transaction calendar through the animated close path', { timeout: 90000 }, async (t) => {
   if (!hasJsdom) return t.skip('jsdom در دسترس نیست');
-  const dom = await bootApp({ storage: {
+  const dom = await bootDatepickerApp({ storage: {
     'hesabno:first_run_profile_done': '1',
     'hesabno:first_run_intro_done': '1',
   } });
@@ -139,14 +173,13 @@ test('× closes the transaction calendar through the animated close path', { tim
   assert.ok(closeButton);
   clickRendered(window, closeButton);
   assert.ok(sheet.classList.contains('hesabno-single-date-sheet-closing'), 'کلاس خروج باید پیش از حذف اضافه شود');
-  await wait(360);
-  assert.equal(window.document.querySelector('#persian-datepicker-backdrop'), null, 'بعد از حرکت، overlay باید حذف شود');
+  assert.equal(await waitForPickerClose(window.document), true, 'بعد از حرکت، overlay باید حذف شود');
   assert.ok(window.document.querySelector('#tx-date-input-container'), 'فرم تراکنش باید باز بماند');
 });
 
 test('touching the transaction calendar backdrop closes it without selecting a date', { timeout: 90000 }, async (t) => {
   if (!hasJsdom) return t.skip('jsdom در دسترس نیست');
-  const dom = await bootApp({ storage: {
+  const dom = await bootDatepickerApp({ storage: {
     'hesabno:first_run_profile_done': '1',
     'hesabno:first_run_intro_done': '1',
   } });
@@ -155,18 +188,17 @@ test('touching the transaction calendar backdrop closes it without selecting a d
   const { document } = window;
   await openTransactionForm(window);
   await openDatePicker(window);
-  const valueBefore = document.querySelector('#tx-date-input').value;
+  const valueBefore = normalize(document.querySelector('#tx-date-input').textContent);
   const backdrop = document.querySelector('#persian-datepicker-backdrop');
   assert.ok(backdrop);
   clickRendered(window, backdrop);
-  await wait(360);
-  assert.equal(document.querySelector('#persian-datepicker-backdrop'), null);
-  assert.equal(document.querySelector('#tx-date-input').value, valueBefore, 'لمس بیرون نباید تاریخ را عوض کند');
+  assert.equal(await waitForPickerClose(document), true, 'لمس بیرون باید تقویم را ببندد');
+  assert.equal(normalize(document.querySelector('#tx-date-input').textContent), valueBefore, 'لمس بیرون نباید تاریخ را عوض کند');
 });
 
 test('repeated transaction calendar open/close cycles do not stack overlays or close listeners', { timeout: 90000 }, async (t) => {
   if (!hasJsdom) return t.skip('jsdom در دسترس نیست');
-  const dom = await bootApp({ storage: {
+  const dom = await bootDatepickerApp({ storage: {
     'hesabno:first_run_profile_done': '1',
     'hesabno:first_run_intro_done': '1',
   } });
@@ -182,16 +214,15 @@ test('repeated transaction calendar open/close cycles do not stack overlays or c
     assert.ok(backdrop, `تقویم باید در چرخهٔ ${cycle + 1} باز شود`);
     assert.equal(document.querySelectorAll('[data-hesabno-transaction-datepicker="true"]').length, 1);
     clickRendered(window, backdrop.querySelector('[aria-label="بستن تقویم"]'));
-    await wait(360);
-    assert.equal(document.querySelector('#persian-datepicker-backdrop'), null, `چرخهٔ ${cycle + 1} باید کامل بسته شود`);
+    assert.equal(await waitForPickerClose(document), true, `چرخهٔ ${cycle + 1} باید کامل بسته شود`);
   }
 });
 
 test('loan receive-date and first-installment-date controls open the shared picker and update only the clicked field', { timeout: 120000 }, async (t) => {
   if (!hasJsdom) return t.skip('jsdom در دسترس نیست');
-  const dom = await bootApp({ storage: {
-    'hesabno:first_run_profile_done': 'true',
-    'hesabno:first_run_intro_done': 'true',
+  const dom = await bootDatepickerApp({ storage: {
+    'hesabno:first_run_profile_done': '1',
+    'hesabno:first_run_intro_done': '1',
   } });
   t.after(() => closeApp(dom));
   const { window } = dom;
@@ -226,12 +257,10 @@ test('loan receive-date and first-installment-date controls open the shared pick
     const backdrop = document.querySelector('#persian-datepicker-backdrop');
     assert.ok(backdrop, 'هر تاریخ فرم وام باید از همان DatePicker باز شود');
     assert.equal(backdrop.parentElement, document.body, 'overlay پورتال‌شده باید بیرون از modal باشد');
-    const day = [...backdrop.querySelectorAll('.grid-cols-7.gap-y-2 button')]
-      .find((button) => !button.disabled && !/bg-blue-600/.test(button.className));
+    const day = await findDifferentEnabledDay(window, backdrop);
     assert.ok(day, 'حداقل یک روز قابل انتخاب و متفاوت از تاریخ جاری باید وجود داشته باشد');
     clickRendered(window, day);
-    await wait(360);
-    assert.equal(document.querySelector('#persian-datepicker-backdrop'), null);
+    assert.equal(await waitForPickerClose(document), true, 'انتخاب روز باید تقویم را ببندد');
     assert.notEqual(normalize(field.textContent), before, 'تاریخ باید فقط در همان کنترل انتخاب‌شده منعکس شود');
   }
 });
@@ -246,11 +275,11 @@ test('installment-payment date portal is visible above its modal and writes back
   const installment = {
     id: 'calendar-installment-1', loanId: loan.id, loanName: loan.name,
     installmentNumber: 1, totalInstallments: 1, amount: 5000000,
-    dueDate: '1405/08/01', status: 'pending',
+    dueDate: '1405/07/01', status: 'pending',
   };
-  const dom = await bootApp({ storage: {
-    'hesabno:first_run_profile_done': 'true',
-    'hesabno:first_run_intro_done': 'true',
+  const dom = await bootDatepickerApp({ storage: {
+    'hesabno:first_run_profile_done': '1',
+    'hesabno:first_run_intro_done': '1',
     'hesabno:loans': JSON.stringify([loan]),
     'hesabno:installments': JSON.stringify([installment]),
   } });
@@ -267,6 +296,14 @@ test('installment-payment date portal is visible above its modal and writes back
   assert.ok(loansButton);
   clickRendered(window, loansButton);
   await wait(1100);
+  const installmentsButton = [...document.querySelectorAll('button')]
+    .find((button) => normalize(button.textContent) === 'مشاهده و تسویه اقساط این وام');
+  assert.ok(installmentsButton, 'وام آزمایشی باید مسیر مشاهده و تسویهٔ اقساط داشته باشد');
+  clickRendered(window, installmentsButton);
+  await wait(500);
+  const scheduleBack = document.querySelector('[data-hesabno-schedule-back]');
+  assert.ok(scheduleBack, 'ورود به زمان‌بندی باید دکمهٔ بازگشت به فهرست وام‌ها را بسازد');
+  assert.equal(normalize(scheduleBack.textContent), 'بازگشت به فهرست وام‌ها');
   const pay = [...document.querySelectorAll('button')]
     .find((button) => normalize(button.textContent) === 'پرداخت');
   assert.ok(pay, 'قسط آزمایشی باید دکمهٔ پرداخت داشته باشد');
@@ -285,18 +322,16 @@ test('installment-payment date portal is visible above its modal and writes back
   const paymentStyle = document.querySelector('style[data-hesabno-payment-date-style]');
   assert.match(paymentStyle.textContent, /\[data-hesabno-transaction-datepicker="true"\]\{z-index:70!important\}/,
     'قانون z-index باید با marker پورتال مطابقت داشته باشد');
-  const day = [...backdrop.querySelectorAll('.grid-cols-7.gap-y-2 button')]
-    .find((button) => !button.disabled && !/bg-blue-600/.test(button.className));
+  const day = await findDifferentEnabledDay(window, backdrop);
   assert.ok(day);
   clickRendered(window, day);
-  await wait(360);
-  assert.equal(document.querySelector('#persian-datepicker-backdrop'), null);
+  assert.equal(await waitForPickerClose(document), true, 'انتخاب تاریخ پرداخت باید تقویم را ببندد');
   assert.notEqual(normalize(dateContainer.textContent), before, 'تاریخ پرداخت باید به فیلد همان قسط برگردد');
 });
 
 test('selecting a day in the transaction calendar updates the transaction date field', { timeout: 90000 }, async (t) => {
   if (!hasJsdom) return t.skip('jsdom در دسترس نیست');
-  const dom = await bootApp({ storage: {
+  const dom = await bootDatepickerApp({ storage: {
     'hesabno:first_run_profile_done': '1',
     'hesabno:first_run_intro_done': '1',
   } });
@@ -305,14 +340,14 @@ test('selecting a day in the transaction calendar updates the transaction date f
   const { document } = window;
   await openTransactionForm(window);
   const dateField = document.querySelector('#tx-date-input');
-  const before = dateField.value;
+  const before = normalize(dateField.textContent);
   await openDatePicker(window);
   const backdrop = document.querySelector('#persian-datepicker-backdrop');
-  const day = [...backdrop.querySelectorAll('.grid-cols-7.gap-y-2 button')]
-    .find((button) => !button.disabled && !/bg-blue-600/.test(button.className));
+  const day = await findDifferentEnabledDay(window, backdrop);
   assert.ok(day, 'باید روزی متفاوت و قابل انتخاب وجود داشته باشد');
   clickRendered(window, day);
-  await wait(360);
-  assert.equal(document.querySelector('#persian-datepicker-backdrop'), null, 'انتخاب روز باید تقویم را ببندد');
-  assert.notEqual(dateField.value, before, 'تاریخ انتخابی باید در فیلد تراکنش منعکس شود');
+  assert.equal(await waitForPickerClose(document), true, 'انتخاب روز باید تقویم را ببندد');
+  const updatedDateField = document.querySelector('#tx-date-input');
+  assert.ok(updatedDateField, 'فیلد تاریخ تراکنش باید پس از بستن تقویم باقی بماند');
+  assert.notEqual(normalize(updatedDateField.textContent), before, 'تاریخ انتخابی باید در فیلد تراکنش منعکس شود');
 });
