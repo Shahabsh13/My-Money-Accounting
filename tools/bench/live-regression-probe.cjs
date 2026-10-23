@@ -10,7 +10,7 @@
  *   observers      → هر observer ساخته‌شده با «سازنده» (نام فایل اسکریپت) و هدف
  *   stats          → آمار لایه‌ی مشترک (ثبت‌ها، رخدادها، تحویل‌ها، خطاها)
  *   live           → نتیجه‌ی دو جهش آزمایشی: برگشت کلاس لایه‌ی ۰۹۰ و ادامه‌ی تحویل رخداد
- *   jsdomErrors    → خطاهای واقعی محیط jsdom (اسکریپت contrast وابسته به Canvas هدفمند کنار گذاشته می‌شود)
+ *   jsdomErrors    → خطاهای محیط (canvas) جدا شمرده می‌شوند
  *
  * کاربرد: node tools/bench/live-regression-probe.cjs [--root=/path/to/tree]
  */
@@ -23,8 +23,8 @@ const ASSETS = path.join(ROOT, 'app/src/main/assets');
 const tick = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 (async () => {
-  let JSDOM, VirtualConsole, ResourceLoader;
-  try { ({ JSDOM, VirtualConsole, ResourceLoader } = require('jsdom')); }
+  let JSDOM, VirtualConsole;
+  try { ({ JSDOM, VirtualConsole } = require('jsdom')); }
   catch (error) {
     process.stdout.write(JSON.stringify({ root: ROOT, skipped: 'jsdom در دسترس نیست' }) + '\n');
     process.exit(0);
@@ -34,22 +34,10 @@ const tick = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   const virtualConsole = new VirtualConsole();
   const jsdomErrors = [];
   virtualConsole.on('jsdomError', (error) => jsdomErrors.push(String((error && error.message) || error)));
-  const jsdomExcludedScripts = [];
-  class ProbeResourceLoader extends ResourceLoader {
-    fetch(url, options) {
-      let pathname = '';
-      try { pathname = new URL(url).pathname; } catch (error) { /* fall through */ }
-      if (pathname === '/src/scripts/901-light-theme-contrast.js') {
-        jsdomExcludedScripts.push(pathname);
-        return Promise.resolve(Buffer.from('/* Canvas-only contrast helper is not executed in jsdom tests. */'));
-      }
-      return super.fetch(url, options);
-    }
-  }
 
   const created = [];
   const dom = await JSDOM.fromFile(path.join(ASSETS, 'index.html'), {
-    runScripts: 'dangerously', resources: new ProbeResourceLoader(), pretendToBeVisual: true, virtualConsole,
+    runScripts: 'dangerously', resources: 'usable', pretendToBeVisual: true, virtualConsole,
     url: server.url + '/index.html',
     beforeParse(window) {
       const Real = window.MutationObserver;
@@ -117,7 +105,6 @@ const tick = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     stats,
     live,
     jsdomErrors,
-    jsdomExcludedScripts,
   }, null, 2) + '\n');
 
   try { await server.close(); } catch (error) {}

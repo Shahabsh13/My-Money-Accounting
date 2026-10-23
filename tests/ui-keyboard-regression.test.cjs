@@ -8,7 +8,6 @@ const { JSDOM } = require('jsdom');
 const root = path.resolve(__dirname, '..');
 const keypadSource = fs.readFileSync(path.join(root, 'app/src/main/assets/src/scripts/214-hesabno-numeric-keyboard.js'), 'utf8');
 const geometrySource = fs.readFileSync(path.join(root, 'app/src/main/assets/src/scripts/220-hesabno-stable-tab-geometry.js'), 'utf8');
-const keyboardCss = fs.readFileSync(path.join(root, 'app/src/main/assets/src/styles/235-hesabno-text-root-and-display-stability.css'), 'utf8');
 
 async function settleAndClose(dom) { await Promise.resolve(); await Promise.resolve(); await Promise.resolve(); }
 
@@ -16,28 +15,7 @@ function mount(options = {}) {
   const dom = new JSDOM(`<!doctype html><html><body><div id="root"><div><main><div id="dashboard" style="padding-top: 12px"></div><div class="grow flex flex-col" id="page-content" style="padding-top: 84px" data-hesabno-header-pad="84"><label for="amount">مبلغ تراکنش</label><input id="amount" placeholder="مبلغ" value="" /><input id="ordinary" placeholder="نام شخص" /></div></main></div></div></body></html>`, { url: 'https://app.test/', runScripts: 'outside-only', pretendToBeVisual: true });
   if (!options.legacyTouch) dom.window.PointerEvent = dom.window.MouseEvent; // jsdom lacks PointerEvent by default; emulate modern Android WebView support.
   dom.window.requestAnimationFrame = callback => { callback(); return 1; };
-  if (options.deferredTimers) {
-    let nextTimerId = 0;
-    let clock = 0;
-    const timers = new Map();
-    dom.window.setTimeout = (callback, delay = 0) => {
-      const id = ++nextTimerId;
-      timers.set(id, { id, at: clock + Math.max(0, Number(delay) || 0), callback });
-      return id;
-    };
-    dom.window.clearTimeout = id => timers.delete(id);
-    dom.window.__advanceTestTimers = milliseconds => {
-      clock += milliseconds;
-      while (true) {
-        const due = [...timers.values()].filter(timer => timer.at <= clock).sort((a, b) => a.at - b.at)[0];
-        if (!due) break;
-        timers.delete(due.id);
-        due.callback();
-      }
-    };
-  } else {
-    dom.window.setTimeout = callback => { callback(); return 1; };
-  }
+  dom.window.setTimeout = callback => { callback(); return 1; };
   installSharedDomObserver(dom.window);
   dom.window.eval(keypadSource);
   dom.window.eval(geometrySource);
@@ -173,105 +151,12 @@ test('opening the keypad puts a blurred backdrop behind it and hides it on close
   const backdrop = window.document.getElementById('hesabno-amount-keyboard-backdrop');
   assert.ok(backdrop, 'پرده باید ساخته شود');
   assert.equal(backdrop.hidden, false, 'وقتی کیبورد باز است پرده دیده می‌شود');
-  assert.equal(panel.classList.contains('hkap-keyboard-open'), true, 'پنل باید وارد حالت بازِ انیمیشن شود');
-  assert.equal(backdrop.classList.contains('hkap-keyboard-open'), true, 'پرده باید همراه پنل آرام ظاهر شود');
   assert.ok(Number(backdrop.style.zIndex || 0) === 0, 'z-index از CSS می‌آید');
   const css = Array.from(window.document.querySelectorAll('style')).map(s => s.textContent).join('\n');
   assert.match(css, /#hesabno-amount-keyboard-backdrop\{[^}]*backdrop-filter:blur\(/,
     'پرده باید صفحه‌ی زیر را تار کند');
-  assert.match(keyboardCss, /#hesabno-amount-keyboard\s*\{[^}]*transform:\s*translate3d\(0,\s*110%,\s*0\)[^}]*transition:\s*transform\s+300ms/s,
-    'پنل باید از پایین وارد شود و خروج نرم داشته باشد');
-  assert.match(keyboardCss, /#hesabno-amount-keyboard\.hkap-keyboard-open\s*\{[^}]*transform:\s*translate3d\(0,\s*0,\s*0\)/s,
-    'حالت باز باید پنل را در محل نهایی قرار دهد');
   panel.querySelector('[data-hkap-action="confirm"]').click();
-  assert.equal(panel.hidden, true, 'آزمون با timer فوری، پایان انیمیشن را شبیه‌سازی می‌کند');
-  assert.equal(backdrop.hidden, true, 'پس از پایان بستن، پرده برداشته می‌شود');
-  await settleAndClose(dom);
-});
-
-test('the keypad slides out before hiding, and reopening during exit cancels the stale close', async () => {
-  const dom = mount({ deferredTimers: true });
-  const { window } = dom;
-  const input = window.document.getElementById('amount');
-  const panel = window.document.getElementById('hesabno-amount-keyboard');
-
-  input.dispatchEvent(new window.Event('pointerdown', { bubbles: true, cancelable: true }));
-  assert.equal(panel.classList.contains('hkap-keyboard-open'), true);
-  assert.equal(window.__hesabnoCloseAmountKeyboard(), true);
-  assert.equal(panel.hidden, false, 'پنل باید حین حرکت خروج در DOM بماند');
-  assert.equal(panel.classList.contains('hkap-keyboard-open'), false, 'حالت باز با شروع خروج برداشته می‌شود');
-  await settleAndClose(dom);
-  assert.equal(panel.hidden, false, 'MutationObserver نباید انیمیشن خروج را قطع کند');
-
-  window.__advanceTestTimers(80);
-  input.dispatchEvent(new window.Event('pointerdown', { bubbles: true, cancelable: true }));
-  assert.equal(panel.hidden, false, 'بازشدن دوباره باید پنل را نگه دارد');
-  assert.equal(panel.classList.contains('hkap-keyboard-open'), true, 'بازشدن دوباره باید حالت ورود را برگرداند');
-
-  window.__advanceTestTimers(420);
-  assert.equal(panel.hidden, false, 'timer خروج قدیمی نباید پس از بازشدن دوباره پنل را مخفی کند');
-  assert.equal(panel.classList.contains('hkap-keyboard-open'), true);
-  window.__hesabnoCloseAmountKeyboard();
-  window.__advanceTestTimers(420);
-  assert.equal(panel.hidden, true, 'پنل بعد از پایان حرکت خروج جمع می‌شود');
-  window.__advanceTestTimers(1200);
-  await settleAndClose(dom);
-});
-
-test('outside pointer/touch closes the keypad but does not forward the click to the underlying control', async () => {
-  for (const startType of ['pointerdown', 'touchstart']) {
-    const dom = mount();
-    const { window } = dom;
-    const document = window.document;
-    const input = document.getElementById('amount');
-    input.dispatchEvent(new window.Event('pointerdown', { bubbles: true, cancelable: true }));
-
-    const panel = document.getElementById('hesabno-amount-keyboard');
-    const underlying = document.createElement('button');
-    let activations = 0;
-    let pressHandlers = 0;
-    underlying.textContent = 'زیر کیبورد';
-    underlying.addEventListener(startType, () => { pressHandlers += 1; });
-    underlying.addEventListener('click', () => { activations += 1; });
-    document.body.appendChild(underlying);
-
-    underlying.dispatchEvent(new window.Event(startType, { bubbles: true, cancelable: true }));
-    assert.equal(panel.hidden, false, `${startType}: رویداد آغاز لمس نباید پرده را پیش از click بردارد`);
-    assert.equal(pressHandlers, 0, `${startType}: handler فشردن کنترل زیرین نباید اجرا شود`);
-
-    const click = new window.MouseEvent('click', { bubbles: true, cancelable: true });
-    underlying.dispatchEvent(click); // شبیه‌سازی clickی که پس از بسته‌شدن overlay ممکن است retarget شود.
-    assert.equal(click.defaultPrevented, true, `${startType}: click زیرین باید لغو شود`);
-    assert.equal(activations, 0, `${startType}: کنترل زیرین نباید با همان لمس فعال شود`);
-    assert.equal(panel.hidden, true, `${startType}: کیبورد باید با همان لمس بسته شود`);
-
-    underlying.click();
-    assert.equal(activations, 1, 'لمس/کلیک جدید پس از بسته‌شدن کیبورد باید به کنترل برسد');
-    await settleAndClose(dom);
-  }
-});
-
-test('pressing a different money field while the keypad is open still switches the active amount', async () => {
-  const dom = mount();
-  const { window } = dom;
-  const document = window.document;
-  const first = document.getElementById('amount');
-  first.value = '125';
-  first.dispatchEvent(new window.Event('pointerdown', { bubbles: true, cancelable: true }));
-
-  const second = document.createElement('input');
-  second.placeholder = 'مبلغ بازپرداخت';
-  second.value = '2400';
-  document.getElementById('page-content').appendChild(second);
-  const event = new window.Event('pointerdown', { bubbles: true, cancelable: true });
-  second.dispatchEvent(event);
-
-  const panel = document.getElementById('hesabno-amount-keyboard');
-  assert.equal(event.defaultPrevented, true);
-  assert.equal(panel.hidden, false, 'کیبورد باید برای فیلد مبلغ دوم باز بماند');
-  assert.equal(second.readOnly, true);
-  assert.equal(panel.querySelector('[data-hkap-value]').value, '۲٬۴۰۰', 'پیش‌نویس باید از فیلد مبلغ دوم بارگیری شود');
-  assert.equal(first.value, '125', 'فیلد قبلی نباید تغییر کند');
+  assert.equal(backdrop.hidden, true, 'پس از بستن، پرده برداشته می‌شود');
   await settleAndClose(dom);
 });
 

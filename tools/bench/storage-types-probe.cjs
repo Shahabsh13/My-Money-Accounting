@@ -20,8 +20,8 @@ const ROOT = rootArg ? path.resolve(rootArg) : path.resolve(__dirname, '..', '..
 const ASSETS = path.join(ROOT, 'app/src/main/assets');
 
 (async () => {
-  let JSDOM, VirtualConsole, ResourceLoader;
-  try { ({ JSDOM, VirtualConsole, ResourceLoader } = require('jsdom')); }
+  let JSDOM, VirtualConsole;
+  try { ({ JSDOM, VirtualConsole } = require('jsdom')); }
   catch (error) {
     process.stdout.write(JSON.stringify({ root: ROOT, skipped: 'jsdom در دسترس نیست' }) + '\n');
     process.exit(0);
@@ -29,18 +29,8 @@ const ASSETS = path.join(ROOT, 'app/src/main/assets');
 
   const server = await serve(ASSETS);
   const virtualConsole = new VirtualConsole();
-  class ProbeResourceLoader extends ResourceLoader {
-    fetch(url, options) {
-      let pathname = '';
-      try { pathname = new URL(url).pathname; } catch (error) { /* fall through */ }
-      if (pathname === '/src/scripts/901-light-theme-contrast.js') {
-        return Promise.resolve(Buffer.from('/* Canvas-only contrast helper is not executed in jsdom tests. */'));
-      }
-      return super.fetch(url, options);
-    }
-  }
   const dom = await JSDOM.fromFile(path.join(ASSETS, 'index.html'), {
-    runScripts: 'dangerously', resources: new ProbeResourceLoader(), pretendToBeVisual: true,
+    runScripts: 'dangerously', resources: 'usable', pretendToBeVisual: true,
     virtualConsole, url: server.url + '/index.html',
   });
   const window = dom.window;

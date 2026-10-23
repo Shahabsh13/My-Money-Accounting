@@ -22,10 +22,7 @@
     ".hesabno-fullscreen-picker-overlay",
     ".hesabno-account-statement-panel",
     '[role="dialog"][aria-modal="true"]',
-    ".hesabno-fullpage-layer",
-    '[data-hesabno-settlement-datepicker="true"]',
-    '[data-hesabno-return-date-picker="true"]',
-    '[data-hesabno-transaction-datepicker="true"]'
+    ".hesabno-fullpage-layer"
   ];
   var GHOST_CLASSES = ["hesabno-fullpage-ghost", "hesabno-overlay-ghost", "hesabno-toast-ghost"];
   var CLOSE_LABELS = ["بستن", "بازگشت", "انصراف"];
@@ -46,14 +43,6 @@
     return el.id === KEYPAD_ID || el.id === KEYPAD_BACKDROP_ID || el.id.indexOf(KEYPAD_ID) === 0;
   }
 
-  function isTargetDatePicker(el) {
-    return el && (
-      el.hasAttribute("data-hesabno-settlement-datepicker") ||
-      el.hasAttribute("data-hesabno-return-date-picker") ||
-      el.hasAttribute("data-hesabno-transaction-datepicker")
-    );
-  }
-
   /* مرئی‌بودن را طوری می‌سنجیم که در jsdom (بدون layout) هم درست جواب بدهد. */
   function isVisible(el) {
     if (!el || !el.isConnected) return false;
@@ -69,11 +58,6 @@
   function closeButtonIn(layer) {
     if (!layer || !layer.querySelectorAll) return null;
     var i;
-    /* هر سه تقویم دکمهٔ بستن اختصاصی دارند؛ فقط دکمهٔ متعلق به همین لایه را بزن. */
-    var datePickerClose = layer.querySelector(
-      "[data-hesabno-date-picker-close=\"true\"], [data-hesabno-settlement-datepicker-close], [data-return-date-close]"
-    );
-    if (datePickerClose && isVisible(datePickerClose)) return datePickerClose;
     /* اول دکمه‌های هدر با برچسب دسترس‌پذیری روشن */
     var header = layer.querySelector("header");
     var scopes = header ? [header, layer] : [layer];
@@ -119,16 +103,6 @@
       if (el.id === KEYPAD_BACKDROP_ID) return false;
       return true;
     });
-    /* فقط وقتی یکی از تقویم‌های هدف باز است، نامزدها را به ترتیب واقعی DOM مرتب کن. */
-    if (layers.some(isTargetDatePicker)) {
-      layers.sort(function (left, right) {
-        if (typeof left.compareDocumentPosition !== "function") return 0;
-        var position = left.compareDocumentPosition(right);
-        if (position & 4) return -1;
-        if (position & 2) return 1;
-        return 0;
-      });
-    }
     if (!layers.length) return false;
     /* آخرین لایه در DOM، رویی‌ترین لایه‌ی رندر‌شده است. */
     for (var i = layers.length - 1; i >= 0; i -= 1) {

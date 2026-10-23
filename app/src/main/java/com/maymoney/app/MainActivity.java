@@ -40,8 +40,7 @@ import java.io.OutputStream;
  * https://appassets.androidplatform.net/assets/index.html بارگذاری می‌شوند.
  *
  * پل بومی (HnBridge):
- * - backHandled(requestId) / isBackRequestCurrent(requestId) : محافظت از درخواست Back ناهم‌زمان
- * - exitAppForBack(requestId) / exitApp() : خروج تأییدشده و خروج دیالوگ
+ * - backHandled() / exitApp() : تصمیم‌گیری دکمه‌ی برگشت سخت‌افزاری
  * - saveBackup(name, base64)  : ذخیره‌ی فایل پشتیبان برنامه‌ی وب در «دانلودها»
  */
 public class MainActivity extends ComponentActivity {
@@ -68,16 +67,18 @@ public class MainActivity extends ComponentActivity {
     private volatile NativeSqlStoreHelper sqlStoreHelper;
     private volatile String pendingCloudBackupJson;
 
-    // اگر برنامه‌ی وب برگشت را رسیدگی کند، همان درخواست را با backHandled(requestId) اعلام می‌کند؛
-    // وگرنه از HnBridge.exitApp خروج از برنامه را می‌خواهد.
-    // فقط کیبورد مبلغ یا لایه‌ی رویی را می‌بندد؛ ناوبری/خروج در این مرحله اجرا نمی‌شود.
+    // بررسی لایه‌های گذرا پیش از تاریخچه‌ی WebView؛ Back نباید هنگام بازبودن overlay صفحه را عوض کند.
     private static final String BACK_PREFLIGHT_JS =
-            "(function(){try{if(window.HnBridge&&typeof window.HnBridge.isBackRequestCurrent==='function'&&!window.HnBridge.isBackRequestCurrent('__HN_BACK_REQUEST_ID__'))return null;}catch(e){return null;}try{if(typeof window.__hesabnoCloseAmountKeyboard==='function'&&window.__hesabnoCloseAmountKeyboard())return true;}catch(e){return null;}"
-            + "try{if(typeof window.__hesabnoCloseTopLayer==='function'&&window.__hesabnoCloseTopLayer())return true;}catch(e){return null;}return false;})();";
+            "(function(){try{if(typeof window.__hesabnoDismissExitDialog==='function'&&window.__hesabnoDismissExitDialog())return true;}catch(e){}"
+            + "try{var fr=document.getElementById('hesabno-first-run');if(fr){fr.parentNode.removeChild(fr);return true;}}catch(e){}"
+            + "try{if(typeof window.__hesabnoCloseAmountKeyboard==='function'&&window.__hesabnoCloseAmountKeyboard())return true;}catch(e){}"
+            + "try{if(typeof window.__hesabnoCloseTopLayer==='function'&&window.__hesabnoCloseTopLayer())return true;}catch(e){}return false;})();";
 
+    // اگر برنامه‌ی وب بتواند برگشت درون‌برنامه‌ای انجام دهد، خودش اعلام می‌کند (backHandled)؛
+    // وگرنه از HnBridge.exitApp خروج از برنامه را می‌خواهد.
     private static final String BACK_JS =
-            "(function(){try{if(window.HnBridge&&typeof window.HnBridge.isBackRequestCurrent==='function'&&!window.HnBridge.isBackRequestCurrent('__HN_BACK_REQUEST_ID__'))return;}catch(e){return;}\nvar handled=false;\nfunction done(){if(handled)return;handled=true;try{if(window.HnBridge)window.H"
-            + "nBridge.backHandled('__HN_BACK_REQUEST_ID__');}catch(e){}}\nfunction visible(el){if(!el||!el.getClientRects||!el.getClientRects().lengt"
+            "(function(){\nvar handled=false;\nfunction done(){if(handled)return;handled=true;try{if(window.HnBridge)window.H"
+            + "nBridge.backHandled();}catch(e){}}\nfunction visible(el){if(!el||!el.getClientRects||!el.getClientRects().lengt"
             + "h)return false;var s=window.getComputedStyle?window.getComputedStyle(el):null;return !s||(s.display!=='none'&&"
             + "s.visibility!=='hidden'&&s.opacity!=='0');}\nfunction findBackButton(scope){if(!scope||!scope.querySelectorAll)"
             + "return null;var labels=['بازگشت','برگشت','انصراف','بستن'];var list=scope.querySelectorAll('button,[role=\"butto"
@@ -94,7 +95,7 @@ public class MainActivity extends ComponentActivity {
             + "th-1;i>=0;i--){if(!visible(layers[i]))continue;var lb=findBackButton(layers[i]);if(lb){lb.click();done();retur"
             + "n;}}var b=findBackButton(document.querySelector('main')||document);if(b){b.click();done();return;}}catch(e){}\n"
             + "try{if(typeof window.__hesabnoConfirmExit==='function'){window.__hesabnoConfirmExit();done();return;}var shouldExit=window.confirm('آیا می‌خواهید از برنامه خارج شوید؟');done();if(shouldExit&&window.HnBridge)"
-            + "window.HnBridge.exitAppForBack('__HN_BACK_REQUEST_ID__');}catch(e){done();}\n})();";
+            + "window.HnBridge.exitApp();}catch(e){done();}\n})();";
 
     private WebView webView;
     private boolean webPageReady;
@@ -214,20 +215,14 @@ public class MainActivity extends ComponentActivity {
         }
     };
 
-    // دکمه‌ی برگشت؛ درخواست‌های هم‌زمان و callbackهای منقضی‌شده را کنار می‌گذارد.
-    private volatile long backHandledRequestId = -1L;
-    private volatile boolean backRequestInFlight;
-    private volatile long backRequestId;
-    private long backJsRequestId = -1L;
-    private long backExitConfirmPendingRequestId = -1L;
-    private long backExitConfirmDocumentGeneration = -1L;
-    private android.app.AlertDialog backExitConfirmDialog;
-    private JsResult backExitConfirmResult;
-    private Runnable backExitConfirmTimeout;
-    private long webDocumentGeneration;
-    private Runnable backResolutionTimeout;
-    private Runnable backFallbackRunnable;
-    private static final long BACK_EXIT_CONFIRM_TIMEOUT_MS = 30_000L;
+    // دکمه‌ی برگشت: یک preflight ناهم‌زمان برای بستن overlayها، سپس history/ناوبری/خروج.
+    private volatile boolean backHandled;
+    private volatile boolean backFallbackPending;
+    private boolean backPreflightPending;
+    private int backPreflightRequestId;
+    private int backFallbackRequestId;
+    private Runnable backPreflightTimeout;
+    private Runnable backFallbackTimeout;
 
     // پشتیبان معلق (اگر مجوز نوشتن برای اندروید ۲۸ و پایین‌تر هنوز داده نشده باشد)
     private volatile String pendingBackupName;
@@ -320,92 +315,23 @@ public class MainActivity extends ComponentActivity {
             }
 
             @Override
-            public boolean onJsConfirm(WebView view, String url, String message, final JsResult result) {
-                final long confirmRequestId = backRequestId;
-                final long confirmDocumentGeneration = webDocumentGeneration;
-                final boolean isBackExitConfirm = view == webView
-                        && backRequestInFlight
-                        && backJsRequestId == confirmRequestId
-                        && "آیا می‌خواهید از برنامه خارج شوید؟".equals(message)
-                        && isCurrentBackRequest(confirmRequestId, view, confirmDocumentGeneration);
-                final android.app.AlertDialog[] dialogRef = new android.app.AlertDialog[1];
-                if (isBackExitConfirm) {
-                    // تا پاسخ کاربر، مسیر خروج handled است؛ اما درخواست اکنون timeout محدود دارد.
-                    backExitConfirmPendingRequestId = confirmRequestId;
-                    backExitConfirmDocumentGeneration = confirmDocumentGeneration;
-                    backExitConfirmResult = result;
-                    backExitConfirmDialog = null;
-                    backHandledRequestId = confirmRequestId;
-                    cancelBackResolutionTimeout();
-                }
-                try {
-                    android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(MainActivity.this)
-                            .setMessage(message)
-                            .setPositiveButton("بله", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface ignored, int which) {
-                                    if (isBackExitConfirm) {
-                                        finishBackExitConfirm(confirmRequestId, view, confirmDocumentGeneration,
-                                                dialogRef[0], result, true);
-                                    } else {
-                                        result.confirm();
-                                    }
-                                }
-                            })
-                            .setNegativeButton("انصراف", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface ignored, int which) {
-                                    if (isBackExitConfirm) {
-                                        finishBackExitConfirm(confirmRequestId, view, confirmDocumentGeneration,
-                                                dialogRef[0], result, false);
-                                    } else {
-                                        result.cancel();
-                                    }
-                                }
-                            })
-                            .setOnCancelListener(new DialogInterface.OnCancelListener() {
-                                @Override
-                                public void onCancel(DialogInterface ignored) {
-                                    if (isBackExitConfirm) {
-                                        finishBackExitConfirm(confirmRequestId, view, confirmDocumentGeneration,
-                                                dialogRef[0], result, false);
-                                    } else {
-                                        result.cancel();
-                                    }
-                                }
-                            })
-                            .create();
-                    dialogRef[0] = dialog;
-                    if (isBackExitConfirm) {
-                        if (!isCurrentBackRequest(confirmRequestId, view, confirmDocumentGeneration)
-                                || backExitConfirmPendingRequestId != confirmRequestId) {
-                            safelyDismissBackExitConfirmDialog(dialog);
-                            safelyCancelJsResult(result);
-                            return true;
-                        }
-                        backExitConfirmDialog = dialog;
-                    }
-                    dialog.show();
-                    if (isBackExitConfirm && isPendingBackExitConfirm(confirmRequestId, view,
-                            confirmDocumentGeneration, dialog, result)) {
-                        scheduleBackExitConfirmTimeout(confirmRequestId, view, confirmDocumentGeneration,
-                                dialog, result);
-                    }
-                } catch (RuntimeException ignored) {
-                    if (isBackExitConfirm) {
-                        if (isCurrentBackRequest(confirmRequestId, view, confirmDocumentGeneration)
-                                && backExitConfirmPendingRequestId == confirmRequestId
-                                && backExitConfirmResult == result) {
-                            // invalidation cancels the tracked JsResult and dismisses any partially shown dialog.
-                            invalidateBackRequest();
-                        } else {
-                            safelyDismissBackExitConfirmDialog(dialogRef[0]);
-                        }
-                    } else {
-                        safelyDismissBackExitConfirmDialog(dialogRef[0]);
-                        safelyCancelJsResult(result);
-                    }
-                }
+            public boolean onJsConfirm(WebView view, String url, String message, JsResult result) {
+                new android.app.AlertDialog.Builder(MainActivity.this)
+                        .setMessage(message)
+                        .setPositiveButton("بله", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) { result.confirm(); }
+                        })
+                        .setNegativeButton("انصراف", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) { result.cancel(); }
+                        })
+                        .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                            @Override
+                            public void onCancel(DialogInterface dialog) { result.cancel(); }
+                        })
+                        .create()
+                        .show();
                 return true;
             }
 
@@ -450,10 +376,6 @@ public class MainActivity extends ComponentActivity {
             @Override
             public void onPageStarted(WebView view, String url, android.graphics.Bitmap favicon) {
                 webPageReady = false;
-                if (view == webView) {
-                    webDocumentGeneration++;
-                    invalidateBackRequestForNewDocument();
-                }
             }
 
             @Override
@@ -494,62 +416,11 @@ public class MainActivity extends ComponentActivity {
             }
         });
 
-        // دکمه‌ی برگشت: ابتدا فقط لایه‌های مودال؛ سپس تاریخچه‌ی WebView؛ در پایان منطق BACK_JS.
+        // Back native ابتدا لایه‌ی موقت را می‌بندد؛ سپس تاریخچه‌ی WebView و در پایان ناوبری/خروج.
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                final WebView target = webView;
-                if (target == null) {
-                    finish();
-                    return;
-                }
-                // تا پایان این پردازش، Backهای سریعِ بعدی نادیده گرفته می‌شوند.
-                if (backRequestInFlight) return;
-                cancelBackFallback();
-
-                backRequestInFlight = true;
-                final long requestId = ++backRequestId;
-                final long documentGeneration = webDocumentGeneration;
-                backHandledRequestId = -1L;
-                backJsRequestId = -1L;
-                backExitConfirmPendingRequestId = -1L;
-                scheduleBackResolutionTimeout(requestId, target, documentGeneration);
-
-                try {
-                    target.evaluateJavascript(
-                        BACK_PREFLIGHT_JS.replace("__HN_BACK_REQUEST_ID__", Long.toString(requestId)),
-                        new ValueCallback<String>() {
-                        @Override
-                        public void onReceiveValue(String value) {
-                            if (!isCurrentBackRequest(requestId, target, documentGeneration)) return;
-                            cancelBackResolutionTimeout();
-
-                            // true یعنی دقیقاً یک لایه بسته شد؛ هیچ history یا BACK_JS اجرا نمی‌شود.
-                            if ("true".equals(value)) {
-                                completeBackRequest(requestId, target, documentGeneration);
-                                return;
-                            }
-                            // فقط false نتیجه‌ی مطمئنِ «چیزی باز نیست» است؛ نتیجه‌ی نامشخص ناوبری نمی‌کند.
-                            if (!"false".equals(value)) {
-                                completeBackRequest(requestId, target, documentGeneration);
-                                return;
-                            }
-
-                            // اعتبار درخواست و نسل سند بلافاصله پیش از تصمیم history دوباره بررسی می‌شود.
-                            if (!isCurrentBackRequest(requestId, target, documentGeneration)) return;
-                            if (target.canGoBack()) {
-                                if (!isCurrentBackRequest(requestId, target, documentGeneration)) return;
-                                target.goBack();
-                                completeBackRequest(requestId, target, documentGeneration);
-                                return;
-                            }
-
-                            runBackJs(requestId, target, documentGeneration);
-                        }
-                    });
-                } catch (RuntimeException ignored) {
-                    completeBackRequest(requestId, target, documentGeneration);
-                }
+                requestAndroidBack();
             }
         });
 
@@ -564,182 +435,71 @@ public class MainActivity extends ComponentActivity {
         }
     }
 
-    private boolean isCurrentBackRequest(long requestId, WebView target, long documentGeneration) {
-        return backRequestInFlight
-                && backRequestId == requestId
-                && webView == target
-                && webDocumentGeneration == documentGeneration
-                && !isFinishing();
-    }
-
-    private boolean isCurrentBackRequestToken(long requestId) {
-        return backRequestId == requestId && !isFinishing();
-    }
-
-    private void cancelBackResolutionTimeout() {
-        if (backResolutionTimeout != null) {
-            handler.removeCallbacks(backResolutionTimeout);
-            backResolutionTimeout = null;
+    private void requestAndroidBack() {
+        if (backPreflightPending || backFallbackPending) return;
+        if (webView == null) {
+            finish();
+            return;
         }
-    }
 
-    private void cancelBackFallback() {
-        if (backFallbackRunnable != null) {
-            handler.removeCallbacks(backFallbackRunnable);
-            backFallbackRunnable = null;
-        }
-    }
-
-    private void invalidateBackRequestForNewDocument() {
-        // onPageStarted نشانگر سند اصلی جدید است؛ URLهای hash/History API درون همان سند اینجا نمی‌آیند.
-        invalidateBackRequest();
-    }
-
-    private void cancelBackExitConfirmTimeout() {
-        if (backExitConfirmTimeout != null) {
-            handler.removeCallbacks(backExitConfirmTimeout);
-            backExitConfirmTimeout = null;
-        }
-    }
-
-    private boolean isPendingBackExitConfirm(long requestId, WebView target, long documentGeneration,
-                                             android.app.AlertDialog dialog, JsResult result) {
-        return backExitConfirmPendingRequestId == requestId
-                && backExitConfirmDocumentGeneration == documentGeneration
-                && backExitConfirmDialog == dialog
-                && backExitConfirmResult == result
-                && isCurrentBackRequest(requestId, target, documentGeneration);
-    }
-
-    private void safelyDismissBackExitConfirmDialog(android.app.AlertDialog dialog) {
-        if (dialog == null) return;
-        try { dialog.dismiss(); } catch (RuntimeException ignored) {}
-    }
-
-    private void safelyCancelJsResult(JsResult result) {
-        if (result == null) return;
-        try { result.cancel(); } catch (RuntimeException ignored) {}
-    }
-
-    private void invalidateBackRequest() {
-        android.app.AlertDialog pendingDialog = backExitConfirmDialog;
-        JsResult pendingResult = backExitConfirmResult;
-        backExitConfirmDialog = null;
-        backExitConfirmResult = null;
-        backExitConfirmDocumentGeneration = -1L;
-        backExitConfirmPendingRequestId = -1L;
-        cancelBackExitConfirmTimeout();
-
-        backRequestId++;
-        backRequestInFlight = false;
-        backHandledRequestId = -1L;
-        backJsRequestId = -1L;
-        cancelBackResolutionTimeout();
-        cancelBackFallback();
-
-        // ابتدا token را منقضی می‌کنیم؛ هر callback ناشی از بسته‌شدن dialog پس از این نقطه stale است.
-        safelyDismissBackExitConfirmDialog(pendingDialog);
-        safelyCancelJsResult(pendingResult);
-    }
-
-    private void scheduleBackResolutionTimeout(final long requestId, final WebView target,
-                                               final long documentGeneration) {
-        cancelBackResolutionTimeout();
-        backResolutionTimeout = new Runnable() {
+        backPreflightPending = true;
+        final int requestId = ++backPreflightRequestId;
+        backPreflightTimeout = new Runnable() {
             @Override
             public void run() {
-                if (!isCurrentBackRequest(requestId, target, documentGeneration)) return;
-                // Timeout فقط درخواست را منقضی می‌کند؛ نه BACK_JS را تکرار می‌کند و نه برنامه را می‌بندد.
-                backRequestInFlight = false;
-                backRequestId++;
-                backHandledRequestId = -1L;
-                backJsRequestId = -1L;
-                backExitConfirmPendingRequestId = -1L;
-                backResolutionTimeout = null;
+                completeAndroidBackPreflight(requestId, null);
             }
         };
-        handler.postDelayed(backResolutionTimeout, 2000);
-    }
-
-    private void completeBackRequest(long requestId, WebView target, long documentGeneration) {
-        if (!isCurrentBackRequest(requestId, target, documentGeneration)) return;
-        cancelBackResolutionTimeout();
-        backRequestInFlight = false;
-        if (backJsRequestId == requestId) backJsRequestId = -1L;
-        if (backExitConfirmPendingRequestId == requestId) backExitConfirmPendingRequestId = -1L;
-    }
-
-    private void scheduleBackExitConfirmTimeout(final long requestId, final WebView target,
-                                               final long documentGeneration,
-                                               final android.app.AlertDialog dialog, final JsResult result) {
-        cancelBackExitConfirmTimeout();
-        backExitConfirmTimeout = new Runnable() {
-            @Override
-            public void run() {
-                if (!isPendingBackExitConfirm(requestId, target, documentGeneration, dialog, result)) return;
-                backExitConfirmTimeout = null;
-                // Expiry invalidates only this request; invalidation dismisses the dialog and safely cancels JsResult.
-                invalidateBackRequest();
-            }
-        };
-        if (!handler.postDelayed(backExitConfirmTimeout, BACK_EXIT_CONFIRM_TIMEOUT_MS)
-                && isPendingBackExitConfirm(requestId, target, documentGeneration, dialog, result)) {
-            // If the main queue rejects the timeout, fail closed now rather than leave an unbounded request.
-            invalidateBackRequest();
-        }
-    }
-
-    private void finishBackExitConfirm(long requestId, WebView target, long documentGeneration,
-                                       android.app.AlertDialog dialog, JsResult result, boolean confirmed) {
-        if (!isPendingBackExitConfirm(requestId, target, documentGeneration, dialog, result)) return;
-        cancelBackExitConfirmTimeout();
-        backExitConfirmPendingRequestId = -1L;
-        backExitConfirmDocumentGeneration = -1L;
-        backExitConfirmDialog = null;
-        backExitConfirmResult = null;
+        handler.postDelayed(backPreflightTimeout, 900);
         try {
-            if (confirmed) {
-                try { result.confirm(); } catch (RuntimeException ignored) {}
-            } else {
-                safelyCancelJsResult(result);
-            }
-        } finally {
-            // Callback resolution gets its normal bounded timeout, only while this same request is current.
-            if (isCurrentBackRequest(requestId, target, documentGeneration)) {
-                scheduleBackResolutionTimeout(requestId, target, documentGeneration);
-            }
+            webView.evaluateJavascript(BACK_PREFLIGHT_JS, value -> completeAndroidBackPreflight(requestId, value));
+        } catch (Exception ignored) {
+            completeAndroidBackPreflight(requestId, null);
         }
     }
 
-    private void runBackJs(final long requestId, final WebView target,
-                           final long documentGeneration) {
-        if (!isCurrentBackRequest(requestId, target, documentGeneration)) return;
-        backHandledRequestId = -1L;
-        backJsRequestId = requestId;
-        scheduleBackResolutionTimeout(requestId, target, documentGeneration);
-        cancelBackFallback();
-        backFallbackRunnable = new Runnable() {
+    private void completeAndroidBackPreflight(int requestId, String result) {
+        if (!backPreflightPending || requestId != backPreflightRequestId) return;
+        backPreflightPending = false;
+        if (backPreflightTimeout != null) {
+            handler.removeCallbacks(backPreflightTimeout);
+            backPreflightTimeout = null;
+        }
+        if ("true".equals(result)) return;
+
+        WebView current = webView;
+        if (current != null && current.canGoBack()) {
+            current.goBack();
+            return;
+        }
+        dispatchBackToWebApp();
+    }
+
+    private void dispatchBackToWebApp() {
+        if (webView == null) {
+            finish();
+            return;
+        }
+        backHandled = false;
+        backFallbackPending = true;
+        final int requestId = ++backFallbackRequestId;
+        backFallbackTimeout = new Runnable() {
             @Override
             public void run() {
-                if (backRequestId != requestId || webView != target
-                        || webDocumentGeneration != documentGeneration || isFinishing()) return;
-                backFallbackRunnable = null;
-                if (backHandledRequestId != requestId) finish();
+                if (requestId != backFallbackRequestId || !backFallbackPending || backHandled) return;
+                backFallbackPending = false;
+                backFallbackTimeout = null;
+                finish();
             }
         };
-        handler.postDelayed(backFallbackRunnable, 700);
+        handler.postDelayed(backFallbackTimeout, 700);
         try {
-            String requestScript = BACK_JS.replace("__HN_BACK_REQUEST_ID__", Long.toString(requestId));
-            target.evaluateJavascript(requestScript, new ValueCallback<String>() {
-                @Override
-                public void onReceiveValue(String value) {
-                    if (!isCurrentBackRequest(requestId, target, documentGeneration)) return;
-                    if (backHandledRequestId == requestId) cancelBackFallback();
-                    completeBackRequest(requestId, target, documentGeneration);
-                }
-            });
-        } catch (RuntimeException ignored) {
-            completeBackRequest(requestId, target, documentGeneration);
+            webView.evaluateJavascript(BACK_JS, null);
+        } catch (Exception ignored) {
+            backFallbackPending = false;
+            if (backFallbackTimeout != null) handler.removeCallbacks(backFallbackTimeout);
+            backFallbackTimeout = null;
+            finish();
         }
     }
 
@@ -1002,8 +762,15 @@ public class MainActivity extends ComponentActivity {
 
     @Override
     protected void onDestroy() {
-        invalidateBackRequest();
         rollingBackupExecutor.shutdown(); // Let an already accepted write finish; never interrupt it.
+        backPreflightPending = false;
+        backFallbackPending = false;
+        backPreflightRequestId++;
+        backFallbackRequestId++;
+        if (backPreflightTimeout != null) handler.removeCallbacks(backPreflightTimeout);
+        if (backFallbackTimeout != null) handler.removeCallbacks(backFallbackTimeout);
+        backPreflightTimeout = null;
+        backFallbackTimeout = null;
         if (webView != null) {
             webView.destroy();
         }
@@ -1098,36 +865,17 @@ public class MainActivity extends ComponentActivity {
     private class NativeBridge {
 
         @JavascriptInterface
-        public boolean isBackRequestCurrent(String requestIdValue) {
-            try {
-                long requestId = Long.parseLong(requestIdValue);
-                return backRequestInFlight && isCurrentBackRequestToken(requestId);
-            } catch (Exception ignored) {
-                return false;
-            }
-        }
-
-        @JavascriptInterface
-        public void backHandled(String requestIdValue) {
-            try {
-                long requestId = Long.parseLong(requestIdValue);
-                if (isBackRequestCurrent(requestIdValue)) backHandledRequestId = requestId;
-            } catch (Exception ignored) {}
-        }
-
-        @JavascriptInterface
-        public void exitAppForBack(String requestIdValue) {
-            final long requestId;
-            try {
-                requestId = Long.parseLong(requestIdValue);
-                if (!isCurrentBackRequestToken(requestId)) return;
-            } catch (Exception ignored) {
-                return;
-            }
+        public void backHandled() {
+            backHandled = true;
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (isCurrentBackRequestToken(requestId)) finish();
+                    if (!backFallbackPending) return;
+                    backFallbackPending = false;
+                    if (backFallbackTimeout != null) {
+                        handler.removeCallbacks(backFallbackTimeout);
+                        backFallbackTimeout = null;
+                    }
                 }
             });
         }

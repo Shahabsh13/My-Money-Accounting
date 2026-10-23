@@ -21,11 +21,6 @@
   var valueDisplay = null;
   var currencyDisplay = null;
   var applyQueued = false;
-  var closeTimer = null;
-  var visualSequence = 0;
-  var OPEN_CLASS = "hkap-keyboard-open";
-  var OPEN_DURATION = 360;
-  var CLOSE_DURATION = 300;
   var MAX_DIGITS = 15;
 
   function clean(value) { return String(value == null ? "" : value).replace(/\s+/g, " ").trim(); }
@@ -151,7 +146,7 @@
   function refreshDisplay() {
     if (!panel || panel.hidden) return;
     if (!activeInput || !activeInput.isConnected) {
-      hideKeyboard(false, false, true);
+      hideKeyboard(false);
       return;
     }
     valueDisplay.value = formattedDigits(draft);
@@ -167,12 +162,11 @@
     style.textContent = "\
       #" + PANEL_ID + "[hidden]{display:none!important}\
       #" + BACKDROP_ID + "[hidden]{display:none!important}\
-      #" + BACKDROP_ID + "{position:fixed;inset:0;z-index:2147482999;background:rgba(2,6,23,.24);backdrop-filter:blur(2px) saturate(.96);-webkit-backdrop-filter:blur(2px) saturate(.96);opacity:0;transition:opacity 220ms ease-out;will-change:opacity}\
-      #" + BACKDROP_ID + "." + OPEN_CLASS + "{opacity:1}\
+      #" + BACKDROP_ID + "{position:fixed;inset:0;z-index:2147482999;background:rgba(2,6,23,.24);backdrop-filter:blur(2px) saturate(.96);-webkit-backdrop-filter:blur(2px) saturate(.96);animation:hesabno-amount-backdrop-in .16s ease-out both}\
       html[data-theme=\"light\"] #" + BACKDROP_ID + ",html.theme-light #" + BACKDROP_ID + "{background:rgba(248,250,252,.42)}\
-      @media (prefers-reduced-motion:reduce){#" + BACKDROP_ID + ",#" + PANEL_ID + "{transition-duration:.01ms!important}}\
-      #" + PANEL_ID + "{position:fixed;z-index:2147483000;left:0;right:0;bottom:0;box-sizing:border-box;padding:6px 10px calc(4px + env(safe-area-inset-bottom,0px));background:rgba(17,24,39,.98);color:#f8fafc;border-top:1px solid rgba(148,163,184,.28);box-shadow:0 -10px 30px rgba(0,0,0,.3);font-family:inherit;direction:rtl;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);transform:translate3d(0,110%,0);opacity:0;pointer-events:none;transition:transform 300ms cubic-bezier(.4,0,.2,1),opacity 200ms ease-out;will-change:transform,opacity}\
-      #" + PANEL_ID + "." + OPEN_CLASS + "{transform:translate3d(0,0,0);opacity:1;pointer-events:auto;transition-duration:360ms,220ms}\
+      @keyframes hesabno-amount-backdrop-in{from{opacity:0}to{opacity:1}}\
+      @media (prefers-reduced-motion:reduce){#" + BACKDROP_ID + "{animation:none}}\
+      #" + PANEL_ID + "{position:fixed;z-index:2147483000;left:0;right:0;bottom:0;box-sizing:border-box;padding:6px 10px calc(4px + env(safe-area-inset-bottom,0px));background:rgba(17,24,39,.98);color:#f8fafc;border-top:1px solid rgba(148,163,184,.28);box-shadow:0 -10px 30px rgba(0,0,0,.3);font-family:inherit;direction:rtl;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}\
       #" + PANEL_ID + " .hkap-shell{width:100%;max-width:460px;margin:0 auto}\
       #" + PANEL_ID + " .hkap-top{display:flex;align-items:stretch;gap:8px}\
       #" + PANEL_ID + " .hkap-display{flex:1;min-width:0;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 12px;border:1px solid #334155;border-radius:14px;background:#0b1220;min-height:52px;box-sizing:border-box}\
@@ -198,89 +192,6 @@
       @media(max-height:680px){#" + PANEL_ID + "{padding-top:4px}#" + PANEL_ID + " .hkap-key-grid{gap:5px;margin-top:5px}#" + PANEL_ID + " button{min-height:40px;border-radius:11px;font-size:18px}#" + PANEL_ID + " .hkap-display,#" + PANEL_ID + " .hkap-close{min-height:46px}#" + PANEL_ID + " .hkap-value{font-size:20px}}\
     ";
     document.head.appendChild(style);
-  }
-
-  function requestFrame(callback) {
-    if (typeof window.requestAnimationFrame === "function") window.requestAnimationFrame(callback);
-    else window.setTimeout(callback, 16);
-  }
-
-  function finishKeyboardClose(sequence) {
-    if (sequence !== visualSequence || activeInput || !panel || panel.classList.contains(OPEN_CLASS)) return;
-    if (closeTimer !== null) window.clearTimeout(closeTimer);
-    closeTimer = null;
-    panel.hidden = true;
-    panel.setAttribute("aria-hidden", "true");
-    panel.inert = true;
-    if (backdrop) {
-      backdrop.hidden = true;
-      backdrop.classList.remove(OPEN_CLASS);
-    }
-  }
-
-  function openKeyboardVisuals() {
-    var overlay = ensureBackdrop();
-    if (!panel || !overlay) return;
-    if (closeTimer !== null) window.clearTimeout(closeTimer);
-    closeTimer = null;
-    var sequence = ++visualSequence;
-    var alreadyOpen = !panel.hidden && panel.classList.contains(OPEN_CLASS);
-    panel.hidden = false;
-    overlay.hidden = false;
-    panel.inert = false;
-    panel.removeAttribute("aria-hidden");
-    if (alreadyOpen) return;
-
-    /* اول حالت بیرون‌صفحه را ثبت می‌کنیم، بعد فریم بعد پنل را نرم وارد می‌کنیم. */
-    panel.classList.remove(OPEN_CLASS);
-    overlay.classList.remove(OPEN_CLASS);
-    void panel.offsetHeight;
-    requestFrame(function () {
-      if (sequence !== visualSequence || !activeInput || panel.hidden) return;
-      panel.classList.add(OPEN_CLASS);
-      overlay.classList.add(OPEN_CLASS);
-    });
-  }
-
-  function closeKeyboardVisuals(immediate) {
-    if (!panel) return;
-    if (immediate || panel.hidden) {
-      visualSequence += 1;
-      if (closeTimer !== null) window.clearTimeout(closeTimer);
-      closeTimer = null;
-      panel.classList.remove(OPEN_CLASS);
-      panel.hidden = true;
-      panel.setAttribute("aria-hidden", "true");
-      panel.inert = true;
-      if (backdrop) {
-        backdrop.classList.remove(OPEN_CLASS);
-        backdrop.hidden = true;
-      }
-      return;
-    }
-
-    /* اگر خروج در جریان است، مهلت آن را با هر رویداد focusout دوباره شروع نکنیم. */
-    if (!panel.classList.contains(OPEN_CLASS)) {
-      if (closeTimer !== null) return;
-      /* بستن پیش از فریم ورود: callback بازشدن را باطل و لایه را بی‌درنگ جمع می‌کنیم. */
-      visualSequence += 1;
-      panel.hidden = true;
-      panel.setAttribute("aria-hidden", "true");
-      panel.inert = true;
-      if (backdrop) {
-        backdrop.classList.remove(OPEN_CLASS);
-        backdrop.hidden = true;
-      }
-      return;
-    }
-    var sequence = ++visualSequence;
-    panel.classList.remove(OPEN_CLASS);
-    panel.setAttribute("aria-hidden", "true");
-    panel.inert = true;
-    if (backdrop) backdrop.classList.remove(OPEN_CLASS);
-    closeTimer = window.setTimeout(function () {
-      finishKeyboardClose(sequence);
-    }, CLOSE_DURATION + 100);
   }
 
   /*
@@ -418,11 +329,6 @@
       runPanelAction(button);
     });
 
-    panel.addEventListener("transitionend", function (event) {
-      if (event.target === panel && event.propertyName === "transform" && !activeInput && !panel.classList.contains(OPEN_CLASS)) {
-        finishKeyboardClose(visualSequence);
-      }
-    });
     document.body.appendChild(panel);
   }
 
@@ -477,18 +383,6 @@
     setDraft(draft.slice(0, -1));
   }
 
-  function scrollInputAboveKeyboard(input) {
-    if (!input || !input.isConnected || !panel || panel.hidden || typeof input.scrollIntoView !== "function") return;
-    try {
-      var inputRect = input.getBoundingClientRect();
-      var panelRect = panel.getBoundingClientRect();
-      if (!(panelRect.height > 0 && inputRect.height > 0) || inputRect.bottom <= panelRect.top - 12) return;
-      input.scrollIntoView({ block: "center", behavior: "smooth" });
-    } catch (error) {
-      try { input.scrollIntoView(false); } catch (ignored) {}
-    }
-  }
-
   function activateInput(input, shouldScroll) {
     if (!input || !markMoneyInput(input)) return;
     ensurePanel();
@@ -500,12 +394,12 @@
     try { input.blur(); } catch (e) {}
     dismissNativeKeyboard();
 
-    var alreadyOpen = !panel.hidden && panel.classList.contains(OPEN_CLASS);
-    var changed = activeInput !== input || panel.hidden || !alreadyOpen;
+    var changed = activeInput !== input || panel.hidden;
     activeInput = input;
     draftTouched = false;
     draft = currentDigits(input);
-    openKeyboardVisuals();
+    panel.hidden = false;
+    ensureBackdrop().hidden = false;
     refreshDisplay();
     if (!draft) {
       Promise.resolve().then(syncUntouchedDraft);
@@ -514,20 +408,25 @@
     }
 
     if (shouldScroll && changed) {
-      /* هم‌زمانی اسکرول فرم با فریم اول کیبورد باعث تکان ضربه‌ای می‌شد؛ فقط اگر پنل واقعاً
-         فیلد را می‌پوشاند، بعد از ورود نرم کیبورد آن را با اسکرول نرم بالا می‌آوریم. */
       window.setTimeout(function () {
-        if (activeInput === input) scrollInputAboveKeyboard(input);
-      }, alreadyOpen ? 0 : OPEN_DURATION + 40);
+        if (activeInput === input && input.isConnected && input.scrollIntoView) {
+          try {
+            input.scrollIntoView({ block: "center", behavior: "smooth" });
+          } catch (error) {
+            input.scrollIntoView(false);
+          }
+        }
+      }, 60);
     }
   }
 
-  function hideKeyboard(blurInput, preserveNativeKeyboard, immediate) {
+  function hideKeyboard(blurInput, preserveNativeKeyboard) {
     var oldInput = activeInput;
     activeInput = null;
     draftTouched = false;
     draft = "";
-    closeKeyboardVisuals(!!immediate || !!preserveNativeKeyboard);
+    if (panel) panel.hidden = true;
+    if (backdrop) backdrop.hidden = true;
     if (blurInput && oldInput && oldInput.isConnected && document.activeElement === oldInput) {
       oldInput.blur();
     }
@@ -536,7 +435,7 @@
 
   /* قلاب عمومی برای دکمه‌ی بک گوشی: اگر کیبورد مبلغ باز است فقط همان بسته شود. */
   window.__hesabnoAmountKeyboardOpen = function () {
-    return !!(panel && !panel.hidden && activeInput);
+    return !!(panel && !panel.hidden);
   };
   window.__hesabnoCloseAmountKeyboard = function () {
     if (!panel || panel.hidden) return false;
@@ -602,7 +501,7 @@
       input.setAttribute("inputmode", "numeric");
       input.setAttribute(INFERRED_INPUTMODE, "numeric");
     });
-    if (panel && !panel.hidden && closeTimer === null && (!activeInput || !activeInput.isConnected)) hideKeyboard(false, false, true);
+    if (panel && !panel.hidden && (!activeInput || !activeInput.isConnected)) hideKeyboard(false);
     else syncUntouchedDraft();
   }
 
@@ -658,17 +557,7 @@
       activateInput(input, true);
       return;
     }
-    if (panel && !panel.hidden) {
-      if (event.type === "click") {
-        /* همان click را می‌بلعیم؛ پس از بسته‌شدن overlay به کنترل زیرین نمی‌رسد. */
-        if (event.cancelable) event.preventDefault();
-        event.stopPropagation();
-        hideKeyboard(false);
-      } else {
-        /* رویدادهای آغاز لمس/فشار نباید به handler کنترل زیرین برسند؛ overlay تا click می‌ماند. */
-        event.stopPropagation();
-      }
-    }
+    if (panel && !panel.hidden) hideKeyboard(false);
   }
 
   function start() {

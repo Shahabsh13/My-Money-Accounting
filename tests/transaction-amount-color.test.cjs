@@ -11,9 +11,6 @@ test('transaction amount colors are saturated, readable and not applied to trans
  const shell=fs.readFileSync('app/src/main/assets/src/scripts/067-inline.js','utf8');
  assert.ok(shell.includes('"data-hesabno-amount-tone":A.isReversal?"reversal":A.type'));
  const contrast=fs.readFileSync('app/src/main/assets/src/scripts/901-light-theme-contrast.js','utf8');
- const html=fs.readFileSync('app/src/main/assets/index.html','utf8');
- assert.match(html,/src\/scripts\/901-light-theme-contrast\.js\?v=/,
-  'ابزار کنتراست باید در صفحهٔ واقعی و مرورگر/WebView بارگذاری شود؛ حذف فقط به loader آزمون jsdom محدود است');
  assert.ok(contrast.includes('[data-hesabno-transaction-amount][data-hesabno-amount-tone="income"]'));
  assert.ok(contrast.includes('[data-hesabno-transaction-amount][data-hesabno-amount-tone="expense"]'));
 });

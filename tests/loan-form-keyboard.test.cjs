@@ -44,10 +44,7 @@ function mount(markup = LOAN_FORM) {
   });
   const { window } = dom;
   window.PointerEvent = window.MouseEvent;
-  window.requestAnimationFrame = callback => {
-    if (window.document && window.document.documentElement) callback();
-    return 1;
-  };
+  window.requestAnimationFrame = callback => { callback(); return 1; };
   installSharedDomObserver(window);
   window.eval(accessibleSource);
   window.eval(keypadSource);
@@ -80,7 +77,6 @@ test('loan name field keeps the text keyboard (no readonly lock, no numeric keyp
   assert.equal(window.document.activeElement, name, 'فیلد نام باید فوکوس بپذیرد');
   const panel = window.document.getElementById('hesabno-amount-keyboard');
   assert.ok(!panel || panel.hidden, 'کیبورد مبلغ نباید برای نام وام باز شود');
-  await settle();
   dom.window.close();
 });
 
@@ -97,7 +93,6 @@ test('loan note field keeps the text keyboard instead of inputmode=numeric', asy
   note.dispatchEvent(event);
   assert.equal(event.defaultPrevented, false);
   assert.equal(note.readOnly, false);
-  await settle();
   dom.window.close();
 });
 
@@ -113,7 +108,6 @@ test('money fields of the same loan form still open the internal amount keypad',
   assert.equal(principal.readOnly, true);
   assert.equal(principal.getAttribute('inputmode'), 'none');
   assert.equal(window.document.getElementById('hesabno-amount-keyboard').hidden, false);
-  await settle();
   dom.window.close();
 });
 
@@ -133,6 +127,5 @@ test('a stale readonly/inputmode lock on a marked text field is repaired automat
   assert.equal(name.readOnly, false, 'قفل قدیمی باید برداشته شود');
   assert.equal(name.hasAttribute('readonly'), false);
   assert.notEqual(name.getAttribute('inputmode'), 'none');
-  await settle();
   dom.window.close();
 });

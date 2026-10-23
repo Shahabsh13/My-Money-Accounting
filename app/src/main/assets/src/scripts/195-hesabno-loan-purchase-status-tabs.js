@@ -143,10 +143,8 @@
               if (currentList) currentList.click();
             });
           }
-          var backButtonClass = "w-full py-2.5 px-3 rounded-xl bg-purple-500/10 text-purple-700 border border-purple-500/25 text-xs font-bold flex items-center justify-center transition";
-          var backButtonLabel = isPurchase ? "بازگشت به فهرست خریدها" : "بازگشت به فهرست وام‌ها";
-          if (backButton.className !== backButtonClass) backButton.className = backButtonClass;
-          if (backButton.textContent !== backButtonLabel) backButton.textContent = backButtonLabel;
+          backButton.className = "w-full py-2.5 px-3 rounded-xl bg-purple-500/10 text-purple-700 border border-purple-500/25 text-xs font-bold flex items-center justify-center transition";
+          backButton.textContent = isPurchase ? "بازگشت به فهرست خریدها" : "بازگشت به فهرست وام‌ها";
           if (backButton.parentElement !== hiddenTabs.parentElement || backButton.previousElementSibling !== hiddenTabs) hiddenTabs.after(backButton);
         } else if (backButton) backButton.remove();
       }

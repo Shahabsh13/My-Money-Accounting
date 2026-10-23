@@ -24,14 +24,6 @@ try {
   hasJsdom = false;
 }
 
-function clickRendered(window, element) {
-  if (!element) return;
-  const propsKey = Object.keys(element).find((key) => key.startsWith('__reactProps$'));
-  const handler = propsKey && element[propsKey].onClick;
-  if (handler) handler({ target: element, currentTarget: element, preventDefault() {}, stopPropagation() {} });
-  else element.click();
-}
-
 /* یک تراکنش امروز، تا مسیر واقعیِ لیست/متادیتا/ارقام هم اجرا شود (بدون داده، بخشی از
    لایه‌های بازنویسی اصلاً فعال نمی‌شوند و آزمون سبک‌تر از واقعیت می‌شود). */
 const persianToday = (() => {
@@ -188,12 +180,12 @@ test('dialog motion class lands on the dialog itself, not on an inner card', { t
 
   const payButton = [...document.querySelectorAll('button')].find((button) => normalize(button.textContent) === 'پرداخت');
   assert.ok(payButton, 'دکمه‌ی پرداخت باید باشد');
-  clickRendered(window, payButton);
+  payButton.click();
   await wait(600);
 
   const field = document.querySelector('#tx-date-input-container');
   assert.ok(field, 'فیلد تاریخ باید باشد');
-  clickRendered(window, field);
+  field.click();
   await wait(300);
 
   const sheet = document.querySelector('#persian-datepicker-sheet');

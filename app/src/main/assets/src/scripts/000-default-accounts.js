@@ -16,37 +16,24 @@
   var isRemovable = function (a) {
     return !!a && (a.group === "bank" || REMOVED_CODES.indexOf(a.code) !== -1);
   };
-  var accountReferenceValues = function (account) {
-    return [account && account.id, account && account.name, account && account.bankName, account && account.code]
-      .filter(function (value) { return value != null && value !== ""; })
-      .map(function (value) { return String(value); });
-  };
-  var matchesAccountReference = function (value, references) {
-    if (value == null) return false;
-    if (Array.isArray(value)) return value.some(function (item) { return matchesAccountReference(item, references); });
-    if (typeof value === "object") {
-      return ["id", "name", "bankName", "accountName", "accountNumber", "code"].some(function (key) {
-        return value[key] != null && references.indexOf(String(value[key])) !== -1;
-      });
-    }
-    return references.indexOf(String(value)) !== -1;
-  };
-  var refersTo = function (node, references) {
+  var refersTo = function (node, id) {
     if (!node || typeof node !== "object") return false;
-    if (Array.isArray(node)) return node.some(function (item) { return refersTo(item, references); });
-    return Object.keys(node).some(function (key) {
-      var value = node[key];
-      if (/account|bank|cash/i.test(key) && matchesAccountReference(value, references)) return true;
-      return value && typeof value === "object" && refersTo(value, references);
+    if (Array.isArray(node)) return node.some(function (n) { return refersTo(n, id); });
+    return Object.keys(node).some(function (k) {
+      var v = node[k];
+      if (/account|bank|cash/i.test(k)) {
+        if (v === id || String(v) === String(id)) return true;
+        if (Array.isArray(v) && v.some(function (x) { return x === id || String(x) === String(id); })) return true;
+      }
+      return v && typeof v === "object" && refersTo(v, id);
     });
   };
-  var isUsed = function (account, store) {
+  var isUsed = function (id, store) {
     try {
-      var references = accountReferenceValues(account);
       var keys = ["hesabno:transactions", "hesabno:checks", "hesabno:loans", "hesabno:installments", "hesabno:recurring_rules", "hesabno:budgets"];
-      return keys.some(function (key) {
-        var raw = store.getItem(key);
-        return !!raw && refersTo(JSON.parse(raw), references);
+      return keys.some(function (k) {
+        var raw = store.getItem(k);
+        return !!raw && refersTo(JSON.parse(raw), id);
       });
     } catch (e) { return true; }
   };
@@ -58,7 +45,7 @@
     if (list.length === 0) {
       localStorage.setItem(KEY, JSON.stringify(DEFAULTS));
     } else {
-      list = list.filter(function (a) { return !(isRemovable(a) && !isUsed(a, localStorage)); });
+      list = list.filter(function (a) { return !(isRemovable(a) && !isUsed(a.id, localStorage)); });
       list = list.map(function (a) {
         if (a && LOCKED_CODES.indexOf(a.code) !== -1) { var b = {}; for (var k in a) b[k] = a[k]; b.locked = true; return b; }
         return a;

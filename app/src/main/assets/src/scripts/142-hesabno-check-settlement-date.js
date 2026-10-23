@@ -381,49 +381,10 @@
       var backdrop = document.createElement("div");
       backdrop.id = "persian-datepicker-backdrop";
       backdrop.setAttribute("data-hesabno-settlement-datepicker", "true");
-      backdrop.className = "fixed inset-0 z-50 bg-black/60 backdrop-blur-md flex items-end justify-center p-0 animate-in fade-in duration-200 hesabno-overlay-motion";
-      backdrop.style.position = "fixed";
-      backdrop.style.top = "0";
-      backdrop.style.right = "0";
-      backdrop.style.bottom = "0";
-      backdrop.style.left = "0";
-      backdrop.style.display = "flex";
-      backdrop.style.alignItems = "flex-end";
-      backdrop.style.justifyContent = "center";
-      backdrop.style.padding = "0";
-      backdrop.style.background = "rgba(6,10,16,.62)";
-      backdrop.style.setProperty("backdrop-filter", "blur(16px) saturate(120%)");
-      backdrop.style.setProperty("-webkit-backdrop-filter", "blur(16px) saturate(120%)");
-      backdrop.style.setProperty("z-index", "120", "important");
-      backdrop.style.touchAction = "none";
-      backdrop.innerHTML = "<div id=\"persian-datepicker-sheet\" dir=\"rtl\" class=\"w-full max-w-sm bg-[#161a23] text-stone-100 rounded-t-3xl rounded-b-none border-t border-stone-700/60 p-4 shadow-2xl transition-all select-none animate-in slide-in-from-bottom-6 duration-200 hesabno-dialog-motion\"><div class=\"w-10 h-1 bg-stone-700 rounded-full mx-auto mb-4 sm:hidden\"></div><div class=\"grid items-center gap-2.5 mb-4\" style=\"display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:8px\"><button id=\"datepicker-year-button\" type=\"button\" class=\"px-4 py-2 rounded-xl text-sm font-bold border transition flex items-center gap-1.5 bg-stone-800 hover:bg-stone-750 text-stone-100 border-stone-700/80\"></button><div class=\"flex items-center justify-between bg-stone-800 border border-stone-700/80 rounded-xl px-2 py-1.5 min-w-0\" style=\"min-width:0;width:100%;display:flex;align-items:center;justify-content:space-between\"><button type=\"button\" class=\"p-1 rounded-lg transition text-stone-200 hover:text-white hover:bg-stone-700\" title=\"ماه قبل\" data-hesabno-settlement-prev-month><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m9 18 6-6-6-6\"></path></svg></button><span class=\"font-bold text-sm text-stone-100 px-3\" data-hesabno-settlement-datepicker-month></span><button type=\"button\" class=\"p-1 rounded-lg transition text-stone-200 hover:text-white hover:bg-stone-700\" title=\"ماه بعد\" data-hesabno-settlement-next-month><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m15 18-6-6 6 6\"></path></svg></button></div><button type=\"button\" data-hesabno-settlement-datepicker-close aria-label=\"بستن تقویم\" title=\"بستن تقویم\" class=\"w-9 h-9 shrink-0 rounded-xl bg-stone-800/80 hover:bg-stone-750 border border-stone-700/60 text-stone-400 hover:text-stone-200 text-xl leading-none transition\" style=\"width:40px;height:40px;min-width:40px;display:grid;place-items:center\">×</button></div><div class=\"bg-stone-850/90 border border-stone-700/50 rounded-2xl p-3.5 shadow-inner\" data-hesabno-settlement-datepicker-body></div><div class=\"flex items-center justify-between gap-3 mt-4 pt-2 border-t border-stone-800\"><button id=\"datepicker-today-button\" type=\"button\" class=\"flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-stone-800 hover:bg-stone-750 border border-stone-700 text-xs font-bold text-stone-200 transition\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M8 2v4\"></path><path d=\"M16 2v4\"></path><rect width=\"18\" height=\"18\" x=\"3\" y=\"4\" rx=\"2\"></rect><path d=\"M3 10h18\"></path></svg><span>امروز</span></button></div></div>";
+      backdrop.className = "fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-200 hesabno-overlay-motion";
+      backdrop.innerHTML = "<div id=\"persian-datepicker-sheet\" dir=\"rtl\" class=\"w-full max-w-sm bg-[#161a23] text-stone-100 rounded-t-3xl sm:rounded-3xl border-t sm:border border-stone-700/60 p-4 sm:p-5 shadow-2xl transition-all select-none animate-in slide-in-from-bottom-6 duration-200 hesabno-dialog-motion\"><div class=\"w-10 h-1 bg-stone-700 rounded-full mx-auto mb-4 sm:hidden\"></div><div class=\"flex items-center justify-between gap-2.5 mb-4\"><button id=\"datepicker-year-button\" type=\"button\" class=\"px-4 py-2 rounded-xl text-sm font-bold border transition flex items-center gap-1.5 bg-stone-800 hover:bg-stone-750 text-stone-100 border-stone-700/80\"></button><div class=\"flex items-center justify-between bg-stone-800 border border-stone-700/80 rounded-xl px-2 py-1.5 min-w-[175px]\"><button type=\"button\" class=\"p-1 rounded-lg transition text-stone-200 hover:text-white hover:bg-stone-700\" title=\"ماه قبل\" data-hesabno-settlement-prev-month><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m9 18 6-6-6-6\"></path></svg></button><span class=\"font-bold text-sm text-stone-100 px-3\" data-hesabno-settlement-datepicker-month></span><button type=\"button\" class=\"p-1 rounded-lg transition text-stone-200 hover:text-white hover:bg-stone-700\" title=\"ماه بعد\" data-hesabno-settlement-next-month><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m15 18-6-6 6 6\"></path></svg></button></div></div><div class=\"bg-stone-850/90 border border-stone-700/50 rounded-2xl p-3.5 shadow-inner\" data-hesabno-settlement-datepicker-body></div><div class=\"flex items-center justify-between gap-3 mt-4 pt-2 border-t border-stone-800\"><button id=\"datepicker-today-button\" type=\"button\" class=\"flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-stone-800 hover:bg-stone-750 border border-stone-700 text-xs font-bold text-stone-200 transition\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M8 2v4\"></path><path d=\"M16 2v4\"></path><rect width=\"18\" height=\"18\" x=\"3\" y=\"4\" rx=\"2\"></rect><path d=\"M3 10h18\"></path></svg><span>امروز</span></button></div></div>";
       state.backdrop = backdrop;
       state.sheet = backdrop.querySelector("#persian-datepicker-sheet");
-      var lightTheme = document.documentElement.getAttribute("data-theme") === "light";
-      state.sheet.style.width = "100%";
-      state.sheet.style.maxWidth = "384px";
-      state.sheet.style.maxHeight = "86vh";
-      state.sheet.style.overflowY = "auto";
-      state.sheet.style.backgroundColor = lightTheme ? "#eef3f6" : "#161a23";
-      state.sheet.style.color = lightTheme ? "#26343e" : "#f5f5f4";
-      state.sheet.style.borderColor = lightTheme ? "#bdccd6" : "rgba(68,64,60,.6)";
-      state.sheet.style.borderTopLeftRadius = "24px";
-      state.sheet.style.borderTopRightRadius = "24px";
-      state.sheet.style.borderBottomLeftRadius = "0";
-      state.sheet.style.borderBottomRightRadius = "0";
-      state.sheet.style.padding = "16px";
-      state.sheet.style.paddingBottom = "calc(16px + env(safe-area-inset-bottom))";
-      state.sheet.style.boxShadow = "0 -18px 48px rgba(0,0,0,.32)";
-      state.sheet.style.overscrollBehavior = "contain";
-      state.sheet.style.touchAction = "pan-y";
-      var handle = state.sheet.firstElementChild;
-      if (handle) handle.style.backgroundColor = lightTheme ? "#b7c7d1" : "#44403c";
-      var closeButton = state.sheet.querySelector("[data-hesabno-settlement-datepicker-close]");
-      if (closeButton) {
-        closeButton.style.backgroundColor = lightTheme ? "#dbe5eb" : "rgba(41,37,36,.8)";
-        closeButton.style.borderColor = lightTheme ? "#bdccd6" : "rgba(68,64,60,.6)";
-        closeButton.style.color = lightTheme ? "#334651" : "#d6d3d1";
-      }
       var previousMonthPath = state.sheet.querySelector("[data-hesabno-settlement-prev-month] path");
       var nextMonthPath = state.sheet.querySelector("[data-hesabno-settlement-next-month] path");
       if (previousMonthPath) previousMonthPath.setAttribute("d", "m9 18 6-6-6-6");
@@ -459,9 +420,7 @@
         event.preventDefault();
         event.stopPropagation();
         if (button.disabled) return;
-        if (button.hasAttribute("data-hesabno-settlement-datepicker-close")) {
-          closeSettlementPicker(state);
-        } else if (button.id === "datepicker-year-button") {
+        if (button.id === "datepicker-year-button") {
           state.yearMode = !state.yearMode;
           renderSettlementPicker(state);
         } else if (button.hasAttribute("data-hesabno-settlement-prev-month") || button.hasAttribute("data-hesabno-settlement-next-month")) {

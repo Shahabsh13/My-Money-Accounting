@@ -194,12 +194,12 @@
   },
   "currentState": {
     "files": 10,
-    "rules": 3390,
-    "bytes": 845669,
-    "hash": "6e00beae1560345cbfd03873a97281930f892eeaa69bf8eecbef8d0c373b2096",
-    "note": "وضعیت فعلی شامل لایهٔ دو‌قاعده‌ای انیمیشن کیبورد مبلغ در کنار اصلاح‌های ثبت‌شدهٔ قبلی است."
+    "rules": 3387,
+    "bytes": 844944,
+    "hash": "df9a7dbd8f70761586429dc8d5435fc62502d1cb18b631fb740d83fb5bdd5c37",
+    "note": "وضعیت امروز روی دیسک: ادغام بی‌افت (۲۷۳۶ قاعده) + لایهٔ ظاهر (۶۱۰ قاعده) + اصلاح‌های ثبت‌شدهٔ بعدی (۴۱ قاعده؛ ۸ قاعدهٔ کارت جزئیات نمودار روند با حذف ویجت برداشته شد)."
   },
-  "generatedAt": "2026-10-23T12:50:22Z",
+  "generatedAt": "2026-10-18T19:35:25.231Z",
   "onboardingCompact": {
     "note": "Intentional compact first-run UI; historical cascade-equality proof unchanged.",
     "addedRules": 4
@@ -235,13 +235,5 @@
   "paymentRouteAlignment": {
     "addedRules": 2,
     "note": "دو کادر «پرداخت به / دریافت از» و «از حساب / به حساب» در فرم ثبت سند ستون برچسب هم‌عرض (۴٫۲۵rem) می‌گیرند تا لبه‌های کادرها موازی بمانند — هم در حالت عادی و هم در حالت خطای درون‌کادری."
-  },
-  "singleDateSheetAnimation": {
-    "addedRules": 1,
-    "note": "قاعدهٔ مستقل انیمیشن ورود Bottom Sheet تقویم‌های تک‌تاریخی؛ مقدار از اختلاف parser روی HEAD و درخت کاری محاسبه شد."
-  },
-  "amountKeyboardAnimation": {
-    "addedRules": 2,
-    "note": "دو قاعدهٔ حالت برای انیمیشن کیبورد مبلغ و پردهٔ پشت آن؛ حرکت فقط در رابط ورود مبلغ اعمال می‌شود."
   }
 }
