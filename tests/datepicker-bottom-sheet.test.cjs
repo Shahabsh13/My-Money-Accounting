@@ -74,7 +74,8 @@ test('date picker is a bottom sheet with a blurred scrim', { timeout: 90000 }, a
   /* لایه: تمام‌صفحه، ثابت و چسبیده به پایین */
   assert.equal(backdrop.style.position, 'fixed', 'لایه باید fixed باشد تا با اسکرول فرم جابه‌جا نشود');
   assert.equal(backdrop.style.top, '0px');
-  assert.equal(backdrop.style.bottom, '0px');
+  assert.equal(backdrop.style.bottom, 'auto', 'پایین لایه باید از ارتفاع visual viewport محاسبه شود');
+  assert.equal(backdrop.style.height, `${window.innerHeight}px`, 'لایه باید ارتفاع بخش قابل‌مشاهده‌ی WebView را بگیرد');
   assert.equal(backdrop.style.alignItems, 'flex-end', 'شیت باید به پایین صفحه بچسبد');
   assert.equal(backdrop.style.justifyContent, 'center');
   assert.equal(backdrop.style.zIndex, '60');
@@ -90,7 +91,7 @@ test('date picker is a bottom sheet with a blurred scrim', { timeout: 90000 }, a
   assert.equal(sheet.style.background, 'rgb(22, 26, 35)', 'شیت باید پس‌زمینه‌ی مات داشته باشد (کلاس bg-[#161a23] در CSS تولید نمی‌شد)');
   assert.equal(sheet.style.borderTopLeftRadius, '24px');
   assert.equal(sheet.style.borderBottomLeftRadius, '0', 'گوشه‌های پایین شیت باید صاف باشند');
-  assert.equal(sheet.style.maxHeight, '86vh');
+  assert.equal(sheet.style.maxHeight, `${Math.floor(window.innerHeight * 0.86)}px`, 'ارتفاع بیشینه‌ی شیت باید متناسب با viewport باشد');
   assert.equal(sheet.style.overflowY, 'auto', 'محتوای بلند تقویم باید داخل خودش اسکرول شود');
   assert.equal(sheet.getAttribute('role'), 'dialog');
   assert.equal(sheet.getAttribute('aria-modal'), 'true');
