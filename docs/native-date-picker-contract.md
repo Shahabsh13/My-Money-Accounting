@@ -38,5 +38,5 @@
 ## وضعیت برش Native
 
 - مدل خالص `JalaliDate.kt` اکنون پیاده‌سازی شده است؛ leap-year و month-length در کل چرخهٔ محدود مرجع و جمع ماه با بیش از 36 هزار ورودی در Kotlin/JS در برابر منطق JS برابر شدند.
-- آزمون‌های JVM طلایی در `app/src/test/java/com/maymoney/app/domain/JalaliDateTest.kt` افزوده شدند و workflow برای اجرای `testDebugUnitTest` تنظیم شده است؛ اجرای Gradle/JUnit و CI هنوز تأیید نشده‌اند.
-- انتخابگر Compose هنوز پیاده‌سازی نشده است. Kotlin/Compose scaffold تا زمان عبور Gradle از کامپایل و اجرای آزمایش روی دستگاه نباید launcher شود.
+- آزمون‌های JVM طلایی در `app/src/test/java/com/maymoney/app/domain/JalaliDateTest.kt` افزوده شدند؛ `testDebugUnitTest`، کامپایل Compose و `assembleDebug` در CI برای commit `24d15a3be1b593f670f69251c007ce989e4755ac` موفق شدند.
+- انتخابگر Compose هنوز پیاده‌سازی نشده و preview روی دستگاه از نظر ظاهر/insets/Back آزمایش نشده است. launcher اصلی تا تکمیل این آزمون‌ها WebView می‌ماند.
