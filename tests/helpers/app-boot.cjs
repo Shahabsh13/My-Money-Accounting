@@ -33,6 +33,11 @@ class LocalAssetLoader extends LoaderBase {
       return null;
     }
     if (parsed.origin !== 'https://app.test') return null;
+    // The production light-theme contrast helper uses Canvas only to parse CSS colors.
+    // jsdom has no Canvas implementation; keep all other app scripts real in integration tests.
+    if (parsed.pathname === '/src/scripts/901-light-theme-contrast.js') {
+      return Promise.resolve(Buffer.from('/* Canvas-only contrast helper is not executed in jsdom tests. */'));
+    }
     const relative = decodeURIComponent(parsed.pathname).replace(/^\/+/, '');
     const file = path.join(assetsDir, relative);
     if (!file.startsWith(assetsDir) || !fs.existsSync(file)) return null;

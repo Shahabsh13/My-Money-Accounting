@@ -67,9 +67,10 @@ test('fixed-dashboard layer (090) re-applies its class after a DOM mutation', (t
   assert.ok(data.live.deliveredAfterMutation > 0, 'تحویل رخداد پس از جهش تازه ادامه دارد');
 });
 
-test('only the known canvas limitation shows up as a jsdom error', (t) => {
+test('jsdom probe excludes only the canvas-dependent contrast helper and has no jsdom errors', (t) => {
   const data = runProbe();
   if (data.skipped) return t.skip(data.skipped);
-  const unexpected = data.jsdomErrors.filter((message) => !/getContext|canvas/i.test(message));
-  assert.deepEqual(unexpected, []);
+  assert.deepEqual(data.jsdomExcludedScripts, ['/src/scripts/901-light-theme-contrast.js'],
+    'فقط ابزار کنتراستِ وابسته به Canvas باید در jsdom اجرا نشود');
+  assert.deepEqual(data.jsdomErrors, [], 'پس از حذف هدفمند اسکریپت Canvas، خطای jsdom نباید باقی بماند');
 });
