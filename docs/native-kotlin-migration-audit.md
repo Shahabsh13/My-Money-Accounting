@@ -19,7 +19,7 @@
 - دادهٔ اصلی WebView از `localStorage` و نگهبان ذخیره‌سازی عبور می‌کند. Android نیز SQLite/فایل‌سیستم بومی برای key-value، پیوست‌ها و نسخه‌های پشتیبان دارد؛ بنابراین داده و پیوست‌ها از ابتدا در یک محل واحد نیستند.
 - قالب پشتیبان فعلی در دامنه نسخهٔ 5.1 است و قرارداد کلیدهای فعلی/قدیمی آزمون دارد؛ هر مهاجرت باید همین داده‌ها را بخواند و قابل‌بازیابی نگه دارد.
 - Kotlin 2.2.0 و Compose به Gradle افزوده شده‌اند. یک `NativeMigrationPreviewActivity` آزمایشی فقط در source set مربوط به debug قرار دارد؛ Activity اصلی و launcher تولیدی همچنان `MainActivity`/WebView است. هیچ مسیر کاربری یا داده‌ای به این نمونه متصل نشده است.
-- `app/src/main/java/com/maymoney/app/domain/JalaliDate.kt` اولین منطق دامنهٔ Kotlin است: تاریخ معتبر شمسی، parse/format، طول ماه/کبیسه و جمع ماه. به UI وصل نشده و داده‌ای را نمی‌خواند/نمی‌نویسد.
+- `app/src/main/java/com/maymoney/app/domain/JalaliDate.kt` منطق خالص تاریخ شمسی را دارد: parse/format، طول ماه/کبیسه، جمع ماه و تبدیل weekday مطابق قرارداد فعلی. `JalaliDatePickerSheet` و قواعدش در Compose افزوده شده‌اند؛ فقط preview debug آن‌ها را نشان می‌دهد و هیچ داده یا مسیر production را نمی‌خواند/نمی‌نویسد. برابری بصری روی دستگاه هنوز بررسی نشده است.
 - این محیط JDK و Android SDK ندارد، بنابراین build محلی Android قابل‌اجرا نیست؛ با این حال build و آزمون‌های Android در GitHub Actions برای SHA نهایی این مرحله موفق شدند (جزئیات در بخش اعتبارسنجی). نمونهٔ Compose هنوز debug-only است و روی دستگاه از نظر ظاهری/insets/Back باید جداگانه بازبینی شود.
 - در زمان این ممیزی، شاخهٔ جلسه فعال است اما درخت کاری شامل تغییرات ثبت‌نشده و فایل‌های تازه است. آن‌ها نباید با reset/checkout یا پاک‌سازی ناخواسته از بین بروند. ZIP سورس فعلی که قبلاً تهیه شد همین وضعیت را نگه می‌دارد.
 
@@ -32,12 +32,12 @@
 
 پس از افزودن scaffold:
 
-- آزمون‌های ساختار مهاجرت Native: 2 از 2 موفق؛ این‌ها تداوم launcher قدیمی، debug-only بودن نمونه و پیکربندی Compose را بررسی می‌کنند.
-- مجموعهٔ کامل `npm test`: 439 از 439 موفق، بدون شکست و بدون آزمون Skip.
+- آزمون‌های ساختار مهاجرت Native: 3 از 3 موفق؛ آن‌ها پیکربندی Compose، تداوم launcher قدیمی، debug-only بودن preview و جدایی انتخابگر تک‌تاریخی از مسیر production را بررسی می‌کنند.
+- مجموعهٔ کامل `npm test`: 440 از 440 موفق، بدون شکست و بدون آزمون Skip (اجرای محلی در 2026-10-23).
 - هر دو Android manifest با XML parser معتبرند و `git diff --check` موفق است.
 - فایل‌های Kotlin با parser گرامر Kotlin بررسی شدند و خطای نحوی نداشتند؛ این فقط syntax-check است و جای type-check/کامپایل را نمی‌گیرد.
 - منطق `JalaliDate.kt` با Kotlin/JS compiler 1.9.23 (به‌صورت موقت و خارج از مخزن) کامپایل و در برابر `src/domain/numbers.js` تفاضلی اجرا شد: 3,401 سالِ کبیسه، 38,868 طول ماه و 36,358 جابه‌جایی ماه؛ همه برابر شدند.
-- پنج آزمون JVM برای leap-cycle، parse/format و جمع ماه افزوده شدند. همان منبع Kotlin با compiler JVM موقت 1.9.23 کامپایل و با shim محلیِ سازگار با assertionهای استفاده‌شده اجرا شد: 5 از 5؛ این اجرای shim جای JUnit واقعی/Gradle را نمی‌گیرد.
+- پنج آزمون پایهٔ JVM برای leap-cycle، parse/format و جمع ماه ابتدا با compiler JVM موقت/shim محلی 5 از 5 شدند؛ این اجرای موقت جای JUnit واقعی/Gradle را نمی‌گیرد. با تبدیل Gregorian/weekday و قواعد picker، اکنون 10 آزمون JVM وجود دارد؛ نتیجهٔ آن‌ها برای برش جدید در CI بعدی تعیین‌کننده است.
 - workflow گام‌های `testDebugUnitTest`، `assembleDebug` و upload را به‌ترتیب اجرا کرد؛ هر سه و گام `npm test` در CI موفق شدند.
 - GitHub Actions run **39997587860** برای commit `24d15a3be1b593f670f69251c007ce989e4755ac` موفق بود: [run](https://github.com/Shahabsh13/My-Money-Accounting/actions/runs/39997587860). Artifact همان SHA: `my-money-debug-apk`, ID `12520392949`, digest `sha256:e2781faee671f6cc0103a28b225cf5c4c9e5feb3efc5234e18403395ec9f69b0`.
 - build محلی همچنان به‌علت نبود `JAVA_HOME`/`java` و Android SDK قابل‌اجرا نیست؛ تلاش محلی واقعاً با همین خطا متوقف شد. این محدودیت با CI برطرف شد، اما بازبینی بصری روی دستگاه (RTL، insets و Back) هنوز انجام نشده است.

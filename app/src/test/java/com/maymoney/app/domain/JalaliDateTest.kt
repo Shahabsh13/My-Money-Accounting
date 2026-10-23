@@ -38,6 +38,29 @@ class JalaliDateTest {
     }
 
     @Test
+    fun gregorianConversionMatchesTheExistingPickerCore() {
+        val golden = listOf(
+            JalaliDate(1399, 1, 1) to "2020-03-20",
+            JalaliDate(1400, 1, 1) to "2021-03-21",
+            JalaliDate(1403, 1, 1) to "2024-03-20",
+            JalaliDate(1403, 12, 30) to "2025-03-20",
+            JalaliDate(1404, 1, 1) to "2025-03-21",
+            JalaliDate(1404, 12, 29) to "2026-03-20",
+            JalaliDate(1405, 1, 1) to "2026-03-21",
+            JalaliDate(1407, 1, 1) to "2028-03-20",
+            JalaliDate(1407, 12, 30) to "2029-03-20",
+            // Preserve the legacy x9/rn behavior around its known 1407/1408 overlap.
+            JalaliDate(1408, 1, 1) to "2029-03-20",
+            JalaliDate(1408, 12, 29) to "2030-03-19",
+        )
+
+        golden.forEach { (jalali, gregorian) ->
+            assertEquals(gregorian, JalaliCalendar.toGregorian(jalali).toIsoString())
+        }
+        assertThrows(IllegalArgumentException::class.java) { GregorianDate(2024, 2, 30) }
+    }
+
+    @Test
     fun parseAndFormatPreserveTheStoredDateContract() {
         val date = JalaliCalendar.parse("۱۴۰۳/۱۲/۳۰")
         assertEquals(JalaliDate(1403, 12, 30), date)

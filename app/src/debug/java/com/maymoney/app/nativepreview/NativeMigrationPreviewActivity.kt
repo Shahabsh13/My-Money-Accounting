@@ -21,6 +21,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -28,6 +32,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.maymoney.app.domain.JalaliCalendar
+import com.maymoney.app.ui.datepicker.JalaliDatePickerSheet
+import com.maymoney.app.ui.datepicker.PersianToday
 
 /**
  * Debug-only Compose host for validating the Native UI foundation.
@@ -56,6 +63,10 @@ private val MayMoneyDarkColors = darkColorScheme(
 
 @Composable
 private fun NativeMigrationPreviewScreen(onClose: () -> Unit) {
+    val today = remember { PersianToday.current() }
+    var selectedDate by remember { mutableStateOf(today) }
+    var datePickerOpen by remember { mutableStateOf(false) }
+
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
         MaterialTheme(colorScheme = MayMoneyDarkColors) {
             Surface(
@@ -93,17 +104,55 @@ private fun NativeMigrationPreviewScreen(onClose: () -> Unit) {
                     ) {
                         Column(modifier = Modifier.padding(18.dp)) {
                             Text(
-                                text = "مرحلهٔ اول: پوستهٔ Native",
+                                text = "پایهٔ رابط Native",
                                 color = MaterialTheme.colorScheme.onSurface,
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.SemiBold,
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
-                                text = "این صفحه فقط در نسخهٔ debug در دسترس است. مسیر اصلی برنامه و داده‌های موجود هنوز به WebView دست نمی‌خورند.",
+                                text = "این پیش‌نمایش فقط در نسخهٔ debug در دسترس است. مسیر اصلی برنامه و داده‌های موجود همچنان در WebView باقی مانده‌اند.",
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 style = MaterialTheme.typography.bodyMedium,
                             )
+                        }
+                    }
+
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(20.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surface,
+                        ),
+                        border = androidx.compose.foundation.BorderStroke(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.outline,
+                        ),
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(18.dp),
+                            verticalArrangement = Arrangement.spacedBy(12.dp),
+                        ) {
+                            Text(
+                                text = "مرحلهٔ دوم: انتخابگر تاریخ تکی",
+                                color = MaterialTheme.colorScheme.onSurface,
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.SemiBold,
+                            )
+                            Text(
+                                text = "تاریخ انتخاب‌شده: ${JalaliCalendar.toPersianDigits(selectedDate.toStorageString())}",
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                            Button(
+                                onClick = { datePickerOpen = true },
+                                modifier = Modifier.fillMaxWidth(),
+                                shape = RoundedCornerShape(14.dp),
+                            ) {
+                                Text(text = "باز کردن تقویم شمسی")
+                            }
                         }
                     }
 
@@ -120,6 +169,14 @@ private fun NativeMigrationPreviewScreen(onClose: () -> Unit) {
                     ) {
                         Text(text = "بستن پیش‌نمایش")
                     }
+                }
+                if (datePickerOpen) {
+                    JalaliDatePickerSheet(
+                        value = selectedDate,
+                        today = today,
+                        onDateSelected = { selectedDate = it },
+                        onDismiss = { datePickerOpen = false },
+                    )
                 }
             }
         }

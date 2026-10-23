@@ -38,5 +38,24 @@ test('the existing WebView launcher is preserved and the Native preview is debug
   assert.match(previewSource, /class NativeMigrationPreviewActivity\s*:\s*ComponentActivity/);
   assert.match(previewSource, /CompositionLocalProvider\(LocalLayoutDirection provides LayoutDirection\.Rtl\)/);
   assert.match(previewSource, /پیش‌نمایش آزمایشی Kotlin و Compose/);
+  assert.match(previewSource, /مرحلهٔ دوم: انتخابگر تاریخ تکی/);
   assert.match(previewSource, /بستن پیش‌نمایش/);
+});
+
+test('the Compose date slice is single-date only and remains outside the production launcher', () => {
+  const mainActivity = read('app/src/main/java/com/maymoney/app/MainActivity.java');
+  const picker = read('app/src/main/java/com/maymoney/app/ui/datepicker/JalaliDatePickerSheet.kt');
+  const rules = read('app/src/main/java/com/maymoney/app/domain/JalaliDatePickerRules.kt');
+  const pickerTests = read('app/src/test/java/com/maymoney/app/domain/JalaliDatePickerRulesTest.kt');
+
+  assert.doesNotMatch(mainActivity, /JalaliDatePickerSheet/);
+  assert.match(picker, /fun JalaliDatePickerSheet\(/);
+  assert.match(picker, /onDateSelected\(date\)/);
+  assert.match(picker, /onDismiss\(\)/);
+  assert.match(picker, /if \(allowFuture\) null else maxDate \?: today/);
+  assert.match(rules, /fun monthCells\(/);
+  assert.match(rules, /fun isSelectable\(/);
+  assert.match(rules, /fun canNavigateMonth\(/);
+  assert.match(pickerTests, /boundsDisableOnlyMonthsWithNoSelectableDay/);
+  assert.match(pickerTests, /minAndMaxBoundsAreInclusive/);
 });
