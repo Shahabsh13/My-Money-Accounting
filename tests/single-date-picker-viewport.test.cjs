@@ -49,6 +49,18 @@ function element(attributes = {}, children = []) {
       remove: (name) => classes.delete(name),
       contains: (name) => classes.has(name),
     },
+    listeners: new Map(),
+    addEventListener(type, callback) {
+      if (!this.listeners.has(type)) this.listeners.set(type, new Set());
+      this.listeners.get(type).add(callback);
+    },
+    removeEventListener(type, callback) {
+      if (this.listeners.has(type)) this.listeners.get(type).delete(callback);
+    },
+    dispatch(type, event = {}) {
+      for (const callback of this.listeners.get(type) || []) callback({ target: this, ...event });
+    },
+    offsetHeight: 520,
     isConnected: false,
     matches(selector) {
       return selector.split(',').some((part) => {
@@ -95,9 +107,30 @@ function runHelper() {
   const window = new EventHub();
   window.innerHeight = 800;
   window.visualViewport = viewport;
-  const document = { body, documentElement: { clientHeight: 800 } };
-  vm.runInNewContext(script, { window, document, MutationObserver: FakeMutationObserver, WeakMap });
-  return { body, viewport, window, observer: FakeMutationObserver.instance };
+  let timerId = 0;
+  const timers = new Map();
+  const frames = [];
+  window.setTimeout = (callback) => { const id = ++timerId; timers.set(id, callback); return id; };
+  window.clearTimeout = (id) => timers.delete(id);
+  window.requestAnimationFrame = (callback) => frames.push(callback);
+  window.getComputedStyle = () => ({ transform: 'matrix(1, 0, 0, 1, 0, -14)', opacity: '0.9' });
+  const document = {
+    body,
+    documentElement: { clientHeight: 800 },
+    getElementById(id) {
+      const visit = (node) => {
+        for (const child of node.children || []) {
+          if (child.id === id && child.isConnected) return child;
+          const found = visit(child);
+          if (found) return found;
+        }
+        return null;
+      };
+      return visit(body);
+    },
+  };
+  vm.runInNewContext(script, { window, document, MutationObserver: FakeMutationObserver, WeakMap, WeakSet });
+  return { body, viewport, window, document, observer: FakeMutationObserver.instance, timers, frames };
 }
 
 test('single-date sheets follow the visual viewport while range and keyboard layers remain untouched', () => {
@@ -112,9 +145,13 @@ test('single-date sheets follow the visual viewport while range and keyboard lay
   const overlays = cases.map(([marker, id]) => {
     const sheet = element();
     sheet.id = id;
+    sheet.style.overflowY = 'auto';
     sheet.classList.add('hesabno-dialog-motion');
     sheet.isConnected = false;
     const overlay = element({ [marker]: 'true' }, [sheet]);
+    Object.assign(overlay.style, {
+      position: 'fixed', top: '0px', right: '0px', bottom: '0px', left: '0px',
+    });
     return { overlay, sheet };
   });
 
@@ -124,10 +161,12 @@ test('single-date sheets follow the visual viewport while range and keyboard lay
     body.children.push(overlay);
     observer.emit([overlay]);
     assert.equal(overlay.style.position, 'fixed');
-    assert.equal(overlay.style.top, '18px');
-    assert.equal(overlay.style.bottom, 'auto');
-    assert.equal(overlay.style.height, '600px');
-    assert.equal(overlay.style.alignItems, 'flex-end');
+    assert.equal(overlay.style.top, '0px');
+    assert.equal(overlay.style.right, '0px');
+    assert.equal(overlay.style.bottom, '0px');
+    assert.equal(overlay.style.left, '0px');
+    assert.equal(Object.hasOwn(overlay.style, 'height'), false, 'اندازه و جای overlay باید فقط از inset:0 بیاید');
+    assert.equal(overlay.style.alignItems, undefined, 'اسکریپت viewport نباید دوباره چیدمان overlay را تعیین کند');
     assert.equal(sheet.style.maxHeight, '516px');
     assert.equal(sheet.style.overflowY, 'auto');
     assert.equal(sheet.classList.contains('hesabno-dialog-motion'), false);
@@ -139,8 +178,9 @@ test('single-date sheets follow the visual viewport while range and keyboard lay
   viewport.offsetTop = 42;
   viewport.dispatch('resize');
   overlays.forEach(({ overlay, sheet }) => {
-    assert.equal(overlay.style.top, '42px');
-    assert.equal(overlay.style.height, '350px');
+    assert.equal(overlay.style.top, '0px', 'offsetTop نباید به مختصات fixed دوباره اضافه شود');
+    assert.equal(overlay.style.bottom, '0px', 'لبهٔ پایین fixed inset باید مرجع واحد بماند');
+    assert.equal(Object.hasOwn(overlay.style, 'height'), false, 'ارتفاع صریح نباید با inset:0 رقابت کند');
     assert.equal(sheet.style.maxHeight, '301px');
   });
 
@@ -164,4 +204,49 @@ test('single-date sheets follow the visual viewport while range and keyboard lay
   observer.emit([], [first.overlay]);
   assert.equal(viewport.listenerCount('resize'), 2, 'پس از بسته‌شدن یک شیت، listenerهای همان شیت باید پاک شوند');
   assert.equal(window.listenerCount('resize'), 2);
+});
+
+test('single-date close animates from the live transform, freezes geometry, and closes once', () => {
+  const { body, viewport, window, document, observer, frames, timers } = runHelper();
+  const sheet = element();
+  sheet.id = 'persian-datepicker-sheet';
+  sheet.isConnected = true;
+  const overlay = element({ 'data-hesabno-transaction-datepicker': 'true' }, [sheet]);
+  Object.assign(overlay.style, {
+    position: 'fixed', top: '0px', right: '0px', bottom: '0px', left: '0px',
+  });
+  overlay.id = 'persian-datepicker-backdrop';
+  overlay.isConnected = true;
+  body.children.push(overlay);
+  observer.emit([overlay]);
+
+  let closeCalls = 0;
+  const wrappedClose = window.__hesabnoWrapSingleDatePickerClose(() => {
+    closeCalls += 1;
+    overlay.isConnected = false;
+    sheet.isConnected = false;
+    observer.emit([], [overlay]);
+  });
+  wrappedClose();
+  assert.equal(sheet.style.transform, 'matrix(1, 0, 0, 1, 0, -14)', 'خروج باید از transform زنده شروع شود');
+  assert.equal(sheet.classList.contains('hesabno-single-date-sheet-closing'), true);
+  assert.equal(closeCalls, 0, 'حذف React باید تا پایان حرکت به تعویق بیفتد');
+
+  const originalMaxHeight = sheet.style.maxHeight;
+  viewport.height = 350;
+  viewport.dispatch('resize');
+  assert.equal(sheet.style.maxHeight, originalMaxHeight, 'تغییر viewport در میانهٔ خروج نباید پنل را بپراند');
+  assert.equal(overlay.style.top, '0px');
+  assert.equal(overlay.style.bottom, '0px');
+
+  window.__hesabnoWrapSingleDatePickerClose(() => { closeCalls += 1; })();
+  assert.equal(frames.length, 1, 'درخواست دوم نباید انیمیشن یا callback دیگری بسازد');
+  while (frames.length) frames.shift()();
+  assert.equal(sheet.style.transform, 'translate3d(0, 100%, 0)');
+  assert.equal(sheet.style.opacity, '0');
+
+  sheet.dispatch('transitionend', { propertyName: 'transform' });
+  assert.equal(closeCalls, 1, 'تمام مسیرهای خروج باید فقط یک بار close را صدا بزنند');
+  assert.equal(timers.size, 0, 'timer پشتیبان پس از transitionend باید پاک شود');
+  assert.equal(viewport.listenerCount('resize'), 0, 'پس از حذف شیت listenerهای viewport باید پاک شوند');
 });
