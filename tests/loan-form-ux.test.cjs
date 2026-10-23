@@ -155,10 +155,10 @@ test('بک گوشی با کیبورد داخلی باز، فقط کیبورد ر
 
   const pageBefore = normalize(d.body.textContent);
   const handled = window.__hesabnoCloseAmountKeyboard();
-  await wait(300);
+  await wait(450);
 
   assert.equal(handled, true);
-  assert.equal(panel.hidden, true, 'بک باید فقط کیبورد را ببندد');
+  assert.equal(panel.hidden, true, 'پس از انیمیشن خروج، بک فقط کیبورد را می‌بندد');
   assert.equal(submit.isConnected, true, 'فرم وام باید همان‌جا بماند');
   assert.equal(normalize(d.body.textContent), pageBefore, 'محتوای صفحه نباید عوض شود');
 });

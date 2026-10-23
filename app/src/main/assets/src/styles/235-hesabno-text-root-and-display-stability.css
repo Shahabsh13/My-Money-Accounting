@@ -856,7 +856,13 @@ html[data-theme] article[id^='tx-card-'][id^='tx-card-'] .hesabno-footnote-actio
   background: rgba(2, 6, 23, .24);
   backdrop-filter: blur(2px) saturate(.96);
   -webkit-backdrop-filter: blur(2px) saturate(.96);
-  animation: hesabno-amount-backdrop-in .16s ease-out both;
+  opacity: 0;
+  transition: opacity 220ms ease-out;
+  will-change: opacity;
+}
+
+#hesabno-amount-keyboard-backdrop.hkap-keyboard-open {
+  opacity: 1;
 }
 
 html[data-theme="light"] #hesabno-amount-keyboard-backdrop,
@@ -864,14 +870,10 @@ html.theme-light #hesabno-amount-keyboard-backdrop {
   background: rgba(248, 250, 252, .42);
 }
 
-@keyframes hesabno-amount-backdrop-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
 @media (prefers-reduced-motion: reduce) {
+  #hesabno-amount-keyboard,
   #hesabno-amount-keyboard-backdrop {
-    animation: none;
+    transition-duration: .01ms !important;
   }
 }
 
@@ -894,7 +896,19 @@ html.theme-light #hesabno-amount-keyboard-backdrop {
   -webkit-tap-highlight-color: transparent;
   backdrop-filter: blur(24px) !important;
   -webkit-backdrop-filter: blur(24px) !important;
-  transition: background-color .22s ease, border-color .22s ease, box-shadow .22s ease;
+  transform: translate3d(0, 110%, 0);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 300ms cubic-bezier(.4, 0, .2, 1), opacity 200ms ease-out,
+    background-color .22s ease, border-color .22s ease, box-shadow .22s ease;
+  will-change: transform, opacity;
+}
+
+#hesabno-amount-keyboard.hkap-keyboard-open {
+  transform: translate3d(0, 0, 0);
+  opacity: 1;
+  pointer-events: auto;
+  transition-duration: 360ms, 220ms, .22s, .22s, .22s;
 }
 
 #hesabno-amount-keyboard .hkap-shell {
