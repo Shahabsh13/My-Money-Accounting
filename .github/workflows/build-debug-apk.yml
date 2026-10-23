@@ -61,9 +61,12 @@ jobs:
           cat gradle-test.log
           if [ "$result" -ne 0 ]; then
             python3 - <<'PY'
+          import re
           from pathlib import Path
           lines = Path("gradle-test.log").read_text(errors="replace").splitlines()
-          message = "\n".join(lines[-45:])
+          diagnostics = [line for line in lines if re.search(r"(^e: |error:|^FAILURE:|^Execution failed)", line)]
+          detail = diagnostics[-30:] if diagnostics else lines[-60:]
+          message = "\n".join([*detail, "--- Gradle tail ---", *lines[-12:]])
           message = message.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
           print(f"::error title=Gradle test failure details::{message}")
           PY
