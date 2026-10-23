@@ -37,9 +37,10 @@
 - هر دو Android manifest با XML parser معتبرند و `git diff --check` موفق است.
 - فایل‌های Kotlin با parser گرامر Kotlin بررسی شدند و خطای نحوی نداشتند؛ این فقط syntax-check است و جای type-check/کامپایل را نمی‌گیرد.
 - منطق `JalaliDate.kt` با Kotlin/JS compiler 1.9.23 (به‌صورت موقت و خارج از مخزن) کامپایل و در برابر `src/domain/numbers.js` تفاضلی اجرا شد: 3,401 سالِ کبیسه، 38,868 طول ماه و 36,358 جابه‌جایی ماه؛ همه برابر شدند.
-- پنج آزمون پایهٔ JVM برای leap-cycle، parse/format و جمع ماه ابتدا با compiler JVM موقت/shim محلی 5 از 5 شدند؛ این اجرای موقت جای JUnit واقعی/Gradle را نمی‌گیرد. با تبدیل Gregorian/weekday و قواعد picker، اکنون 10 آزمون JVM وجود دارد؛ نتیجهٔ آن‌ها برای برش جدید در CI بعدی تعیین‌کننده است.
-- workflow گام‌های `testDebugUnitTest`، `assembleDebug` و upload را به‌ترتیب اجرا کرد؛ هر سه و گام `npm test` در CI موفق شدند.
-- GitHub Actions run **39997587860** برای commit `24d15a3be1b593f670f69251c007ce989e4755ac` موفق بود: [run](https://github.com/Shahabsh13/My-Money-Accounting/actions/runs/39997587860). Artifact همان SHA: `my-money-debug-apk`, ID `12520392949`, digest `sha256:e2781faee671f6cc0103a28b225cf5c4c9e5feb3efc5234e18403395ec9f69b0`.
+- پنج آزمون پایهٔ JVM برای leap-cycle، parse/format و جمع ماه ابتدا با compiler JVM موقت/shim محلی 5 از 5 شدند؛ این اجرای موقت جای JUnit واقعی/Gradle را نمی‌گیرد. با تبدیل Gregorian/weekday و قواعد picker، اکنون 10 آزمون JVM وجود دارد و هر 10 در Gradle/CI run `40006762681` موفق شدند.
+- workflow گام‌های `testDebugUnitTest`، `assembleDebug` و upload را به‌ترتیب اجرا کرد؛ هر سه و گام `npm test` موفق شدند.
+- پایهٔ Native در run **39997587860** برای commit `24d15a3be1b593f670f69251c007ce989e4755ac` موفق شد: [run](https://github.com/Shahabsh13/My-Money-Accounting/actions/runs/39997587860).
+- برش Compose انتخابگر تکی نیز در run **40006762681** برای SHA `d097be60a8c6196eb4ed986169014866f21eb45a` سبز شد: `npm test`، هر 10 آزمون JVM، `assembleDebug` و upload: [run](https://github.com/Shahabsh13/My-Money-Accounting/actions/runs/40006762681). Artifact همان SHA: `my-money-debug-apk`, ID `12525366111`, digest `sha256:42e7af216915305851b8f59494ab80933257fffe292160236ab7b5a7943ffd51`.
 - build محلی همچنان به‌علت نبود `JAVA_HOME`/`java` و Android SDK قابل‌اجرا نیست؛ تلاش محلی واقعاً با همین خطا متوقف شد. این محدودیت با CI برطرف شد، اما بازبینی بصری روی دستگاه (RTL، insets و Back) هنوز انجام نشده است.
 
 ## ترتیب اجرا و دروازه‌های عبور

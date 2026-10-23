@@ -39,6 +39,6 @@
 ## وضعیت برش Native
 
 - مدل خالص `JalaliDate.kt` اکنون پیاده‌سازی شده است؛ leap-year و month-length در کل چرخهٔ محدود مرجع و جمع ماه با بیش از 36 هزار ورودی در Kotlin/JS در برابر منطق JS برابر شدند.
-- آزمون‌های JVM طلایی در `app/src/test/java/com/maymoney/app/domain/JalaliDateTest.kt` افزوده شدند؛ `testDebugUnitTest`، کامپایل Compose و `assembleDebug` در CI برای commit `24d15a3be1b593f670f69251c007ce989e4755ac` موفق شدند.
+- آزمون‌های JVM طلایی در `app/src/test/java/com/maymoney/app/domain/` قرار دارند؛ run **40006762681** برای SHA `d097be60a8c6196eb4ed986169014866f21eb45a` هر 10 آزمون JVM، کامپایل Compose و `assembleDebug` را موفق اجرا کرد.
 - برش اولیهٔ `JalaliDatePickerSheet` و قواعد خالص آن در Kotlin/Compose پیاده‌سازی شده و فقط از preview مربوط به debug قابل‌دسترسی است؛ launcher تولیدی و WebView تغییری نکرده‌اند. آزمون‌های JVM برای grid هفته، min/max، پیمایش ماه و بازهٔ سال اضافه شده‌اند.
-- build/اجرای JUnit این برش باید در CI تأیید شود. آزمون بصری روی دستگاه (RTL، تم، ارتفاع کوتاه، insets و Back) نیز هنوز انجام نشده؛ پس برابری ظاهری/رفتاری نهایی تأییدشده نیست.
+- بازبینی بصری/تعامل روی دستگاه (RTL، تم، ارتفاع کوتاه، insets و Back) هنوز انجام نشده؛ بنابراین برابری ظاهری نهایی تأییدشده نیست و picker هنوز نباید به launcher تولیدی وصل شود.
