@@ -6,6 +6,7 @@
 (function () {
   var PROFILE_KEY = "hesabno:user_profile";
   var DONE_KEY = "hesabno:first_run_profile_done";
+  var IN_PROGRESS_KEY = "hesabno:first_run_profile_in_progress";
 
   function store(name, value) {
     try {
@@ -24,6 +25,24 @@
   function clean(v) { return String(v || "").replace(/\s+/g, " ").trim(); }
   function faDigits(v) {
     return String(v == null ? "" : v).replace(/\d/g, function (d) { return "۰۱۲۳۴۵۶۷۸۹"[d]; });
+  }
+  function onboardingMotionAllowed() {
+    try {
+      return !(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+    } catch (error) { return true; }
+  }
+  var ONBOARDING_MOTION_MS = 420;
+  function animateOnboardingView(view, direction) {
+    if (!view || !onboardingMotionAllowed()) return;
+    var classes = ["hesabno-fr-view-enter-from-left", "hesabno-fr-view-enter-from-right"];
+    classes.forEach(function (name) { view.classList.remove(name); });
+    void view.offsetWidth;
+    view.classList.add(direction === "next" ? classes[0] : classes[1]);
+    var sequence = (view.__hesabnoMotionSequence || 0) + 1;
+    view.__hesabnoMotionSequence = sequence;
+    window.setTimeout(function () {
+      if (view.__hesabnoMotionSequence === sequence) classes.forEach(function (name) { view.classList.remove(name); });
+    }, ONBOARDING_MOTION_MS + 60);
   }
 
   // Already set up check is performed in startFirstRun() so window.__hesabnoOpenFirstRunWizard is always registered.
@@ -94,7 +113,7 @@
     goProfileBtn.type = "button";
     goProfileBtn.className = "hesabno-fr-submit";
     goProfileBtn.setAttribute("data-hesabno-fr-go-profile", "true");
-    goProfileBtn.innerHTML = 'شروع بدون پشتیبان <span class="hesabno-fr-submit-arrow" aria-hidden="true">←</span>';
+    goProfileBtn.innerHTML = 'بعدی <span class="hesabno-fr-submit-arrow" aria-hidden="true">←</span>';
 
     restoreView.appendChild(rTitle);
     restoreView.appendChild(gdriveBox);
@@ -319,7 +338,7 @@
     nextFromPermsBtn.type = "button";
     nextFromPermsBtn.className = "hesabno-fr-submit";
     nextFromPermsBtn.setAttribute("data-hesabno-fr-next-from-perms", "true");
-    nextFromPermsBtn.innerHTML = 'ادامه <span class="hesabno-fr-submit-arrow" aria-hidden="true">←</span>';
+    nextFromPermsBtn.innerHTML = 'بعدی <span class="hesabno-fr-submit-arrow" aria-hidden="true">←</span>';
 
     var backToProfileBtn = document.createElement("button");
     backToProfileBtn.type = "button";
@@ -508,17 +527,18 @@
     }
 
     function finishOnboardingAndEnterApp() {
-      store(DONE_KEY, "1");
+      if (!store(DONE_KEY, "1")) {
+        prefSub.textContent = "تکمیل شروع کار ذخیره نشد؛ فضای ذخیره‌سازی را بررسی و دوباره تلاش کنید.";
+        prefSub.setAttribute("data-error", "true");
+        return;
+      }
+      try { window.localStorage.removeItem(IN_PROGRESS_KEY); } catch (error) { store(IN_PROGRESS_KEY, ""); }
       overlay.remove();
       if (typeof window.__hesabnoSoftReload === "function") window.__hesabnoSoftReload();
     }
 
     function proceedFromPermissions() {
-      if (restoredFromBackup) {
-        finishOnboardingAndEnterApp();
-      } else {
-        showStep("preferences");
-      }
+      showStep("preferences");
     }
 
     nextFromPermsBtn.addEventListener("click", proceedFromPermissions);
@@ -527,9 +547,18 @@
     });
 
     function showStep(stepName) {
+      var previousStep = card.getAttribute("data-hesabno-fr-active-step");
+      var activeView = card.querySelector('[data-hesabno-fr-view="' + stepName + '"]');
+      var stepOrder = ["restore", "profile", "permissions", "preferences"];
       card.setAttribute("data-hesabno-fr-active-step", stepName);
+      if (previousStep && previousStep !== stepName && activeView) {
+        animateOnboardingView(activeView, stepOrder.indexOf(stepName) > stepOrder.indexOf(previousStep) ? "next" : "previous");
+      }
       if (stepName === "profile") {
-        first.input.focus();
+        /* Focus the heading, not the first input: opening the native keyboard mid-transition
+           causes a viewport resize and makes the incoming profile form appear to jump. */
+        title.setAttribute("tabindex", "-1");
+        try { title.focus({ preventScroll: true }); } catch (error) { title.focus(); }
       } else if (stepName === "permissions") {
         syncPermsUi();
         pStep.textContent = restoredFromBackup ? "بازیابی حساب  ·  تنظیم دسترسی‌های گوشی" : "شروع کار  ·  مرحله ۳";
@@ -564,6 +593,7 @@
           var k = keys[i];
           var val = bag[k];
           if (typeof k === "string" && typeof val === "string") {
+            if (k === DONE_KEY || k === IN_PROGRESS_KEY) continue;
             if ((k === "hesabno:transactions" || k === "hesabno:checks") && val.indexOf("data:") !== -1 && typeof window.__hesabnoOffloadTransactionsJson === "function") {
               val = window.__hesabnoOffloadTransactionsJson(val);
             }
@@ -589,9 +619,17 @@
         }
         restoredFromBackup = true;
         card.setAttribute("data-hesabno-fr-restored", "true");
+        var restoredProfile = null;
+        try { restoredProfile = JSON.parse(read(PROFILE_KEY) || "null"); } catch (error) { restoredProfile = null; }
+        if (restoredProfile && typeof restoredProfile === "object") {
+          var restoredName = clean(restoredProfile.fullName).split(" ");
+          first.input.value = clean(restoredProfile.firstName || restoredName.shift());
+          last.input.value = clean(restoredProfile.lastName || restoredName.join(" "));
+          mobile.input.value = clean(restoredProfile.mobile);
+        }
+        goProfileBtn.textContent = "بعدی";
         rStatus.setAttribute("data-state", "ok");
-        rStatus.textContent = "اطلاعات نسخه پشتیبان با موفقیت بازیابی شد ✓";
-        showStep("permissions");
+        rStatus.textContent = "اطلاعات نسخه پشتیبان با موفقیت بازیابی شد ✓ برای ادامه، «بعدی» را بزنید.";
         return true;
       } catch (err) {
         rStatus.setAttribute("data-state", "error");
@@ -654,8 +692,6 @@
     });
 
     goProfileBtn.addEventListener("click", function () {
-      restoredFromBackup = false;
-      card.removeAttribute("data-hesabno-fr-restored");
       showStep("profile");
     });
 
@@ -791,7 +827,7 @@
     var card = document.createElement("section"); card.className = "intro-card"; card.setAttribute("role", "dialog"); card.setAttribute("aria-modal", "true"); card.setAttribute("aria-label", "معرفی برنامه");
     card.innerHTML = '<div class="intro-brand-row"><strong class="intro-brand-label">MY MONEY</strong></div><div class="intro-art" aria-hidden="true" data-intro-art></div><div class="intro-copy" data-intro-copy><div class="intro-kicker" data-intro-step></div><h2 data-intro-title></h2><p data-intro-body aria-live="polite"></p></div><div class="intro-dots" data-intro-dots></div><div class="intro-actions"><button type="button" class="intro-skip" data-intro-skip>رد کردن</button><button type="button" class="intro-next" data-intro-next>بعدی ←</button></div>';
     overlay.appendChild(card); document.body.appendChild(overlay);
-    var step = card.querySelector('[data-intro-step]'), title = card.querySelector('[data-intro-title]'), body = card.querySelector('[data-intro-body]'), dots = card.querySelector('[data-intro-dots]'), next = card.querySelector('[data-intro-next]'), copy = card.querySelector('[data-intro-copy]'), art = card.querySelector('[data-intro-art]');
+    var step = card.querySelector('[data-intro-step]'), title = card.querySelector('[data-intro-title]'), body = card.querySelector('[data-intro-body]'), dots = card.querySelector('[data-intro-dots]'), next = card.querySelector('[data-intro-next]'), skip = card.querySelector('[data-intro-skip]'), copy = card.querySelector('[data-intro-copy]'), art = card.querySelector('[data-intro-art]');
     function finish() { store(key, "1"); overlay.remove(); done(); }
     function render() {
       step.textContent = faDigits(current + 1) + " از " + faDigits(slides.length);
@@ -799,11 +835,11 @@
       body.textContent = slides[current].b;
       art.innerHTML = slides[current].svg;
       dots.innerHTML = slides.map(function (_, i) { return '<span class="' + (i === current ? 'active' : '') + '"></span>'; }).join('');
-      next.textContent = current === slides.length - 1 ? "شروع کنیم ←" : "بعدی ←";
+      next.textContent = "بعدی ←";
       copy.style.animation = "none"; void copy.offsetWidth; copy.style.animation = "";
     }
     next.addEventListener("click", function () { if (current < slides.length - 1) { current += 1; render(); } else finish(); });
-    card.querySelector('[data-intro-skip]').addEventListener("click", finish);
+    skip.addEventListener("click", finish);
     render(); next.focus();
   }
 
@@ -824,7 +860,9 @@
     try {
       forceByQuery = window.location && String(window.location.search || "").indexOf("firstRun=1") !== -1;
     } catch (e) {}
-    if (!forceByQuery && (read(DONE_KEY) === "1" || (existing && clean(existing.firstName)))) return;
+    var inProgress = read(IN_PROGRESS_KEY) === "onboarding";
+    if (!forceByQuery && (read(DONE_KEY) === "1" || (existing && clean(existing.firstName) && !inProgress))) return;
+    store(IN_PROGRESS_KEY, "onboarding");
     showIntro(mount);
   }
   startFirstRun();

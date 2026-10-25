@@ -3,8 +3,9 @@
  *
  * ترتیب درست:
  *   ۱) اگر کیبورد داخلی مبلغ باز است → فقط همان بسته شود.
- *   ۲) اگر انتخابگر/پنجره‌ی رویی (انتخاب حساب، دیالوگ، لایه‌ی تمام‌صفحه) باز است → فقط همان بسته شود.
- *   ۳) در غیر این صورت → همان ناوبری قبلی (بازگشت به لیست/تب یا خروج).
+ *   ۲) اگر تقویم تاریخ باز است → Back مصرف شود؛ تقویم فقط با تأیید یا × بسته شود.
+ *   ۳) اگر انتخابگر/پنجره‌ی رویی (انتخاب حساب، دیالوگ، لایه‌ی تمام‌صفحه) باز است → فقط همان بسته شود.
+ *   ۴) در غیر این صورت → همان ناوبری قبلی (بازگشت به لیست/تب یا خروج).
  *
  * پیش از این، __hesabnoNavigateBack بلافاصله دکمه‌ی «بازگشت» صفحه‌ی زیرین را می‌زد؛
  * پس در انتخاب حسابِ فرم وام، کاربر به‌جای بستن انتخابگر، از کل فرم بیرون می‌رفت
@@ -15,6 +16,7 @@
 
   var KEYPAD_ID = "hesabno-amount-keyboard";
   var KEYPAD_BACKDROP_ID = KEYPAD_ID + "-backdrop";
+  var DATE_PICKER_SELECTOR = "#persian-datepicker-backdrop,[data-hesabno-settlement-datepicker],[data-hesabno-return-date-picker]";
   /* لایه‌ها به ترتیب اولویت؛ همه از تولید همین برنامه‌اند. */
   var LAYER_SELECTORS = [
     ".hesabno-fullscreen-selector-overlay",
@@ -81,6 +83,14 @@
     return null;
   }
 
+  function closeDatePickerForBack() {
+    var picker = document.querySelector(DATE_PICKER_SELECTOR);
+    if (!picker) return false;
+    var closeButton = picker.querySelector("#datepicker-close-button,[data-hesabno-settlement-close],[data-return-date-close]");
+    if (closeButton) closeButton.click();
+    return true;
+  }
+
   function layerCandidates() {
     var seen = [];
     LAYER_SELECTORS.forEach(function (selector) {
@@ -123,6 +133,8 @@
     if (typeof window.__hesabnoCloseAmountKeyboard === "function" && window.__hesabnoCloseAmountKeyboard()) {
       return true;
     }
+    /* Back همان ضربدر تقویم را فعال می‌کند؛ تاریخ موقت بدون تأیید کنار گذاشته می‌شود. */
+    if (closeDatePickerForBack()) return true;
     /* ۲) انتخابگر حساب / دیالوگ / لایه‌ی رویی */
     if (closeTopLayer()) return true;
     /* ۳) ناوبری معمول */

@@ -60,6 +60,21 @@ test('hero card follows the selected dashboard period (today vs month)', { timeo
   const document = window.document;
 
   const month = heroSnapshot(window);
+  const dashboardDate = document.querySelector('.hesabno-dashboard-date-value');
+  assert.ok(dashboardDate, 'تاریخ داشبورد باید وجود داشته باشد');
+  const dateNumberRuns = [...dashboardDate.querySelectorAll('[data-hesabno-unified-number-font="true"]')];
+  assert.ok(dateNumberRuns.length >= 2, 'روز و سال تاریخ داشبورد باید فونت monospace بگیرند');
+  assert.ok(dateNumberRuns.every((node) => node.classList.contains('font-mono') && node.getAttribute('dir') === 'ltr'));
+  assert.ok([...dashboardDate.childNodes].some((node) => node.nodeType === 3 && /[آ-ی]/.test(node.textContent)),
+    'متن فارسی روز و ماه در تاریخ داشبورد نباید فونت monospace بگیرد');
+  for (const selector of ['.hero-balance-value', '.hero-income-value', '.hero-expense-value']) {
+    const amount = document.querySelector(selector);
+    assert.ok(amount, `${selector} باید در کارت داشبورد باشد`);
+    assert.equal(amount.classList.contains('font-mono'), true,
+      `${selector} باید فونت monospace قبلی را حفظ کند`);
+    assert.equal(amount.getAttribute('dir'), 'ltr',
+      `${selector} باید ترتیب ارقام و جداکننده‌ها را از چپ به راست حفظ کند`);
+  }
   assert.deepEqual(month.labels, ['درآمد این ماه', 'هزینه این ماه'], 'حالت پیش‌فرض ماهانه است');
   assert.equal(month.income, '۳،۰۰۰،۰۰۰', 'درآمد ماه باید جمع هر سه ردیف درآمد باشد');
   assert.equal(month.expense, '۵۰۰،۰۰۰', 'هزینه ماه باید جمع هزینه‌های ماه باشد');

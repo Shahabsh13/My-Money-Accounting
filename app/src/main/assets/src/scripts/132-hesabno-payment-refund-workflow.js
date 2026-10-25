@@ -133,7 +133,13 @@
           return;
         }
         var accounts = read("hesabno:accounts_v5", []);
-        var ensured = ensureIncomeAccount(Array.isArray(accounts) ? accounts : []);
+        accounts = Array.isArray(accounts) ? accounts : [];
+        var sourceCategoryAccount = accounts.find(function (account) {
+          return account && (originalNow.categoryAccountId != null && String(account.id) === String(originalNow.categoryAccountId)
+            || clean(account.name) && clean(account.name) === clean(originalNow.category));
+        });
+        var refundCategoryGroup = sourceCategoryAccount && sourceCategoryAccount.group;
+        var ensured = ensureIncomeAccount(accounts);
         var incomeAccount = ensured.account;
         var relatedDoc = documentNumber(originalNow);
         var docNum = all.reduce(function (max, item) {
@@ -146,6 +152,7 @@
           oldReceipt.account = accountName;
           oldReceipt.category = incomeAccount.name;
           oldReceipt.categoryAccountId = incomeAccount.id;
+          oldReceipt.refundCategoryGroup = refundCategoryGroup || void 0;
         } else {
           var id = Date.now() + Math.floor(Math.random() * 1000);
           var refund = {
@@ -154,6 +161,7 @@
             type: "income", method: "normal", account: accountName, project: originalNow.project || void 0,
             familyMember: originalNow.familyMember || void 0, description: "برگشت وجه بابت سند پرداختی #" + relatedDoc,
             hasManualDescription: false, isReversal: true, isRefundReceipt: true,
+            refundCategoryGroup: refundCategoryGroup || void 0,
             refundOfDocNumber: relatedDoc, reversalOfDocNumber: relatedDoc
           };
           all.push(refund);

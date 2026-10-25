@@ -63,7 +63,7 @@
 064	style	src/styles/064-hesabno-semantic-footnotes.css	21191 bytes
 065	script	src/scripts/065-hesabno-shortcut-category-migration.js	677 bytes
 066	script	src/scripts/066-inline.js	92383 bytes
-067	script	src/scripts/067-inline.js	4664191 bytes
+067	script	src/scripts/067-inline.js	2183677 bytes
 068	script	src/scripts/068-hesabno-loan-logo-asset.js	793 bytes
 069	script	src/scripts/069-hesabno-bank-usage-enhanced.js	18300 bytes
 070	script	src/scripts/070-hesabno-light-report-fix.js	695 bytes
@@ -128,8 +128,8 @@
 129	script	src/scripts/129-hesabno-final-transaction-card-guard.js	2773 bytes
 130	script	src/scripts/130-hesabno-compound-document-meta.js	2103 bytes
 131	script	src/scripts/131-hesabno-compound-title-summary.js	2894 bytes
-132	script	src/scripts/132-hesabno-payment-refund-workflow.js	19163 bytes
-133	script	src/scripts/133-hesabno-native-payment-refund-form.js	20326 bytes
+132	script	src/scripts/132-hesabno-payment-refund-workflow.js	20582 bytes
+133	script	src/scripts/133-hesabno-native-payment-refund-form.js	21406 bytes
 134	script	src/scripts/134-hesabno-check-return-resolution.js	7796 bytes
 135	script	src/scripts/135-hesabno-check-status-actions.js	6272 bytes
 136	script	src/scripts/136-hesabno-check-fee-policy.js	1280 bytes

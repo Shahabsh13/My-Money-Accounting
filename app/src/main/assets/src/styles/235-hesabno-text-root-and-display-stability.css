@@ -59,7 +59,7 @@ article {
 }
 
 /* ۲. پایداری ریشه‌ای هنگام جابه‌جایی (انتقال بین صفحات و تب‌ها) */
-main,
+main:not([class*="hesabno-form-transition-"]),
 main.hesabno-page-open-up,
 main.hesabno-tab-horizontal-in,
 main.hesabno-content-swap,
@@ -3822,7 +3822,6 @@ html[data-theme="light"] [data-hesabno-gdrive-card] {
 #hesabno-first-run .hesabno-fr-card[data-hesabno-fr-active-step="preferences"] [data-hesabno-fr-view="restore"],
 #hesabno-first-run .hesabno-fr-card[data-hesabno-fr-active-step="preferences"] [data-hesabno-fr-view="profile"],
 #hesabno-first-run .hesabno-fr-card[data-hesabno-fr-active-step="preferences"] [data-hesabno-fr-view="permissions"],
-#hesabno-first-run .hesabno-fr-card[data-hesabno-fr-restored="true"] [data-hesabno-fr-back-profile="true"],
 #hesabno-first-run .hesabno-fr-hidden-file {
   display: none !important;
 }
@@ -4790,6 +4789,31 @@ html[data-theme="light"] body .hesabno-advanced-filter > .hesabno-filter-submit-
 }
 html body .hesabno-filter-submit-footer button { pointer-events: auto; }
 body:has(.hesabno-advanced-filter) nav.fixed { visibility: hidden; pointer-events: none; }
+
+/* First-run form steps enter in the navigation direction: forward from left, Back from right. */
+@keyframes hesabno-onboarding-step-from-left {
+  from { opacity: .98; transform: translate3d(-5%, 0, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+@keyframes hesabno-onboarding-step-from-right {
+  from { opacity: .98; transform: translate3d(5%, 0, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+#hesabno-first-run .hesabno-fr-view-enter-from-left {
+  animation: hesabno-onboarding-step-from-left 420ms cubic-bezier(.22, .61, .36, 1) both !important;
+  will-change: transform, opacity;
+}
+#hesabno-first-run .hesabno-fr-view-enter-from-right {
+  animation: hesabno-onboarding-step-from-right 420ms cubic-bezier(.22, .61, .36, 1) both !important;
+  will-change: transform, opacity;
+}
+@media (prefers-reduced-motion: reduce) {
+  #hesabno-first-run .hesabno-fr-view-enter-from-left,
+  #hesabno-first-run .hesabno-fr-view-enter-from-right {
+    animation: none !important;
+    will-change: auto;
+  }
+}
 
 /* Keep transaction search short and compact even under global input typography rules. */
 html body [data-hesabno-transaction-search] { font-size: 12px !important; min-width: 0; }

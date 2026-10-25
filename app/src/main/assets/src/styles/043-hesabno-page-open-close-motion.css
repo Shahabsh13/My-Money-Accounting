@@ -12,3 +12,47 @@ main.hesabno-content-swap,
   opacity: 1 !important;
   transform: none !important;
 }
+
+/* فرم‌ها افقی و فقط با transform/opacity جابه‌جا می‌شوند؛ ارتفاع صفحه را انیمیت نکن. */
+@keyframes hesabno-form-enter-forward {
+  from { opacity: .96; transform: translate3d(8%, 0, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+@keyframes hesabno-form-enter-back {
+  from { opacity: .96; transform: translate3d(-8%, 0, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+@keyframes hesabno-form-enter-confirm {
+  from { opacity: .96; transform: translate3d(8%, 0, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+@keyframes hesabno-form-exit-back {
+  from { opacity: 1; transform: translate3d(0, 0, 0); }
+  to { opacity: .98; transform: translate3d(8%, 0, 0); }
+}
+main.hesabno-form-transition-enter-forward {
+  animation: hesabno-form-enter-forward 280ms cubic-bezier(.22, .61, .36, 1) both !important;
+  will-change: transform, opacity;
+}
+main.hesabno-form-transition-enter-back {
+  animation: hesabno-form-enter-back 280ms cubic-bezier(.22, .61, .36, 1) both !important;
+  will-change: transform, opacity;
+}
+main.hesabno-form-transition-enter-confirm {
+  animation: hesabno-form-enter-confirm 280ms cubic-bezier(.22, .61, .36, 1) both !important;
+  will-change: transform, opacity;
+}
+main.hesabno-form-transition-exit-back {
+  animation: hesabno-form-exit-back 280ms cubic-bezier(.4, 0, .8, .4) both !important;
+  will-change: transform, opacity;
+  pointer-events: none !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  main.hesabno-form-transition-enter-forward,
+  main.hesabno-form-transition-enter-back,
+  main.hesabno-form-transition-enter-confirm,
+  main.hesabno-form-transition-exit-back {
+    animation: none !important;
+    will-change: auto;
+  }
+}

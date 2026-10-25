@@ -1,6 +1,105 @@
 const {test}=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs');
 const {JSDOM}=require('jsdom');
 const root='app/src/main/assets/';
+test('first-run intro offers Skip on all four slides while Next remains available',()=>{
+ const dom=new JSDOM('<!doctype html><html><body></body></html>',{url:'https://app.test/',runScripts:'outside-only'});
+ try{
+  const w=dom.window;w.eval(fs.readFileSync(root+'src/scripts/217-hesabno-first-run-profile.js','utf8'));
+  const intro=w.document.getElementById('hesabno-intro-tour');
+  assert.ok(intro,'first launch begins with the intro pages');
+  assert.ok(intro.querySelector('[data-intro-skip]'),'first launch must offer a Skip control alongside Next');
+  assert.deepEqual([...intro.querySelector('.intro-actions').children].map(button=>button.textContent),['رد کردن','بعدی ←'],
+   'in the RTL action row, Skip is the right-hand action and Next is the left-hand action');
+  assert.equal(w.localStorage.getItem('hesabno:first_run_profile_in_progress'),'onboarding');
+  assert.equal(w.localStorage.getItem('hesabno:first_run_profile_done'),null,'intro completion alone must not enter the app');
+  const next=intro.querySelector('[data-intro-next]');
+  assert.equal(next.textContent,'بعدی ←');
+  for(let page=1;page<4;page++){
+   next.click();
+   assert.ok(w.document.getElementById('hesabno-intro-tour'),'Next advances within the intro until the final page');
+   assert.ok(w.document.querySelector('#hesabno-intro-tour [data-intro-skip]'),'Skip remains available on each of the four intro slides');
+   assert.equal(w.document.getElementById('hesabno-first-run'),null);
+  }
+  next.click();
+  assert.equal(w.document.getElementById('hesabno-intro-tour'),null);
+  assert.ok(w.document.getElementById('hesabno-first-run'),'only the final Next opens the mandatory profile setup');
+  assert.equal(w.localStorage.getItem('hesabno:first_run_profile_done'),null,'setup is still required after the intro');
+ }finally{dom.window.close();}
+});
+test('Skip from any of the four intro slides opens mandatory setup without entering the app',()=>{
+ for(let slide=0;slide<4;slide++){
+  const dom=new JSDOM('<!doctype html><html><body></body></html>',{url:'https://app.test/',runScripts:'outside-only'});
+  try{
+   const w=dom.window;w.eval(fs.readFileSync(root+'src/scripts/217-hesabno-first-run-profile.js','utf8'));
+   let intro=w.document.getElementById('hesabno-intro-tour');
+   for(let page=0;page<slide;page++)intro.querySelector('[data-intro-next]').click();
+   assert.ok(intro.querySelector('[data-intro-skip]'),`slide ${slide+1} must have Skip`);
+   intro.querySelector('[data-intro-skip]').click();
+   assert.equal(w.document.getElementById('hesabno-intro-tour'),null);
+   const setup=w.document.getElementById('hesabno-first-run');
+   assert.ok(setup,`Skip on slide ${slide+1} should continue to mandatory setup`);
+   assert.equal(setup.querySelector('.hesabno-fr-card').getAttribute('data-hesabno-fr-active-step'),'restore');
+   assert.equal(w.localStorage.getItem('hesabno:first_run_intro_done'),'1');
+   assert.equal(w.localStorage.getItem('hesabno:first_run_profile_done'),null,'Skip must not bypass profile setup');
+  }finally{dom.window.close();}
+ }
+});
+test('backup restore still requires Next through profile, permissions and preferences before app entry',()=>{
+ const dom=new JSDOM('<!doctype html><html><body></body></html>',{url:'https://app.test/',runScripts:'outside-only'});
+ try{
+  const w=dom.window;w.localStorage.setItem('hesabno:first_run_intro_done','1');
+  w.eval(fs.readFileSync(root+'src/scripts/217-hesabno-first-run-profile.js','utf8'));
+  const overlay=w.document.getElementById('hesabno-first-run'),card=overlay.querySelector('.hesabno-fr-card');
+  const profile=JSON.stringify({firstName:'مریم',lastName:'موسوی'});
+  const backup={storageData:{'hesabno:user_profile':profile,'hesabno:first_run_profile_done':'1'}};
+  assert.equal(w.__hesabnoFirstRunApplyBackup(JSON.stringify(backup)),true);
+  assert.equal(card.getAttribute('data-hesabno-fr-active-step'),'restore','restoring data does not skip the restore page Next');
+  assert.equal(w.localStorage.getItem('hesabno:first_run_profile_done'),null,'a backup cannot mark onboarding complete');
+  overlay.querySelector('[data-hesabno-fr-go-profile]').click();
+  assert.equal(card.getAttribute('data-hesabno-fr-active-step'),'profile');
+  assert.equal(overlay.querySelector('#hesabno-fr-first').value,'مریم');
+  assert.equal(overlay.querySelector('#hesabno-fr-last').value,'موسوی');
+  card.dispatchEvent(new w.Event('submit',{bubbles:true,cancelable:true}));
+  assert.equal(card.getAttribute('data-hesabno-fr-active-step'),'permissions');
+  assert.equal(overlay.querySelector('[data-hesabno-fr-next-from-perms]').textContent,'بعدی');
+  overlay.querySelector('[data-hesabno-fr-next-from-perms]').click();
+  assert.equal(card.getAttribute('data-hesabno-fr-active-step'),'preferences','permissions Next cannot bypass preferences');
+  assert.equal(w.document.getElementById('hesabno-first-run'),overlay,'the app remains blocked until final confirmation');
+  assert.equal(w.localStorage.getItem('hesabno:first_run_profile_done'),null);
+  overlay.querySelector('[data-hesabno-fr-finish]').click();
+  assert.equal(w.document.getElementById('hesabno-first-run'),null);
+  assert.equal(w.localStorage.getItem('hesabno:first_run_profile_done'),'1');
+  assert.equal(w.localStorage.getItem('hesabno:first_run_profile_in_progress'),null);
+ }finally{dom.window.close();}
+});
+test('first-run onboarding slides Next views from the left and Previous views from the right',()=>{
+ const dom=new JSDOM('<!doctype html><html><body></body></html>',{url:'https://app.test/',runScripts:'outside-only'});
+ try{
+  const w=dom.window;w.localStorage.setItem('hesabno:first_run_profile_done','1');
+  w.eval(fs.readFileSync(root+'src/scripts/217-hesabno-first-run-profile.js','utf8'));
+  const overlay=w.__hesabnoOpenFirstRunWizard('restore'),card=overlay.querySelector('.hesabno-fr-card');
+  const view=step=>overlay.querySelector(`[data-hesabno-fr-view="${step}"]`);
+  overlay.querySelector('[data-hesabno-fr-go-profile]').click();
+  assert.ok(view('profile').classList.contains('hesabno-fr-view-enter-from-left'));
+  assert.equal(w.document.activeElement,view('profile').querySelector('h1'),'keep the first input from opening the native keyboard during the slide');
+  overlay.querySelector('[data-hesabno-fr-back-restore]').click();
+  assert.ok(view('restore').classList.contains('hesabno-fr-view-enter-from-right'));
+  overlay.querySelector('[data-hesabno-fr-go-profile]').click();
+  overlay.querySelector('#hesabno-fr-first').value='علی';
+  overlay.querySelector('#hesabno-fr-last').value='رضایی';
+  card.dispatchEvent(new w.Event('submit',{bubbles:true,cancelable:true}));
+  assert.equal(card.getAttribute('data-hesabno-fr-active-step'),'permissions');
+  assert.ok(view('permissions').classList.contains('hesabno-fr-view-enter-from-left'));
+  overlay.querySelector('[data-hesabno-fr-back-profile]').click();
+  assert.ok(view('profile').classList.contains('hesabno-fr-view-enter-from-right'));
+  card.dispatchEvent(new w.Event('submit',{bubbles:true,cancelable:true}));
+  overlay.querySelector('[data-hesabno-fr-next-from-perms]').click();
+  assert.equal(card.getAttribute('data-hesabno-fr-active-step'),'preferences');
+  assert.ok(view('preferences').classList.contains('hesabno-fr-view-enter-from-left'));
+  overlay.querySelector('[data-hesabno-fr-back-perms]').click();
+  assert.ok(view('permissions').classList.contains('hesabno-fr-view-enter-from-right'));
+ }finally{dom.window.close();}
+});
 test('first-run permissions have short copy, four accessible switches and no focus jump to the footer',()=>{
  const dom=new JSDOM('<!doctype html><html><body></body></html>',{url:'https://app.test/',runScripts:'outside-only'});
  try{

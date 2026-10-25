@@ -27,8 +27,7 @@
         var rows = box ? Array.from(box.children).filter(function (node) { return node.tagName === "DIV"; }) : [];
         var dateInfo = currentDate();
         var fullDate = dateInfo && dateInfo.full;
-        var dateSpans = rows[0] ? rows[0].querySelectorAll("span") : [];
-        var dateSpan = dateSpans.length ? dateSpans[dateSpans.length - 1] : null;
+        var dateSpan = box && box.querySelector(".hesabno-dashboard-date-value");
         if (dateSpan && fullDate && dateSpan.textContent !== fullDate) dateSpan.textContent = fullDate;
         /* ظاهر این اسپن در بستهٔ ۲۳۵ (لایهٔ ظاهر) است؛ این‌جا فقط کلاس معنایی می‌گذاریم. */
         if (dateSpan && !dateSpan.classList.contains("hesabno-dashboard-date-value")) {
@@ -39,21 +38,13 @@
       }
       var calendar = Array.from(document.querySelectorAll(".fixed")).find(function (node) {
         var text = clean(node.textContent);
-        return text.includes("هجری خورشیدی") && text.includes("روز هفته:");
+        return text.includes("روز هفته:") && text.includes("تاریخ میلادی:");
       });
       if (calendar) {
         var dateInfo = currentDate();
         var card = calendar.firstElementChild;
         var heading = card && card.querySelector("h3");
-        var dateText = card && card.querySelector("p.text-sm.font-bold");
-        var dateDetails = card && card.querySelector("p.text-\\[11px\\]");
-        if (dateInfo) {
-          if (heading && heading.textContent !== dateInfo.weekday) heading.textContent = dateInfo.weekday;
-          var dateLabel = dateInfo.day + " " + dateInfo.month + " " + dateInfo.year;
-          if (dateText && dateText.textContent !== dateLabel) dateText.textContent = dateLabel;
-          var isoLabel = dateInfo.iso + " هجری خورشیدی";
-          if (dateDetails && dateDetails.textContent !== isoLabel) dateDetails.textContent = isoLabel;
-        }
+        if (dateInfo && heading && heading.textContent !== dateInfo.weekday) heading.textContent = dateInfo.weekday;
         var detailRows = card ? Array.from(card.querySelectorAll(".flex.justify-between.items-center")) : [];
         var setRow = function (row, value) {
           var cell = row && row.lastElementChild;
@@ -74,11 +65,16 @@
           closeButton.setAttribute("title", "بستن");
           /* ظاهر دکمه در بستهٔ ۲۳۵ (لایهٔ ظاهر) است؛ این‌جا فقط کلاس معنایی. */
           closeButton.className = "hesabno-calendar-close";
-          closeButton.addEventListener("click", function (event) { event.preventDefault(); event.stopPropagation(); window.setTimeout(function () { calendar.remove(); }, 0); });
+          closeButton.addEventListener("click", function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            /* هم‌زمان state کامپوننت را ببند؛ حذف مستقیم DOM باعث می‌شد بازشدن دوباره no-op شود. */
+            if (typeof window.__hesabnoCloseDashboardCalendar === "function") {
+              window.__hesabnoCloseDashboardCalendar();
+            }
+          });
           card.insertBefore(closeButton, card.firstChild);
         }
-        var back = Array.from(calendar.querySelectorAll("button")).find(function (button) { return clean(button.textContent) === "بستن"; });
-        if (back) { back.textContent = "×"; back.setAttribute("aria-label", "بستن تقویم"); back.setAttribute("title", "بستن"); }
       }
     };
     var pending = false;

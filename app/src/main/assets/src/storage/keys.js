@@ -91,6 +91,7 @@
     { key: "hesabno:check-system-accounts-v1", backend: "local", type: "raw", scope: "internal", backup: false, owner: "000b", note: "«done» پس از ایجاد حساب‌های سیستمی" },
     { key: "hesabno:default_cash_unpinned_v1", backend: "local", type: "json", scope: "internal", backup: false, owner: "000c", note: "نشانگر یک‌باره برداشتن سنجاق پیش‌فرض صندوق؛ سنجاق دستی بعدی حفظ می‌شود" },
     { key: "hesabno:default_accounts_v2", backend: "local", type: "json", scope: "internal", backup: false, owner: "000", note: "نشانگر کاشت حساب‌های پیش‌فرض" },
+    { key: "hesabno:first_run_profile_in_progress", backend: "local", type: "raw", scope: "internal", backup: false, owner: "217", note: "جلوگیری از دور زدن مراحل اجباری شروع کار پس از reload یا بازیابی پشتیبان" },
     { key: "hesabno:last_backup_date", backend: "local", type: "raw", scope: "internal", backup: true, owner: "067" },
     { key: "hesabno:local_snapshots", backend: "local", type: "json", scope: "internal", backup: true, owner: "067", note: "نقطه‌های بازگشت محلی (حداکثر ۵)" },
     { key: "hesabno:payambank:preview-backup", backend: "local", type: "raw", scope: "internal", backup: false, owner: "120", note: "پشتیبان موقت صندوق در حالت پیش‌نمایش" },

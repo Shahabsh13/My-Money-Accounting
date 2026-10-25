@@ -238,7 +238,14 @@
         else if (value > left) problem = "مبلغ از مانده قابل برگشت بیشتر است.";
         else if (relatedCorrection(all, current)) problem = "این سند قبلاً با سند اصلاحی بسته شده است.";
         if (problem) { showError(problem); return; }
-        var accounts = read("hesabno:accounts_v5", []), ensured = ensureIncomeAccount(Array.isArray(accounts) ? accounts : []);
+        var accounts = read("hesabno:accounts_v5", []);
+        accounts = Array.isArray(accounts) ? accounts : [];
+        var sourceCategoryAccount = accounts.find(function (account) {
+          return account && (current.categoryAccountId != null && String(account.id) === String(current.categoryAccountId)
+            || clean(account.name) && clean(account.name) === clean(current.category));
+        });
+        var refundCategoryGroup = sourceCategoryAccount && sourceCategoryAccount.group;
+        var ensured = ensureIncomeAccount(accounts);
         var incomeAccount = ensured.account, relatedDoc = documentNumber(current);
         var nextDoc = all.reduce(function (max, item) { return Math.max(max, numberFor(documentNumber(item))); }, 0) + 1;
         var refund = {
@@ -248,7 +255,8 @@
           date: selectedDate() || nowDate(), time: nowTime(), type: "income", method: "normal", account: accountName,
           project: current.project || void 0, familyMember: current.familyMember || void 0,
           description: description, hasManualDescription: !!description,
-          isReversal: true, isRefundReceipt: true, refundOfDocNumber: relatedDoc, reversalOfDocNumber: relatedDoc
+          isReversal: true, isRefundReceipt: true, refundCategoryGroup: refundCategoryGroup || void 0,
+          refundOfDocNumber: relatedDoc, reversalOfDocNumber: relatedDoc
         };
         all.push(refund);
         var total = refundedTotal(all, current);

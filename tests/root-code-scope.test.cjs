@@ -47,13 +47,15 @@ const leafCodeNodes = (window, root) => [...root.querySelectorAll('p, span, div,
     && /کد/.test(normalize(node.textContent))
     && isVisible(window, node));
 
-const persianToday = (() => {
+const persianDateAt = (date) => {
   const parts = new Intl.DateTimeFormat('en-US-u-ca-persian', {
     timeZone: 'Asia/Tehran', year: 'numeric', month: '2-digit', day: '2-digit',
-  }).formatToParts(new Date());
+  }).formatToParts(date);
   const get = (type) => (parts.find((part) => part.type === type) || {}).value;
   return `${get('year')}/${get('month')}/${get('day')}`;
-})();
+};
+const persianToday = persianDateAt(new Date());
+const persianPastDate = persianDateAt(new Date(Date.now() - 60 * 86400000));
 
 test('هیچ لایه‌ای برچسب «کد» یا «کد ریشه» نمی‌سازد', () => {
   const offenders = [];
@@ -84,13 +86,18 @@ test('صفحهٔ حساب‌ها کد نشان نمی‌دهد ولی شمارش
   assert.deepEqual(leafCodeNodes(window, main).map((node) => normalize(node.textContent)), [],
     'در فهرست حساب‌ها هیچ «کد …» نباید دیده شود');
 
+  const hasDirectText = (node, pattern) => [...node.childNodes]
+    .some((child) => child.nodeType === window.Node.TEXT_NODE && pattern.test(child.textContent));
   const count = [...main.querySelectorAll('p, span, div')]
-    .find((node) => node.firstElementChild === null && /^[\d۰-۹٠-٩]+\s+سرفصل\/حساب$/.test(normalize(node.textContent)));
+    .find((node) => /^[\d۰-۹٠-٩]+\s+سرفصل\/حساب$/.test(normalize(node.textContent))
+      && hasDirectText(node, /سرفصل\/حساب/));
   assert.ok(count, 'شمارش «N سرفصل/حساب» باید در صفحه بماند');
   assert.ok(isVisible(window, count), 'شمارش حساب‌ها نباید با پنهان‌کردن کدها پنهان شود');
 
   const detail = [...main.querySelectorAll('p, span')]
-    .find((node) => node.firstElementChild === null && /^تفصیلی [\d۰-۹٠-٩]+$/.test(normalize(node.textContent)) && isVisible(window, node));
+    .find((node) => /^تفصیلی [\d۰-۹٠-٩]+$/.test(normalize(node.textContent))
+      && hasDirectText(node, /تفصیلی/)
+      && isVisible(window, node));
   assert.ok(detail, 'برچسب «تفصیلی N» باید دیده شود');
 });
 
@@ -183,7 +190,7 @@ test('پرداخت جایگزین چک برگشتی هیچ کد یا «کد ری
     id: 2,
     type: 'expense',
     amount: 2500000,
-    date: persianToday,
+    date: persianPastDate,
     title: 'چک پرداختی',
     account: 'بانک سامان',
     category: 'خرید',
@@ -221,6 +228,46 @@ test('پرداخت جایگزین چک برگشتی هیچ کد یا «کد ری
   const selectedLabel = modal.querySelector('[data-hesabno-return-account-name]');
   assert.ok(selectedLabel, 'نام حساب انتخاب‌شده باید نمایش داده شود');
   assert.equal(/کد/.test(normalize(selectedLabel.textContent)), false, 'نام حساب نباید کد داشته باشد');
+
+  const paymentDateControl = modal.querySelector('[data-hesabno-return-payment-date-open]');
+  assert.ok(paymentDateControl, 'انتخاب تاریخ پرداخت جایگزین باید در دسترس باشد');
+  const paymentDateLabel = modal.querySelector('[data-hesabno-return-payment-date-label]');
+  const originalPaymentDate = normalize(paymentDateLabel.textContent);
+  click(paymentDateControl);
+  let datePicker = document.querySelector('[data-hesabno-return-date-picker]');
+  assert.ok(datePicker, 'تقویم پرداخت جایگزین باید باز شود');
+  assert.equal(datePicker.style.zIndex, '2147483000', 'تقویم باید بالای دکمه‌های فرم نمایش داده شود');
+  assert.ok(datePicker.querySelector('[data-return-date-close]'), 'ضربدر بستن باید در بالای تقویم باشد');
+  assert.ok(datePicker.querySelector('[data-return-date-confirm]'), 'تأیید باید پایین تقویم باشد');
+  let selectableDays = [...datePicker.querySelectorAll('[data-date-day]')].filter((button) => !button.disabled);
+  if (selectableDays.length < 2) {
+    click(datePicker.querySelector('[data-return-date-prev-month]'));
+    await wait(100);
+    selectableDays = [...datePicker.querySelectorAll('[data-date-day]')].filter((button) => !button.disabled);
+  }
+  const currentSelectedDay = datePicker.querySelector('[data-date-day].bg-blue-600');
+  const candidateDay = selectableDays.find((button) => button !== currentSelectedDay);
+  assert.ok(candidateDay, 'یک روز مجاز دیگر باید برای انتخاب موقت وجود داشته باشد');
+  click(candidateDay);
+  assert.equal(normalize(paymentDateLabel.textContent), originalPaymentDate,
+    'انتخاب روز نباید پیش از زدن تأیید مقدار فرم را تغییر دهد');
+  datePicker.dispatchEvent(new window.MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
+  document.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+  assert.ok(document.querySelector('[data-hesabno-return-date-picker]'), 'لمس پس‌زمینه یا Escape نباید تقویم را ببندد');
+  click(datePicker.querySelector('[data-return-date-confirm]'));
+  assert.equal(document.querySelector('[data-hesabno-return-date-picker]'), null, 'تأیید باید تقویم را ببندد');
+  const confirmedPaymentDate = normalize(paymentDateLabel.textContent);
+  assert.notEqual(confirmedPaymentDate, originalPaymentDate, 'تأیید باید روز انتخاب‌شده را در فرم ثبت کند');
+
+  click(paymentDateControl);
+  datePicker = document.querySelector('[data-hesabno-return-date-picker]');
+  const cancelDay = [...datePicker.querySelectorAll('[data-date-day]')]
+    .find((button) => !button.disabled && !button.classList.contains('bg-blue-600'));
+  assert.ok(cancelDay, 'روز دیگری برای آزمون لغو باید قابل انتخاب باشد');
+  click(cancelDay);
+  click(datePicker.querySelector('[data-return-date-close]'));
+  assert.equal(document.querySelector('[data-hesabno-return-date-picker]'), null, 'ضربدر باید تقویم را ببندد');
+  assert.equal(normalize(paymentDateLabel.textContent), confirmedPaymentDate, 'ضربدر باید تغییر موقت را لغو کند');
 
   click(modal.querySelector('[data-hesabno-return-account-open]'));
   await wait(1000);

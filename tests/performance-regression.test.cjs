@@ -9,6 +9,7 @@ const coreBundle = fs.readFileSync(path.join(root, 'app/src/main/assets/src/scri
 const perfGuard = fs.readFileSync(path.join(root, 'app/src/main/assets/src/scripts/001-hesabno-perf-guard.js'), 'utf8');
 const navigationHistory = fs.readFileSync(path.join(root, 'app/src/main/assets/src/scripts/073-hesabno-navigation-history.js'), 'utf8');
 const pageMotionStyles = fs.readFileSync(path.join(root, 'app/src/main/assets/src/styles/043-hesabno-page-open-close-motion.css'), 'utf8');
+const pageMotionScript = fs.readFileSync(path.join(root, 'app/src/main/assets/src/scripts/074-hesabno-page-open-close-motion-script.js'), 'utf8');
 const externalScripts = [...html.matchAll(/<script\b([^>]*)>/gi)]
   .map(match => ({ attributes: match[1], index: match.index }))
   .filter(script => /\bsrc\s*=/i.test(script.attributes));
@@ -41,6 +42,21 @@ test('page entry classes cannot animate content into position after render', () 
   assert.match(pageMotionStyles, /main\.hesabno-page-open-up,[\s\S]*?animation: none !important/);
   assert.match(pageMotionStyles, /transform: none !important/);
   assert.match(pageMotionStyles, /opacity: 1 !important/);
+});
+
+test('form entry, successful submit and Back use horizontal motion with reduced-motion support', () => {
+  assert.ok(pageMotionStyles.includes('@keyframes hesabno-form-enter-forward'));
+  assert.ok(pageMotionStyles.includes('@keyframes hesabno-form-enter-back'));
+  assert.ok(pageMotionStyles.includes('translate3d(8%, 0, 0)'));
+  assert.ok(pageMotionStyles.includes('translate3d(-8%, 0, 0)'));
+  assert.ok(pageMotionStyles.includes('animation: hesabno-form-exit-back 280ms'));
+  assert.ok(pageMotionStyles.includes('prefers-reduced-motion: reduce'));
+  assert.ok(pageMotionScript.includes('document.addEventListener("submit"'));
+  assert.ok(pageMotionScript.includes('pendingDirection = "confirm"'));
+  assert.ok(pageMotionScript.includes('hesabno-form-transition-exit-back'));
+  assert.ok(pageMotionScript.includes('hesabno-form-transition-enter-forward'));
+  assert.ok(pageMotionScript.includes('hesabno-form-transition-enter-back'));
+  assert.ok(pageMotionScript.includes('event.stopImmediatePropagation()'));
 });
 
 function srcOf(script) {
