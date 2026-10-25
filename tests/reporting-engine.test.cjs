@@ -33,6 +33,62 @@ test('summary equals the production gk exactly (three corpora)', () => {
   }
 });
 
+test('refund receipts reduce expense in the domain summary and monthly reports', () => {
+  const accounts = [
+    { id: 'bank', name: 'Bank', group: 'bank', active: true },
+    { id: 'rent', name: 'Rent', group: 'expense', active: true },
+    { id: 'refund-income', name: 'Refund receipts', group: 'income', active: true },
+  ];
+  const transactions = [
+    { id: 'expense-1', documentNumber: 10, date: '1405/06/01', type: 'expense', account: 'Bank', category: 'Rent', amount: 100 },
+    {
+      id: 'refund-1', documentNumber: 11, date: '1405/06/02', type: 'income', account: 'Bank',
+      category: 'Refund receipts', amount: 40, isReversal: true, isRefundReceipt: true, reversalOfDocNumber: 10,
+    },
+  ];
+
+  const refundSplit = reportsDomain.splitTransaction(transactions[1], accounts, transactions);
+  assert.equal(refundSplit.income, 0);
+  assert.equal(refundSplit.expense, -40);
+  const persistedRefund = reportsDomain.splitTransaction({ ...transactions[1], refundCategoryGroup: 'expense' }, accounts);
+  assert.equal(persistedRefund.income, 0, 'گروه ثبت‌شده باید برای مسیرهای تک‌سندی هم کافی باشد');
+  assert.equal(persistedRefund.expense, -40);
+
+  const report = reporting.buildReport({ accounts, transactions, installments: [] });
+  assert.equal(report.summary.totalIncome, 0);
+  assert.equal(report.summary.totalExpense, 60);
+  assert.equal(report.summary.netSavings, -60);
+  assert.equal(report.monthly[0].income, 0);
+  assert.equal(report.monthly[0].expense, 60);
+
+  const kernel = loadAccountingKernel();
+  const productionSummary = kernel.reportSummary(transactions, accounts, [], []);
+  assert.deepEqual(JSON.parse(JSON.stringify(report.summary)), JSON.parse(JSON.stringify(productionSummary)));
+});
+
+test('refund classification follows the linked document when its category is not P&L', () => {
+  const accounts = [
+    { id: 'bank', name: 'Bank', group: 'bank', active: true },
+    { id: 'person', name: 'Friend', group: 'person', active: true },
+    { id: 'refund-income', name: 'Refund receipts', group: 'income', active: true },
+  ];
+  const transactions = [
+    { id: 'expense-1', documentNumber: 20, date: '1405/06/01', type: 'expense', account: 'Bank', category: 'Friend', amount: 100 },
+    {
+      id: 'refund-1', documentNumber: 21, date: '1405/06/02', type: 'income', account: 'Bank',
+      category: 'Refund receipts', amount: 40, isReversal: true, isRefundReceipt: true, reversalOfDocNumber: 20,
+    },
+  ];
+
+  const summary = reporting.buildReport({ accounts, transactions, installments: [] }).summary;
+  assert.equal(summary.totalIncome, 0);
+  assert.equal(summary.totalExpense, 0, 'برگشتِ سندِ غیرهزینه‌ای نباید هزینهٔ منفی بسازد');
+
+  const kernel = loadAccountingKernel();
+  const productionSummary = kernel.reportSummary(transactions, accounts, [], []);
+  assert.deepEqual(JSON.parse(JSON.stringify(summary)), JSON.parse(JSON.stringify(productionSummary)));
+});
+
 test('monthly series sums exactly to the summary (no floating drift)', () => {
   for (const seed of SEEDS) {
     const transactions = makeTransactions(500, seed);

@@ -1,13 +1,14 @@
 /*
  * لایه‌ی دامنه — تفکیک سند و خلاصه‌ی گزارش‌ها (مرحله ۵، تصمیم R5)
  *
- * بازتولید خالص و خوانای Cs (تفکیک هر سند به درآمد/هزینه/کارمزد) و gk (خلاصه‌ی گزارش‌ها) از
- * باندل 067 — بدون هیچ تغییری در باندل. هم‌رفتاری با آزمون سایه‌ای اثبات می‌شود.
+ * پیاده‌سازی خالص و خوانای منطق Cs و gk باندل 067. تغییرات حسابداری باید هم‌زمان در هسته و این
+ * نسخه اعمال شوند؛ آزمون‌های سایه‌ای، برابری مسیر تولید و دامنه را تثبیت می‌کنند.
  *
- * رفتارهای عمداً حفظ‌شده (همان‌طور که هسته انجام می‌دهد):
+ * رفتارهای حسابداری:
  *   • کارمزد در Cs هم به expense اضافه می‌شود و هم جداگانه در fee می‌آید؛ netSavings از gk
  *     همان income − expense است (بنابراین کارمزد یک‌بار در آن دیده می‌شود).
  *   • سند با چک برگشتی/مسترد: اصل سند حذف می‌شود، ولی کارمزد باقی می‌ماند.
+ *   • رسید برگشت وجه، درآمد نقدی است اما در سود و زیان بر اساس گروه دسته‌ی سند اصلی معکوس می‌شود.
  *   • در gk فقط اقساط pending/overdue شمرده می‌شوند و چک‌های در جریان به طلب/بدهی اضافه می‌شوند.
  */
 (function (root, factory) {
@@ -28,7 +29,7 @@
   var CHECK_IN_PROGRESS = ["in_progress", "received", "issued", "in_bank"];
 
   /* تفکیک یک سند به درآمد/هزینه/کارمزد (هم‌رفتار با Cs) */
-  function splitTransaction(transaction, accounts) {
+  function splitTransaction(transaction, accounts, allTransactions) {
     var income = 0;
     var expense = 0;
     var feeAmount = Number(transaction.feeAmount) || 0;
@@ -56,6 +57,21 @@
           expense += (transaction.isReversal ? -1 : 1) * destinationAmount;
         }
       }
+      return { income: income, expense: expense, fee: feeAmount * sign };
+    }
+
+    // برگشت وجه از سند هزینه، درآمد نقدی است؛ طبقه‌بندی سود و زیان را از سند اصلی می‌گیرد.
+    if (transaction.isRefundReceipt && transaction.type === "income") {
+      var refundGroup = transaction.refundCategoryGroup;
+      if (!refundGroup && Array.isArray(allTransactions) && transaction.reversalOfDocNumber != null) {
+        var refundSource = allTransactions.find(function (candidate) {
+          return candidate && !candidate.isReversal && candidate.type === "expense"
+            && String(candidate.documentNumber != null ? candidate.documentNumber : candidate.id) === String(transaction.reversalOfDocNumber);
+        });
+        if (refundSource && refundSource.category) refundGroup = accountGroup(refundSource.category, accounts);
+      }
+      if (refundGroup === "expense" || !refundGroup) expense -= Number(transaction.amount) || 0;
+      else if (refundGroup === "income") income += Number(transaction.amount) || 0;
       return { income: income, expense: expense, fee: feeAmount * sign };
     }
 
@@ -96,7 +112,7 @@
     var totalIncome = 0;
     var totalExpense = 0;
     for (var index = 0; index < list.length; index += 1) {
-      var split = splitTransaction(list[index], accountList);
+      var split = splitTransaction(list[index], accountList, list);
       totalIncome += split.income;
       totalExpense += split.expense;
     }

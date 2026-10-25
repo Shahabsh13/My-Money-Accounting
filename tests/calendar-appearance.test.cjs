@@ -69,6 +69,14 @@ test('calendar close button takes its appearance from a class, not inline style'
   assert.ok(card, 'کارت تقویم باید کلاس hesabno-calendar-card را بگیرد');
   assert.equal(card.getAttribute('style'), null, 'کارت تقویم نباید style درون‌خطی داشته باشد');
   assert.equal(close.parentElement, card, 'دکمهٔ بستن باید فرزند کارت باشد');
+  const headingBlock = card.querySelector('.space-y-1');
+  assert.ok(headingBlock, 'عنوان روز هفته باید در کارت باقی بماند');
+  assert.equal(headingBlock.querySelectorAll('p').length, 0,
+    'دو خط تاریخ تکراریِ زیر عنوان روز هفته باید حذف شده باشند');
+  assert.match(normalize(card.textContent), /ماه و سال:.*تاریخ میلادی:/,
+    'جزئیات ماه و تاریخ میلادی باید در کارت اطلاعات باقی بمانند');
+  assert.doesNotMatch(card.textContent, /هجری خورشیدی/,
+    'برچسب تاریخ هجری شمسیِ تکراری نباید زیر عنوان نمایش داده شود');
 
   /* بعد از باز شدن، هیچ لایه‌ای نباید ظاهر تقویم را دوباره بنویسد. */
   let styleWrites = 0;
@@ -81,6 +89,40 @@ test('calendar close button takes its appearance from a class, not inline style'
   await wait(1200);
   observer.disconnect();
   assert.equal(styleWrites, 0, `تقویمِ باز نباید بعد از استقرار style بنویسد (${styleWrites} نوشتن)`);
+});
+
+test('dashboard calendar can close through its React state and reopen repeatedly', { timeout: 60000 }, async (t) => {
+  if (!hasJsdom) return t.skip('jsdom در دسترس نیست');
+  const dom = await bootApp({
+    stubs: jsdomStubs,
+    storage: { 'hesabno:first_run_intro_done': '1' },
+  });
+  t.after(() => closeApp(dom));
+  const { document } = dom.window;
+  const findCalendar = () => Array.from(document.querySelectorAll('.fixed')).find((node) => {
+    const text = normalize(node.textContent);
+    return text.includes('روز هفته:') && text.includes('تاریخ میلادی:');
+  });
+  const openCalendar = async () => {
+    const dateButton = document.querySelector('button[title="مشاهده تقویم و تاریخ امروز"]');
+    assert.ok(dateButton, 'دکمهٔ تاریخ داشبورد باید وجود داشته باشد');
+    dateButton.click();
+    await wait(1200);
+    return findCalendar();
+  };
+
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    const calendar = await openCalendar();
+    assert.ok(calendar, `تقویم باید در بار ${attempt} باز شود`);
+    const injectedClose = calendar.querySelector('[data-hesabno-calendar-close]');
+    assert.ok(injectedClose, 'دکمهٔ بستن سفارشی باید وجود داشته باشد');
+    assert.equal(typeof dom.window.__hesabnoCloseDashboardCalendar, 'function',
+      'بستن سفارشی باید کنترل state متعلق به React را صدا بزند');
+
+    injectedClose.click();
+    await wait(100);
+    assert.equal(findCalendar(), undefined, `بستن در بار ${attempt} باید state را ببندد، نه فقط DOM را حذف کند`);
+  }
 });
 
 test('dashboard widgets and transaction card icons use CSS appearance rules without injected <style> or inline style', { timeout: 60000 }, async (t) => {
@@ -147,6 +189,19 @@ test('dashboard widgets and transaction card icons use CSS appearance rules with
   assert.ok(txTab, 'تب تراکنش باید وجود داشته باشد');
   txTab.click();
   await wait(1200);
+
+  const transactionAmount = document.querySelector('[data-hesabno-transaction-amount]');
+  assert.ok(transactionAmount, 'مبلغ تراکنش باید در فهرست نمایش داده شود');
+  assert.equal(transactionAmount.classList.contains('font-mono'), false,
+    'فونت تک‌عرضی نباید به کل متن مبلغ و ارقامش اعمال شود');
+  const amountNumber = transactionAmount.querySelector('[data-hesabno-amount-number="true"]');
+  assert.ok(amountNumber, 'بخش عددی مبلغ باید جداگانه علامت‌گذاری شود');
+  assert.match(amountNumber.textContent, /[۰-۹]/, 'عدد مبلغ باید در بخش عددی باقی بماند');
+  assert.ok(amountNumber.querySelector('[data-hesabno-unified-number-font="true"]'),
+    'عدد مبلغ باید پس از یکدست‌سازی در پوشش monospace قرار بگیرد');
+  assert.ok([...transactionAmount.querySelectorAll('.font-mono')]
+    .some((node) => ['تومان', 'ریال'].includes(normalize(node.textContent))),
+  'فونت علامت و واحد پول نباید در این تغییر عوض شود');
 
   const icons = [...document.querySelectorAll('.hesabno-counterparty-icon')];
   assert.ok(icons.length >= 2, 'کارت‌های تراکنش باید کلاس hesabno-counterparty-icon بگیرند');
@@ -767,13 +822,13 @@ test('dashboard widgets and transaction card icons use CSS appearance rules with
           assert.ok((reasonEl.textContent || '').trim().length > 15, `توضیح دلیل نیاز به دسترسی «${permKey}» باید در زیر عنوان آن نوشته شده باشد`);
         }
 
-        // بررسی وجود دکمه «رد کردن» زیر لیست دسترسی‌ها و رفتن به فرم بعدی (یادآوری روزانه، چک و وام و واحد پول)
-        const skipPermsBtn = frOverlay.querySelector('[data-hesabno-fr-next-from-perms="true"]');
-        assert.ok(skipPermsBtn && (skipPermsBtn.textContent || '').includes('بعدی'),
-          'زیر لیست دسترسی‌ها باید گزینه «رد کردن» وجود داشته باشد');
-        skipPermsBtn.click();
+        // دکمه «بعدی» زیر لیست دسترسی‌ها باید فقط به فرم تنظیمات نهایی برود و اجازه ورود مستقیم ندهد.
+        const nextFromPermsBtn = frOverlay.querySelector('[data-hesabno-fr-next-from-perms="true"]');
+        assert.ok(nextFromPermsBtn && (nextFromPermsBtn.textContent || '').includes('بعدی'),
+          'زیر لیست دسترسی‌ها باید گزینه «بعدی» وجود داشته باشد');
+        nextFromPermsBtn.click();
         assert.equal(frCard.getAttribute('data-hesabno-fr-active-step'), 'preferences',
-          'زدن «رد کردن» یا «ادامه» در مرحله دسترسی‌های کاربر جدید باید فرم زمان یادآوری روزانه، چک و وام و انتخاب واحد پول را باز کند');
+          'زدن «بعدی» در مرحله دسترسی‌ها باید فرم زمان یادآوری روزانه، چک و وام و واحد پول را باز کند');
 
         const currRialBtn = frOverlay.querySelector('[data-hesabno-fr-currency="rial"]');
         const currTomanBtn = frOverlay.querySelector('[data-hesabno-fr-currency="toman"]');
@@ -802,21 +857,39 @@ test('dashboard widgets and transaction card icons use CSS appearance rules with
         assert.equal(frCard.getAttribute('data-hesabno-fr-active-step'), 'restore',
           'زدن دکمه بازگشت در صفحه اطلاعات باید کاربر را به صفحه بازیابی از گوگل درایو برگرداند');
 
-        // اگر کاربر بک‌آپ داشت: با بازیابی بک‌آپ فقط بخش دسترسی باز شود و پس از رد کردن یا تأیید، مستقیماً وارد برنامه گردد
+        // حتی پس از بازیابی بک‌آپ، ورود به برنامه باید فقط پس از عبور از پروفایل، دسترسی‌ها و تنظیمات نهایی ممکن باشد.
         const frGdriveBtn = frOverlay.querySelector('[data-hesabno-fr-gdrive-btn="true"]');
         assert.ok(frGdriveBtn, 'دکمه بازیابی اطلاعات از گوگل درایو در صفحه اول شروع کار باید وجود داشته باشد');
         frGdriveBtn.click();
         await wait(60);
-        assert.equal(frCard.getAttribute('data-hesabno-fr-active-step'), 'permissions',
-          'وقتی کاربر بک‌آپ دارد، پس از بازیابی بک‌آپ باید فقط بخش دسترسی‌ها باز شود');
+        assert.equal(frCard.getAttribute('data-hesabno-fr-active-step'), 'restore',
+          'بازیابی بک‌آپ نباید بدون کلیک «بعدی» از صفحه بازیابی عبور کند');
         assert.equal(frCard.getAttribute('data-hesabno-fr-restored'), 'true',
-          'حالت بازیابی از بک‌آپ باید روی کارت ثبت شود تا مراحل مشخصات و یادآورها تکرار نشود');
-        skipPermsBtn.click();
+          'حالت بازیابی از بک‌آپ باید روی کارت ثبت شود');
+        assert.notEqual(window.localStorage.getItem('hesabno:first_run_profile_done'), '1',
+          'پرچم تکمیل موجود در بک‌آپ نباید مسیر شروع کار را دور بزند');
+        frOverlay.querySelector('[data-hesabno-fr-go-profile="true"]').click();
+        assert.equal(frCard.getAttribute('data-hesabno-fr-active-step'), 'profile');
+        const restoredFirst = frOverlay.querySelector('#hesabno-fr-first');
+        const restoredLast = frOverlay.querySelector('#hesabno-fr-last');
+        if (!normalize(restoredFirst.value)) restoredFirst.value = 'علی';
+        if (!normalize(restoredLast.value)) restoredLast.value = 'رضایی';
+        frCard.dispatchEvent(new window.Event('submit', { bubbles: true, cancelable: true }));
+        await wait(40);
+        assert.equal(frCard.getAttribute('data-hesabno-fr-active-step'), 'permissions',
+          'پس از کلیک «بعدی» روی پروفایل، مرحله دسترسی‌ها باید باز شود');
+        nextFromPermsBtn.click();
+        assert.equal(frCard.getAttribute('data-hesabno-fr-active-step'), 'preferences',
+          'دکمه «بعدی» دسترسی‌ها باید تنظیمات نهایی را نشان دهد و ورود مستقیم نکند');
+        assert.equal(document.getElementById('hesabno-first-run'), frOverlay,
+          'پنجره شروع کار تا تکمیل صفحه نهایی باید باز بماند');
+        assert.notEqual(window.localStorage.getItem('hesabno:first_run_profile_done'), '1');
+        frOverlay.querySelector('[data-hesabno-fr-finish="true"]').click();
         await wait(40);
         assert.equal(document.getElementById('hesabno-first-run'), null,
-          'پس از رد کردن یا تأیید بخش دسترسی‌ها در حالت بازیابی بک‌آپ، پنجره شروع کار باید بسته شود و کاربر وارد برنامه گردد');
+          'ورود به برنامه فقط پس از تکمیل آخرین صفحه مجاز است');
         assert.equal(window.localStorage.getItem('hesabno:first_run_profile_done'), '1',
-          'پس از تکمیل ورود با بک‌آپ، پرچم تکمیل شروع کار باید ثبت شود');
+          'پس از تکمیل همه مراحل، پرچم شروع کار ثبت می‌شود');
 
         // ۱۸. کلیک روی انتخاب تصویر پیوست باید پنجرهٔ «دوربین یا گالری» (#hesabno-attachment-source-modal) را بدون style درون‌خطی باز کند و عکس دوربین را تحویل دهد
         const dummyLabel = document.createElement('label');
@@ -1309,14 +1382,28 @@ test('dashboard widgets and transaction card icons use CSS appearance rules with
         assert.equal(document.getElementById('hesabno-app-lock-overlay'), null,
           'وارد کردن رمز ۴ رقمی صحیح باید قفل برنامه را باز کند');
 
-        // تست بازگشایی با اثر انگشت
+        // تست بازگشایی زیستی: نبود Bridge یا پاسخ ناموفق نباید قفل را باز کند.
         window.__hesabnoLockApp();
         await wait(50);
         assert.ok(document.getElementById('hesabno-app-lock-overlay'), 'قفل برنامه دوباره فعال شد');
+        window.HnBridge = undefined;
+        document.getElementById('hesabno-biometric-unlock-btn').click();
+        await wait(50);
+        assert.ok(document.getElementById('hesabno-app-lock-overlay'),
+          'در وب، نبود احراز هویت بومی نباید دکمه اثر انگشت را به مسیر ورود تبدیل کند');
+        assert.ok(document.querySelector('[data-hesabno-lock-error="true"]'),
+          'در دسترس نبودن اثر انگشت باید به‌عنوان شکست احراز هویت اعلام شود');
+        window.__hesabnoOnBiometricAuthResult('true');
+        await wait(30);
+        assert.ok(document.getElementById('hesabno-app-lock-overlay'),
+          'پاسخ غیر Boolean از callback اثر انگشت نباید قفل را باز کند');
+
+        // فقط پاسخ موفق واقعیِ Bridge می‌تواند قفل را باز کند.
+        window.HnBridge = { authenticateBiometric: () => window.__hesabnoOnBiometricAuthResult(true) };
         document.getElementById('hesabno-biometric-unlock-btn').click();
         await wait(50);
         assert.equal(document.getElementById('hesabno-app-lock-overlay'), null,
-          'زدن دکمه «بازگشایی با اثر انگشت» باید قفل برنامه را باز کند');
+          'فقط نتیجه موفق احراز هویت زیستی باید قفل برنامه را باز کند');
         window.__safeSet('hesabno:lock', 'false');
 
         /* ۳۲. تب بیشتر: نمایش نسخه دقیق نرم‌افزار در پایین تب بیشتر به جای «نسخه همراه» */

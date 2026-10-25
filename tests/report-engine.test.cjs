@@ -86,6 +86,31 @@ test('account balances match the expected movement of the month', () => {
   assert.equal(bank.totalCredits, 5605000);
 });
 
+test('a refund receipt reverses expense classification without reducing the bank deposit', () => {
+  const accounts = [
+    { id: 'bank', name: 'Bank', group: 'bank', active: true },
+    { id: 'rent', name: 'Rent', group: 'expense', active: true },
+    { id: 'refund-income', name: 'Refund receipts', group: 'income', active: true },
+  ];
+  const transactions = [
+    { id: 'expense-1', documentNumber: 10, type: 'expense', account: 'Bank', category: 'Rent', amount: 100 },
+    {
+      id: 'refund-1', documentNumber: 11, type: 'income', account: 'Bank', category: 'Refund receipts', amount: 40,
+      isReversal: true, isRefundReceipt: true, reversalOfDocNumber: 10,
+    },
+  ];
+
+  const refundTotals = reportTotals(transactions[1], accounts, transactions);
+  assert.equal(refundTotals.income, 0, 'برگشت وجه نباید درآمد گزارش شود');
+  assert.equal(refundTotals.expense, -40, 'برگشت وجه باید هزینه را کاهش دهد');
+
+  const summary = reportSummary(transactions, accounts, [], []);
+  assert.equal(summary.totalIncome, 0);
+  assert.equal(summary.totalExpense, 60);
+  assert.equal(summary.netSavings, -60);
+  assert.equal(summary.totalLiquidAssets, -60, 'وجه برگشتی همچنان به موجودی بانک اضافه می‌شود');
+});
+
 test('profit and loss totals bridge to the real movement of assets', () => {
   const totalsOfMonth = totals(MONTH, ACCOUNTS);
   // توجه: کارمزد بانکی هم داخل «expense» شمرده می‌شود و هم در فیلد اطلاعی «fee» تکرار می‌شود؛

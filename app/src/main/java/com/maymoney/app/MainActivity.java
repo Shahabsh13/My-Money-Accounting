@@ -69,16 +69,18 @@ public class MainActivity extends ComponentActivity {
 
     // بررسی لایه‌های گذرا پیش از تاریخچه‌ی WebView؛ Back نباید هنگام بازبودن overlay صفحه را عوض کند.
     private static final String BACK_PREFLIGHT_JS =
-            "(function(){try{if(typeof window.__hesabnoDismissExitDialog==='function'&&window.__hesabnoDismissExitDialog())return true;}catch(e){}"
+            "(function(){try{if(document.querySelector('[data-hesabno-app-lock=true]'))return true;}catch(e){}"
+            + "try{if(typeof window.__hesabnoDismissExitDialog==='function'&&window.__hesabnoDismissExitDialog())return true;}catch(e){}"
             + "try{var fr=document.getElementById('hesabno-first-run');if(fr){fr.parentNode.removeChild(fr);return true;}}catch(e){}"
             + "try{if(typeof window.__hesabnoCloseAmountKeyboard==='function'&&window.__hesabnoCloseAmountKeyboard())return true;}catch(e){}"
+            + "try{var dp=document.querySelector('#persian-datepicker-backdrop,[data-hesabno-settlement-datepicker],[data-hesabno-return-date-picker]');if(dp){var dx=dp.querySelector('#datepicker-close-button,[data-hesabno-settlement-close],[data-return-date-close]');if(dx)dx.click();return true;}}catch(e){}"
             + "try{if(typeof window.__hesabnoCloseTopLayer==='function'&&window.__hesabnoCloseTopLayer())return true;}catch(e){}return false;})();";
 
     // اگر برنامه‌ی وب بتواند برگشت درون‌برنامه‌ای انجام دهد، خودش اعلام می‌کند (backHandled)؛
     // وگرنه از HnBridge.exitApp خروج از برنامه را می‌خواهد.
     private static final String BACK_JS =
             "(function(){\nvar handled=false;\nfunction done(){if(handled)return;handled=true;try{if(window.HnBridge)window.H"
-            + "nBridge.backHandled();}catch(e){}}\nfunction visible(el){if(!el||!el.getClientRects||!el.getClientRects().lengt"
+            + "nBridge.backHandled();}catch(e){}}\ntry{if(document.querySelector('[data-hesabno-app-lock=true]')){done();return;}}catch(e){}\ntry{var dp=document.querySelector('#persian-datepicker-backdrop,[data-hesabno-settlement-datepicker],[data-hesabno-return-date-picker]');if(dp){var dx=dp.querySelector('#datepicker-close-button,[data-hesabno-settlement-close],[data-return-date-close]');if(dx)dx.click();done();return;}}catch(e){}\nfunction visible(el){if(!el||!el.getClientRects||!el.getClientRects().lengt"
             + "h)return false;var s=window.getComputedStyle?window.getComputedStyle(el):null;return !s||(s.display!=='none'&&"
             + "s.visibility!=='hidden'&&s.opacity!=='0');}\nfunction findBackButton(scope){if(!scope||!scope.querySelectorAll)"
             + "return null;var labels=['بازگشت','برگشت','انصراف','بستن'];var list=scope.querySelectorAll('button,[role=\"butto"
@@ -745,9 +747,23 @@ public class MainActivity extends ComponentActivity {
         registerSmsReceiverIfPermitted();
     }
 
+    private boolean hasSmsReadPermission() {
+        return Build.VERSION.SDK_INT < Build.VERSION_CODES.M
+                || checkSelfPermission(Manifest.permission.READ_SMS) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private boolean hasSmsReceivePermission() {
+        return Build.VERSION.SDK_INT < Build.VERSION_CODES.M
+                || checkSelfPermission(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private boolean hasCompleteSmsPermission() {
+        return hasSmsReadPermission() && hasSmsReceivePermission();
+    }
+
     private void registerSmsReceiverIfPermitted() {
         if (!smsReceiverRegistered && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                && checkSelfPermission(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED) {
+                && hasCompleteSmsPermission()) {
             try {
                 android.content.IntentFilter filter = new android.content.IntentFilter("android.provider.Telephony.SMS_RECEIVED");
                 if (Build.VERSION.SDK_INT >= 33) {
@@ -810,13 +826,22 @@ public class MainActivity extends ComponentActivity {
                 toast("برای عکس‌برداری از فیش، مجوز دوربین لازم است");
             }
         } else if (requestCode == 1003) {
-            boolean granted = grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED;
+            // Android may grant READ_SMS and RECEIVE_SMS independently; inspect both current states.
+            boolean readGranted = hasSmsReadPermission();
+            boolean receiveGranted = hasSmsReceivePermission();
+            boolean granted = readGranted && receiveGranted;
             notifyPermissionResultToWeb("sms", granted);
             if (granted) {
                 registerSmsReceiverIfPermitted();
+            }
+            if (readGranted) {
                 String json = queryBankSmsFromDevice(120);
                 deliverSmsBatchToWeb(json);
+            }
+            if (granted) {
                 toast("مجوز دسترسی به پیامک‌های بانکی فعال شد");
+            } else if (readGranted || receiveGranted) {
+                toast("برای فعال‌شدن کامل دریافت پیامک بانکی، هر دو مجوز پیامک لازم است");
             } else {
                 toast("برای خواندن خودکار پیامک‌های بانکی، مجوز پیامک لازم است");
             }
@@ -1269,8 +1294,7 @@ public class MainActivity extends ComponentActivity {
          */
         @JavascriptInterface
         public boolean hasSmsPermission() {
-            return Build.VERSION.SDK_INT < Build.VERSION_CODES.M
-                    || checkSelfPermission(Manifest.permission.READ_SMS) == PackageManager.PERMISSION_GRANTED;
+            return hasCompleteSmsPermission();
         }
 
         /**
@@ -1278,12 +1302,14 @@ public class MainActivity extends ComponentActivity {
          */
         @JavascriptInterface
         public boolean requestSmsPermission() {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                    && checkSelfPermission(Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !hasCompleteSmsPermission()) {
+                final java.util.ArrayList<String> missingPermissions = new java.util.ArrayList<>();
+                if (!hasSmsReadPermission()) missingPermissions.add(Manifest.permission.READ_SMS);
+                if (!hasSmsReceivePermission()) missingPermissions.add(Manifest.permission.RECEIVE_SMS);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        requestPermissions(new String[]{Manifest.permission.READ_SMS, Manifest.permission.RECEIVE_SMS}, 1003);
+                        requestPermissions(missingPermissions.toArray(new String[0]), 1003);
                     }
                 });
                 return false;
@@ -1297,12 +1323,11 @@ public class MainActivity extends ComponentActivity {
         @JavascriptInterface
         public String readBankSmsInboxJson(final int maxCount) {
             final int limit = maxCount > 0 && maxCount <= 500 ? maxCount : 120;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                    && checkSelfPermission(Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !hasSmsReadPermission()) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        requestPermissions(new String[]{Manifest.permission.READ_SMS, Manifest.permission.RECEIVE_SMS}, 1003);
+                        requestPermissions(new String[]{Manifest.permission.READ_SMS}, 1003);
                     }
                 });
                 return "[]";
@@ -1391,14 +1416,31 @@ public class MainActivity extends ComponentActivity {
                                                 );
                                             }
                                         }
+
+                                        @Override
+                                        public void onAuthenticationError(int errorCode, CharSequence errString) {
+                                            if (webView != null) {
+                                                webView.evaluateJavascript(
+                                                        "if(window.__hesabnoOnBiometricAuthResult)window.__hesabnoOnBiometricAuthResult(false);",
+                                                        null
+                                                );
+                                            }
+                                        }
                                     });
                         } else if (webView != null) {
                             webView.evaluateJavascript(
-                                    "if(window.__hesabnoOnBiometricAuthResult)window.__hesabnoOnBiometricAuthResult(true);",
+                                    "if(window.__hesabnoOnBiometricAuthResult)window.__hesabnoOnBiometricAuthResult(false);",
                                     null
                             );
                         }
-                    } catch (Exception ignored) {}
+                    } catch (Exception ignored) {
+                        if (webView != null) {
+                            webView.evaluateJavascript(
+                                    "if(window.__hesabnoOnBiometricAuthResult)window.__hesabnoOnBiometricAuthResult(false);",
+                                    null
+                            );
+                        }
+                    }
                 }
             });
             return true;
@@ -2056,15 +2098,25 @@ public class MainActivity extends ComponentActivity {
                 try { out.getFD().sync(); } catch (Exception ignored) {}
                 out.close();
                 out = null;
-                if (primary.exists() && primary.length() > 0) {
+                boolean hadPrevious = primary.exists() && primary.length() > 0;
+                String previousPayload = hadPrevious ? readUtf8FileIfValid(primary) : "";
+                if (hadPrevious) {
                     copyFileSilently(primary, backup);
                 }
                 if (!temp.renameTo(primary)) {
-                    copyFileSilently(temp, primary);
+                    // Keep the existing primary intact unless its valid contents were safely copied.
+                    if (hadPrevious && (previousPayload.isEmpty()
+                            || !previousPayload.equals(readUtf8FileIfValid(backup)))) return false;
+                    if (primary.exists() && !primary.delete()) return false;
+                    if (!temp.renameTo(primary) && !copyFileSilently(temp, primary)) return false;
+                }
+                boolean persisted = primary.exists() && primary.length() == bytes.length
+                        && readUtf8FileIfValid(primary).equals(jsonPayload.trim());
+                if (persisted) {
                     //noinspection ResultOfMethodCallIgnored
                     temp.delete();
                 }
-                return primary.exists() && primary.length() > 0;
+                return persisted;
             } catch (Exception e) {
                 return false;
             } finally {
@@ -2118,12 +2170,14 @@ public class MainActivity extends ComponentActivity {
                 try { out.getFD().sync(); } catch (Exception ignored) {}
                 out.close();
                 out = null;
-                if (!temp.renameTo(target)) {
-                    copyFileSilently(temp, target);
+                if (!temp.renameTo(target) && !copyFileSilently(temp, target)) return false;
+                boolean persisted = target.exists() && target.length() == bytes.length
+                        && readAttachmentFile(id).equals(dataUrl);
+                if (persisted) {
                     //noinspection ResultOfMethodCallIgnored
                     temp.delete();
                 }
-                return target.exists() && target.length() > 0;
+                return persisted;
             } catch (Exception e) {
                 return false;
             } finally {
@@ -2490,24 +2544,22 @@ public class MainActivity extends ComponentActivity {
         }
     }
 
-    private void copyFileSilently(File src, File dst) {
-        java.io.FileInputStream in = null;
-        FileOutputStream out = null;
-        try {
-            in = new java.io.FileInputStream(src);
-            out = new FileOutputStream(dst);
+    private boolean copyFileSilently(File src, File dst) {
+        if (src == null || dst == null || !src.exists()) return false;
+        long expectedLength = src.length();
+        try (java.io.FileInputStream in = new java.io.FileInputStream(src);
+             FileOutputStream out = new FileOutputStream(dst)) {
             byte[] buf = new byte[8192];
             int n;
-            while ((n = in.read(buf)) > 0) {
-                out.write(buf, 0, n);
+            while ((n = in.read(buf)) != -1) {
+                if (n > 0) out.write(buf, 0, n);
             }
             out.flush();
             try { out.getFD().sync(); } catch (Exception ignored) {}
         } catch (Exception ignored) {
-        } finally {
-            if (in != null) { try { in.close(); } catch (Exception ignored) {} }
-            if (out != null) { try { out.close(); } catch (Exception ignored) {} }
+            return false;
         }
+        return dst.exists() && dst.length() == expectedLength;
     }
 
     /** Write a complete new snapshot before discarding the previous public backup. No UI or permission prompts. */

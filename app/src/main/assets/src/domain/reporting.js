@@ -49,7 +49,7 @@
     var totalIncome = 0;
     var totalExpense = 0;
     for (var index = 0; index < documents.length; index += 1) {
-      var split = splitTransaction(documents[index], accountList);
+      var split = splitTransaction(documents[index], accountList, documents);
       totalIncome += split.income;
       totalExpense += split.expense;
     }
@@ -133,7 +133,7 @@
         bucket = { month: key, income: 0, expense: 0, fee: 0, net: 0, count: 0 };
         buckets.set(key, bucket);
       }
-      var split = splitTransaction(transaction, accountList);
+      var split = splitTransaction(transaction, accountList, documents);
       bucket.income += split.income;
       bucket.expense += split.expense;
       bucket.fee += split.fee;

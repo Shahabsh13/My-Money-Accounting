@@ -469,18 +469,18 @@
           renderAttachment();
           var openPaymentDatePicker = function () {
             var current = parsePaymentDate(paymentDate.value) || todayParts;
-            var state = { year: current.year, month: current.month, years: false };
+            var state = { year: current.year, month: current.month, years: false, pendingDate: current };
             var overlay = document.createElement("div");
             overlay.setAttribute("data-hesabno-return-date-picker", "true");
             overlay.setAttribute("role", "dialog"); overlay.setAttribute("aria-modal", "true");
             overlay.id = "hesabno-return-datepicker-backdrop";
             overlay.className = "fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-200";
-            overlay.style.setProperty("z-index", "120", "important");
+            overlay.style.setProperty("z-index", "2147483000", "important");
             var picker = document.createElement("div");
             picker.id = "hesabno-return-datepicker-sheet";
             picker.dir = "rtl";
             picker.className = "w-full max-w-sm bg-[#161a23] text-stone-100 rounded-t-3xl sm:rounded-3xl border-t sm:border border-stone-700/60 p-4 sm:p-5 shadow-2xl transition-all select-none animate-in slide-in-from-bottom-6 duration-200";
-            picker.innerHTML = `<div class="w-10 h-1 bg-stone-700 rounded-full mx-auto mb-4 sm:hidden"></div><div class="flex items-center justify-between gap-2.5 mb-4"><button data-return-date-year type="button" class="px-4 py-2 rounded-xl text-sm font-bold border transition flex items-center gap-1.5"></button><div class="flex items-center justify-between bg-stone-800 border border-stone-700/80 rounded-xl px-2 py-1.5 min-w-[155px]"><button data-return-date-prev-month type="button" class="p-1 rounded-lg transition" title="ماه قبل">‹</button><span data-date-month class="font-bold text-sm text-stone-100 px-3"></span><button data-return-date-next-month type="button" class="p-1 rounded-lg transition" title="ماه بعد">›</button></div><button data-return-date-close type="button" aria-label="بستن تقویم" class="w-9 h-9 rounded-xl bg-stone-800/80 hover:bg-stone-750 border border-stone-700/60 text-stone-400 hover:text-stone-200 text-lg transition">×</button></div><div data-date-calendar></div><div class="flex items-center justify-start gap-3 mt-4 pt-2 border-t border-stone-800"><button data-return-date-today type="button" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-stone-800 hover:bg-stone-750 border border-stone-700 text-xs font-bold text-stone-200 transition">امروز</button></div>`;
+            picker.innerHTML = `<div class="w-10 h-1 bg-stone-700 rounded-full mx-auto mb-4 sm:hidden"></div><div class="flex items-center justify-between gap-2.5 mb-4"><button data-return-date-year type="button" class="px-4 py-2 rounded-xl text-sm font-bold border transition flex items-center gap-1.5"></button><div class="flex items-center justify-between bg-stone-800 border border-stone-700/80 rounded-xl px-2 py-1.5 min-w-[155px]"><button data-return-date-prev-month type="button" class="p-1 rounded-lg transition" title="ماه قبل">‹</button><span data-date-month class="font-bold text-sm text-stone-100 px-3"></span><button data-return-date-next-month type="button" class="p-1 rounded-lg transition" title="ماه بعد">›</button></div><button data-return-date-close type="button" aria-label="بستن تقویم" class="w-9 h-9 rounded-xl bg-stone-800/80 hover:bg-stone-750 border border-stone-700/60 text-stone-400 hover:text-stone-200 text-lg transition">×</button></div><div data-date-calendar></div><div class="flex items-center justify-start gap-3 mt-4 pt-2 border-t border-stone-800"><button data-return-date-today type="button" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-stone-800 hover:bg-stone-750 border border-stone-700 text-xs font-bold text-stone-200 transition">امروز</button><button data-return-date-confirm type="button" class="flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-black transition">تأیید تاریخ</button></div>`;
             overlay.appendChild(picker); document.body.appendChild(overlay);
             var renderCalendar = function () {
               var body = picker.querySelector("[data-date-calendar]"), yearButton = picker.querySelector("[data-return-date-year]"), monthButton = picker.querySelector("[data-date-month]");
@@ -503,7 +503,7 @@
               var first = jalaliToGregorian(state.year, state.month, 1), leading = (new Date(Date.UTC(first.year, first.month - 1, first.day)).getUTCDay() + 1) % 7, monthLength = paymentMonthLength(state.year, state.month);
               body.innerHTML = `<div class="bg-stone-850/90 border border-stone-700/50 rounded-2xl p-3.5 shadow-inner"><div class="grid grid-cols-7 gap-1 mb-2 text-center text-xs font-bold text-stone-400"><span class="py-1">ش</span><span class="py-1">ی</span><span class="py-1">د</span><span class="py-1">س</span><span class="py-1">چ</span><span class="py-1">پ</span><span class="py-1 text-rose-400/80">ج</span></div><div data-date-days class="grid grid-cols-7 gap-y-2 gap-x-1"></div></div>`;
               var days = body.querySelector("[data-date-days]"); for (var blank = 0; blank < leading; blank += 1) { var emptyDay = document.createElement("div"); emptyDay.className = "w-9 h-9 sm:w-10 sm:h-10"; days.appendChild(emptyDay); }
-              var selected = parsePaymentDate(paymentDate.value);
+              var selected = parsePaymentDate(state.pendingDate);
               for (var day = 1; day <= monthLength; day += 1) {
                 var parts = { year: state.year, month: state.month, day: day }, blocked = minimumDate && dateKey(parts) < dateKey(minimumDate) || todayParts && dateKey(parts) > dateKey(todayParts);
                 var button = document.createElement("button"); button.type = "button"; button.disabled = !!blocked; button.setAttribute("data-date-day", String(day));
@@ -515,17 +515,16 @@
             var escapeHandler = null;
             var closeDatePicker = function () { overlay.remove(); if (escapeHandler) document.removeEventListener("keydown", escapeHandler); };
             overlay.addEventListener("click", function (event) {
-              if (event.target === overlay) { closeDatePicker(); return; }
+              if (event.target === overlay) { event.stopPropagation(); return; }
               var button = event.target.closest("button"); if (!button) return;
               if (button.hasAttribute("data-return-date-close")) { closeDatePicker(); return; }
+              if (button.hasAttribute("data-return-date-confirm")) { if (state.pendingDate) setPaymentDate(state.pendingDate); updateDayButtons(); closeDatePicker(); return; }
               if (button.hasAttribute("data-return-date-prev-month") || button.hasAttribute("data-return-date-next-month")) { if (button.disabled) return; state.month += button.hasAttribute("data-return-date-prev-month") ? -1 : 1; if (state.month < 1) { state.month = 12; state.year -= 1; } if (state.month > 12) { state.month = 1; state.year += 1; } state.years = false; renderCalendar(); }
               else if (button.hasAttribute("data-return-date-year")) { state.years = !state.years; renderCalendar(); }
               else if (button.hasAttribute("data-date-set-year")) { state.year = Number(button.getAttribute("data-date-set-year")); state.years = false; renderCalendar(); }
-              else if (button.hasAttribute("data-return-date-today")) { if (!minimumDate || dateKey(todayParts) >= dateKey(minimumDate)) setPaymentDate(todayParts); updateDayButtons(); closeDatePicker(); }
-              else if (button.hasAttribute("data-date-day") && !button.disabled) { setPaymentDate({ year: state.year, month: state.month, day: Number(button.getAttribute("data-date-day")) }); updateDayButtons(); closeDatePicker(); }
+              else if (button.hasAttribute("data-return-date-today")) { if (!minimumDate || dateKey(todayParts) >= dateKey(minimumDate)) { state.pendingDate = todayParts; state.year = todayParts.year; state.month = todayParts.month; state.years = false; renderCalendar(); } }
+              else if (button.hasAttribute("data-date-day") && !button.disabled) { state.pendingDate = { year: state.year, month: state.month, day: Number(button.getAttribute("data-date-day")) }; renderCalendar(); }
             });
-            var escapeHandler = function (event) { if (event.key === "Escape") closeDatePicker(); };
-            document.addEventListener("keydown", escapeHandler);
           };
           dateContainer.addEventListener("click", openPaymentDatePicker);
           dateContainer.addEventListener("keydown", function (event) { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); openPaymentDatePicker(); } });

@@ -188,18 +188,21 @@
   "appearanceLayer": {
     "source": "task-12",
     "inBundle": "235-hesabno-text-root-and-display-stability.css",
-    "note": "هر مقدار بصری در یک لایه؛ JS فقط کلاس معنایی می‌گذارد.",
-    "bytes": 131726,
-    "rules": 610
+    "note": "Original appearance baseline: 610 rules / 131,726 bytes. Current standalone stylesheet 235 contains 669 parsed rules / 142,676 bytes.",
+    "bytes": 142676,
+    "rules": 669,
+    "baselineBytes": 131726,
+    "baselineRules": 610
   },
   "currentState": {
     "files": 10,
-    "rules": 3387,
-    "bytes": 844944,
-    "hash": "df9a7dbd8f70761586429dc8d5435fc62502d1cb18b631fb740d83fb5bdd5c37",
-    "note": "وضعیت امروز روی دیسک: ادغام بی‌افت (۲۷۳۶ قاعده) + لایهٔ ظاهر (۶۱۰ قاعده) + اصلاح‌های ثبت‌شدهٔ بعدی (۴۱ قاعده؛ ۸ قاعدهٔ کارت جزئیات نمودار روند با حذف ویجت برداشته شد)."
+    "rules": 3395,
+    "bytes": 847665,
+    "hash": "d28291a02523c5cdfbd8bcc796ef90102491fa830b84558210fd995e4a598ad0",
+    "note": "Current stylesheet state on disk; 10 linked stylesheets and 3,395 parsed rules. Horizontal form transitions remain in standalone stylesheet 043; onboarding transitions and step visibility remain in standalone stylesheet 235.",
+    "generatedAt": "2026-10-24T19:18:01.824Z"
   },
-  "generatedAt": "2026-10-18T19:35:25.231Z",
+  "generatedAt": "2026-10-24T19:08:05.622Z",
   "onboardingCompact": {
     "note": "Intentional compact first-run UI; historical cascade-equality proof unchanged.",
     "addedRules": 4
@@ -235,5 +238,13 @@
   "paymentRouteAlignment": {
     "addedRules": 2,
     "note": "دو کادر «پرداخت به / دریافت از» و «از حساب / به حساب» در فرم ثبت سند ستون برچسب هم‌عرض (۴٫۲۵rem) می‌گیرند تا لبه‌های کادرها موازی بمانند — هم در حالت عادی و هم در حالت خطای درون‌کادری."
+  },
+  "formTransitions": {
+    "addedRules": 5,
+    "note": "Horizontal form entry, successful confirmation, and Back transitions with reduced-motion support."
+  },
+  "onboardingTransitions": {
+    "addedRules": 3,
+    "note": "First-run onboarding views slide in from the left on Next and from the right on Previous; reduced-motion is respected."
   }
 }

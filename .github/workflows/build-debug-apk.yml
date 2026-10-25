@@ -49,7 +49,7 @@ jobs:
 
       - name: Install Android SDK packages
         run: |
-          SDKMANAGER="$(find "$ANDROID_HOME/cmdline-tools" -type f -name sdkmanager | head -n 1)"
+          SDKMANAGER="$(find "$ANDROID_HOME/cmdline-tools" -type f -name sdkmanager -print -quit)"
           test -n "$SDKMANAGER"
           # yes may exit with SIGPIPE once sdkmanager has read enough answers.
           # Preserve sdkmanager's status, not yes's, under GitHub's bash -e -o pipefail.

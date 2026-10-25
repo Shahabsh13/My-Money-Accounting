@@ -277,7 +277,7 @@ test('index.html loads the guard module and installer before every app script', 
   assert.ok(installerAt < legacyAt);
 });
 
-test('live boot: guard installed before first write, 18 boot writes, real quota handled', async (t) => {
+test('live boot: guard installed before first write, 19 boot writes including onboarding progress, real quota handled', async (t) => {
   const probe = path.join(root, 'tools/bench/storage-guard-probe.cjs');
   let raw;
   try {
@@ -295,21 +295,21 @@ test('live boot: guard installed before first write, 18 boot writes, real quota 
   assert.equal(result.writeSubscribers, 3, '۱۴۵/۱۴۸/۱۵۴ باید مشترک شده باشند');
   assert.equal(result.setsItemOwnWrappers, 0, 'هیچ وصله‌ی قدیمی روی setItem نباید بماند');
 
-  /* ۱۷ نوشتن قبلی + نشانگر یک‌باره اصلاح سنجاق صندوق؛ خود نگهبان نوشتنی اضافه نمی‌کند.
+  /* نوشتن‌های موجود بوت + نشانگر ماندگار onboarding؛ خود نگهبان نوشتنی اضافه نمی‌کند.
      (نوشتن ۰۰۸ که پرچم پنهان‌سازی ویجت نمودار روند را می‌نوشت، با حذف آن اسکریپت کم شد.) */
-  assert.equal(result.bootStats.writes, 18);
+  assert.equal(result.bootStats.writes, 19);
   assert.equal(result.bootStats.failures, 0);
 
   /*
    * ۶.۳: دو نوشتن بی‌تغییر حذف می‌شود (۳۱٬۱۱۸ بایتی accounts_v5 از هسته ۰۶۷ + یک ۴ بایتی)،
-   * عکس نهایی شامل pinned=false صندوق (+۱ بایت) و نشانگر مهاجرت (+۱ بایت) است.
+   * عکس نهایی شامل pinned=false صندوق، نشانگر مهاجرت و نشانگر پایدار onboarding است.
    */
   assert.equal(result.bootStats.skipped, 2);
   assert.equal(result.bootStats.skippedBytes, 31122);
-  assert.equal(result.snapshot.count, 14);
-  assert.equal(result.snapshot.bytes, 31204);
-  assert.equal(result.snapshot.digest, 'd8df8220daef2173b2b86dfe9ab3668c135df72182a792602af0ccc5afaf6f95',
-    'داده‌ی نهایی باید فقط اصلاح عمدی سنجاق صندوق و نشانگر مهاجرت را داشته باشد');
+  assert.equal(result.snapshot.count, 15);
+  assert.equal(result.snapshot.bytes, 31214);
+  assert.equal(result.snapshot.digest, '2a082bd28d623b67fb08fd3447c51b6ee342b572a39ad7912e00b06ab309e3fb',
+    'عکس بوت باید شامل اصلاح سنجاق صندوق، نشانگر مهاجرت و نشانگر onboarding باشد');
   assert.equal(result.snapshot.accountsHash, 'ff97075cf3e9c63a');
   assert.equal(result.subscribersFired, 2, 'دو نوشتن آزمایشی باید دو بار مشترک را صدا بزنند');
 
