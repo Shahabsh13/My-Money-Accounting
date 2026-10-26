@@ -32,6 +32,13 @@ test('check settlement calendar commits only on confirmation and cancels with X'
     let backdrop = document.querySelector('[data-hesabno-settlement-datepicker]');
     assert.ok(backdrop, 'تقویم تسویه باید باز شود');
     assert.equal(backdrop.style.zIndex, '2147483000', 'لایهٔ تقویم باید روی دکمه‌های فرم باشد');
+    assert.equal(backdrop.style.position, 'fixed', 'لایهٔ تقویم باید در تمام‌صفحه ثابت باشد');
+    assert.equal(backdrop.style.top, '0px');
+    assert.equal(backdrop.style.bottom, '0px');
+    assert.equal(backdrop.style.display, 'flex');
+    assert.equal(backdrop.style.alignItems, 'flex-end', 'تقویم باید در پایین صفحه قرار بگیرد حتی اگر کلاس‌های CSS بارگذاری نشوند');
+    assert.equal(backdrop.style.justifyContent, 'center');
+    assert.equal(backdrop.querySelector('#persian-datepicker-sheet').style.borderTopLeftRadius, '24px');
     assert.ok(backdrop.querySelector('[data-hesabno-settlement-close]'), 'ضربدر بستن باید وجود داشته باشد');
     assert.ok(backdrop.querySelector('[data-hesabno-settlement-confirm]'), 'دکمهٔ تأیید باید پایین تقویم باشد');
 

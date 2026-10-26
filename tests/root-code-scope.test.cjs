@@ -237,6 +237,11 @@ test('پرداخت جایگزین چک برگشتی هیچ کد یا «کد ری
   let datePicker = document.querySelector('[data-hesabno-return-date-picker]');
   assert.ok(datePicker, 'تقویم پرداخت جایگزین باید باز شود');
   assert.equal(datePicker.style.zIndex, '2147483000', 'تقویم باید بالای دکمه‌های فرم نمایش داده شود');
+  assert.equal(datePicker.style.position, 'fixed', 'لایهٔ تقویم باید تمام‌صفحه و ثابت باشد');
+  assert.equal(datePicker.style.top, '0px');
+  assert.equal(datePicker.style.bottom, '0px');
+  assert.equal(datePicker.style.alignItems, 'flex-end', 'تقویم باید پایین صفحه بماند حتی بدون کلاس‌های CSS');
+  assert.equal(datePicker.querySelector('#hesabno-return-datepicker-sheet').style.borderTopLeftRadius, '24px');
   assert.ok(datePicker.querySelector('[data-return-date-close]'), 'ضربدر بستن باید در بالای تقویم باشد');
   assert.ok(datePicker.querySelector('[data-return-date-confirm]'), 'تأیید باید پایین تقویم باشد');
   let selectableDays = [...datePicker.querySelectorAll('[data-date-day]')].filter((button) => !button.disabled);
