@@ -502,6 +502,8 @@ test('dashboard widgets and transaction card icons use CSS appearance rules with
       window.localStorage.setItem('hesabno:projects', JSON.stringify(['پروژه بازسازی']));
       window.localStorage.setItem('hesabno:familyMembers', JSON.stringify(['امیر']));
       const moreOptsBtn = Array.from(document.querySelectorAll('form button')).find((b) => b.textContent.includes('گزینه‌ها و امکانات بیشتر'));
+      const keypad = document.getElementById('hesabno-amount-keyboard');
+      if (keypad && !keypad.hidden) keypad.querySelector('[data-hkap-action="close"]').click();
       if (moreOptsBtn) {
         moreOptsBtn.click();
         await wait(60);

@@ -185,6 +185,8 @@ test('dialog motion class lands on the dialog itself, not on an inner card', { t
 
   const field = document.querySelector('#tx-date-input-container');
   assert.ok(field, 'فیلد تاریخ باید باشد');
+  const keypad = document.getElementById('hesabno-amount-keyboard');
+  if (keypad && !keypad.hidden) keypad.querySelector('[data-hkap-action="close"]').click();
   field.click();
   await wait(300);
 

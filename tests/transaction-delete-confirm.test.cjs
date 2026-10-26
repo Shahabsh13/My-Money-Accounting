@@ -75,6 +75,10 @@ test('delete stays in the edit form only (centred dialog), not in the new-docume
   assert.ok(newHeader, 'فرم ثبت پرداخت باید هدر داشته باشد');
   assert.equal(d.querySelectorAll('main header [title="حذف کامل سند"]').length, 0,
     'در فرم سند جدید دکمهٔ حذف نباید دیده شود');
+  const keypadBeforeFormClose = d.getElementById('hesabno-amount-keyboard');
+  if (keypadBeforeFormClose && !keypadBeforeFormClose.hidden) {
+    keypadBeforeFormClose.querySelector('[data-hkap-action="close"]').click();
+  }
   click(newHeader.querySelector('button[aria-label="بستن"]'));
   await wait(900);
 
@@ -94,7 +98,10 @@ test('delete stays in the edit form only (centred dialog), not in the new-docume
   assert.ok(trash, 'در فرم ویرایش دکمهٔ حذف سند باید بماند');
   assert.equal(trash.getAttribute('aria-label'), 'حذف کامل سند');
   assert.equal(trash.getAttribute('aria-haspopup'), 'dialog');
-
+  const keypadBeforeDelete = d.getElementById('hesabno-amount-keyboard');
+  if (keypadBeforeDelete && !keypadBeforeDelete.hidden) {
+    keypadBeforeDelete.querySelector('[data-hkap-action="close"]').click();
+  }
   click(trash);
   await wait(700);
 
