@@ -160,6 +160,37 @@ test('opening the keypad puts a blurred backdrop behind it and hides it on close
   await settleAndClose(dom);
 });
 
+test('tapping outside the internal keypad dismisses it without activating the underlying control', async () => {
+  const dom = mount(); const { window } = dom; const document = window.document;
+  const input = document.getElementById('amount');
+  const accountButton = document.createElement('button');
+  accountButton.textContent = 'حساب‌ها';
+  document.body.appendChild(accountButton);
+  let activations = 0;
+  accountButton.addEventListener('click', () => { activations += 1; });
+
+  input.dispatchEvent(new window.Event('pointerdown', { bubbles: true, cancelable: true }));
+  const panel = document.getElementById('hesabno-amount-keyboard');
+  assert.equal(panel.hidden, false, 'کیبورد داخلی باید باز باشد');
+
+  const outsidePress = new window.Event('pointerdown', { bubbles: true, cancelable: true });
+  accountButton.dispatchEvent(outsidePress);
+  assert.equal(outsidePress.defaultPrevented, true, 'ضربهٔ بیرون باید به‌جای فعال کردن کنترل، مصرف شود');
+  assert.equal(panel.hidden, true, 'ضربهٔ بیرون باید کیبورد را ببندد');
+
+  const outsideClick = new window.MouseEvent('click', { bubbles: true, cancelable: true, detail: 1 });
+  accountButton.dispatchEvent(outsideClick);
+  assert.equal(outsideClick.defaultPrevented, true, 'کلیک مصنوعی همان لمس هم باید مسدود شود');
+  assert.equal(activations, 0, 'با بستن کیبورد نباید به صفحهٔ حساب‌ها وارد شد');
+
+  const nextPress = new window.Event('pointerdown', { bubbles: true, cancelable: true });
+  accountButton.dispatchEvent(nextPress);
+  assert.equal(nextPress.defaultPrevented, false, 'ضربهٔ بعدی پس از بسته‌شدن کیبورد باید عادی باشد');
+  accountButton.dispatchEvent(new window.MouseEvent('click', { bubbles: true, cancelable: true, detail: 1 }));
+  assert.equal(activations, 1, 'ضربهٔ بعدی باید بتواند کنترل زیرین را فعال کند');
+  await settleAndClose(dom);
+});
+
 test('physical digits edit the draft and Enter commits it', async () => {
   const dom = mount(); const { window } = dom; const input = window.document.getElementById('amount');
   input.dispatchEvent(new window.Event('pointerdown', { bubbles: true, cancelable: true }));

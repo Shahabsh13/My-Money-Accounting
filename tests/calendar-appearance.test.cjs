@@ -8,7 +8,11 @@
  */
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
 
+const root = path.resolve(__dirname, '..');
+const appBundle = fs.readFileSync(path.join(root, 'app/src/main/assets/src/scripts/067-inline.js'), 'utf8');
 const { bootApp, closeApp, wait, normalize } = require('./helpers/app-boot.cjs');
 
 let hasJsdom = true;
@@ -17,6 +21,13 @@ try {
 } catch (error) {
   hasJsdom = false;
 }
+
+test('home brand emphasizes the product name and keeps its subtitle smaller', () => {
+  assert.match(appBundle, /e\.jsx\("h2",\{className:"font-black text-sm text-stone-100 leading-tight",style:\{fontWeight:900\},children:"My Money"\}\)/,
+    'نام My Money باید وزن بولد صریح داشته باشد');
+  assert.match(appBundle, /e\.jsx\("p",\{className:"text-\[10px\] text-stone-400 font-medium mt-0\.5",style:\{fontSize:"9px"\},children:"مدیریت حسابداری شخصی"\}\)/,
+    'زیرعنوان باید یک پله کوچک‌تر، ۹ پیکسل، نمایش داده شود');
+});
 
 const persianToday = (() => {
   const parts = new Intl.DateTimeFormat('en-US-u-ca-persian', {
@@ -491,6 +502,8 @@ test('dashboard widgets and transaction card icons use CSS appearance rules with
       window.localStorage.setItem('hesabno:projects', JSON.stringify(['پروژه بازسازی']));
       window.localStorage.setItem('hesabno:familyMembers', JSON.stringify(['امیر']));
       const moreOptsBtn = Array.from(document.querySelectorAll('form button')).find((b) => b.textContent.includes('گزینه‌ها و امکانات بیشتر'));
+      const keypad = document.getElementById('hesabno-amount-keyboard');
+      if (keypad && !keypad.hidden) keypad.querySelector('[data-hkap-action="close"]').click();
       if (moreOptsBtn) {
         moreOptsBtn.click();
         await wait(60);

@@ -33,6 +33,8 @@ function openTransactionForm(window) {
 
 function openDatePicker(window) {
   const document = window.document;
+  const keypad = document.getElementById('hesabno-amount-keyboard');
+  if (keypad && !keypad.hidden) keypad.querySelector('[data-hkap-action="close"]').click();
   const field = document.querySelector('#tx-date-input-container');
   assert.ok(field, 'فیلد تاریخ فرم باید وجود داشته باشد');
   field.click();
@@ -187,6 +189,8 @@ test('dates outside the allowed range stay visibly disabled and cannot be select
 
   const dateField = document.querySelector('#tx-date-input-container');
   assert.ok(dateField, 'فیلد تاریخ سند باید باز شده باشد');
+  const keypad = document.getElementById('hesabno-amount-keyboard');
+  if (keypad && !keypad.hidden) keypad.querySelector('[data-hkap-action="close"]').click();
   click(dateField);
   await wait(500);
 
