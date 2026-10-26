@@ -21,6 +21,7 @@
   var valueDisplay = null;
   var currencyDisplay = null;
   var applyQueued = false;
+  var pendingOutsideClick = null;
   var MAX_DIGITS = 15;
 
   function clean(value) { return String(value == null ? "" : value).replace(/\s+/g, " ").trim(); }
@@ -542,8 +543,36 @@
     }, 0);
   }
 
+  function targetsMatch(first, second) {
+    if (!first || !second) return false;
+    if (first === second) return true;
+    try { return !!(first.contains && first.contains(second) || second.contains && second.contains(first)); }
+    catch (error) { return false; }
+  }
+
+  function cancelOutsideActivation(event) {
+    if (event.cancelable) event.preventDefault();
+    event.stopPropagation();
+  }
+
   function handlePointerDown(event) {
     var target = event.target;
+    var now = Date.now();
+    if (pendingOutsideClick) {
+      var elapsed = now - pendingOutsideClick.at;
+      if (event.type === "click") {
+        var pendingTarget = pendingOutsideClick.target;
+        pendingOutsideClick = null;
+        if (elapsed <= 750 && targetsMatch(pendingTarget, target)) {
+          cancelOutsideActivation(event);
+          return;
+        }
+      } else if (/^(pointerdown|touchstart|mousedown)$/.test(event.type) &&
+                 (elapsed > 80 || !targetsMatch(pendingOutsideClick.target, target))) {
+        /* شروع لمس تازه است، نه رویداد سازگارِ همان لمس که صفحه‌کلید را بست. */
+        pendingOutsideClick = null;
+      }
+    }
     if (panel && panel.contains(target)) return;
     var input = target && target.closest ? target.closest("input") : null;
     if (input) repairExplicitTextField(input);
@@ -557,7 +586,17 @@
       activateInput(input, true);
       return;
     }
-    if (panel && !panel.hidden) hideKeyboard(false);
+    if (panel && !panel.hidden) {
+      if (!input) {
+        if (event.type === "click") {
+          cancelOutsideActivation(event);
+        } else {
+          pendingOutsideClick = { target: target, at: now };
+          cancelOutsideActivation(event);
+        }
+      }
+      hideKeyboard(false);
+    }
   }
 
   function start() {
