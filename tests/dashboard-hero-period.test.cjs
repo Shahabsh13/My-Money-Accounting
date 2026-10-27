@@ -59,6 +59,18 @@ test('hero card follows the selected dashboard period (today vs month)', { timeo
   const { window } = dom;
   const document = window.document;
 
+  const greeting = [...document.querySelectorAll('main p')].find((element) =>
+    normalize(element.textContent).includes('امیدوارم امروز روز خوبی داشته باشی'),
+  );
+  assert.ok(greeting, 'متن خوشامدگویی داشبورد باید باشد');
+  assert.equal(greeting.classList.contains('flex'), false,
+    'قلب باید در جریان متن باشد، نه یک آیتم flex جدا که با wrap جابه‌جا شود');
+  const greetingHeart = greeting.querySelector('span:last-child');
+  assert.ok(greetingHeart, 'قلب خوشامدگویی باید کنار متن باقی بماند');
+  assert.equal(greetingHeart.textContent, '♡');
+  assert.equal(greetingHeart.classList.contains('inline-block'), true,
+    'قلب باید در جریان inline متن قرار بگیرد');
+
   const month = heroSnapshot(window);
   const dashboardDate = document.querySelector('.hesabno-dashboard-date-value');
   assert.ok(dashboardDate, 'تاریخ داشبورد باید وجود داشته باشد');

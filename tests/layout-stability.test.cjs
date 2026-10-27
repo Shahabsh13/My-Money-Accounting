@@ -14,6 +14,7 @@
  */
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
 
 const { bootApp, closeApp, wait, normalize } = require('./helpers/app-boot.cjs');
 
@@ -83,6 +84,23 @@ async function waitForDateButton(document, timeout = 8000) {
   }
   return null;
 }
+
+test('switching icon categories keeps the emoji grid at a fixed height', () => {
+  const bundle = fs.readFileSync('app/src/main/assets/src/scripts/067-inline.js', 'utf8');
+  assert.ok(
+    bundle.includes('grid grid-cols-8 gap-1.5 p-2 bg-stone-850 border border-stone-750 rounded-2xl h-36 max-h-36 overflow-y-auto no-scrollbar'),
+    'the icon grid must reserve the same height for every category so the bottom-anchored form does not jump',
+  );
+});
+
+test('selecting an icon preserves vertical touch scrolling in the emoji grid', () => {
+  const bundle = fs.readFileSync('app/src/main/assets/src/scripts/067-inline.js', 'utf8');
+  assert.ok(bundle.includes('overflow-y-auto no-scrollbar hesabno-icon-selector-grid'));
+  assert.ok(
+    bundle.includes('style:{touchAction:"pan-y",WebkitOverflowScrolling:"touch",overscrollBehaviorY:"contain"}'),
+    'the selected icon grid must keep native vertical touch and momentum scrolling enabled',
+  );
+});
 
 test('a body mutation does not re-style or re-text the dashboard date', { timeout: 90000 }, async (t) => {
   if (!hasJsdom) return t.skip('jsdom در دسترس نیست');

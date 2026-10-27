@@ -604,6 +604,7 @@ test('dashboard widgets and transaction card icons use CSS appearance rules with
             await wait(20);
             const stmtGhost = document.querySelector('.hesabno-account-statement-panel.hesabno-fullpage-ghost');
             assert.ok(stmtGhost, 'کپی خروج پنجره صورتحساب باید کلاس hesabno-fullpage-ghost بگیرد');
+            assert.equal(stmtGhost.childElementCount, 0, 'خروج فقط پوسته‌ی سبک پنجره را کپی می‌کند، نه جدول کامل گزارش را');
             assert.equal(window.getComputedStyle(stmtGhost).width, '100%', 'پنجره صورتحساب هنگام بسته شدن نباید کوچک شود');
             assert.equal(window.getComputedStyle(stmtGhost).borderRadius, '0px', 'پنجره صورتحساب هنگام بسته شدن نباید گوشه‌گرد و وسط‌چین شود');
             await wait(80);
@@ -820,8 +821,9 @@ test('dashboard widgets and transaction card icons use CSS appearance rules with
         assert.ok(frFirstInput && frLastInput, 'فیلدهای نام و نام خانوادگی در فرم ورود باید وجود داشته باشند');
         frFirstInput.value = 'علی';
         frLastInput.value = 'رضایی';
+        await wait(280);
         frCard.dispatchEvent(new window.Event('submit', { bubbles: true, cancelable: true }));
-        await wait(40);
+        await wait(280);
         assert.equal(frCard.getAttribute('data-hesabno-fr-active-step'), 'permissions',
           'پس از تکمیل اطلاعات فرم ورود، مرحله لیست دسترسی‌ها باید باز شود');
 
@@ -842,6 +844,7 @@ test('dashboard widgets and transaction card icons use CSS appearance rules with
         nextFromPermsBtn.click();
         assert.equal(frCard.getAttribute('data-hesabno-fr-active-step'), 'preferences',
           'زدن «بعدی» در مرحله دسترسی‌ها باید فرم زمان یادآوری روزانه، چک و وام و واحد پول را باز کند');
+        await wait(280);
 
         const currRialBtn = frOverlay.querySelector('[data-hesabno-fr-currency="rial"]');
         const currTomanBtn = frOverlay.querySelector('[data-hesabno-fr-currency="toman"]');
@@ -857,12 +860,14 @@ test('dashboard widgets and transaction card icons use CSS appearance rules with
         backToPermsBtn.click();
         assert.equal(frCard.getAttribute('data-hesabno-fr-active-step'), 'permissions',
           'زدن بازگشت در فرم یادآورها باید به مرحله دسترسی‌ها برگردد');
+        await wait(280);
 
         const backToProfileBtn = frOverlay.querySelector('[data-hesabno-fr-back-profile="true"]');
         assert.ok(backToProfileBtn, 'دکمه بازگشت به ویرایش مشخصات در صفحه دسترسی‌های فرم ورود باید وجود داشته باشد');
         backToProfileBtn.click();
         assert.equal(frCard.getAttribute('data-hesabno-fr-active-step'), 'profile',
           'زدن دکمه بازگشت در صفحه دسترسی‌ها باید کاربر را به صفحه مشخصات برگرداند');
+        await wait(280);
 
         const backToRestoreBtn = frOverlay.querySelector('[data-hesabno-fr-back-restore="true"]');
         assert.ok(backToRestoreBtn, 'در صفحه وارد کردن اطلاعات باید دکمه بازگشت به صفحه بازیابی از گوگل درایو وجود داشته باشد');
@@ -887,13 +892,15 @@ test('dashboard widgets and transaction card icons use CSS appearance rules with
         const restoredLast = frOverlay.querySelector('#hesabno-fr-last');
         if (!normalize(restoredFirst.value)) restoredFirst.value = 'علی';
         if (!normalize(restoredLast.value)) restoredLast.value = 'رضایی';
+        await wait(280);
         frCard.dispatchEvent(new window.Event('submit', { bubbles: true, cancelable: true }));
-        await wait(40);
+        await wait(280);
         assert.equal(frCard.getAttribute('data-hesabno-fr-active-step'), 'permissions',
           'پس از کلیک «بعدی» روی پروفایل، مرحله دسترسی‌ها باید باز شود');
         nextFromPermsBtn.click();
         assert.equal(frCard.getAttribute('data-hesabno-fr-active-step'), 'preferences',
           'دکمه «بعدی» دسترسی‌ها باید تنظیمات نهایی را نشان دهد و ورود مستقیم نکند');
+        await wait(280);
         assert.equal(document.getElementById('hesabno-first-run'), frOverlay,
           'پنجره شروع کار تا تکمیل صفحه نهایی باید باز بماند');
         assert.notEqual(window.localStorage.getItem('hesabno:first_run_profile_done'), '1');

@@ -14,6 +14,7 @@
   var INFERRED_INPUTMODE = "data-hesabno-numkb-inferred";
   var SKIP_TYPES = ["checkbox", "radio", "file", "range", "color", "hidden", "submit", "button", "reset", "password", "email", "search"];
   var activeInput = null;
+  var activeInputGeneration = 0;
   var panel = null;
   var backdrop = null;
   var draft = "";
@@ -163,11 +164,11 @@
     style.textContent = "\
       #" + PANEL_ID + "[hidden]{display:none!important}\
       #" + BACKDROP_ID + "[hidden]{display:none!important}\
-      #" + BACKDROP_ID + "{position:fixed;inset:0;z-index:2147482999;background:rgba(2,6,23,.24);backdrop-filter:blur(2px) saturate(.96);-webkit-backdrop-filter:blur(2px) saturate(.96);animation:hesabno-amount-backdrop-in .16s ease-out both}\
+      #" + BACKDROP_ID + "{position:fixed;inset:0;z-index:2147483645;background:rgba(2,6,23,.36);animation:hesabno-amount-backdrop-in .16s ease-out both}\
       html[data-theme=\"light\"] #" + BACKDROP_ID + ",html.theme-light #" + BACKDROP_ID + "{background:rgba(248,250,252,.42)}\
       @keyframes hesabno-amount-backdrop-in{from{opacity:0}to{opacity:1}}\
       @media (prefers-reduced-motion:reduce){#" + BACKDROP_ID + "{animation:none}}\
-      #" + PANEL_ID + "{position:fixed;z-index:2147483000;left:0;right:0;bottom:0;box-sizing:border-box;padding:6px 10px calc(4px + env(safe-area-inset-bottom,0px));background:rgba(17,24,39,.98);color:#f8fafc;border-top:1px solid rgba(148,163,184,.28);box-shadow:0 -10px 30px rgba(0,0,0,.3);font-family:inherit;direction:rtl;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}\
+      #" + PANEL_ID + "{position:fixed;z-index:2147483646;left:0;right:0;bottom:0;box-sizing:border-box;padding:6px 10px calc(4px + env(safe-area-inset-bottom,0px));background:rgba(17,24,39,.98);color:#f8fafc;border-top:1px solid rgba(148,163,184,.28);box-shadow:0 -10px 30px rgba(0,0,0,.3);font-family:inherit;direction:rtl;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;}\
       #" + PANEL_ID + " .hkap-shell{width:100%;max-width:460px;margin:0 auto}\
       #" + PANEL_ID + " .hkap-top{display:flex;align-items:stretch;gap:8px}\
       #" + PANEL_ID + " .hkap-display{flex:1;min-width:0;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 12px;border:1px solid #334155;border-radius:14px;background:#0b1220;min-height:52px;box-sizing:border-box}\
@@ -396,6 +397,8 @@
     dismissNativeKeyboard();
 
     var changed = activeInput !== input || panel.hidden;
+    // Invalidate any delayed focusout callback from the previous input/session.
+    activeInputGeneration += 1;
     activeInput = input;
     draftTouched = false;
     draft = currentDigits(input);
@@ -408,21 +411,24 @@
       window.setTimeout(syncUntouchedDraft, 32);
     }
 
-    if (shouldScroll && changed) {
-      window.setTimeout(function () {
-        if (activeInput === input && input.isConnected && input.scrollIntoView) {
-          try {
-            input.scrollIntoView({ block: "center", behavior: "smooth" });
-          } catch (error) {
-            input.scrollIntoView(false);
-          }
+    if (shouldScroll && changed && input.isConnected && input.scrollIntoView && input.getBoundingClientRect && panel.getBoundingClientRect) {
+      try {
+        var inputRect = input.getBoundingClientRect();
+        var panelRect = panel.getBoundingClientRect();
+        var viewportBottom = window.visualViewport && window.visualViewport.height || window.innerHeight;
+        var keypadTop = panelRect.height > 0 ? panelRect.top : viewportBottom;
+        var safeBottom = Math.min(viewportBottom, keypadTop) - 12;
+        // Keep fields stationary unless the keypad actually covers them; any correction is minimal and immediate.
+        if (inputRect.top < 12 || inputRect.bottom > safeBottom) {
+          input.scrollIntoView({ block: "nearest", behavior: "instant" });
         }
-      }, 60);
+      } catch (error) {}
     }
   }
 
   function hideKeyboard(blurInput, preserveNativeKeyboard) {
     var oldInput = activeInput;
+    activeInputGeneration += 1;
     activeInput = null;
     draftTouched = false;
     draft = "";
@@ -535,8 +541,9 @@
   function handleFocusOut(event) {
     if (!activeInput || event.target !== activeInput) return;
     var previous = activeInput;
+    var generation = activeInputGeneration;
     window.setTimeout(function () {
-      if (activeInput !== previous) return;
+      if (activeInputGeneration !== generation || activeInput !== previous) return;
       if (panel && panel.contains(document.activeElement)) return;
       if (document.activeElement && document.activeElement.tagName === "INPUT" && (document.activeElement.getAttribute(FIELD_MARK) === "true" || isMoneyInput(document.activeElement))) return;
       hideKeyboard(false);
@@ -552,7 +559,10 @@
 
   function cancelOutsideActivation(event) {
     if (event.cancelable) event.preventDefault();
-    event.stopPropagation();
+    // A dismissal tap is consumed completely: later document-capture listeners must
+    // not open a control underneath the keypad after the scrim closes it.
+    if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+    else event.stopPropagation();
   }
 
   function handlePointerDown(event) {
@@ -561,9 +571,10 @@
     if (pendingOutsideClick) {
       var elapsed = now - pendingOutsideClick.at;
       if (event.type === "click") {
-        var pendingTarget = pendingOutsideClick.target;
+        // The scrim is hidden on pointerdown, so some WebViews retarget the generated
+        // click to the control underneath. Consume that first click even if targets differ.
         pendingOutsideClick = null;
-        if (elapsed <= 750 && targetsMatch(pendingTarget, target)) {
+        if (elapsed <= 750) {
           cancelOutsideActivation(event);
           return;
         }

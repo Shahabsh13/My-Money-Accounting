@@ -4,7 +4,9 @@ const fs = require('node:fs');
 const {parseCss} = require('../tools/bench/css-parser.cjs');
 test('global placeholder rule uses a fixed 12px size without resizing actual values', () => {
  const css = fs.readFileSync('app/src/main/assets/src/styles/235-hesabno-text-root-and-display-stability.css', 'utf8');
- const rule = parseCss(css).rules.at(-1);
+ const rule = parseCss(css).rules.find(rule =>
+  rule.selector.includes('html body input[placeholder]::placeholder') &&
+  rule.selector.includes('html body textarea[placeholder]::placeholder'));
  assert.match(rule.selector, /html body input\[placeholder\]::placeholder/);
  assert.match(rule.selector, /html body textarea\[placeholder\]::placeholder/);
  assert.ok(rule.selector.split(',').every(selector => selector.trim().endsWith('::placeholder')));

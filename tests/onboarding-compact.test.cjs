@@ -1,6 +1,8 @@
 const {test}=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs');
 const {JSDOM}=require('jsdom');
 const root='app/src/main/assets/';
+const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+const waitForStepMotion=()=>wait(280);
 test('first-run intro offers Skip on all four slides while Next remains available',()=>{
  const dom=new JSDOM('<!doctype html><html><body></body></html>',{url:'https://app.test/',runScripts:'outside-only'});
  try{
@@ -44,7 +46,7 @@ test('Skip from any of the four intro slides opens mandatory setup without enter
   }finally{dom.window.close();}
  }
 });
-test('backup restore still requires Next through profile, permissions and preferences before app entry',()=>{
+test('backup restore still requires Next through profile, permissions and preferences before app entry',async()=>{
  const dom=new JSDOM('<!doctype html><html><body></body></html>',{url:'https://app.test/',runScripts:'outside-only'});
  try{
   const w=dom.window;w.localStorage.setItem('hesabno:first_run_intro_done','1');
@@ -56,13 +58,16 @@ test('backup restore still requires Next through profile, permissions and prefer
   assert.equal(card.getAttribute('data-hesabno-fr-active-step'),'restore','restoring data does not skip the restore page Next');
   assert.equal(w.localStorage.getItem('hesabno:first_run_profile_done'),null,'a backup cannot mark onboarding complete');
   overlay.querySelector('[data-hesabno-fr-go-profile]').click();
+  await waitForStepMotion();
   assert.equal(card.getAttribute('data-hesabno-fr-active-step'),'profile');
   assert.equal(overlay.querySelector('#hesabno-fr-first').value,'مریم');
   assert.equal(overlay.querySelector('#hesabno-fr-last').value,'موسوی');
   card.dispatchEvent(new w.Event('submit',{bubbles:true,cancelable:true}));
+  await waitForStepMotion();
   assert.equal(card.getAttribute('data-hesabno-fr-active-step'),'permissions');
   assert.equal(overlay.querySelector('[data-hesabno-fr-next-from-perms]').textContent,'بعدی');
   overlay.querySelector('[data-hesabno-fr-next-from-perms]').click();
+  await waitForStepMotion();
   assert.equal(card.getAttribute('data-hesabno-fr-active-step'),'preferences','permissions Next cannot bypass preferences');
   assert.equal(w.document.getElementById('hesabno-first-run'),overlay,'the app remains blocked until final confirmation');
   assert.equal(w.localStorage.getItem('hesabno:first_run_profile_done'),null);
@@ -72,7 +77,29 @@ test('backup restore still requires Next through profile, permissions and prefer
   assert.equal(w.localStorage.getItem('hesabno:first_run_profile_in_progress'),null);
  }finally{dom.window.close();}
 });
-test('first-run onboarding slides Next views from the left and Previous views from the right',()=>{
+test('a rapid second Next tap cannot skip the permission step',async()=>{
+ const dom=new JSDOM('<!doctype html><html><body></body></html>',{url:'https://app.test/',runScripts:'outside-only'});
+ try{
+  const w=dom.window;w.localStorage.setItem('hesabno:first_run_profile_done','1');
+  w.eval(fs.readFileSync(root+'src/scripts/217-hesabno-first-run-profile.js','utf8'));
+  const overlay=w.__hesabnoOpenFirstRunWizard('restore'),card=overlay.querySelector('.hesabno-fr-card');
+  overlay.querySelector('[data-hesabno-fr-go-profile]').click();
+  await waitForStepMotion();
+  overlay.querySelector('#hesabno-fr-first').value='علی';
+  overlay.querySelector('#hesabno-fr-last').value='رضایی';
+  card.dispatchEvent(new w.Event('submit',{bubbles:true,cancelable:true}));
+  assert.equal(card.getAttribute('data-hesabno-fr-active-step'),'permissions');
+  const next=overlay.querySelector('[data-hesabno-fr-next-from-perms]');
+  next.click();
+  assert.equal(card.getAttribute('data-hesabno-fr-active-step'),'permissions','an accidental second tap during the transition is ignored');
+  assert.equal(card.getAttribute('aria-busy'),'true');
+  await waitForStepMotion();
+  assert.equal(card.hasAttribute('aria-busy'),false);
+  next.click();
+  assert.equal(card.getAttribute('data-hesabno-fr-active-step'),'preferences','Next works again after the short transition guard');
+ }finally{dom.window.close();}
+});
+test('first-run onboarding slides Next views from the left and Previous views from the right',async()=>{
  const dom=new JSDOM('<!doctype html><html><body></body></html>',{url:'https://app.test/',runScripts:'outside-only'});
  try{
   const w=dom.window;w.localStorage.setItem('hesabno:first_run_profile_done','1');
@@ -80,33 +107,47 @@ test('first-run onboarding slides Next views from the left and Previous views fr
   const overlay=w.__hesabnoOpenFirstRunWizard('restore'),card=overlay.querySelector('.hesabno-fr-card');
   const view=step=>overlay.querySelector(`[data-hesabno-fr-view="${step}"]`);
   overlay.querySelector('[data-hesabno-fr-go-profile]').click();
+  await wait(25);
   assert.ok(view('profile').classList.contains('hesabno-fr-view-enter-from-left'));
   assert.equal(w.document.activeElement,view('profile').querySelector('h1'),'keep the first input from opening the native keyboard during the slide');
+  await waitForStepMotion();
   overlay.querySelector('[data-hesabno-fr-back-restore]').click();
+  await wait(25);
   assert.ok(view('restore').classList.contains('hesabno-fr-view-enter-from-right'));
+  await waitForStepMotion();
   overlay.querySelector('[data-hesabno-fr-go-profile]').click();
+  await waitForStepMotion();
   overlay.querySelector('#hesabno-fr-first').value='علی';
   overlay.querySelector('#hesabno-fr-last').value='رضایی';
   card.dispatchEvent(new w.Event('submit',{bubbles:true,cancelable:true}));
   assert.equal(card.getAttribute('data-hesabno-fr-active-step'),'permissions');
+  await wait(25);
   assert.ok(view('permissions').classList.contains('hesabno-fr-view-enter-from-left'));
+  await waitForStepMotion();
   overlay.querySelector('[data-hesabno-fr-back-profile]').click();
+  await wait(25);
   assert.ok(view('profile').classList.contains('hesabno-fr-view-enter-from-right'));
+  await waitForStepMotion();
   card.dispatchEvent(new w.Event('submit',{bubbles:true,cancelable:true}));
+  await waitForStepMotion();
   overlay.querySelector('[data-hesabno-fr-next-from-perms]').click();
   assert.equal(card.getAttribute('data-hesabno-fr-active-step'),'preferences');
+  await wait(25);
   assert.ok(view('preferences').classList.contains('hesabno-fr-view-enter-from-left'));
+  await waitForStepMotion();
   overlay.querySelector('[data-hesabno-fr-back-perms]').click();
+  await wait(25);
   assert.ok(view('permissions').classList.contains('hesabno-fr-view-enter-from-right'));
  }finally{dom.window.close();}
 });
-test('first-run permissions have short copy, four accessible switches and no focus jump to the footer',()=>{
+test('first-run permissions have short copy, four accessible switches and no focus jump to the footer',async()=>{
  const dom=new JSDOM('<!doctype html><html><body></body></html>',{url:'https://app.test/',runScripts:'outside-only'});
  try{
   const w=dom.window;w.localStorage.setItem('hesabno:first_run_profile_done','1');
   w.eval(fs.readFileSync(root+'src/scripts/217-hesabno-first-run-profile.js','utf8'));
   const overlay=w.__hesabnoOpenFirstRunWizard('restore'),card=overlay.querySelector('form');
   overlay.querySelector('[data-hesabno-fr-go-profile]').click();
+  await waitForStepMotion();
   overlay.querySelector('#hesabno-fr-first').value='علی';overlay.querySelector('#hesabno-fr-last').value='رضایی';
   card.scrollTop=300;
   card.dispatchEvent(new w.Event('submit',{bubbles:true,cancelable:true}));
@@ -122,13 +163,26 @@ test('first-run permissions have short copy, four accessible switches and no foc
   assert.equal(view.querySelector('[data-hesabno-fr-skip-perms]'),null);
   assert.equal(view.querySelector('[data-hesabno-fr-grant-all]'),null);
   const previous=view.querySelector('[data-hesabno-fr-back-profile]');
-  assert.equal(previous.textContent,'قبلی');previous.click();
+  assert.equal(previous.textContent,'قبلی');
+  await waitForStepMotion();
+  previous.click();
   assert.equal(card.getAttribute('data-hesabno-fr-active-step'),'profile');
+  await waitForStepMotion();
   card.dispatchEvent(new w.Event('submit',{bubbles:true,cancelable:true}));
+  await waitForStepMotion();
   assert.equal(view.querySelector('[data-hesabno-fr-next-from-perms]').textContent,'بعدی');
   view.querySelector('[data-hesabno-fr-next-from-perms]').click();
   assert.equal(card.getAttribute('data-hesabno-fr-active-step'),'preferences');
  }finally{dom.window.close();}
+});
+test('first-run step transition is brief and visually apparent',()=>{
+ const script=fs.readFileSync(root+'src/scripts/217-hesabno-first-run-profile.js','utf8');
+ const css=fs.readFileSync(root+'src/styles/235-hesabno-text-root-and-display-stability.css','utf8');
+ assert.match(script,/ONBOARDING_MOTION_MS = 140/);
+ assert.match(script,/ONBOARDING_NAV_GUARD_MS = 210/);
+ assert.match(css,/from \{ opacity: \.9; transform: translate3d\(-4%, 0, 0\); \}/);
+ assert.match(css,/from \{ opacity: \.9; transform: translate3d\(4%, 0, 0\); \}/);
+ assert.equal((css.match(/animation: hesabno-onboarding-step-from-(?:left|right) 140ms/g)||[]).length,2);
 });
 test('compact onboarding uses a viewport-bounded card and a single scroll container',()=>{
  const {parseCss}=require('../tools/bench/css-parser.cjs');

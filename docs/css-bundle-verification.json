@@ -188,19 +188,19 @@
   "appearanceLayer": {
     "source": "task-12",
     "inBundle": "235-hesabno-text-root-and-display-stability.css",
-    "note": "Original appearance baseline: 610 rules / 131,726 bytes. Current standalone stylesheet 235 contains 669 parsed rules / 142,676 bytes.",
-    "bytes": 142676,
-    "rules": 669,
+    "note": "Original appearance baseline: 610 rules / 131,726 bytes. Current standalone stylesheet 235 contains 686 parsed rules / 146,155 bytes after app-wide immediate page navigation was added.",
+    "bytes": 146155,
+    "rules": 686,
     "baselineBytes": 131726,
     "baselineRules": 610
   },
   "currentState": {
     "files": 10,
-    "rules": 3395,
-    "bytes": 847665,
-    "hash": "d28291a02523c5cdfbd8bcc796ef90102491fa830b84558210fd995e4a598ad0",
-    "note": "Current stylesheet state on disk; 10 linked stylesheets and 3,395 parsed rules. Horizontal form transitions remain in standalone stylesheet 043; onboarding transitions and step visibility remain in standalone stylesheet 235.",
-    "generatedAt": "2026-10-24T19:18:01.824Z"
+    "rules": 3412,
+    "bytes": 851176,
+    "hash": "5d716c6e354b332255b73745ce5c2a28d9781c81344df15b7566739fcb4390c6",
+    "note": "Current stylesheet state on disk; 10 linked stylesheets and 3,412 parsed rules. Motion uses immediate full-page navigation, brief lightweight overlay feedback, and reduced-motion support.",
+    "generatedAt": "2026-10-27T20:54:47.151Z"
   },
   "generatedAt": "2026-10-24T19:08:05.622Z",
   "onboardingCompact": {
@@ -232,8 +232,8 @@
     "note": "کارت جزئیات نمودار روند روزانه با حذف کامل ویجت از برنامه برداشته شد؛ هر ۸ قاعدهٔ قبلی هم از لایهٔ ۲۳۵ پاک شدند."
   },
   "advancedFilterTypography": {
-    "addedRules": 7,
-    "note": "Advanced transaction filter drops the unused event row and sizes its fields at 12px; form fields (input/textarea/select) follow their text-* class instead of the global 16px rule."
+    "addedRules": 8,
+    "note": "Advanced transaction filter drops the unused event row and keeps its fields at 12px; ordinary writable text inputs and textareas are normalized to 14px, while explicit compact text-* classes and scoped filter sizes remain intact."
   },
   "paymentRouteAlignment": {
     "addedRules": 2,
@@ -246,5 +246,9 @@
   "onboardingTransitions": {
     "addedRules": 3,
     "note": "First-run onboarding views slide in from the left on Next and from the right on Previous; reduced-motion is respected."
+  },
+  "motionSystem": {
+    "addedRules": 16,
+    "note": "Cohesive lightweight motion timings, immediate full-page navigation, reduced-motion coverage, incremental overlay annotations, reduced expensive blur, and lightweight exit visuals."
   }
 }

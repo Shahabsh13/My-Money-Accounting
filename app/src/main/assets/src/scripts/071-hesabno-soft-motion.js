@@ -1,133 +1,64 @@
+/* Lightweight overlay annotations only. Full-page entry effects and broad DOM scans
+   are intentionally avoided so route changes stay immediate on slower devices. */
 (function () {
-  var lastMain = null;
-  var lastSignature = '';
-  var markedLayers = new WeakSet();
-  var tabLabels = new Set(['ساده', 'پیشرفته', 'دریافت', 'پرداخت', 'انتقال', 'چک‌ها', 'اصلاحی', 'هزینه', 'درآمد', 'همه', 'مقایسه', 'روزانه', 'سرفصل‌های هزینه', 'سرفصل‌های درآمد', 'توزیع هزینه‌ها', 'توزیع درآمدها', 'بانک‌ها', 'صندوق‌ها']);
+  var marked = new WeakSet();
+  var FIXED_SELECTOR = '[class*="fixed"]';
 
-  function clean(value) {
-    return String(value || '').replace(/\s+/g, ' ').trim();
+  function addClass(node, name) {
+    if (node && node.classList && !node.classList.contains(name)) node.classList.add(name);
   }
 
-  function replay(element, className, duration) {
-    if (!element || element.classList.contains(className)) return;
-    element.classList.add(className);
-    if (duration) setTimeout(function () { element.classList.remove(className); }, duration);
+  function annotateLayer(element) {
+    if (!element || element.tagName === 'NAV' || marked.has(element)) return;
+    marked.add(element);
+    var classes = typeof element.className === 'string' ? element.className : '';
+    if (classes.indexOf('z-50') !== -1 && classes.indexOf('top-') !== -1) {
+      addClass(element, 'hesabno-toast-motion');
+      return;
+    }
+    if (classes.indexOf('inset-0') === -1 && classes.indexOf('z-40') === -1) return;
+    addClass(element, 'hesabno-overlay-motion');
+    var dialog = element.getAttribute('role') === 'dialog' ? element : element.firstElementChild;
+    if (dialog && dialog.getAttribute('role') !== 'dialog' &&
+        !(dialog.tagName === 'DIV' && typeof dialog.className === 'string' && dialog.className.indexOf('rounded') !== -1)) {
+      dialog = null;
+    }
+    addClass(dialog, 'hesabno-dialog-motion');
   }
 
-  function isScrollableTabControl(element) {
-    var parent = element && element.parentElement;
-    if (!parent || element.tagName !== 'BUTTON' || String(parent.className).indexOf('overflow-x-auto') === -1) return false;
-    return Array.from(parent.children).filter(function (child) { return child.tagName === 'BUTTON'; }).length > 1;
-  }
-
-  function isNavigationControl(element) {
-    if (!element) return false;
-    if (element.closest('nav.fixed')) return true;
-    if (element.getAttribute('aria-label') === 'بازگشت') return true;
-    var text = clean(element.textContent);
-    if (tabLabels.has(text) || element.closest('[role="tab"], [role="tablist"]') || isScrollableTabControl(element)) return true;
-    var parentClass = element.parentElement && String(element.parentElement.className);
-    var segmentedTabs = parentClass && parentClass.indexOf('grid-cols-2') !== -1 && parentClass.indexOf('rounded-2xl') !== -1;
-    var pageMenu = parentClass && parentClass.indexOf('divide-y') !== -1 && parentClass.indexOf('rounded-2xl') !== -1 && parentClass.indexOf('overflow-hidden') !== -1;
-    return !!(segmentedTabs || pageMenu);
-  }
-
-  function isNoMotionInteraction(target) {
-    if (!target || !target.closest) return false;
-    var control = target.closest('input, select, textarea, label, [role="checkbox"], [role="switch"], [aria-checked], button, [class*="cursor-pointer"]');
-    if (!control || isNavigationControl(control)) return false;
-    return true;
-  }
-
-  function motionSuppressed() {
-    return Date.now() < Number(window.__hesabnoSuppressMotionUntil || 0);
-  }
-
-  function removeMainMotion(main) {
-    ['hesabno-page-enter', 'hesabno-page-open-up', 'hesabno-tab-horizontal-in', 'hesabno-content-swap'].forEach(function (className) {
-      if (main.classList.contains(className)) main.classList.remove(className);
-    });
-  }
-
-  function pickerOpen() {
-    return !!document.querySelector('.hesabno-account-picker-overlay, .hesabno-fullscreen-selector-overlay');
-  }
-
-  function markTabs() {
-    document.querySelectorAll('button').forEach(function (button) {
-      if (isNavigationControl(button) && !button.classList.contains('hesabno-tab-motion')) button.classList.add('hesabno-tab-motion');
-    });
-  }
-
-  function markFeedbackAndLayers() {
-    document.querySelectorAll('[class*="fixed"]').forEach(function (element) {
-      var classes = typeof element.className === 'string' ? element.className : '';
-      if (element.tagName === 'NAV' || markedLayers.has(element)) return;
-      markedLayers.add(element);
-      if (classes.indexOf('z-50') !== -1 && classes.indexOf('top-') !== -1) {
-        element.classList.add('hesabno-toast-motion');
-      } else if (classes.indexOf('inset-0') !== -1 || classes.indexOf('z-40') !== -1) {
-        element.classList.add('hesabno-overlay-motion');
-        /* فقط خودِ دیالوگ انیمیشن بگیرد؛ قبلاً اولین «div بزرگ گردگوشه» داخل لایه
-           انتخاب می‌شد که اغلب یک کارت داخلی بود و بعد از نقاشی، ۱۲px/۳٪ جابه‌جا می‌شد. */
-        var dialog = element.querySelector('[role="dialog"]');
-        if (!dialog) {
-          var child = element.firstElementChild;
-          if (child && child.tagName === 'DIV' && typeof child.className === 'string' && child.className.indexOf('rounded') !== -1) dialog = child;
-        }
-        if (dialog && !/(^|\s)hesabno-dialog-motion(\s|$)/.test(String(dialog.className || ''))) dialog.classList.add('hesabno-dialog-motion');
+  function annotateAdded(node) {
+    if (!node || node.nodeType !== 1) return;
+    if (node.matches && node.matches(FIXED_SELECTOR)) annotateLayer(node);
+    // Inspect only a small, shallow addition; never walk a newly mounted page/form subtree.
+    var queue = [], children = node.children || [];
+    for (var i = 0; i < children.length && i < 8; i += 1) queue.push({ node: children[i], depth: 1 });
+    var visited = 0;
+    while (queue.length && visited < 24) {
+      var item = queue.shift(), child = item.node;
+      visited += 1;
+      if (child.matches && child.matches(FIXED_SELECTOR)) annotateLayer(child);
+      if (item.depth >= 2) continue;
+      var nested = child.children || [];
+      for (var j = 0; j < nested.length && j < 8 && visited + queue.length < 24; j += 1) {
+        queue.push({ node: nested[j], depth: item.depth + 1 });
       }
+    }
+  }
+
+  function process(records) {
+    if (!records || typeof records.forEach !== 'function') return;
+    records.forEach(function (record) {
+      Array.prototype.forEach.call(record.addedNodes, annotateAdded);
     });
   }
 
-  function animateMain() {
-    var main = document.querySelector('main');
-    if (!main) return;
-    var signature = clean(main.textContent).slice(0, 180);
-    if (main.querySelector('button[aria-label="بازگشت"], button[title="بازگشت"]')) {
-      lastMain = main;
-      lastSignature = signature;
-      return;
-    }
-    if (motionSuppressed() || pickerOpen()) {
-      removeMainMotion(main);
-      lastMain = main;
-      lastSignature = signature;
-      return;
-    }
-    if (main !== lastMain) {
-      removeMainMotion(main);
-      replay(main, 'hesabno-page-enter', 620);
-      lastMain = main;
-    } else if (signature !== lastSignature) {
-      removeMainMotion(main);
-      replay(main, 'hesabno-content-swap', 280);
-    }
-    lastSignature = signature;
-  }
+  // A one-time pass handles any overlay already present at startup; subsequent work is incremental.
+  document.querySelectorAll(FIXED_SELECTOR).forEach(annotateLayer);
+  var root = document.getElementById('root');
+  var nav = root && root.querySelector('nav.fixed');
+  if (nav) nav.querySelectorAll('button').forEach(function (button) { addClass(button, 'hesabno-tab-motion'); });
 
-  function enhance() {
-    markTabs();
-    markFeedbackAndLayers();
-    animateMain();
+  if (document.body) {
+    window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, process);
   }
-
-  ['click', 'change', 'input'].forEach(function (eventName) {
-    document.addEventListener(eventName, function (event) {
-      if (!isNoMotionInteraction(event.target)) return;
-      var control = event.target.closest('input, select, textarea, label, [role="checkbox"], [role="switch"], [aria-checked], button, [class*="cursor-pointer"]');
-      if (control && !isNavigationControl(control)) control.classList.add('hesabno-control-no-motion');
-      window.__hesabnoSuppressMotionUntil = Date.now() + 700;
-    }, true);
-  });
-  enhance();
-  var motionQueued = false;
-  function scheduleMotion() {
-    if (motionQueued) return;
-    motionQueued = true;
-    /* microtask: کلاس انیمیشن پیش از اولین نقاشیِ همان فریم ست می‌شود؛ با rAF،
-       لایه یک فریم کامل دیده می‌شد و بعد از جا شروع به حرکت می‌کرد. */
-    Promise.resolve().then(function () { motionQueued = false; enhance(); });
-  }
-  if (document.body) window.__hesabnoDom.watch(document.body, { childList: true, subtree: true }, scheduleMotion);
 })();

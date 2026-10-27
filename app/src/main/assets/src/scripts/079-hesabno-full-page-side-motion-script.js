@@ -1,52 +1,27 @@
+/* Preserve the app's custom Back-stack behavior without delaying navigation for motion. */
 (function () {
   var root = document.getElementById("root");
   if (!root) return;
-  var active = null;
   var replaying = false;
-  var target = function () {
-    var back = root.querySelector('button[title="بازگشت"]');
-    if (!back || back.getAttribute("aria-label")) return null;
-    return back.closest('[class*="min-h-screen"]') || back.closest("div");
-  };
-  var markOpen = function () {
-    var next = target();
-    if (!next) {
-      if (active) active.classList.remove("hesabno-full-page-side-exit", "hesabno-full-page-side-open");
-      active = null;
-      return;
-    }
-    if (active === next && next.classList.contains("hesabno-full-page-side-open")) return;
-    active = next;
-    next.classList.remove("hesabno-full-page-side-exit", "hesabno-full-page-side-open");
-    void next.offsetWidth;
-    next.classList.add("hesabno-full-page-side-open");
-  };
-  var queued = false;
-  var schedule = function () {
-    if (queued) return;
-    queued = true;
-    Promise.resolve().then(function () { queued = false; markOpen(); });
-  };
-  var observer = window.__hesabnoDom.watch(root, { childList: true, subtree: true }, schedule);
+
   document.addEventListener("click", function (event) {
-    var button = event.target && event.target.closest ? event.target.closest('button[title="بازگشت"]') : null;
+    var target = event.target;
+    if (target && target.nodeType !== 1) target = target.parentElement;
+    var button = target && target.closest ? target.closest('button[title="بازگشت"]') : null;
     if (!button || button.getAttribute("aria-label") || replaying) return;
-    var page = button.closest('[class*="min-h-screen"]') || button.closest("div");
-    if (!page) return;
+
+    // The native React handler owns transaction Back; do not intercept or delay it.
+    var main = button.closest("main");
+    if (main && main.querySelector("#field-amount-input")) return;
+
     event.preventDefault();
     event.stopImmediatePropagation();
-    page.classList.remove("hesabno-full-page-side-open");
-    page.classList.add("hesabno-full-page-side-exit");
-     window.setTimeout(function () {
-       replaying = true;
-       var handled = typeof window.__hesabnoNavigateBack === "function" && window.__hesabnoNavigateBack();
-       if (!handled) {
-         if (typeof window.__hesabnoHoldBackNavigation === "function") window.__hesabnoHoldBackNavigation();
-         button.click();
-       }
-       page.classList.remove("hesabno-full-page-side-exit", "hesabno-full-page-side-open");
-       replaying = false;
-     }, 420);
+    replaying = true;
+    var handled = typeof window.__hesabnoNavigateBack === "function" && window.__hesabnoNavigateBack();
+    if (!handled) {
+      if (typeof window.__hesabnoHoldBackNavigation === "function") window.__hesabnoHoldBackNavigation();
+      button.click();
+    }
+    replaying = false;
   }, true);
-  markOpen();
 })();

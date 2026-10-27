@@ -8,6 +8,7 @@ const { JSDOM } = require('jsdom');
 const root = path.resolve(__dirname, '..');
 const keypadSource = fs.readFileSync(path.join(root, 'app/src/main/assets/src/scripts/214-hesabno-numeric-keyboard.js'), 'utf8');
 const geometrySource = fs.readFileSync(path.join(root, 'app/src/main/assets/src/scripts/220-hesabno-stable-tab-geometry.js'), 'utf8');
+const keypadAppearance = fs.readFileSync(path.join(root, 'app/src/main/assets/src/styles/235-hesabno-text-root-and-display-stability.css'), 'utf8');
 
 async function settleAndClose(dom) { await Promise.resolve(); await Promise.resolve(); await Promise.resolve(); }
 
@@ -144,7 +145,7 @@ test('closing the keypad without confirm discards the draft', async () => {
   await settleAndClose(dom);
 });
 
-test('opening the keypad puts a blurred backdrop behind it and hides it on close', async () => {
+test('opening the keypad uses a lightweight dim backdrop and hides it on close', async () => {
   const dom = mount(); const { window } = dom; const input = window.document.getElementById('amount');
   input.dispatchEvent(new window.Event('pointerdown', { bubbles: true, cancelable: true }));
   const panel = window.document.getElementById('hesabno-amount-keyboard');
@@ -153,11 +154,28 @@ test('opening the keypad puts a blurred backdrop behind it and hides it on close
   assert.equal(backdrop.hidden, false, 'وقتی کیبورد باز است پرده دیده می‌شود');
   assert.ok(Number(backdrop.style.zIndex || 0) === 0, 'z-index از CSS می‌آید');
   const css = Array.from(window.document.querySelectorAll('style')).map(s => s.textContent).join('\n');
-  assert.match(css, /#hesabno-amount-keyboard-backdrop\{[^}]*backdrop-filter:blur\(/,
-    'پرده باید صفحه‌ی زیر را تار کند');
+  assert.match(css, /#hesabno-amount-keyboard-backdrop\{[^}]*background:rgba\(2,6,23,\.36\)/,
+    'پرده باید صفحه‌ی زیر را کمی تیره کند');
+  assert.doesNotMatch(css, /backdrop-filter:\s*blur\(/,
+    'صفحه‌کلید نباید برای باز و بسته شدن فرم کل صفحه را با blur سنگین دوباره نقاشی کند');
   panel.querySelector('[data-hkap-action="confirm"]').click();
   assert.equal(backdrop.hidden, true, 'پس از بستن، پرده برداشته می‌شود');
   await settleAndClose(dom);
+});
+
+test('production keypad layers avoid full-screen and panel backdrop filters', () => {
+  const backdrop = keypadAppearance.match(/#hesabno-amount-keyboard-backdrop\s*\{([^}]+)\}/);
+  const panel = keypadAppearance.match(/#hesabno-amount-keyboard\s*\{([^}]+)\}/);
+  assert.ok(backdrop, 'the production dim layer is defined');
+  assert.ok(panel, 'the production keypad panel is defined');
+  assert.doesNotMatch(backdrop[1], /backdrop-filter\s*:/i,
+    'the full-screen amount backdrop must not trigger a blur repaint');
+  assert.match(backdrop[1], /z-index:\s*2147483645/,
+    'the dismissal scrim must sit above account pickers and other page controls');
+  assert.match(panel[1], /z-index:\s*2147483646/,
+    'the keypad itself must remain just above its dismissal scrim');
+  assert.doesNotMatch(panel[1], /backdrop-filter\s*:/i,
+    'the amount panel must not composite a heavy blur layer');
 });
 
 test('tapping outside the internal keypad dismisses it without activating the underlying control', async () => {
@@ -167,20 +185,27 @@ test('tapping outside the internal keypad dismisses it without activating the un
   accountButton.textContent = 'حساب‌ها';
   document.body.appendChild(accountButton);
   let activations = 0;
+  let laterDocumentCaptures = 0;
   accountButton.addEventListener('click', () => { activations += 1; });
+  document.addEventListener('pointerdown', () => { laterDocumentCaptures += 1; }, true);
+  document.addEventListener('click', () => { laterDocumentCaptures += 1; }, true);
 
   input.dispatchEvent(new window.Event('pointerdown', { bubbles: true, cancelable: true }));
   const panel = document.getElementById('hesabno-amount-keyboard');
   assert.equal(panel.hidden, false, 'کیبورد داخلی باید باز باشد');
+  laterDocumentCaptures = 0;
 
+  const backdrop = document.getElementById('hesabno-amount-keyboard-backdrop');
   const outsidePress = new window.Event('pointerdown', { bubbles: true, cancelable: true });
-  accountButton.dispatchEvent(outsidePress);
-  assert.equal(outsidePress.defaultPrevented, true, 'ضربهٔ بیرون باید به‌جای فعال کردن کنترل، مصرف شود');
+  backdrop.dispatchEvent(outsidePress);
+  assert.equal(outsidePress.defaultPrevented, true, 'ضربه روی پرده باید به‌جای فعال کردن کنترل، مصرف شود');
+  assert.equal(laterDocumentCaptures, 0, 'ضربهٔ بستن نباید به listenerهای بعدی سند برسد');
   assert.equal(panel.hidden, true, 'ضربهٔ بیرون باید کیبورد را ببندد');
 
+  // Some WebViews retarget the click to the newly exposed button after the scrim hides.
   const outsideClick = new window.MouseEvent('click', { bubbles: true, cancelable: true, detail: 1 });
   accountButton.dispatchEvent(outsideClick);
-  assert.equal(outsideClick.defaultPrevented, true, 'کلیک مصنوعی همان لمس هم باید مسدود شود');
+  assert.equal(outsideClick.defaultPrevented, true, 'کلیک retargetشدهٔ همان لمس هم باید مسدود شود');
   assert.equal(activations, 0, 'با بستن کیبورد نباید به صفحهٔ حساب‌ها وارد شد');
 
   const nextPress = new window.Event('pointerdown', { bubbles: true, cancelable: true });
@@ -289,5 +314,47 @@ test('loan and installment names keep text keyboard in create and populated edit
     assert.ok(!panel || panel.hidden, 'name focus must not open the amount keypad');
     field.remove();
   }
+  await settleAndClose(dom);
+});
+
+test('reopening the amount keypad invalidates a stale delayed focusout close', async () => {
+  const dom = mount(); const { window } = dom; const input = window.document.getElementById('amount');
+  const delayed = [];
+  window.setTimeout = callback => { delayed.push(callback); return delayed.length; };
+
+  input.dispatchEvent(new window.Event('pointerdown', { bubbles: true, cancelable: true }));
+  const panel = window.document.getElementById('hesabno-amount-keyboard');
+  assert.equal(panel.hidden, false, 'first tap opens the internal keypad');
+
+  input.dispatchEvent(new window.FocusEvent('focusout', { bubbles: true }));
+  assert.equal(window.__hesabnoCloseAmountKeyboard(), true, 'simulate dismissing the keypad before the delayed blur runs');
+  assert.equal(panel.hidden, true);
+
+  input.dispatchEvent(new window.Event('pointerdown', { bubbles: true, cancelable: true }));
+  assert.equal(panel.hidden, false, 'tapping the amount field reopens it');
+  delayed.forEach(callback => callback());
+  assert.equal(panel.hidden, false, 'a focusout from the prior opening must not immediately hide the reopened keypad');
+  await settleAndClose(dom);
+});
+
+test('opening the keypad leaves a visible amount field still and only scrolls covered fields instantly', async () => {
+  const dom = mount(); const { window } = dom; const input = window.document.getElementById('amount');
+  let inputBottom = 180; const scrolls = [];
+  const rect = (top, bottom) => ({ top, bottom, left: 0, right: 100, width: 100, height: bottom - top, x: 0, y: top, toJSON() {} });
+  window.Element.prototype.getBoundingClientRect = function () {
+    if (this === input) return rect(inputBottom - 40, inputBottom);
+    if (this.id === 'hesabno-amount-keyboard') return rect(500, 768);
+    return rect(0, 0);
+  };
+  input.scrollIntoView = options => scrolls.push(options);
+
+  input.dispatchEvent(new window.Event('pointerdown', { bubbles: true, cancelable: true }));
+  assert.deepEqual(scrolls, [], 'a visible transaction amount must not trigger a slow page movement');
+  window.__hesabnoCloseAmountKeyboard();
+
+  inputBottom = 620;
+  input.dispatchEvent(new window.Event('pointerdown', { bubbles: true, cancelable: true }));
+  assert.deepEqual(JSON.parse(JSON.stringify(scrolls)), [{ block: 'nearest', behavior: 'instant' }],
+    'only a field covered by the keypad receives a minimal, immediate scroll correction');
   await settleAndClose(dom);
 });
