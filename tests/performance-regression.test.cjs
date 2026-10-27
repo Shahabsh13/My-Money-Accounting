@@ -10,6 +10,11 @@ const perfGuard = fs.readFileSync(path.join(root, 'app/src/main/assets/src/scrip
 const navigationHistory = fs.readFileSync(path.join(root, 'app/src/main/assets/src/scripts/073-hesabno-navigation-history.js'), 'utf8');
 const pageMotionStyles = fs.readFileSync(path.join(root, 'app/src/main/assets/src/styles/043-hesabno-page-open-close-motion.css'), 'utf8');
 const pageMotionScript = fs.readFileSync(path.join(root, 'app/src/main/assets/src/scripts/074-hesabno-page-open-close-motion-script.js'), 'utf8');
+const sideMotionScript = fs.readFileSync(path.join(root, 'app/src/main/assets/src/scripts/079-hesabno-full-page-side-motion-script.js'), 'utf8');
+const homeMotionScript = fs.readFileSync(path.join(root, 'app/src/main/assets/src/scripts/215-hesabno-tab-home-transition.js'), 'utf8');
+const exitMotionScript = fs.readFileSync(path.join(root, 'app/src/main/assets/src/scripts/216-hesabno-fullpage-exit.js'), 'utf8');
+const onboardingMotionScript = fs.readFileSync(path.join(root, 'app/src/main/assets/src/scripts/217-hesabno-first-run-profile.js'), 'utf8');
+const motionStyles = fs.readFileSync(path.join(root, 'app/src/main/assets/src/styles/235-hesabno-text-root-and-display-stability.css'), 'utf8');
 const externalScripts = [...html.matchAll(/<script\b([^>]*)>/gi)]
   .map(match => ({ attributes: match[1], index: match.index }))
   .filter(script => /\bsrc\s*=/i.test(script.attributes));
@@ -44,19 +49,34 @@ test('page entry classes cannot animate content into position after render', () 
   assert.match(pageMotionStyles, /opacity: 1 !important/);
 });
 
-test('form entry, successful submit and Back use horizontal motion with reduced-motion support', () => {
-  assert.ok(pageMotionStyles.includes('@keyframes hesabno-form-enter-forward'));
-  assert.ok(pageMotionStyles.includes('@keyframes hesabno-form-enter-back'));
-  assert.ok(pageMotionStyles.includes('translate3d(8%, 0, 0)'));
-  assert.ok(pageMotionStyles.includes('translate3d(-8%, 0, 0)'));
-  assert.ok(pageMotionStyles.includes('animation: hesabno-form-exit-back 280ms'));
+test('page and onboarding motion avoid forced reflow and large exit clones', () => {
+  for (const [name, script] of [['tab motion', pageMotionScript], ['detail page motion', sideMotionScript],
+    ['home transition', homeMotionScript], ['onboarding motion', onboardingMotionScript]]) {
+    assert.doesNotMatch(script, /offsetWidth|offsetHeight/, `${name} must not force synchronous layout to restart motion`);
+  }
+  assert.doesNotMatch(pageMotionScript, /addEventListener\(\"click\"|setTimeout\(/,
+    'page motion must not intercept Back or delay route changes');
+  assert.doesNotMatch(sideMotionScript, /setTimeout\(|hesabno-full-page-side-exit/,
+    'detail-page Back preserves navigation behavior without an exit timer');
+  assert.match(exitMotionScript, /cloneNode\(false\)/,
+    'exit visuals copy only the overlay shell instead of cloning large report contents');
+  assert.doesNotMatch(exitMotionScript, /querySelectorAll\('div\.fixed\.inset-0'\)/,
+    'closing a page must not scan its entire removed subtree to find nested overlays');
+  assert.doesNotMatch(pageMotionScript, /document\.addEventListener/,
+    'route and form transitions do not intercept application click or submit behavior');
+  assert.match(sideMotionScript, /main\.querySelector\("#field-amount-input"\)/,
+    'transaction Back is left to the native app handler');
+  assert.match(motionStyles, /prefers-reduced-motion: reduce/);
+  assert.match(motionStyles, /--hesabno-motion-normal:\s*140ms/);
+  assert.match(motionStyles, /article\.hesabno-focused-check-card \{ animation: none !important; \}/);
+});
+
+test('all page and form routes open and close without full-screen animation delays', () => {
+  assert.match(motionStyles, /#root main\.hesabno-form-transition-exit-back[\s\S]*?animation: none !important/);
+  assert.match(motionStyles, /#root \.hesabno-full-page-side-exit[\s\S]*?animation: none !important/);
+  assert.doesNotMatch(pageMotionScript, /document\.addEventListener|setTimeout\(/,
+    'the motion helper does not intercept form submit or Back behavior');
   assert.ok(pageMotionStyles.includes('prefers-reduced-motion: reduce'));
-  assert.ok(pageMotionScript.includes('document.addEventListener("submit"'));
-  assert.ok(pageMotionScript.includes('pendingDirection = "confirm"'));
-  assert.ok(pageMotionScript.includes('hesabno-form-transition-exit-back'));
-  assert.ok(pageMotionScript.includes('hesabno-form-transition-enter-forward'));
-  assert.ok(pageMotionScript.includes('hesabno-form-transition-enter-back'));
-  assert.ok(pageMotionScript.includes('event.stopImmediatePropagation()'));
 });
 
 function srcOf(script) {

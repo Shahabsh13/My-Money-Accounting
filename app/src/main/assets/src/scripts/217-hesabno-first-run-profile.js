@@ -4,6 +4,9 @@
    Stores into the same profile key the app reads ("hesabno:user_profile") and then soft-reloads
    so the dashboard greeting picks the saved name. Shown only once (flag key below). */
 (function () {
+  var requestFrame = window.requestAnimationFrame
+    ? window.requestAnimationFrame.bind(window)
+    : function (callback) { return window.setTimeout(callback, 16); };
   var PROFILE_KEY = "hesabno:user_profile";
   var DONE_KEY = "hesabno:first_run_profile_done";
   var IN_PROGRESS_KEY = "hesabno:first_run_profile_in_progress";
@@ -31,18 +34,22 @@
       return !(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
     } catch (error) { return true; }
   }
-  var ONBOARDING_MOTION_MS = 420;
+  var ONBOARDING_MOTION_MS = 140;
+  var ONBOARDING_NAV_GUARD_MS = 210;
   function animateOnboardingView(view, direction) {
-    if (!view || !onboardingMotionAllowed()) return;
+    if (!view || !onboardingMotionAllowed()) return false;
     var classes = ["hesabno-fr-view-enter-from-left", "hesabno-fr-view-enter-from-right"];
     classes.forEach(function (name) { view.classList.remove(name); });
-    void view.offsetWidth;
-    view.classList.add(direction === "next" ? classes[0] : classes[1]);
     var sequence = (view.__hesabnoMotionSequence || 0) + 1;
     view.__hesabnoMotionSequence = sequence;
-    window.setTimeout(function () {
-      if (view.__hesabnoMotionSequence === sequence) classes.forEach(function (name) { view.classList.remove(name); });
-    }, ONBOARDING_MOTION_MS + 60);
+    requestFrame(function () {
+      if (view.__hesabnoMotionSequence !== sequence || !view.isConnected) return;
+      view.classList.add(direction === "next" ? classes[0] : classes[1]);
+      window.setTimeout(function () {
+        if (view.__hesabnoMotionSequence === sequence) classes.forEach(function (name) { view.classList.remove(name); });
+      }, ONBOARDING_MOTION_MS + 60);
+    });
+    return true;
   }
 
   // Already set up check is performed in startFirstRun() so window.__hesabnoOpenFirstRunWizard is always registered.
@@ -57,6 +64,8 @@
     card.className = "hesabno-fr-card";
     card.setAttribute("novalidate", "novalidate");
     card.setAttribute("data-hesabno-fr-active-step", "restore");
+    var onboardingStepLocked = false;
+    var onboardingUnlockTimer = null;
 
     var glow = document.createElement("div");
     glow.className = "hesabno-fr-glow";
@@ -513,6 +522,7 @@
     overlay.appendChild(card);
 
     function savePreferencesAndFinish() {
+      if (onboardingStepLocked) return;
       var finalTime = clean(timeInput.value) || dailyReminderTime || "21:00";
       store("hesabno:currency", selectedCurrency);
       store("hesabno:reminder", dailyReminderEnabled ? "true" : "false");
@@ -548,11 +558,20 @@
 
     function showStep(stepName) {
       var previousStep = card.getAttribute("data-hesabno-fr-active-step");
+      if (onboardingStepLocked && previousStep !== stepName) return false;
       var activeView = card.querySelector('[data-hesabno-fr-view="' + stepName + '"]');
       var stepOrder = ["restore", "profile", "permissions", "preferences"];
       card.setAttribute("data-hesabno-fr-active-step", stepName);
       if (previousStep && previousStep !== stepName && activeView) {
         animateOnboardingView(activeView, stepOrder.indexOf(stepName) > stepOrder.indexOf(previousStep) ? "next" : "previous");
+        onboardingStepLocked = true;
+        card.setAttribute("aria-busy", "true");
+        if (onboardingUnlockTimer !== null) window.clearTimeout(onboardingUnlockTimer);
+        onboardingUnlockTimer = window.setTimeout(function () {
+          onboardingStepLocked = false;
+          onboardingUnlockTimer = null;
+          card.removeAttribute("aria-busy");
+        }, ONBOARDING_NAV_GUARD_MS);
       }
       if (stepName === "profile") {
         /* Focus the heading, not the first input: opening the native keyboard mid-transition
@@ -753,6 +772,7 @@
 
     card.addEventListener("submit", function (event) {
       event.preventDefault();
+      if (onboardingStepLocked) return;
       var currentStep = card.getAttribute("data-hesabno-fr-active-step");
       if (currentStep === "preferences") {
         savePreferencesAndFinish();
@@ -827,7 +847,7 @@
     var card = document.createElement("section"); card.className = "intro-card"; card.setAttribute("role", "dialog"); card.setAttribute("aria-modal", "true"); card.setAttribute("aria-label", "معرفی برنامه");
     card.innerHTML = '<div class="intro-brand-row"><strong class="intro-brand-label">MY MONEY</strong></div><div class="intro-art" aria-hidden="true" data-intro-art></div><div class="intro-copy" data-intro-copy><div class="intro-kicker" data-intro-step></div><h2 data-intro-title></h2><p data-intro-body aria-live="polite"></p></div><div class="intro-dots" data-intro-dots></div><div class="intro-actions"><button type="button" class="intro-skip" data-intro-skip>رد کردن</button><button type="button" class="intro-next" data-intro-next>بعدی ←</button></div>';
     overlay.appendChild(card); document.body.appendChild(overlay);
-    var step = card.querySelector('[data-intro-step]'), title = card.querySelector('[data-intro-title]'), body = card.querySelector('[data-intro-body]'), dots = card.querySelector('[data-intro-dots]'), next = card.querySelector('[data-intro-next]'), skip = card.querySelector('[data-intro-skip]'), copy = card.querySelector('[data-intro-copy]'), art = card.querySelector('[data-intro-art]');
+    var step = card.querySelector('[data-intro-step]'), title = card.querySelector('[data-intro-title]'), body = card.querySelector('[data-intro-body]'), dots = card.querySelector('[data-intro-dots]'), next = card.querySelector('[data-intro-next]'), skip = card.querySelector('[data-intro-skip]'), art = card.querySelector('[data-intro-art]');
     function finish() { store(key, "1"); overlay.remove(); done(); }
     function render() {
       step.textContent = faDigits(current + 1) + " از " + faDigits(slides.length);
@@ -836,7 +856,6 @@
       art.innerHTML = slides[current].svg;
       dots.innerHTML = slides.map(function (_, i) { return '<span class="' + (i === current ? 'active' : '') + '"></span>'; }).join('');
       next.textContent = "بعدی ←";
-      copy.style.animation = "none"; void copy.offsetWidth; copy.style.animation = "";
     }
     next.addEventListener("click", function () { if (current < slides.length - 1) { current += 1; render(); } else finish(); });
     skip.addEventListener("click", finish);

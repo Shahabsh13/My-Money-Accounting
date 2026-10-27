@@ -291,3 +291,36 @@ test('summarize reports counts and legacy status without touching data', () => {
   assert.equal(legacy.legacy, true);
   assert.equal(backup.summarize(null).storageKeys, 0);
 });
+
+/* Manual JSON backup names use the Persian calendar and Tehran local time. */
+test('manual full JSON backup filename includes its Solar Hijri date and exact creation time', () => {
+  const inlinePath = path.join(root, 'app/src/main/assets/src/scripts/067-inline.js');
+  const inlineSource = fs.readFileSync(inlinePath, 'utf8');
+  const start = inlineSource.indexOf('function Q$(');
+  const end = inlineSource.indexOf('function J$(', start);
+  assert.ok(start >= 0 && end > start, 'manual full-backup function is present');
+
+  const fixedTime = Date.parse('2026-10-27T12:34:56.000Z');
+  class FixedDate extends Date {
+    constructor(...args) { super(...(args.length ? args : [fixedTime])); }
+    static now() { return fixedTime; }
+  }
+  let savedFilename = null;
+  const context = {
+    Date: FixedDate,
+    Intl,
+    Blob,
+    JSON,
+    Ua: (_blob, filename) => { savedFilename = filename; },
+    Ho: (size) => `${size} bytes`,
+    te: String,
+    Zn: () => 'created',
+    Vo: () => {},
+  };
+  vm.runInNewContext(`${inlineSource.slice(start, end)};globalThis.runManualBackup=Q$;`, context);
+
+  const result = context.runManualBackup({ transactions: [], accounts: [] });
+  assert.equal(savedFilename, 'My-Money-Backup-1405-08-05_16-04-56.json');
+  assert.equal(result.filename, savedFilename);
+  assert.equal(result.timestamp, fixedTime);
+});

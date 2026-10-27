@@ -29,7 +29,7 @@ html[data-theme="light"] .hesabno-check-option[data-active="true"] { background:
   right: auto !important;
   width: max-content !important;
   max-width: calc(100vw - 32px) !important;
-  animation: hesabno-toast-in-centered 300ms cubic-bezier(0.22, 1, 0.36, 1) both !important;
+  animation: hesabno-toast-in-centered 140ms cubic-bezier(0.22, 1, 0.36, 1) both !important;
 }
 /* The original toast class already supplies translateX(-50%); animate only Y here. */
 @keyframes hesabno-toast-in-centered {
@@ -41,7 +41,7 @@ html[data-theme="light"] .hesabno-check-option[data-active="true"] { background:
   to { opacity: 0; transform: translateY(-16px) scale(0.96); }
 }
 .hesabno-toast-dismissing {
-  animation: hesabno-toast-out-centered 180ms ease-in forwards !important;
+  animation: hesabno-toast-out-centered 140ms ease-in forwards !important;
 }
 /* = 049-hesabno-mobile-typography.css = */
 /* A small mobile-only type reduction keeps the dashboard compact without shrinking desktop text. */
@@ -139,8 +139,8 @@ html.theme-light .hesabno-health-card button { color: #176b60; background: #d9f2
 /* = 052-hesabno-full-page-side-motion.css = */
 @keyframes hesabno-full-page-side-open { from { opacity: 0; transform: none; } to { opacity: 1; transform: none; } }
 @keyframes hesabno-full-page-side-exit { from { opacity: 1; transform: none; } to { opacity: 0; transform: none; } }
-.hesabno-full-page-side-open { animation: hesabno-full-page-side-open 220ms ease-out both; will-change: opacity; }
-.hesabno-full-page-side-exit { animation: hesabno-full-page-side-exit 180ms ease-in both; pointer-events: none; will-change: opacity; }
+.hesabno-full-page-side-open { animation: hesabno-full-page-side-open 140ms ease-out both; will-change: opacity; }
+.hesabno-full-page-side-exit { animation: hesabno-full-page-side-exit 140ms ease-in both; pointer-events: none; will-change: opacity; }
 @media (prefers-reduced-motion: reduce) { .hesabno-full-page-side-open, .hesabno-full-page-side-exit { animation: none !important; } }
 /* = 053-hesabno-account-picker-fullscreen.css = */
 .hesabno-account-picker-overlay { padding: 0 !important; align-items: stretch !important; justify-content: stretch !important; }

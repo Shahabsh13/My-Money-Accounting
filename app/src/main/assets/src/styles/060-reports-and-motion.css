@@ -516,17 +516,17 @@ html[data-theme="light"] .hesabno-dashboard-panel {
 }
 /* = 123-hesabno-slower-motion.css = */
 /* Keep UI feedback responsive on mid-range Android devices. */
-.hesabno-tab-shell { animation-duration: 220ms !important; }
-main.hesabno-page-exit-down { animation-duration: 220ms !important; }
-.hesabno-overlay-motion { animation-duration: 180ms !important; }
-.hesabno-dialog-motion { animation-duration: 200ms !important; }
-.hesabno-toast-motion { animation-duration: 180ms !important; }
-.hesabno-feedback-pop { animation-duration: 180ms !important; }
-.hesabno-full-page-side-open { animation-duration: 240ms !important; }
-.hesabno-full-page-side-exit { animation-duration: 200ms !important; }
+.hesabno-tab-shell { animation-duration: 140ms !important; }
+main.hesabno-page-exit-down { animation-duration: 140ms !important; }
+.hesabno-overlay-motion { animation-duration: 140ms !important; }
+.hesabno-dialog-motion { animation-duration: 140ms !important; }
+.hesabno-toast-motion { animation-duration: 140ms !important; }
+.hesabno-feedback-pop { animation-duration: 140ms !important; }
+.hesabno-full-page-side-open { animation-duration: 140ms !important; }
+.hesabno-full-page-side-exit { animation-duration: 140ms !important; }
 #root .transition,
-#root [class*="transition-"] { transition-duration: 180ms !important; }
-#root [class*="animate-in"] { animation-duration: 220ms !important; }
+#root [class*="transition-"] { transition-duration: 140ms !important; }
+#root [class*="animate-in"] { animation-duration: 150ms !important; }
 
 @media (prefers-reduced-motion: reduce) {
   #root .transition,
@@ -557,13 +557,13 @@ main.hesabno-page-exit-down { animation-duration: 220ms !important; }
     .hesabno-full-page-side-open,
     .hesabno-full-page-side-exit { will-change: opacity, transform !important; }
     main.hesabno-page-exit-down,
-    .hesabno-full-page-side-exit { animation-duration: 420ms !important; }
+    .hesabno-full-page-side-exit { animation-duration: 140ms !important; }
 /* = 125-hesabno-motion-performance.css = */
 :root {
-      --hesabno-motion-ease: cubic-bezier(.22, .75, .25, 1);
-      --hesabno-motion-fast: 260ms;
-      --hesabno-motion-normal: 320ms;
-      --hesabno-motion-card: 340ms;
+      --hesabno-motion-ease: cubic-bezier(.2, .8, .2, 1);
+      --hesabno-motion-fast: 110ms;
+      --hesabno-motion-normal: 140ms;
+      --hesabno-motion-card: 140ms;
     }
     #root .transition,
     #root [class*="transition-"] {
@@ -582,7 +582,7 @@ main.hesabno-page-exit-down { animation-duration: 220ms !important; }
       transition-property: opacity, transform, background-color, border-color, color, box-shadow !important;
     }
     #root [class*="animate-in"] {
-      animation-duration: 460ms !important;
+      animation-duration: 150ms !important;
       animation-timing-function: var(--hesabno-motion-ease) !important;
     }
     main.hesabno-page-exit-down,

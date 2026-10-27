@@ -6,9 +6,9 @@
  *   • «ما اصلا رویداد نداریم پس حذفش کن»
  *   • «ببین بازم اگه جایی توی قسمت‌های نمونه یا انتخاب کردن فونتش این‌جوریه درستش کن»
  *
- * علت: قاعدهٔ سراسری `input,select,textarea{font-size:16px!important}` اندازهٔ متن
- * `<select>` را روی ۱۶px قفل می‌کرد، در حالی که برچسب‌های همان ردیف ۱۲px بودند.
- * این آزمون سه چیز را قفل می‌کند:
+ * علت: قاعدهٔ پایهٔ `input,select,textarea{font-size:16px!important}` متن کنترل‌ها
+ * را در شروع ۱۶px می‌کند. لایهٔ تایپوگرافیِ بعدی ورودی‌های معمولی را ۱۴px می‌کند
+ * و استثناهای فشردهٔ فیلتر/کلاس را جدا نگه می‌دارد. این آزمون موارد زیر را قفل می‌کند:
  *   ۱. فیلتر «رویداد» کاملاً حذف شده است (نه فقط پنهان).
  *   ۲. انتخابگرهای فیلتر پیشرفته ۱۲px هستند و با برچسب‌هایشان هم‌اندازه‌اند.
  *   ۳. همهٔ `select`های برنامه اندازهٔ کلاس خودشان را می‌گیرند (text-xs/text-sm/پیش‌فرض ۱۳px).
@@ -74,7 +74,9 @@ test('قاعده‌های اندازهٔ انتخابگر در لایهٔ ۲۳۵
   const css = readAsset('src/styles/235-hesabno-text-root-and-display-stability.css');
   const base = readAsset('src/styles/010-core-base.css');
   assert.match(base, /input,select,textarea\{font-size:16px!important\}/,
-    'قاعدهٔ پایهٔ ۱۶px باید سر جایش بماند (جلوگیری از زوم مرورگر)');
+    'قاعدهٔ پایه باید دست‌نخورده بماند؛ اندازهٔ نهایی در لایهٔ تایپوگرافی تنظیم می‌شود');
+  assert.match(css, /html body input:where\([\s\S]*?\),\s*html body textarea \{ font-size: 14px !important; \}/,
+    'ورودی‌های متنی معمولی و textareaها باید از ۱۶px به ۱۴px برسند');
   assert.match(css, /html body \.hesabno-advanced-filter input,\s*html body \.hesabno-advanced-filter select,\s*html body \.hesabno-advanced-filter textarea\s*\{[^}]*font-size:\s*12px !important/,
     'انتخابگر و textarea فیلتر پیشرفته باید ۱۲px باشند');
   assert.match(css, /html body select \{ font-size: 13px !important; \}/,
@@ -83,6 +85,8 @@ test('قاعده‌های اندازهٔ انتخابگر در لایهٔ ۲۳۵
     'فیلدهای با کلاس text-xs باید ۱۲px باشند');
   assert.match(css, /html body input\.text-sm,\s*html body textarea\.text-sm,\s*html body select\.text-sm \{ font-size: 14px !important; \}/,
     'فیلدهای با کلاس text-sm باید ۱۴px باشند');
+  assert.match(css, /html body input\.text-base,\s*html body textarea\.text-base,\s*html body select\.text-base \{ font-size: 14px !important; \}/,
+    'فیلدهای قبلاً ۱۶px با کلاس text-base هم باید ۱۴px باشند');
 });
 
 test('انتخابگرهای پروژه و اعضا با برچسب‌هایشان هم‌اندازه‌اند و رویداد وجود ندارد', { timeout: 120000 }, async (t) => {
@@ -144,10 +148,14 @@ test('همهٔ فیلدهای فرم اندازهٔ کلاس خودشان را �
         `${tag} با کلاس ${classes} باید ${size} باشد نه 16px`);
     }
   }
-  /* بدون کلاس، همان ۱۶px پایه می‌ماند (فیلدهای فرم‌های اصلی) */
+  /* فیلدهای متنی معمولی بدون کلاس هم برای یکدستی ۱۴px می‌شوند. */
   for (const tag of ['input', 'textarea']) {
-    assert.equal(window.getComputedStyle(make(tag, '')).fontSize, '16px',
-      `${tag} بدون کلاس باید ۱۶px بماند`);
+    assert.equal(window.getComputedStyle(make(tag, '')).fontSize, '14px',
+      `${tag} بدون کلاس باید ۱۴px باشد`);
+  }
+  for (const tag of ['input', 'textarea', 'select']) {
+    assert.equal(window.getComputedStyle(make(tag, 'text-base')).fontSize, '14px',
+      `${tag} با کلاس text-base باید ۱۴px باشد`);
   }
   assert.equal(window.getComputedStyle(make('select', '')).fontSize, '13px',
     'select بدون کلاس ۱۳px است');

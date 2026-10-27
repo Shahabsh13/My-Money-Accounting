@@ -852,10 +852,9 @@ html[data-theme] article[id^='tx-card-'][id^='tx-card-'] .hesabno-footnote-actio
 #hesabno-amount-keyboard-backdrop {
   position: fixed;
   inset: 0;
-  z-index: 2147482999;
-  background: rgba(2, 6, 23, .24);
-  backdrop-filter: blur(2px) saturate(.96);
-  -webkit-backdrop-filter: blur(2px) saturate(.96);
+  z-index: 2147483645;
+  /* Keep the scrim above app controls so the first outside tap dismisses only the keypad. */
+  background: rgba(2, 6, 23, .36);
   animation: hesabno-amount-backdrop-in .16s ease-out both;
 }
 
@@ -877,7 +876,7 @@ html.theme-light #hesabno-amount-keyboard-backdrop {
 
 #hesabno-amount-keyboard {
   position: fixed;
-  z-index: 2147483000;
+  z-index: 2147483646;
   left: 0;
   right: 0;
   bottom: 0;
@@ -892,8 +891,6 @@ html.theme-light #hesabno-amount-keyboard-backdrop {
   user-select: none;
   -webkit-user-select: none;
   -webkit-tap-highlight-color: transparent;
-  backdrop-filter: blur(24px) !important;
-  -webkit-backdrop-filter: blur(24px) !important;
   transition: background-color .22s ease, border-color .22s ease, box-shadow .22s ease;
 }
 
@@ -1117,8 +1114,6 @@ html.theme-light #hesabno-amount-keyboard,
 [data-theme="light"] #hesabno-amount-keyboard,
 body.theme-light #hesabno-amount-keyboard {
   background: var(--hesabno-keypad-bg-light) !important;
-  backdrop-filter: blur(24px) !important;
-  -webkit-backdrop-filter: blur(24px) !important;
   border-top: 1px solid #cbd5e1 !important;
   box-shadow: 0 -10px 30px rgba(15, 23, 42, 0.08) !important;
   color: #0f172a !important;
@@ -4704,7 +4699,7 @@ html body .hesabno-advanced-filter textarea {
 }
 html body .hesabno-advanced-filter input::placeholder,
 html body .hesabno-advanced-filter textarea::placeholder { font-size: 12px !important; }
-/* انتخابگر پروژه/اعضا هم‌قد و هم‌اندازهٔ برچسب‌های همان ردیف باشد (نه ۱۶px سراسری). */
+/* انتخابگر پروژه/اعضا هم‌قد و هم‌اندازهٔ برچسب‌های همان ردیف باشد (نه ۱۴px پیش‌فرض ورودی‌ها). */
 html body .hesabno-advanced-filter select {
   padding: 6px 10px !important; border-radius: 10px !important;
   min-height: 32px; text-align: right; direction: rtl;
@@ -4720,9 +4715,11 @@ html body .hesabno-advanced-filter-header {
 }
 html body .hesabno-advanced-filter-header button { min-height: 44px; cursor: pointer; }
 
-/* فیلدهای فرم (ورودی/انتخابگر/متن چندخطی) اندازهٔ کلاس خودشان را بگیرند، نه
-   ۱۶px سراسریِ 010-core-base؛ وگرنه متن جست‌وجو و انتخابگرها کنار برچسب‌های
-   ۱۲pxی برنامه درشت و ناهماهنگ دیده می‌شود. */
+/* یکسان‌سازی فیلدهای نوشتنی که پیش‌تر به‌خاطر قاعدهٔ پایه ۱۶px شده بودند:
+   ورودی‌های متنی معمولی و textareaها ۱۴px می‌شوند. قواعد محدودترِ پایین‌تر
+   (فیلترها و کلاس‌های اندازه) اندازه‌های اختصاصی خودشان را حفظ می‌کنند. */
+html body input:where(:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="hidden"]):not([type="color"]):not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="image"])),
+html body textarea { font-size: 14px !important; }
 html body select { font-size: 13px !important; }
 html body input.text-xs,
 html body textarea.text-xs,
@@ -4738,7 +4735,7 @@ html body textarea.text-\[11px\],
 html body select.text-\[11px\] { font-size: 11px !important; }
 html body input.text-base,
 html body textarea.text-base,
-html body select.text-base { font-size: 16px !important; }
+html body select.text-base { font-size: 14px !important; }
 
 /* دو کادر مسیر سند («پرداخت به / دریافت از» و «از حساب / به حساب») لبه‌هایشان
    موازی باشد: ستون برچسب عرض کمینهٔ ثابت می‌گیرد تا هر دو کادر هم‌عرض شوند. */
@@ -4792,19 +4789,19 @@ body:has(.hesabno-advanced-filter) nav.fixed { visibility: hidden; pointer-event
 
 /* First-run form steps enter in the navigation direction: forward from left, Back from right. */
 @keyframes hesabno-onboarding-step-from-left {
-  from { opacity: .98; transform: translate3d(-5%, 0, 0); }
+  from { opacity: .9; transform: translate3d(-4%, 0, 0); }
   to { opacity: 1; transform: translate3d(0, 0, 0); }
 }
 @keyframes hesabno-onboarding-step-from-right {
-  from { opacity: .98; transform: translate3d(5%, 0, 0); }
+  from { opacity: .9; transform: translate3d(4%, 0, 0); }
   to { opacity: 1; transform: translate3d(0, 0, 0); }
 }
 #hesabno-first-run .hesabno-fr-view-enter-from-left {
-  animation: hesabno-onboarding-step-from-left 420ms cubic-bezier(.22, .61, .36, 1) both !important;
+  animation: hesabno-onboarding-step-from-left 140ms cubic-bezier(.2, .8, .2, 1) both !important;
   will-change: transform, opacity;
 }
 #hesabno-first-run .hesabno-fr-view-enter-from-right {
-  animation: hesabno-onboarding-step-from-right 420ms cubic-bezier(.22, .61, .36, 1) both !important;
+  animation: hesabno-onboarding-step-from-right 140ms cubic-bezier(.2, .8, .2, 1) both !important;
   will-change: transform, opacity;
 }
 @media (prefers-reduced-motion: reduce) {
@@ -4825,4 +4822,99 @@ html body [data-hesabno-transaction-search]::placeholder { font-size: 12px !impo
 html body input[placeholder]::placeholder,
 html body textarea[placeholder]::placeholder {
   font-size: 12px !important;
+}
+
+
+/* Cohesive, paint-friendly motion layer: brief transform/opacity movement, no forced layout. */
+:root {
+  --hesabno-motion-ease: cubic-bezier(.2, .8, .2, 1);
+  --hesabno-motion-fast: 110ms;
+  --hesabno-motion-normal: 140ms;
+}
+#root .transition,
+#root [class*="transition-"] {
+  transition-duration: var(--hesabno-motion-normal) !important;
+  transition-timing-function: var(--hesabno-motion-ease) !important;
+}
+#root [class*="animate-in"] {
+  animation-duration: 150ms !important;
+  animation-timing-function: var(--hesabno-motion-ease) !important;
+}
+.hesabno-tab-shell,
+main.hesabno-page-exit-down,
+.hesabno-overlay-motion,
+.hesabno-dialog-motion,
+.hesabno-toast-motion,
+.hesabno-feedback-pop,
+.hesabno-full-page-side-open,
+.hesabno-full-page-side-exit,
+main.hesabno-form-transition-enter-forward,
+main.hesabno-form-transition-enter-back,
+main.hesabno-form-transition-enter-confirm,
+main.hesabno-form-transition-exit-back,
+.hesabno-fullpage-ghost,
+.hesabno-overlay-ghost,
+.hesabno-toast-ghost {
+  animation-timing-function: var(--hesabno-motion-ease) !important;
+}
+main.hesabno-form-transition-enter-forward,
+main.hesabno-form-transition-enter-back,
+main.hesabno-form-transition-enter-confirm,
+main.hesabno-form-transition-exit-back { animation-duration: 140ms !important; }
+.hesabno-tab-shell,
+main.hesabno-page-exit-down,
+.hesabno-overlay-motion,
+.hesabno-dialog-motion,
+.hesabno-toast-motion,
+.hesabno-feedback-pop,
+.hesabno-full-page-side-open,
+.hesabno-full-page-side-exit { animation-duration: 140ms !important; }
+.hesabno-fullpage-ghost { animation-duration: 150ms !important; }
+.hesabno-overlay-ghost,
+.hesabno-toast-ghost { animation-duration: 120ms !important; }
+#hesabno-amount-keyboard-backdrop,
+.hn-toast,
+.hesabno-toast-dismissing { animation-duration: 140ms !important; }
+.hn-toast { transition-duration: 140ms !important; }
+#root .fixed.inset-0[class*="backdrop-blur"] {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+article.hesabno-focused-check-card { animation: none !important; }
+#hesabno-intro-tour .intro-art::after,
+#hesabno-intro-tour .intro-next { animation: none !important; }
+#hesabno-intro-tour .intro-card,
+#hesabno-intro-tour .intro-art svg,
+#hesabno-intro-tour .intro-copy {
+  animation-duration: 150ms !important;
+  animation-timing-function: var(--hesabno-motion-ease) !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+
+/* App-wide page navigation stays immediate; only compact overlays/control feedback may fade. */
+#root main.hesabno-page-enter,
+#root main.hesabno-page-open-up,
+#root main.hesabno-page-exit-down,
+#root main.hesabno-tab-horizontal-in,
+#root main.hesabno-content-swap,
+#root main.hesabno-form-transition-enter-forward,
+#root main.hesabno-form-transition-enter-back,
+#root main.hesabno-form-transition-enter-confirm,
+#root main.hesabno-form-transition-exit-back,
+#root .hesabno-full-page-side-open,
+#root .hesabno-full-page-side-exit {
+  animation: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+  scale: none !important;
+  will-change: auto !important;
+  pointer-events: auto !important;
 }

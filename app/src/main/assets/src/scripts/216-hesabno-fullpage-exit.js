@@ -9,8 +9,8 @@
   var GHOST_FULL = 'hesabno-fullpage-ghost';
   var GHOST_SMALL = 'hesabno-overlay-ghost';
   var GHOST_TOAST = 'hesabno-toast-ghost';
-  var DURATION = 260;
-  var TOAST_DURATION = 200;
+  var DURATION = 150;
+  var TOAST_DURATION = 120;
   var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   // کلاس‌هایی که انیمیشن ورود را اجرا می‌کنند؛ از کپی حذف می‌شوند
   var MOTION_TOKEN = /motion|animate-in|fade-in|slide-in|zoom-in|animate-/;
@@ -35,11 +35,10 @@
     var out = [];
     if (node.nodeType !== 1 || isGhost(node)) return out;
     if (isToast(node)) return [{ el: node, kind: 'toast' }];
-    var candidates = [node].concat(node.querySelectorAll ? Array.prototype.slice.call(node.querySelectorAll('div.fixed.inset-0')) : []);
-    candidates.forEach(function (el) {
-      if (el.matches && el.matches(FULL)) out.push({ el: el, kind: 'full' });
-      else if (isSmallOverlay(el)) out.push({ el: el, kind: 'small' });
-    });
+    // React portals remove overlays as their own nodes. Do not search every removed
+    // subtree: a transaction form can contain hundreds of controls and report rows.
+    if (node.matches && node.matches(FULL)) out.push({ el: node, kind: 'full' });
+    else if (isSmallOverlay(node)) out.push({ el: node, kind: 'small' });
     return out;
   }
 
@@ -55,7 +54,9 @@
 
   function exitItem(item) {
     if (reduced || !document.body) return;
-    var ghost = item.el.cloneNode(true);
+    // Keep only the painted overlay shell; cloning a report/table subtree on close
+    // can create a large synchronous DOM and paint cost on mid-range devices.
+    var ghost = item.el.cloneNode(false);
     if (item.kind === 'toast') ghost.classList.remove('animate-in', 'fade-in');
     else ghost.classList.remove('hesabno-fullpage-layer', 'fixed', 'inset-0');
     ghost.classList.add(item.kind === 'full' ? GHOST_FULL : item.kind === 'toast' ? GHOST_TOAST : GHOST_SMALL);
@@ -63,7 +64,7 @@
     ghost.removeAttribute('id');
     stripMotion(ghost);
     document.body.appendChild(ghost);
-    window.setTimeout(function () { if (ghost.parentNode) ghost.parentNode.removeChild(ghost); }, (item.kind === 'toast' ? TOAST_DURATION : DURATION) + 60);
+    window.setTimeout(function () { if (ghost.parentNode) ghost.parentNode.removeChild(ghost); }, (item.kind === 'toast' ? TOAST_DURATION : DURATION) + 30);
   }
 
   window.__hesabnoDom.watch(document.body || document.documentElement, { childList: true, subtree: true }, function (records) {
