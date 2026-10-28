@@ -57,6 +57,8 @@ test('date picker is a bottom sheet with a blurred scrim', { timeout: 180000 }, 
   const sheet = document.querySelector('#persian-datepicker-sheet');
   assert.ok(backdrop, 'لایه‌ی تقویم باید باز شود');
   assert.ok(sheet, 'شیت تقویم باید رندر شود');
+  assert.equal(backdrop.parentElement, document.body,
+    'تقویم باید با React portal بیرون از درخت transform‌شدهٔ فرم و مستقیم زیر body رندر شود');
 
   /* لایه: تمام‌صفحه، ثابت و چسبیده به پایین */
   assert.equal(backdrop.style.position, 'fixed', 'لایه باید fixed باشد تا با اسکرول فرم جابه‌جا نشود');
