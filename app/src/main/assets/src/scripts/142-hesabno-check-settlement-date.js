@@ -411,14 +411,15 @@
       state.sheet.style.width = "100%";
       state.sheet.style.maxWidth = "24rem";
       state.sheet.style.maxHeight = "86vh";
+      state.sheet.style.height = "86vh";
       state.sheet.style.display = "flex";
       state.sheet.style.flexDirection = "column";
       state.sheet.style.overflow = "hidden";
       var handle = state.sheet.firstElementChild, header = handle && handle.nextElementSibling;
-      if (handle) handle.style.flex = "0 0 auto";
+      if (handle) { handle.style.flex = "0 0 auto"; handle.style.marginTop = "auto"; }
       if (header) header.style.flex = "0 0 auto";
       var calendarBody = state.sheet.querySelector("[data-hesabno-settlement-datepicker-body]");
-      calendarBody.style.flex = "1 1 auto";
+      calendarBody.style.flex = "0 1 auto";
       calendarBody.style.minHeight = "0";
       calendarBody.style.overflowY = "auto";
       calendarBody.style.display = "flex";
@@ -432,7 +433,6 @@
       state.sheet.style.paddingBottom = "0px";
       var footer = state.sheet.querySelector("[data-hesabno-settlement-confirm]").parentElement;
       footer.style.flex = "0 0 auto";
-      footer.style.marginTop = "auto";
       footer.style.backgroundColor = "inherit";
       footer.style.paddingBottom = "calc(4px + env(safe-area-inset-bottom, 0px))";
       var previousMonthPath = state.sheet.querySelector("[data-hesabno-settlement-prev-month] path");

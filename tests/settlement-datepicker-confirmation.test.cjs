@@ -44,10 +44,13 @@ test('check settlement calendar commits only on confirmation and cancels with X'
     assert.ok(confirmButton, 'دکمهٔ تأیید باید پایین تقویم باشد');
     const confirmFooter = confirmButton.parentElement;
     const sheet = backdrop.querySelector('#persian-datepicker-sheet');
+    assert.equal(sheet.style.height, '86vh', 'ارتفاع شیت باید برای ایجاد فضای خالی بالای تقویم حفظ شود');
     assert.equal(sheet.style.display, 'flex', 'شیت باید نوار تأیید را از ناحیهٔ روزها جدا کند');
     assert.equal(sheet.style.flexDirection, 'column');
+    assert.equal(sheet.firstElementChild.style.marginTop, 'auto', 'دسته و سربرگ باید همراه تاریخ‌ها به پایین منتقل شوند');
     assert.equal(sheet.style.overflow, 'hidden');
     const calendarBody = sheet.querySelector('[data-hesabno-settlement-datepicker-body]');
+    assert.equal(calendarBody.style.flex, '0 1 auto', 'ناحیهٔ تقویم نباید بین سربرگ و تاریخ‌ها کش بیاید');
     assert.equal(calendarBody.style.overflowY, 'auto', 'روزها باید مستقل از نوار تأیید اسکرول شوند');
     assert.equal(calendarBody.style.display, 'flex');
     assert.equal(calendarBody.style.flexDirection, 'column');
@@ -56,7 +59,8 @@ test('check settlement calendar commits only on confirmation and cancels with X'
     assert.equal(calendarBody.children[0].style.marginTop, 'auto', 'فضای خالی باید بالای کل تقویم بماند');
     assert.equal(calendarBody.children[1].style.flex, '0 0 auto', 'ردیف‌های تاریخ نباید جمع شوند');
     assert.equal(confirmFooter.style.flex, '0 0 auto', 'ردیف تأیید نباید با کوچک‌شدن پنل جمع شود');
-    assert.equal(confirmFooter.style.marginTop, 'auto', 'ردیف تأیید باید در انتهای شیت قرار بگیرد');
+    assert.equal(confirmFooter.style.marginTop, '', 'فضای خالی باید بالای دستهٔ شیت باشد، نه بین تاریخ‌ها و تأیید');
+    assert.equal(sheet.lastElementChild, confirmFooter, 'ردیف تأیید باید آخرین بخش شیت باقی بماند');
     assert.match(confirmFooter.style.paddingBottom, /calc\(4px \+ env\(/, 'فاصلهٔ پایین تأیید باید مثل کیبورد و فقط به‌اندازهٔ safe-area باشد');
     assert.equal(sheet.style.paddingBottom, '0px', 'فاصلهٔ قبلیِ زیر شیت نباید دکمهٔ تأیید را از کف بلند کند');
 

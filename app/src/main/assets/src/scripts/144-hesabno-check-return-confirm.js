@@ -496,6 +496,7 @@
             picker.style.width = "100%";
             picker.style.maxWidth = "24rem";
             picker.style.maxHeight = "86vh";
+            picker.style.height = "86vh";
             picker.style.display = "flex";
             picker.style.flexDirection = "column";
             picker.style.overflow = "hidden";
@@ -509,16 +510,15 @@
             picker.innerHTML = `<div class="w-10 h-1 bg-stone-700 rounded-full mx-auto mb-4 sm:hidden"></div><div class="flex items-center justify-between gap-2.5 mb-4"><button data-return-date-year type="button" class="px-4 py-2 rounded-xl text-sm font-bold border transition flex items-center gap-1.5"></button><div class="flex items-center justify-between bg-stone-800 border border-stone-700/80 rounded-xl px-2 py-1.5 min-w-[155px]"><button data-return-date-prev-month type="button" class="p-1 rounded-lg transition" title="ماه قبل">‹</button><span data-date-month class="font-bold text-sm text-stone-100 px-3"></span><button data-return-date-next-month type="button" class="p-1 rounded-lg transition" title="ماه بعد">›</button></div><button data-return-date-close type="button" aria-label="بستن تقویم" class="w-9 h-9 rounded-xl bg-stone-800/80 hover:bg-stone-750 border border-stone-700/60 text-stone-400 hover:text-stone-200 text-lg transition">×</button></div><div data-date-calendar></div><div class="flex items-center justify-start gap-3 mt-4 pt-2 border-t border-stone-800"><button data-return-date-today type="button" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-stone-800 hover:bg-stone-750 border border-stone-700 text-xs font-bold text-stone-200 transition">امروز</button><button data-return-date-confirm type="button" class="flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-black transition">تأیید تاریخ</button></div>`;
             var dateFooter = picker.querySelector("[data-return-date-confirm]").parentElement;
             var dateHandle = picker.firstElementChild, dateHeader = dateHandle && dateHandle.nextElementSibling;
-            if (dateHandle) dateHandle.style.flex = "0 0 auto";
+            if (dateHandle) { dateHandle.style.flex = "0 0 auto"; dateHandle.style.marginTop = "auto"; }
             if (dateHeader) dateHeader.style.flex = "0 0 auto";
             var dateCalendarBody = picker.querySelector("[data-date-calendar]");
-            dateCalendarBody.style.flex = "1 1 auto";
+            dateCalendarBody.style.flex = "0 1 auto";
             dateCalendarBody.style.minHeight = "0";
             dateCalendarBody.style.overflowY = "auto";
             dateCalendarBody.style.display = "flex";
             dateCalendarBody.style.flexDirection = "column";
             dateFooter.style.flex = "0 0 auto";
-            dateFooter.style.marginTop = "auto";
             dateFooter.style.backgroundColor = "inherit";
             dateFooter.style.paddingBottom = "calc(4px + env(safe-area-inset-bottom, 0px))";
             overlay.appendChild(picker); document.body.appendChild(overlay);
