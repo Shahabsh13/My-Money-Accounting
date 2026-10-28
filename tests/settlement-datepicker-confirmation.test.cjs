@@ -47,7 +47,14 @@ test('check settlement calendar commits only on confirmation and cancels with X'
     assert.equal(sheet.style.display, 'flex', 'شیت باید نوار تأیید را از ناحیهٔ روزها جدا کند');
     assert.equal(sheet.style.flexDirection, 'column');
     assert.equal(sheet.style.overflow, 'hidden');
-    assert.equal(sheet.querySelector('[data-hesabno-settlement-datepicker-body]').style.overflowY, 'auto', 'روزها باید مستقل از نوار تأیید اسکرول شوند');
+    const calendarBody = sheet.querySelector('[data-hesabno-settlement-datepicker-body]');
+    assert.equal(calendarBody.style.overflowY, 'auto', 'روزها باید مستقل از نوار تأیید اسکرول شوند');
+    assert.equal(calendarBody.style.display, 'flex');
+    assert.equal(calendarBody.style.flexDirection, 'column');
+    assert.equal(calendarBody.style.paddingBottom, '0px', 'پایین‌ترین ردیف تاریخ باید به لبهٔ داخلی کادر برسد');
+    assert.equal(calendarBody.children[0].style.flex, '0 0 auto', 'نام روزهای هفته هم باید پایین بیایند');
+    assert.equal(calendarBody.children[0].style.marginTop, 'auto', 'فضای خالی باید بالای کل تقویم بماند');
+    assert.equal(calendarBody.children[1].style.flex, '0 0 auto', 'ردیف‌های تاریخ نباید جمع شوند');
     assert.equal(confirmFooter.style.flex, '0 0 auto', 'ردیف تأیید نباید با کوچک‌شدن پنل جمع شود');
     assert.equal(confirmFooter.style.marginTop, 'auto', 'ردیف تأیید باید در انتهای شیت قرار بگیرد');
     assert.match(confirmFooter.style.paddingBottom, /calc\(4px \+ env\(/, 'فاصلهٔ پایین تأیید باید مثل کیبورد و فقط به‌اندازهٔ safe-area باشد');

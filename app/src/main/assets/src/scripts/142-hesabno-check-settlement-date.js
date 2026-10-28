@@ -338,7 +338,9 @@
         return;
       }
       body.innerHTML = "<div class=\"grid grid-cols-7 gap-1 mb-2 text-center text-xs font-bold text-stone-400\"><span class=\"py-1\">ش</span><span class=\"py-1\">ی</span><span class=\"py-1\">د</span><span class=\"py-1\">س</span><span class=\"py-1\">چ</span><span class=\"py-1\">پ</span><span class=\"py-1 text-rose-400/80\">ج</span></div><div class=\"grid grid-cols-7 gap-y-2 gap-x-1\" data-hesabno-settlement-datepicker-days></div>";
-      var days = body.querySelector("[data-hesabno-settlement-datepicker-days]"), first = jalaliToGregorian(state.viewYear, state.viewMonth, 1), leading = (new Date(Date.UTC(first.gy, first.gm - 1, first.gd)).getUTCDay() + 1) % 7;
+      var weekdays = body.firstElementChild, days = body.querySelector("[data-hesabno-settlement-datepicker-days]"), first = jalaliToGregorian(state.viewYear, state.viewMonth, 1), leading = (new Date(Date.UTC(first.gy, first.gm - 1, first.gd)).getUTCDay() + 1) % 7;
+      if (weekdays) { weekdays.style.flex = "0 0 auto"; weekdays.style.marginTop = "auto"; }
+      if (days) days.style.flex = "0 0 auto";
       for (var blank = 0; blank < leading; blank += 1) days.appendChild(document.createElement("div")).className = "w-9 h-9 sm:w-10 sm:h-10";
       var minimum = normalizeDate(state.field.getAttribute("data-hesabno-settlement-min-date"));
       for (var day = 1; day <= monthLength(state.viewYear, state.viewMonth); day += 1) {
@@ -419,6 +421,9 @@
       calendarBody.style.flex = "1 1 auto";
       calendarBody.style.minHeight = "0";
       calendarBody.style.overflowY = "auto";
+      calendarBody.style.display = "flex";
+      calendarBody.style.flexDirection = "column";
+      calendarBody.style.paddingBottom = "0px";
       state.sheet.style.boxSizing = "border-box";
       state.sheet.style.borderTopLeftRadius = "24px";
       state.sheet.style.borderTopRightRadius = "24px";

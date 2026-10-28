@@ -89,8 +89,15 @@ test('date picker is a bottom sheet with a blurred scrim', { timeout: 180000 }, 
   assert.equal(sheet.style.display, 'flex', 'شیت باید برای جداکردن ناحیهٔ روزها از نوار تأیید از flex استفاده کند');
   assert.equal(sheet.style.flexDirection, 'column');
   assert.equal(sheet.style.overflow, 'hidden', 'اسکرول باید به محتوای تقویم محدود بماند');
-  assert.equal(sheet.children[2].style.flex, '1 1 auto', 'ناحیهٔ روزها باید فضای باقی‌مانده را بگیرد');
-  assert.equal(sheet.children[2].style.overflowY, 'auto', 'محتوای بلند تقویم باید مستقل از نوار تأیید اسکرول شود');
+  const calendarBody = sheet.children[2];
+  assert.equal(calendarBody.style.flex, '1 1 auto', 'ناحیهٔ روزها باید فضای باقی‌مانده را بگیرد');
+  assert.equal(calendarBody.style.overflowY, 'auto', 'محتوای بلند تقویم باید مستقل از نوار تأیید اسکرول شود');
+  assert.equal(calendarBody.style.display, 'flex');
+  assert.equal(calendarBody.style.flexDirection, 'column');
+  assert.equal(calendarBody.style.paddingBottom, '0px', 'پایین‌ترین ردیف تاریخ باید به لبهٔ داخلی کادر برسد');
+  assert.equal(calendarBody.children[0].style.flex, '0 0 auto', 'نام روزهای هفته هم باید همراه تاریخ‌ها پایین بماند');
+  assert.equal(calendarBody.children[0].style.marginTop, 'auto', 'فضای خالی باید بالای کل تقویم بماند');
+  assert.equal(calendarBody.children[1].style.flex, '0 0 auto', 'ردیف‌های تاریخ نباید هنگام چیدمان جمع شوند');
   assert.equal(sheet.getAttribute('role'), 'dialog');
   assert.equal(sheet.getAttribute('aria-modal'), 'true');
   assert.equal(sheet.parentElement, backdrop, 'شیت باید فرزند مستقیم لایه باشد');

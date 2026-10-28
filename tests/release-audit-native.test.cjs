@@ -84,9 +84,9 @@ test('APK update uses fresh asset cache keys and increments the Android app vers
  const index=fs.readFileSync('app/src/main/assets/index.html','utf8');
  const version=fs.readFileSync('version.properties','utf8');
  for(const asset of [
-  'src/scripts/067-inline.js?v=2026102707',
-  'src/scripts/142-hesabno-check-settlement-date.js?v=20',
-  'src/scripts/144-hesabno-check-return-confirm.js?v=19',
+  'src/scripts/067-inline.js?v=2026102708',
+  'src/scripts/142-hesabno-check-settlement-date.js?v=21',
+  'src/scripts/144-hesabno-check-return-confirm.js?v=20',
   'src/scripts/214-hesabno-numeric-keyboard.js?v=2026102801'
  ]) assert.ok(index.includes(asset),`HTML must load the fresh asset URL: ${asset}`);
  assert.match(version,/^versionCode=14$/m);

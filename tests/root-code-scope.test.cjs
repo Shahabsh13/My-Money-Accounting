@@ -250,7 +250,12 @@ test('پرداخت جایگزین چک برگشتی هیچ کد یا «کد ری
   assert.equal(returnSheet.style.display, 'flex', 'شیت باید نوار تأیید را از ناحیهٔ روزها جدا کند');
   assert.equal(returnSheet.style.flexDirection, 'column');
   assert.equal(returnSheet.style.overflow, 'hidden');
-  assert.equal(returnSheet.querySelector('[data-date-calendar]').style.overflowY, 'auto', 'روزها باید مستقل از نوار تأیید اسکرول شوند');
+  const dateCalendarBody = returnSheet.querySelector('[data-date-calendar]');
+  assert.equal(dateCalendarBody.style.overflowY, 'auto', 'روزها باید مستقل از نوار تأیید اسکرول شوند');
+  const calendarCard = dateCalendarBody.firstElementChild;
+  assert.equal(calendarCard.style.flex, '0 0 auto', 'کادر ماه باید پایین‌چین بماند');
+  assert.equal(calendarCard.style.marginTop, 'auto', 'فضای خالی باید بالای کل تقویم بماند');
+  assert.equal(calendarCard.style.paddingBottom, '0px', 'پایین‌ترین ردیف تاریخ باید به لبهٔ داخلی کادر برسد');
   assert.equal(confirmFooter.style.flex, '0 0 auto', 'ردیف تأیید نباید با کوچک‌شدن پنل جمع شود');
   assert.equal(confirmFooter.style.marginTop, 'auto', 'ردیف تأیید باید در انتهای شیت قرار بگیرد');
   assert.match(confirmFooter.style.paddingBottom, /calc\(4px \+ env\(/, 'فاصلهٔ پایین تأیید باید مثل کیبورد و فقط به‌اندازهٔ safe-area باشد');
