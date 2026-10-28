@@ -82,13 +82,25 @@
           var plaintext = new TextEncoder().encode(JSON.stringify({ version: 1, createdAt: new Date().toISOString(), entries: entries }));
           var encrypted = await crypto.subtle.encrypt({ name: "AES-GCM", iv: iv }, key, plaintext);
           var backup = { format: "hesabno-encrypted-backup", version: 1, kdf: { name: "PBKDF2", hash: "SHA-256", iterations: iterations, salt: base64(salt) }, cipher: { name: "AES-GCM", iv: base64(iv) }, ciphertext: base64(new Uint8Array(encrypted)) };
-          var url = URL.createObjectURL(new Blob([JSON.stringify(backup)], { type: "application/json" }));
-          var link = document.createElement("a");
-          link.href = url;
-          link.download = "hesabno-encrypted-backup-" + new Date().toISOString().slice(0, 10) + ".json";
-          link.click();
-          setTimeout(function () { URL.revokeObjectURL(url); }, 1500);
-          say("فایل پشتیبان رمزگذاری‌شده دانلود شد. بازیابی آن فقط با همین گذرواژه ممکن است.", false);
+          var serialized = JSON.stringify(backup);
+          var filename = "hesabno-encrypted-backup-" + new Date().toISOString().slice(0, 10) + ".json";
+          if (window.HnBridge) {
+            if (typeof window.__hesabnoSaveManualBackup !== "function") throw new Error("انتخاب محل ذخیره در این نسخه در دسترس نیست.");
+            say("محل ذخیره را انتخاب کنید.", false);
+            window.__hesabnoSaveManualBackup(filename, serialized, function (status) {
+              if (status === "saved") say("فایل پشتیبان رمزگذاری‌شده ذخیره شد. بازیابی آن فقط با همین گذرواژه ممکن است.", false);
+              else if (status === "cancelled") say("ذخیرهٔ پشتیبان لغو شد.", false);
+              else say("ذخیرهٔ فایل پشتیبان انجام نشد؛ دوباره تلاش کنید.", true);
+            });
+          } else {
+            var url = URL.createObjectURL(new Blob([serialized], { type: "application/json" }));
+            var link = document.createElement("a");
+            link.href = url;
+            link.download = filename;
+            link.click();
+            setTimeout(function () { URL.revokeObjectURL(url); }, 1500);
+            say("فایل پشتیبان رمزگذاری‌شده دانلود شد. بازیابی آن فقط با همین گذرواژه ممکن است.", false);
+          }
         } catch (error) { say(error && error.message ? error.message : "ساخت پشتیبان انجام نشد.", true); }
         finally { exportButton.disabled = false; }
       });

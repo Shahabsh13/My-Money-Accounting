@@ -38,9 +38,35 @@ test('check settlement calendar commits only on confirmation and cancels with X'
     assert.equal(backdrop.style.display, 'flex');
     assert.equal(backdrop.style.alignItems, 'flex-end', 'تقویم باید در پایین صفحه قرار بگیرد حتی اگر کلاس‌های CSS بارگذاری نشوند');
     assert.equal(backdrop.style.justifyContent, 'center');
+    assert.equal(backdrop.style.background, 'rgba(6, 10, 16, 0.18)',
+      'صفحهٔ زیر تقویم باید از پشت لایهٔ نیمه‌شفاف و بلرشده دیده شود');
+    assert.match(backdrop.style.backdropFilter || backdrop.style.webkitBackdropFilter || '', /blur\(16px\)/,
+      'لایهٔ پشت تقویم باید صفحهٔ زیر را blur کند');
     assert.equal(backdrop.querySelector('#persian-datepicker-sheet').style.borderTopLeftRadius, '24px');
     assert.ok(backdrop.querySelector('[data-hesabno-settlement-close]'), 'ضربدر بستن باید وجود داشته باشد');
-    assert.ok(backdrop.querySelector('[data-hesabno-settlement-confirm]'), 'دکمهٔ تأیید باید پایین تقویم باشد');
+    const confirmButton = backdrop.querySelector('[data-hesabno-settlement-confirm]');
+    assert.ok(confirmButton, 'دکمهٔ تأیید باید پایین تقویم باشد');
+    const confirmFooter = confirmButton.parentElement;
+    const sheet = backdrop.querySelector('#persian-datepicker-sheet');
+    assert.equal(sheet.style.height, '86vh', 'ارتفاع شیت باید برای ایجاد فضای خالی بالای تقویم حفظ شود');
+    assert.equal(sheet.style.display, 'flex', 'شیت باید نوار تأیید را از ناحیهٔ روزها جدا کند');
+    assert.equal(sheet.style.flexDirection, 'column');
+    assert.equal(sheet.firstElementChild.style.marginTop, 'auto', 'دسته و سربرگ باید همراه تاریخ‌ها به پایین منتقل شوند');
+    assert.equal(sheet.style.overflow, 'hidden');
+    const calendarBody = sheet.querySelector('[data-hesabno-settlement-datepicker-body]');
+    assert.equal(calendarBody.style.flex, '0 1 auto', 'ناحیهٔ تقویم نباید بین سربرگ و تاریخ‌ها کش بیاید');
+    assert.equal(calendarBody.style.overflowY, 'auto', 'روزها باید مستقل از نوار تأیید اسکرول شوند');
+    assert.equal(calendarBody.style.display, 'flex');
+    assert.equal(calendarBody.style.flexDirection, 'column');
+    assert.equal(calendarBody.style.paddingBottom, '0px', 'پایین‌ترین ردیف تاریخ باید به لبهٔ داخلی کادر برسد');
+    assert.equal(calendarBody.children[0].style.flex, '0 0 auto', 'نام روزهای هفته هم باید پایین بیایند');
+    assert.equal(calendarBody.children[0].style.marginTop, 'auto', 'فضای خالی باید بالای کل تقویم بماند');
+    assert.equal(calendarBody.children[1].style.flex, '0 0 auto', 'ردیف‌های تاریخ نباید جمع شوند');
+    assert.equal(confirmFooter.style.flex, '0 0 auto', 'ردیف تأیید نباید با کوچک‌شدن پنل جمع شود');
+    assert.equal(confirmFooter.style.marginTop, '', 'فضای خالی باید بالای دستهٔ شیت باشد، نه بین تاریخ‌ها و تأیید');
+    assert.equal(sheet.lastElementChild, confirmFooter, 'ردیف تأیید باید آخرین بخش شیت باقی بماند');
+    assert.match(confirmFooter.style.paddingBottom, /calc\(4px \+ env\(/, 'فاصلهٔ پایین تأیید باید مثل کیبورد و فقط به‌اندازهٔ safe-area باشد');
+    assert.equal(sheet.style.paddingBottom, '0px', 'فاصلهٔ قبلیِ زیر شیت نباید دکمهٔ تأیید را از کف بلند کند');
 
     const firstDay = [...backdrop.querySelectorAll('[data-hesabno-settlement-day]')]
       .find((button) => !button.disabled && button.getAttribute('data-hesabno-settlement-day') !== String(Number(original.split('/')[2])));

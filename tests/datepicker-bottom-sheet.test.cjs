@@ -13,6 +13,8 @@
  */
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
 
 const { bootApp, closeApp, buttonByText, wait, normalize } = require('./helpers/app-boot.cjs');
 
@@ -41,6 +43,15 @@ function openDatePicker(window) {
   return wait(450);
 }
 
+test('date picker CSS overrides the app-wide full-screen blur opt-out', () => {
+  const css = fs.readFileSync(path.join(__dirname, '..',
+    'app/src/main/assets/src/styles/235-hesabno-text-root-and-display-stability.css'), 'utf8');
+  assert.match(css, /html body #persian-datepicker-backdrop,[\s\S]*?html body #hesabno-return-datepicker-backdrop/,
+    'هر سه تقویم باید از استثنای اختصاصی blur استفاده کنند');
+  assert.match(css, /#hesabno-return-datepicker-backdrop \{[\s\S]*?background:\s*rgba\(6, 10, 16, \.18\) !important;[\s\S]*?-webkit-backdrop-filter:\s*blur\(16px\) saturate\(120%\) !important;[\s\S]*?backdrop-filter:\s*blur\(16px\) saturate\(120%\) !important;/,
+    'استثنای تقویم باید قانون عمومیِ none!important را شکست دهد');
+});
+
 test('date picker is a bottom sheet with a blurred scrim', { timeout: 180000 }, async (t) => {
   if (!hasJsdom) return t.skip('jsdom در دسترس نیست');
 
@@ -57,6 +68,8 @@ test('date picker is a bottom sheet with a blurred scrim', { timeout: 180000 }, 
   const sheet = document.querySelector('#persian-datepicker-sheet');
   assert.ok(backdrop, 'لایه‌ی تقویم باید باز شود');
   assert.ok(sheet, 'شیت تقویم باید رندر شود');
+  assert.equal(backdrop.parentElement, document.body,
+    'تقویم باید با React portal بیرون از درخت transform‌شدهٔ فرم و مستقیم زیر body رندر شود');
 
   /* لایه: تمام‌صفحه، ثابت و چسبیده به پایین */
   assert.equal(backdrop.style.position, 'fixed', 'لایه باید fixed باشد تا با اسکرول فرم جابه‌جا نشود');
@@ -77,22 +90,43 @@ test('date picker is a bottom sheet with a blurred scrim', { timeout: 180000 }, 
   assert.match(blur, /blur\(\d+(\.\d+)?px\)/, 'پس‌زمینه‌ی تقویم باید blur داشته باشد');
   const blurPx = Number((blur.match(/blur\((\d+)/) || [])[1] || 0);
   assert.ok(blurPx >= 12, `blur باید محسوس باشد (حداقل ۱۲px)، اما ${blurPx}px است`);
-  assert.match(backdrop.style.background, /rgba?\(/, 'لایه باید تیره باشد');
+  assert.equal(backdrop.style.background, 'rgba(6, 10, 16, 0.55)',
+    'لایه باید نیمه‌شفاف باشد تا صفحهٔ محوشدهٔ زیر آن دیده شود');
 
   /* شیت: مات، پایین‌چسب، با گوشه‌های بالایی گرد */
   assert.equal(sheet.style.background, 'rgb(22, 26, 35)', 'شیت باید پس‌زمینه‌ی مات داشته باشد (کلاس bg-[#161a23] در CSS تولید نمی‌شد)');
   assert.equal(sheet.style.borderTopLeftRadius, '24px');
   assert.equal(sheet.style.borderBottomLeftRadius, '0', 'گوشه‌های پایین شیت باید صاف باشند');
   assert.equal(sheet.style.maxHeight, '86vh');
-  assert.equal(sheet.style.overflowY, 'auto', 'محتوای بلند تقویم باید داخل خودش اسکرول شود');
+  assert.equal(sheet.style.height, '86vh', 'ارتفاع شیت باید برای ایجاد فضای خالی بالای تقویم حفظ شود');
+  assert.equal(sheet.style.display, 'flex', 'شیت باید برای جداکردن ناحیهٔ روزها از نوار تأیید از flex استفاده کند');
+  assert.equal(sheet.style.flexDirection, 'column');
+  assert.equal(sheet.style.overflow, 'hidden', 'اسکرول باید به محتوای تقویم محدود بماند');
+  const calendarBody = sheet.children[2];
+  assert.equal(calendarBody.style.flex, '0 1 auto', 'ناحیهٔ تاریخ باید فقط به اندازهٔ محتوایش باشد تا سربرگ همراه آن پایین بیاید');
+  assert.equal(calendarBody.style.overflowY, 'auto', 'محتوای بلند تقویم باید مستقل از نوار تأیید اسکرول شود');
+  assert.equal(calendarBody.style.display, 'flex');
+  assert.equal(calendarBody.style.flexDirection, 'column');
+  assert.equal(calendarBody.style.paddingBottom, '0px', 'پایین‌ترین ردیف تاریخ باید به لبهٔ داخلی کادر برسد');
+  assert.equal(calendarBody.children[0].style.flex, '0 0 auto', 'نام روزهای هفته هم باید همراه تاریخ‌ها پایین بماند');
+  assert.equal(calendarBody.children[0].style.marginTop, 'auto', 'فضای خالی باید بالای کل تقویم بماند');
+  assert.equal(calendarBody.children[1].style.flex, '0 0 auto', 'ردیف‌های تاریخ نباید هنگام چیدمان جمع شوند');
   assert.equal(sheet.getAttribute('role'), 'dialog');
   assert.equal(sheet.getAttribute('aria-modal'), 'true');
   assert.equal(sheet.parentElement, backdrop, 'شیت باید فرزند مستقیم لایه باشد');
   assert.ok(sheet.querySelector('#datepicker-close-button[aria-label="بستن تقویم"]'), 'ضربدر بستن باید در سرِ شیت باشد');
-  assert.ok(sheet.querySelector('#datepicker-confirm-button'), 'دکمهٔ تأیید باید پایین تقویم باشد');
+  const confirmButton = sheet.querySelector('#datepicker-confirm-button');
+  assert.ok(confirmButton, 'دکمهٔ تأیید باید پایین تقویم باشد');
+  const confirmFooter = confirmButton.parentElement;
+  assert.equal(confirmFooter.style.flex, '0 0 auto', 'ردیف تأیید نباید با کوچک‌شدن پنل جمع شود');
+  assert.equal(confirmFooter.style.marginTop, '', 'فضای خالی باید بالای دستهٔ شیت باشد، نه بین تاریخ‌ها و تأیید');
+  assert.equal(sheet.lastElementChild, confirmFooter, 'ردیف تأیید باید آخرین بخش شیت باقی بماند');
+  assert.match(confirmFooter.style.paddingBottom, /calc\(4px \+ env\(/, 'فاصلهٔ پایین تأیید باید مثل کیبورد و فقط به‌اندازهٔ safe-area باشد');
+  assert.equal(confirmFooter.style.background, 'rgb(22, 26, 35)', 'ردیف چسبیده باید زمینهٔ مات داشته باشد');
 
   const handle = sheet.firstElementChild;
   assert.ok(handle && /rounded-full/.test(handle.className), 'دسته‌ی کشیدن شیت باید وجود داشته باشد');
+  assert.equal(handle.style.marginTop, 'auto', 'دسته و نوار ماه/سال باید همراه تاریخ‌ها به پایین منتقل شوند');
   assert.equal(/sm:hidden/.test(handle.className), false, 'دسته فقط در موبایل پنهان نمی‌شود؛ شیت در همه اندازه‌ها از پایین باز می‌شود');
 
   /* تقویم نباید فرم را از جریان خارج یا جابه‌جا کند */

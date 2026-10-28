@@ -485,7 +485,7 @@
             overlay.style.justifyContent = "center";
             overlay.style.padding = "0px";
             overlay.style.setProperty("z-index", "2147483000", "important");
-            overlay.style.background = "rgba(6, 10, 16, 0.55)";
+            overlay.style.background = "rgba(6, 10, 16, 0.18)";
             overlay.style.backdropFilter = "blur(16px) saturate(120%)";
             overlay.style.webkitBackdropFilter = "blur(16px) saturate(120%)";
             overlay.style.touchAction = "none";
@@ -496,15 +496,31 @@
             picker.style.width = "100%";
             picker.style.maxWidth = "24rem";
             picker.style.maxHeight = "86vh";
-            picker.style.overflowY = "auto";
+            picker.style.height = "86vh";
+            picker.style.display = "flex";
+            picker.style.flexDirection = "column";
+            picker.style.overflow = "hidden";
             picker.style.boxSizing = "border-box";
             picker.style.borderTopLeftRadius = "24px";
             picker.style.borderTopRightRadius = "24px";
             picker.style.borderBottomLeftRadius = "0px";
             picker.style.borderBottomRightRadius = "0px";
             picker.style.padding = "16px";
-            picker.style.paddingBottom = "calc(16px + env(safe-area-inset-bottom))";
+            picker.style.paddingBottom = "0px";
             picker.innerHTML = `<div class="w-10 h-1 bg-stone-700 rounded-full mx-auto mb-4 sm:hidden"></div><div class="flex items-center justify-between gap-2.5 mb-4"><button data-return-date-year type="button" class="px-4 py-2 rounded-xl text-sm font-bold border transition flex items-center gap-1.5"></button><div class="flex items-center justify-between bg-stone-800 border border-stone-700/80 rounded-xl px-2 py-1.5 min-w-[155px]"><button data-return-date-prev-month type="button" class="p-1 rounded-lg transition" title="ماه قبل">‹</button><span data-date-month class="font-bold text-sm text-stone-100 px-3"></span><button data-return-date-next-month type="button" class="p-1 rounded-lg transition" title="ماه بعد">›</button></div><button data-return-date-close type="button" aria-label="بستن تقویم" class="w-9 h-9 rounded-xl bg-stone-800/80 hover:bg-stone-750 border border-stone-700/60 text-stone-400 hover:text-stone-200 text-lg transition">×</button></div><div data-date-calendar></div><div class="flex items-center justify-start gap-3 mt-4 pt-2 border-t border-stone-800"><button data-return-date-today type="button" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-stone-800 hover:bg-stone-750 border border-stone-700 text-xs font-bold text-stone-200 transition">امروز</button><button data-return-date-confirm type="button" class="flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-black transition">تأیید تاریخ</button></div>`;
+            var dateFooter = picker.querySelector("[data-return-date-confirm]").parentElement;
+            var dateHandle = picker.firstElementChild, dateHeader = dateHandle && dateHandle.nextElementSibling;
+            if (dateHandle) { dateHandle.style.flex = "0 0 auto"; dateHandle.style.marginTop = "auto"; }
+            if (dateHeader) dateHeader.style.flex = "0 0 auto";
+            var dateCalendarBody = picker.querySelector("[data-date-calendar]");
+            dateCalendarBody.style.flex = "0 1 auto";
+            dateCalendarBody.style.minHeight = "0";
+            dateCalendarBody.style.overflowY = "auto";
+            dateCalendarBody.style.display = "flex";
+            dateCalendarBody.style.flexDirection = "column";
+            dateFooter.style.flex = "0 0 auto";
+            dateFooter.style.backgroundColor = "inherit";
+            dateFooter.style.paddingBottom = "calc(4px + env(safe-area-inset-bottom, 0px))";
             overlay.appendChild(picker); document.body.appendChild(overlay);
             var renderCalendar = function () {
               var body = picker.querySelector("[data-date-calendar]"), yearButton = picker.querySelector("[data-return-date-year]"), monthButton = picker.querySelector("[data-date-month]");
@@ -520,12 +536,15 @@
               ["[data-return-date-prev-month]", "[data-return-date-next-month]"].forEach(function (selector) { var button = picker.querySelector(selector); button.className = "p-1 rounded-lg transition " + (button.disabled ? "text-stone-600 opacity-20 cursor-not-allowed" : "text-stone-200 hover:text-white hover:bg-stone-700"); });
               if (state.years) {
                 body.innerHTML = `<div class="bg-stone-850/90 border border-stone-700/50 rounded-2xl p-4 min-h-[290px] flex flex-col justify-between"><div class="text-xs font-bold text-stone-400 mb-3 text-center">انتخاب سال شمسی</div><div data-date-years class="grid grid-cols-3 gap-2.5 max-h-[240px] overflow-y-auto py-1"></div></div>`;
+                var yearCard = body.firstElementChild; if (yearCard) { yearCard.style.flex = "0 0 auto"; yearCard.style.marginTop = "auto"; }
                 var years = body.querySelector("[data-date-years]"), low = minimumDate ? minimumDate.year : todayParts.year - 12;
                 for (var year = todayParts.year; year >= low; year -= 1) { var yearOption = document.createElement("button"); yearOption.type = "button"; yearOption.setAttribute("data-date-set-year", String(year)); yearOption.className = "py-2.5 rounded-xl font-bold text-sm transition " + (year === state.year ? "bg-blue-600 text-white shadow-md" : "bg-stone-800 hover:bg-stone-700 text-stone-200 border border-stone-700/60"); yearOption.textContent = persianNumber(year); years.appendChild(yearOption); }
                 return;
               }
               var first = jalaliToGregorian(state.year, state.month, 1), leading = (new Date(Date.UTC(first.year, first.month - 1, first.day)).getUTCDay() + 1) % 7, monthLength = paymentMonthLength(state.year, state.month);
               body.innerHTML = `<div class="bg-stone-850/90 border border-stone-700/50 rounded-2xl p-3.5 shadow-inner"><div class="grid grid-cols-7 gap-1 mb-2 text-center text-xs font-bold text-stone-400"><span class="py-1">ش</span><span class="py-1">ی</span><span class="py-1">د</span><span class="py-1">س</span><span class="py-1">چ</span><span class="py-1">پ</span><span class="py-1 text-rose-400/80">ج</span></div><div data-date-days class="grid grid-cols-7 gap-y-2 gap-x-1"></div></div>`;
+              var calendarCard = body.firstElementChild;
+              if (calendarCard) { calendarCard.style.flex = "0 0 auto"; calendarCard.style.marginTop = "auto"; calendarCard.style.paddingBottom = "0px"; }
               var days = body.querySelector("[data-date-days]"); for (var blank = 0; blank < leading; blank += 1) { var emptyDay = document.createElement("div"); emptyDay.className = "w-9 h-9 sm:w-10 sm:h-10"; days.appendChild(emptyDay); }
               var selected = parsePaymentDate(state.pendingDate);
               for (var day = 1; day <= monthLength; day += 1) {

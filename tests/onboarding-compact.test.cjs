@@ -272,3 +272,70 @@ test('profile onboarding has one short heading, no branding or progress copy, an
   assert.equal(profile.querySelectorAll('input').length,3);
  }finally{dom.window.close();}
 });
+
+test('first-run step animation is in place before the view becomes visible, without waiting for a frame',async()=>{
+ const dom=new JSDOM('<!doctype html><html><body></body></html>',{url:'https://app.test/',runScripts:'outside-only'});
+ try{
+  const w=dom.window;w.localStorage.setItem('hesabno:first_run_profile_done','1');
+  let frameRequests=0;w.requestAnimationFrame=()=>{frameRequests++;return 1;};
+  w.matchMedia=()=>({matches:false});
+  w.eval(fs.readFileSync(root+'src/scripts/217-hesabno-first-run-profile.js','utf8'));
+  const overlay=w.__hesabnoOpenFirstRunWizard('restore'),card=overlay.querySelector('.hesabno-fr-card');
+  const profile=overlay.querySelector('[data-hesabno-fr-view="profile"]');
+  const nativeSet=card.setAttribute.bind(card);let classBeforeActivation=false;
+  card.setAttribute=(name,value)=>{
+   if(name==='data-hesabno-fr-active-step'&&value==='profile') classBeforeActivation=profile.classList.contains('hesabno-fr-view-enter-from-left');
+   return nativeSet(name,value);
+  };
+  overlay.querySelector('[data-hesabno-fr-go-profile]').click();
+  assert.equal(classBeforeActivation,true,'install entry motion before changing the active step');
+  assert.equal(frameRequests,0,'the entry class does not wait for requestAnimationFrame');
+  assert.equal(card.getAttribute('data-hesabno-fr-active-step'),'profile');
+  assert.ok(profile.classList.contains('hesabno-fr-view-enter-from-left'));
+  assert.equal(w.document.activeElement,profile.querySelector('h1'));
+  const unrelated=new w.Event('animationend',{bubbles:true});unrelated.animationName='unrelated';profile.dispatchEvent(unrelated);
+  assert.ok(profile.classList.contains('hesabno-fr-view-enter-from-left'),'unrelated animations do not interrupt the transition');
+  const ended=new w.Event('animationend',{bubbles:true});ended.animationName='hesabno-onboarding-step-from-left';profile.dispatchEvent(ended);
+  assert.equal(profile.classList.contains('hesabno-fr-view-enter-from-left'),false,'temporary animation class is cleaned up at animation end');
+  await waitForStepMotion();
+  overlay.querySelector('[data-hesabno-fr-back-restore]').click();
+  assert.ok(overlay.querySelector('[data-hesabno-fr-view="restore"]').classList.contains('hesabno-fr-view-enter-from-right'));
+ }finally{dom.window.close();}
+});
+
+test('reduced motion skips the step animation while keeping navigation safeguards',async()=>{
+ const dom=new JSDOM('<!doctype html><html><body></body></html>',{url:'https://app.test/',runScripts:'outside-only'});
+ try{
+  const w=dom.window;w.localStorage.setItem('hesabno:first_run_profile_done','1');
+  w.matchMedia=query=>({matches:query==='(prefers-reduced-motion: reduce)'});
+  w.eval(fs.readFileSync(root+'src/scripts/217-hesabno-first-run-profile.js','utf8'));
+  const overlay=w.__hesabnoOpenFirstRunWizard('restore'),card=overlay.querySelector('.hesabno-fr-card');
+  overlay.querySelector('[data-hesabno-fr-go-profile]').click();
+  const profile=overlay.querySelector('[data-hesabno-fr-view="profile"]');
+  assert.equal(card.getAttribute('data-hesabno-fr-active-step'),'profile');
+  assert.equal(profile.classList.contains('hesabno-fr-view-enter-from-left'),false);
+  assert.equal(card.getAttribute('aria-busy'),'true');
+  overlay.querySelector('[data-hesabno-fr-back-restore]').click();
+  assert.equal(card.getAttribute('data-hesabno-fr-active-step'),'profile','guard still prevents accidental extra navigation');
+  await waitForStepMotion();
+  overlay.querySelector('[data-hesabno-fr-back-restore]').click();
+  assert.equal(card.getAttribute('data-hesabno-fr-active-step'),'restore');
+ }finally{dom.window.close();}
+});
+
+test('returning to a step cancels its old cleanup; interrupted motion has a timeout fallback',async()=>{
+ const dom=new JSDOM('<!doctype html><html><body></body></html>',{url:'https://app.test/',runScripts:'outside-only'});
+ try{
+  const w=dom.window;w.localStorage.setItem('hesabno:first_run_profile_done','1');
+  w.eval(fs.readFileSync(root+'src/scripts/217-hesabno-first-run-profile.js','utf8'));
+  const overlay=w.__hesabnoOpenFirstRunWizard('restore'),profile=overlay.querySelector('[data-hesabno-fr-view="profile"]');
+  overlay.querySelector('[data-hesabno-fr-go-profile]').click();await waitForStepMotion();
+  overlay.querySelector('[data-hesabno-fr-back-restore]').click();await waitForStepMotion();
+  overlay.querySelector('[data-hesabno-fr-go-profile]').click();
+  assert.ok(profile.classList.contains('hesabno-fr-view-enter-from-left'));
+  await wait(650);
+  assert.ok(profile.classList.contains('hesabno-fr-view-enter-from-left'),'old timer must not clean up a new transition');
+  await wait(550);
+  assert.equal(profile.classList.contains('hesabno-fr-view-enter-from-left'),false,'fallback cleans up if animationend never arrives');
+ }finally{dom.window.close();}
+});
