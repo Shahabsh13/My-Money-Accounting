@@ -66,6 +66,10 @@ test('date picker is a bottom sheet with a blurred scrim', { timeout: 180000 }, 
   assert.equal(backdrop.style.justifyContent, 'center');
   assert.equal(sheet.style.position, 'fixed', 'خود تقویم هم باید مستقل از flex به viewport متصل باشد');
   assert.equal(sheet.style.bottom, '0px', 'لبهٔ پایین تقویم باید مستقیماً به پایین viewport بچسبد');
+  assert.equal(sheet.style.left, '0px', 'شیت باید به لبهٔ چپ viewport متصل باشد');
+  assert.equal(sheet.style.right, '0px', 'شیت باید به لبهٔ راست viewport متصل باشد');
+  assert.equal(sheet.style.marginLeft, 'auto', 'عرض محدود شیت باید در viewport افقی وسط‌چین شود');
+  assert.equal(sheet.style.marginRight, 'auto', 'عرض محدود شیت باید در viewport افقی وسط‌چین شود');
   assert.equal(backdrop.style.zIndex, '2147483000', 'لایهٔ تقویم باید روی دکمهٔ ثبت فرم قرار بگیرد');
 
   /* پس‌زمینه‌ی محو */

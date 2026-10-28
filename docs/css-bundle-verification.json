@@ -196,11 +196,11 @@
   },
   "currentState": {
     "files": 10,
-    "rules": 3412,
-    "bytes": 851176,
-    "hash": "5d716c6e354b332255b73745ce5c2a28d9781c81344df15b7566739fcb4390c6",
-    "note": "Current stylesheet state on disk; 10 linked stylesheets and 3,412 parsed rules. Motion uses immediate full-page navigation, brief lightweight overlay feedback, and reduced-motion support.",
-    "generatedAt": "2026-10-27T20:54:47.151Z"
+    "rules": 3410,
+    "bytes": 850780,
+    "hash": "d382065c60c1073c6fe97766539b52073b4c42a8049f391f37eb40184004854c",
+    "note": "Current stylesheet state on disk; 10 linked stylesheets and 3,410 parsed rules. Motion uses immediate full-page navigation, brief lightweight overlay feedback, and reduced-motion support.",
+    "generatedAt": "2026-10-27T22:19:32.201Z"
   },
   "generatedAt": "2026-10-24T19:08:05.622Z",
   "onboardingCompact": {
@@ -250,5 +250,9 @@
   "motionSystem": {
     "addedRules": 16,
     "note": "Cohesive lightweight motion timings, immediate full-page navigation, reduced-motion coverage, incremental overlay annotations, reduced expensive blur, and lightweight exit visuals."
+  },
+  "themeTypographyConsistency": {
+    "removedRules": 2,
+    "note": "Remove light-theme-only font-size inflation for compact labels and transaction amounts so class-defined sizes remain identical in light and dark modes."
   }
 }

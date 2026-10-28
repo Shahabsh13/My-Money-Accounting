@@ -114,7 +114,8 @@ test('the merge evidence artifact records a verified, equal cascade', () => {
     + (verification.paymentRouteAlignment?.addedRules || 0)
     + (verification.formTransitions?.addedRules || 0)
     + (verification.onboardingTransitions?.addedRules || 0)
-    + (verification.motionSystem?.addedRules || 0);
+    + (verification.motionSystem?.addedRules || 0)
+    - (verification.themeTypographyConsistency?.removedRules || 0);
   assert.equal(verification.currentState.rules,
     verification.cascadeEquality.rulesAfter + verification.appearanceLayer.baselineRules + documentedLaterRules,
     'وضعیت فعلی = مدرک ادغام + قواعد پایهٔ ظاهر + اصلاح‌های ثبت‌شدهٔ بعدی');
