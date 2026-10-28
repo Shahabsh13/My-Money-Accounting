@@ -67,7 +67,7 @@ jobs:
         run: |
           APK=app/build/outputs/apk/debug/app-debug.apk
           unzip -p "$APK" assets/index.html | grep -Fq 'src/scripts/067-inline.js?v=2026102705'
-          unzip -p "$APK" assets/index.html | grep -Fq 'src/scripts/142-hesabno-check-settlement-date.js?v=18'
+          unzip -p "$APK" assets/index.html | grep -Fq 'src/scripts/142-hesabno-check-settlement-date.js?v=19'
           unzip -p "$APK" assets/index.html | grep -Fq 'src/scripts/144-hesabno-check-return-confirm.js?v=18'
           unzip -p "$APK" assets/index.html | grep -Fq 'src/scripts/214-hesabno-numeric-keyboard.js?v=2026102801'
           unzip -p "$APK" assets/src/scripts/067-inline.js | grep -Fq 'style:{fontWeight:900}'
@@ -77,6 +77,8 @@ jobs:
           unzip -p "$APK" assets/src/scripts/067-inline.js | grep -Fq 'Q.some(ae=>ae.id===y)?"z-40":"z-10"'
           unzip -p "$APK" assets/src/scripts/067-inline.js | grep -Fq '${ae.id===Q[Q.length-1].id?"bottom-9":"top-9"}'
           unzip -p "$APK" assets/src/scripts/142-hesabno-check-settlement-date.js | grep -Fq 'backdrop.style.alignItems = "flex-end"'
+          unzip -p "$APK" assets/src/scripts/142-hesabno-check-settlement-date.js | grep -Fq 'state.sheet.style.position = "fixed"'
+          unzip -p "$APK" assets/src/scripts/142-hesabno-check-settlement-date.js | grep -Fq 'state.sheet.style.bottom = "0px"'
           unzip -p "$APK" assets/src/scripts/214-hesabno-numeric-keyboard.js | grep -Fq 'pendingOutsideClick'
 
       - name: Upload debug APK
