@@ -4,9 +4,6 @@
    Stores into the same profile key the app reads ("hesabno:user_profile") and then soft-reloads
    so the dashboard greeting picks the saved name. Shown only once (flag key below). */
 (function () {
-  var requestFrame = window.requestAnimationFrame
-    ? window.requestAnimationFrame.bind(window)
-    : function (callback) { return window.setTimeout(callback, 16); };
   var PROFILE_KEY = "hesabno:user_profile";
   var DONE_KEY = "hesabno:first_run_profile_done";
   var IN_PROGRESS_KEY = "hesabno:first_run_profile_in_progress";
@@ -37,18 +34,31 @@
   var ONBOARDING_MOTION_MS = 140;
   var ONBOARDING_NAV_GUARD_MS = 210;
   function animateOnboardingView(view, direction) {
-    if (!view || !onboardingMotionAllowed()) return false;
+    if (!view) return false;
+    if (!onboardingMotionAllowed()) {
+      if (view.__hesabnoMotionCleanup) view.__hesabnoMotionCleanup();
+      return false;
+    }
     var classes = ["hesabno-fr-view-enter-from-left", "hesabno-fr-view-enter-from-right"];
-    classes.forEach(function (name) { view.classList.remove(name); });
-    var sequence = (view.__hesabnoMotionSequence || 0) + 1;
-    view.__hesabnoMotionSequence = sequence;
-    requestFrame(function () {
-      if (view.__hesabnoMotionSequence !== sequence || !view.isConnected) return;
-      view.classList.add(direction === "next" ? classes[0] : classes[1]);
-      window.setTimeout(function () {
-        if (view.__hesabnoMotionSequence === sequence) classes.forEach(function (name) { view.classList.remove(name); });
-      }, ONBOARDING_MOTION_MS + 60);
-    });
+    if (view.__hesabnoMotionCleanup) view.__hesabnoMotionCleanup();
+    classes.forEach(function (name) { if (view.classList.contains(name)) view.classList.remove(name); });
+    var animationName = direction === "next" ? "hesabno-onboarding-step-from-left" : "hesabno-onboarding-step-from-right";
+    var timer;
+    function cleanup() {
+      window.clearTimeout(timer);
+      view.removeEventListener("animationend", onAnimationEnd);
+      classes.forEach(function (name) { if (view.classList.contains(name)) view.classList.remove(name); });
+      if (view.__hesabnoMotionCleanup === cleanup) view.__hesabnoMotionCleanup = null;
+    }
+    function onAnimationEnd(event) {
+      if (event.target === view && event.animationName === animationName) cleanup();
+    }
+    view.__hesabnoMotionCleanup = cleanup;
+    view.addEventListener("animationend", onAnimationEnd);
+    // Set the entry class while hidden, before the active step can be painted.
+    view.classList.add(direction === "next" ? classes[0] : classes[1]);
+    // A generous fallback covers interrupted animations and delayed WebView frames.
+    timer = window.setTimeout(cleanup, ONBOARDING_MOTION_MS + 1000);
     return true;
   }
 
@@ -561,9 +571,11 @@
       if (onboardingStepLocked && previousStep !== stepName) return false;
       var activeView = card.querySelector('[data-hesabno-fr-view="' + stepName + '"]');
       var stepOrder = ["restore", "profile", "permissions", "preferences"];
-      card.setAttribute("data-hesabno-fr-active-step", stepName);
       if (previousStep && previousStep !== stepName && activeView) {
         animateOnboardingView(activeView, stepOrder.indexOf(stepName) > stepOrder.indexOf(previousStep) ? "next" : "previous");
+      }
+      card.setAttribute("data-hesabno-fr-active-step", stepName);
+      if (previousStep && previousStep !== stepName && activeView) {
         onboardingStepLocked = true;
         card.setAttribute("aria-busy", "true");
         if (onboardingUnlockTimer !== null) window.clearTimeout(onboardingUnlockTimer);

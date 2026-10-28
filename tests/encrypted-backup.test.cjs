@@ -280,3 +280,27 @@ test('an oversized backup file is refused without being read', async () => {
   assert.equal(readAttempted, false, 'فایل بزرگ نباید خوانده شود');
   assert.deepEqual(appEntries(harness.window), before);
 });
+
+test('encrypted manual backup uses the Android picker and waits for its result', async () => {
+  const harness = createHarness();
+  const { window } = harness;
+  try {
+    seedData(window, { 'hesabno:transactions': '[{"id":1}]' });
+    let request;
+    window.HnBridge = {};
+    window.__hesabnoSaveManualBackup = (name, text, callback) => { request = { name, text, callback }; return true; };
+    panel(window).querySelector('#hsb-passphrase').value = PASSPHRASE;
+    panel(window).querySelector('[data-hsb-export]').click();
+    await waitFor(() => request, 'درخواست ذخیرهٔ بومی');
+    assert.match(request.name, /^hesabno-encrypted-backup-.*\.json$/);
+    assert.equal(JSON.parse(request.text).format, 'hesabno-encrypted-backup');
+    assert.equal(harness.getCapturedBlob(), null);
+    assert.match(statusOf(window), /محل ذخیره را انتخاب کنید/);
+    request.callback('cancelled');
+    assert.match(statusOf(window), /لغو شد/);
+    request.callback('error');
+    assert.match(statusOf(window), /انجام نشد/);
+    request.callback('saved');
+    assert.match(statusOf(window), /ذخیره شد/);
+  } finally { window.close(); }
+});

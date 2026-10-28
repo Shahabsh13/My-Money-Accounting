@@ -241,9 +241,37 @@ test('پرداخت جایگزین چک برگشتی هیچ کد یا «کد ری
   assert.equal(datePicker.style.top, '0px');
   assert.equal(datePicker.style.bottom, '0px');
   assert.equal(datePicker.style.alignItems, 'flex-end', 'تقویم باید پایین صفحه بماند حتی بدون کلاس‌های CSS');
+  assert.equal(datePicker.style.background, 'rgba(6, 10, 16, 0.18)',
+    'صفحهٔ زیر تقویم باید از پشت لایهٔ نیمه‌شفاف و بلرشده دیده شود');
+  assert.match(datePicker.style.backdropFilter || datePicker.style.webkitBackdropFilter || '', /blur\(16px\)/,
+    'لایهٔ پشت تقویم باید صفحهٔ زیر را blur کند');
   assert.equal(datePicker.querySelector('#hesabno-return-datepicker-sheet').style.borderTopLeftRadius, '24px');
   assert.ok(datePicker.querySelector('[data-return-date-close]'), 'ضربدر بستن باید در بالای تقویم باشد');
-  assert.ok(datePicker.querySelector('[data-return-date-confirm]'), 'تأیید باید پایین تقویم باشد');
+  const confirmButton = datePicker.querySelector('[data-return-date-confirm]');
+  assert.ok(confirmButton, 'تأیید باید پایین تقویم باشد');
+  const confirmFooter = confirmButton.parentElement;
+  const returnSheet = datePicker.querySelector('#hesabno-return-datepicker-sheet');
+  assert.equal(returnSheet.style.height, '86vh', 'ارتفاع شیت باید برای ایجاد فضای خالی بالای تقویم حفظ شود');
+  assert.equal(returnSheet.style.display, 'flex', 'شیت باید نوار تأیید را از ناحیهٔ روزها جدا کند');
+  assert.equal(returnSheet.style.flexDirection, 'column');
+  const dateHeader = datePicker.querySelector('[data-return-date-close]').parentElement;
+  assert.equal(returnSheet.firstElementChild, dateHeader, 'خط دستگیره باید حذف شود و نوار ماه/سال اولین بخش شیت باشد');
+  assert.equal(dateHeader.style.marginTop, 'auto', 'نوار ماه/سال باید در همان محل پایین‌چین باقی بماند');
+  assert.equal([...returnSheet.children].some((element) => /rounded-full/.test(element.className)), false,
+    'خط دستگیره نباید رندر شود');
+  assert.equal(returnSheet.style.overflow, 'hidden');
+  const dateCalendarBody = returnSheet.querySelector('[data-date-calendar]');
+  assert.equal(dateCalendarBody.style.flex, '0 1 auto', 'ناحیهٔ تقویم نباید بین سربرگ و تاریخ‌ها کش بیاید');
+  assert.equal(dateCalendarBody.style.overflowY, 'auto', 'روزها باید مستقل از نوار تأیید اسکرول شوند');
+  const calendarCard = dateCalendarBody.firstElementChild;
+  assert.equal(calendarCard.style.flex, '0 0 auto', 'کادر ماه باید پایین‌چین بماند');
+  assert.equal(calendarCard.style.marginTop, 'auto', 'فضای خالی باید بالای کل تقویم بماند');
+  assert.equal(calendarCard.style.paddingBottom, '0px', 'پایین‌ترین ردیف تاریخ باید به لبهٔ داخلی کادر برسد');
+  assert.equal(confirmFooter.style.flex, '0 0 auto', 'ردیف تأیید نباید با کوچک‌شدن پنل جمع شود');
+  assert.equal(confirmFooter.style.marginTop, '', 'فضای خالی باید بالای دستهٔ شیت باشد، نه بین تاریخ‌ها و تأیید');
+  assert.equal(returnSheet.lastElementChild, confirmFooter, 'ردیف تأیید باید آخرین بخش شیت باقی بماند');
+  assert.match(confirmFooter.style.paddingBottom, /calc\(4px \+ env\(/, 'فاصلهٔ پایین تأیید باید مثل کیبورد و فقط به‌اندازهٔ safe-area باشد');
+  assert.equal(returnSheet.style.paddingBottom, '0px', 'فاصلهٔ قبلیِ زیر شیت نباید دکمهٔ تأیید را از کف بلند کند');
   let selectableDays = [...datePicker.querySelectorAll('[data-date-day]')].filter((button) => !button.disabled);
   if (selectableDays.length < 2) {
     click(datePicker.querySelector('[data-return-date-prev-month]'));

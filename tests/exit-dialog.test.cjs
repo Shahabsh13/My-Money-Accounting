@@ -89,3 +89,19 @@ test('exit overlay blurs the still-mounted page instead of painting an opaque ba
  assert.equal(w.document.querySelector('[data-hn-exit-dialog]'),null);
  }finally{dom.window.close();}
 });
+test('manual backup bridge waits for one matching native result and refuses silent fallback',()=>{
+ const dom=setup();try{
+  const w=dom.window,requests=[],results=[];
+  w.HnBridge={saveManualBackup:(name,json,id)=>{requests.push({name,json,id});return true;}};
+  assert.equal(w.__hesabnoSaveManualBackup('file.json','{"x":1}',(status,name)=>results.push([status,name])),true);
+  assert.equal(results.length,0);
+  w.__hesabnoOnManualBackupResult('unknown','saved','other.json');assert.equal(results.length,0);
+  w.__hesabnoOnManualBackupResult(requests[0].id,'saved','chosen.json');
+  w.__hesabnoOnManualBackupResult(requests[0].id,'saved','chosen.json');
+  assert.deepEqual(results,[['saved','chosen.json']]);
+  let fallbackCalls=0;
+  w.HnBridge={saveManualBackup:()=>false,saveBackup:()=>{fallbackCalls++;}};
+  assert.equal(w.__hesabnoSaveManualBackup('file.json','{}',status=>results.push([status])),false);
+  assert.deepEqual(results[1],['error']);assert.equal(fallbackCalls,0);
+ }finally{dom.window.close();}
+});

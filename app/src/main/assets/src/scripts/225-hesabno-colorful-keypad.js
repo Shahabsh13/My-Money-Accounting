@@ -134,9 +134,16 @@
         // باعث می‌شد هر فیلد داخل کارتی که کلمه‌ی «مبلغ» دارد قفل شود.
         var isMoney = marker === "true" ||
                       (!isFreeTextField(hints) &&
-                        /مانده|موجودی|مبلغ|قیمت|قسط|وام|افتتاحیه|تنخواه|تومان|ریال|amount|balance/i.test(hints));
-        var isExcluded = /شماره.?کارت|شماره.?حساب|شبا|iban|نام.?حساب|کد.?ملی|تلفن/i.test(hints);
-        if (isMoney && !isExcluded) {
+                        (/مانده|موجودی|مبلغ|قیمت|قسط|وام|افتتاحیه|تنخواه|amount|balance/i.test(hints) ||
+                         /(?:^|[\s،,:()/])(?:تومان|ریال)(?=$|[\s،,:()/])/i.test(hints)));
+        // «سریال» contains «ریال» as a substring. Identifier fields must keep their
+        // native numeric keyboard instead of being locked as amount inputs.
+        var isExcluded = /شماره|سریال|شناسه|شماره.?کارت|شماره.?حساب|شبا|iban|نام.?حساب|کد.?ملی|تلفن/i.test(hints);
+        if (isExcluded) {
+          unlockTextField(input);
+          return;
+        }
+        if (isMoney) {
           if (input.readOnly !== true) input.readOnly = true;
           if (input.getAttribute("readonly") !== "readonly") input.setAttribute("readonly", "readonly");
           if (input.getAttribute("inputmode") !== "none") input.setAttribute("inputmode", "none");

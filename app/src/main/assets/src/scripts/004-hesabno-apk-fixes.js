@@ -68,6 +68,25 @@ window.confirm=function(m){
  return false;
 };
 
+/* پشتیبان دستی: پذیرش درخواست به معنی ذخیره‌شدن فایل نیست. */
+var manualBackupCallbacks=Object.create(null),manualBackupSequence=0;
+window.__hesabnoOnManualBackupResult=function(id,status,name){
+ var callback=manualBackupCallbacks[id];
+ if(!callback)return;
+ delete manualBackupCallbacks[id];
+ callback(status==='saved'?'saved':status==='cancelled'?'cancelled':'error',name);
+};
+window.__hesabnoSaveManualBackup=function(name,json,callback){
+ var id='manual-'+Date.now()+'-'+(++manualBackupSequence);
+ manualBackupCallbacks[id]=callback;
+ try{
+  if(window.HnBridge&&typeof window.HnBridge.saveManualBackup==='function'&&window.HnBridge.saveManualBackup(name,json,id)===true)return true;
+ }catch(error){try{console.warn('[hesabno] manual backup:',error)}catch(_){}}
+ delete manualBackupCallbacks[id];
+ callback('error');
+ return false;
+};
+
 /* 3) ذخیرهٔ فایل پشتیبان داخل اپ اندروید (Capacitor) */
 var blobs={},oCreate=URL.createObjectURL;
 URL.createObjectURL=function(o){var u=oCreate.apply(URL,arguments);try{if(o instanceof Blob)blobs[u]=o}catch(e){try{console.warn("[hesabno]",e)}catch(_){}}return u};

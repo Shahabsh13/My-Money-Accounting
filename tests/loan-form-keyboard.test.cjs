@@ -36,6 +36,18 @@ const LOAN_FORM = `
   </div>
 </main>`;
 
+const CHECK_IDENTIFIER_FORM = `
+<main>
+  <label for="field-check-number-input">شماره سریال چک *</label>
+  <input id="field-check-number-input" type="text" inputmode="numeric"
+         data-hesabno-amount-keyboard-field="false" placeholder="شماره برگ چک..." />
+  <label for="field-sayadi-id-input">شناسه ۱۶ رقمی صیاد (اختیاری)</label>
+  <input id="field-sayadi-id-input" type="text" inputmode="numeric" maxlength="16"
+         data-hesabno-amount-keyboard-field="false" placeholder="شناسه ۱۶ رقمی صیادی..." />
+  <label for="legacy-check-serial">شماره سریال چک قدیمی</label>
+  <input id="legacy-check-serial" type="text" inputmode="numeric" placeholder="شماره برگ چک..." />
+</main>`;
+
 function mount(markup = LOAN_FORM) {
   const dom = new JSDOM(`<!doctype html><html lang="fa" dir="rtl"><body>${markup}</body></html>`, {
     url: 'https://app.test/',
@@ -93,6 +105,29 @@ test('loan note field keeps the text keyboard instead of inputmode=numeric', asy
   note.dispatchEvent(event);
   assert.equal(event.defaultPrevented, false);
   assert.equal(note.readOnly, false);
+  dom.window.close();
+});
+
+test('check serial and Sayad identifiers keep the native numeric keyboard', async () => {
+  const dom = mount(CHECK_IDENTIFIER_FORM);
+  const { window } = dom;
+  await settle();
+  const fields = [
+    window.document.getElementById('field-check-number-input'),
+    window.document.getElementById('field-sayadi-id-input'),
+    window.document.getElementById('legacy-check-serial')
+  ];
+
+  for (const field of fields) {
+    const event = pointerDown(window);
+    field.dispatchEvent(event);
+    assert.equal(event.defaultPrevented, false, `${field.id} باید لمس عادی را حفظ کند`);
+    assert.equal(field.readOnly, false, `${field.id} نباید به‌اشتباه readOnly شود`);
+    assert.equal(field.hasAttribute('readonly'), false);
+    assert.equal(field.getAttribute('inputmode'), 'numeric', `${field.id} باید کیبورد عددی گوشی را درخواست کند`);
+    assert.equal(window.document.getElementById('hesabno-amount-keyboard').hidden, true,
+      'کیبورد مبلغ برای شناسهٔ چک نباید باز شود');
+  }
   dom.window.close();
 });
 

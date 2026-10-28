@@ -324,3 +324,49 @@ test('manual full JSON backup filename includes its Solar Hijri date and exact c
   assert.equal(result.filename, savedFilename);
   assert.equal(result.timestamp, fixedTime);
 });
+
+test('manual JSON backup waits for the Android picker and records only a completed save', () => {
+  const source = fs.readFileSync(path.join(root, 'app/src/main/assets/src/scripts/067-inline.js'), 'utf8');
+  const start = source.indexOf('function Q$('), end = source.indexOf('function J$(', start);
+  assert.ok(start >= 0 && end > start);
+  let request, records = [], downloads = 0, statuses = [];
+  const context = {
+    Date, Intl, Blob, JSON,
+    window: { HnBridge: {}, __hesabnoSaveManualBackup: (name, text, callback) => { request = { name, text, callback }; return true; } },
+    Ua: () => { downloads++; }, Ho: String, te: String, Zn: () => 'created', Vo: record => records.push(record),
+  };
+  vm.runInNewContext(`${source.slice(start, end)};globalThis.runManualBackup=Q$;`, context);
+  const payload = { accounts: [], transactions: [{ id: 7, title: 'آزمایش' }] };
+  const record = context.runManualBackup(payload, status => statuses.push(status));
+  assert.equal(request.name, record.filename);
+  assert.deepEqual(JSON.parse(request.text), payload);
+  assert.equal(downloads, 0);
+  assert.equal(records.length, 0, 'opening the picker is not a completed backup');
+  request.callback('cancelled');
+  assert.equal(records.length, 0);
+  assert.deepEqual(statuses, ['cancelled']);
+  context.runManualBackup(payload, status => statuses.push(status));
+  request.callback('error');
+  assert.equal(records.length, 0);
+  context.runManualBackup(payload, status => statuses.push(status));
+  request.callback('saved', 'custom-name.json');
+  assert.equal(records.length, 1);
+  assert.equal(records[0].filename, 'custom-name.json');
+  assert.deepEqual(statuses, ['cancelled', 'error', 'saved']);
+});
+
+test('manual Android backup picker is separate from automatic and reset backup paths', () => {
+  const java = fs.readFileSync(path.join(root, 'app/src/main/java/com/maymoney/app/MainActivity.java'), 'utf8');
+  const start = java.indexOf('public boolean saveManualBackup('), end = java.indexOf('public boolean saveBackup(', start);
+  const picker = java.slice(start, end);
+  assert.ok(start > 0 && end > start);
+  assert.match(picker, /Intent\.ACTION_CREATE_DOCUMENT/);
+  assert.match(picker, /Intent\.CATEGORY_OPENABLE/);
+  assert.match(picker, /manualBackupPicker\.launch\(intent\)/);
+  assert.doesNotMatch(picker, /saveToDownloads/);
+  const result = java.slice(java.indexOf('private final ActivityResultLauncher<Intent> manualBackupPicker'), java.indexOf('// اتصال و ذخیره‌ی پایدار'));
+  assert.match(result, /notifyManualBackupResult\(request, "cancelled"\)/);
+  assert.match(result, /openOutputStream\(uri, "wt"\)/);
+  assert.match(result, /ok \? "saved" : "error"/);
+  assert.match(java, /public boolean saveExitBackup\(/);
+});

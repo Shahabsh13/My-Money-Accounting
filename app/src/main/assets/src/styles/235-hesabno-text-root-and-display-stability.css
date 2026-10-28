@@ -4918,3 +4918,12 @@ article.hesabno-focused-check-card { animation: none !important; }
   will-change: auto !important;
   pointer-events: auto !important;
 }
+
+/* Date pickers intentionally keep a real glass scrim. This specific exception
+   wins over the app-wide Android performance rule that disables full-screen blur. */
+html body #persian-datepicker-backdrop,
+html body #hesabno-return-datepicker-backdrop {
+  background: rgba(6, 10, 16, .18) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(120%) !important;
+  backdrop-filter: blur(16px) saturate(120%) !important;
+}

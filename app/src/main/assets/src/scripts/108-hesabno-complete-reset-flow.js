@@ -165,18 +165,25 @@
       }, 0);
     };
     var clean = function (value) { return String(value || "").replace(/\s+/g, " ").trim(); };
-    var updateStorageSecurityCopy = function () {
-      var previous = "اطلاعات کاملاً محلی و امن روی دستگاه شما نگهداری می‌شود";
-      var replacement = "اگر این مرورگر را با دیگران مشترک استفاده می‌کنید، آن‌ها ممکن است به اطلاعات My Money دسترسی داشته باشند؛ برای داده‌های مالی از نمایهٔ شخصی استفاده کنید.";
-      document.querySelectorAll("p, span, div").forEach(function (node) {
-        Array.from(node.childNodes).forEach(function (child) {
-          if (child.nodeType === Node.TEXT_NODE && child.textContent.indexOf(previous) !== -1) child.textContent = child.textContent.replace(previous, replacement);
-        });
+    var hideStorageSecurityCopy = function () {
+      var heading = Array.from(document.querySelectorAll("h2")).find(function (node) {
+        return clean(node.textContent) === "پشتیبان‌گیری و بازیابی داده‌ها";
+      });
+      var overlay = heading && heading.closest("div.fixed");
+      if (!overlay) return;
+      Array.from(overlay.querySelectorAll("span")).forEach(function (node) {
+        var text = clean(node.textContent);
+        if (text.indexOf("اطلاعات کاملاً محلی و امن روی دستگاه شما نگهداری می‌شود") === -1 &&
+            text.indexOf("اگر این مرورگر را با دیگران مشترک استفاده می‌کنید") === -1) return;
+        var footer = node.parentElement;
+        if (footer && footer.classList.contains("border-t") && footer.children.length === 1 && footer.style.display !== "none") {
+          footer.style.display = "none";
+        }
       });
     };
     var updateSettingsWarning = function () {
       var title = Array.from(document.querySelectorAll("h4")).find(function (node) {
-        return ["صفر کردن داده‌ها", "ریست کامل داده‌ها", "پاک‌کردن سوابق مالی", "پاک‌کردن داده‌های سفارشی"].indexOf(clean(node.textContent)) !== -1;
+        return ["صفر کردن داده‌ها", "ریست کامل داده‌ها", "پاک‌کردن سوابق مالی", "پاک‌کردن داده‌های سفارشی", "ریست برنامه"].indexOf(clean(node.textContent)) !== -1;
       });
       if (!title || !title.parentElement) return;
       var description = title.parentElement.querySelector("p"), row = title.parentElement.parentElement.parentElement;
@@ -188,15 +195,14 @@
         badge.textContent = "داده‌های سفارشی پاک می‌شود";
         title.parentElement.insertBefore(badge, title);
       }
-      if (title.textContent !== "پاک‌کردن داده‌های سفارشی") title.textContent = "پاک‌کردن داده‌های سفارشی";
-      var descriptionText = "مواردی که خودتان تعریف کرده‌اید پاک می‌شوند؛ پیش‌فرض‌های برنامه پس از بارگذاری دوباره ساخته می‌شوند.";
-      if (description && description.textContent !== descriptionText) description.textContent = descriptionText;
+      if (title.textContent !== "ریست برنامه") title.textContent = "ریست برنامه";
+      if (description) description.remove();
       var actionLabel = action && action.querySelector("span");
-      if (actionLabel && actionLabel.textContent !== "پاک‌کردن داده‌های سفارشی") actionLabel.textContent = "پاک‌کردن داده‌های سفارشی";
+      if (actionLabel && actionLabel.textContent !== "ریست برنامه") actionLabel.textContent = "ریست برنامه";
     };
     var enhance = function () {
       updateSettingsWarning();
-      updateStorageSecurityCopy();
+      hideStorageSecurityCopy();
       var title = Array.from(document.querySelectorAll("h3")).find(function (node) {
         return clean(node.textContent) === "صفر کردن داده‌های سیستم";
       });
@@ -207,11 +213,11 @@
       });
       if (!action || !action.parentElement) return;
       modal.dataset.hesabnoCompleteReset = "true";
-      title.textContent = "پاک‌کردن داده‌های سفارشی";
+      title.textContent = "ریست برنامه";
       var paragraphs = modal.querySelectorAll("p");
       if (paragraphs[0]) paragraphs[0].textContent = "این عملیات داده‌هایی را که خودتان تعریف کرده‌اید پاک می‌کند؛ پیش‌فرض‌های برنامه پس از بارگذاری دوباره ساخته می‌شوند. پیش از ادامه می‌توانید فایل پشتیبان دریافت کنید.";
       if (paragraphs[1]) paragraphs[1].textContent = "حساب‌ها و اطلاعات سفارشی مثل تراکنش‌ها، چک‌ها، وام‌ها، اقساط، بودجه‌ها، قوانین تکرارشونده، پروژه‌ها، اعضای خانواده، میانبرها و الگوهای پیامک پاک می‌شوند؛ حساب‌ها و داده‌های نمونهٔ پیش‌فرض برنامه دوباره بارگذاری می‌شوند.";
-      action.textContent = "پاک‌کردن بدون پشتیبان";
+      action.textContent = "ریست بدون پشتیبان";
       action.addEventListener("click", function (event) {
         event.preventDefault();
         event.stopPropagation();
@@ -221,13 +227,13 @@
       var backup = document.createElement("button");
       backup.type = "button";
       backup.className = action.className.replace("bg-rose-600", "bg-amber-600").replace("hover:bg-rose-500", "hover:bg-amber-500");
-      backup.textContent = "پشتیبان‌گیری و پاک‌کردن داده‌های سفارشی";
+      backup.textContent = "پشتیبان‌گیری و ریست برنامه";
       backup.addEventListener("click", function () {
         if (!downloadBackup()) {
           window.alert("تهیه فایل پشتیبان انجام نشد؛ برای جلوگیری از حذف اطلاعات، ریست لغو شد.");
           return;
         }
-        if (!window.confirm("فایل پشتیبان برای دریافت آماده شد. فقط پس از اطمینان از کامل‌شدن دانلود ادامه دهید. آیا داده‌های سفارشی پاک شوند؟")) return;
+        if (!window.confirm("فایل پشتیبان برای دریافت آماده شد. فقط پس از اطمینان از کامل‌شدن دانلود ادامه دهید. آیا برنامه ریست شود؟")) return;
         finishReset();
       });
       action.parentElement.insertBefore(backup, action);

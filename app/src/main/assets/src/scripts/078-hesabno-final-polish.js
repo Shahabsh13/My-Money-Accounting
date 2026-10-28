@@ -52,17 +52,19 @@
     updateBackupSubtitle();
   };
   var setupResetWarning = function () {
-    var title = Array.from(document.querySelectorAll("h4")).find(function (node) { return clean(node.textContent) === "صفر کردن داده‌ها"; });
+    var title = Array.from(document.querySelectorAll("h4")).find(function (node) {
+      return ["صفر کردن داده‌ها", "ریست برنامه"].indexOf(clean(node.textContent)) !== -1;
+    });
     if (!title || !title.parentElement || title.parentElement.querySelector("[data-reset-warning]")) return;
     var row = title.parentElement.parentElement.parentElement, description = title.parentElement.querySelector("p"), action = row && row.querySelector("button");
-    if (!row || !description || !action) return;
+    if (!row || !action) return;
     var badge = document.createElement("span");
     badge.dataset.resetWarning = "true"; badge.className = "hesabno-reset-warning"; badge.textContent = "غیرقابل‌بازگشت";
     title.parentElement.insertBefore(badge, title);
-    title.textContent = "پاک‌کردن داده‌های سفارشی";
-    description.textContent = "مواردی که خودتان تعریف کرده‌اید پاک می‌شوند؛ پیش‌فرض‌های برنامه پس از بارگذاری دوباره ساخته می‌شوند. پیش از ادامه می‌توانید پشتیبان بگیرید.";
+    title.textContent = "ریست برنامه";
+    if (description) description.remove();
     var actionLabel = action.querySelector("span");
-    if (actionLabel) actionLabel.textContent = "پاک‌کردن داده‌های سفارشی";
+    if (actionLabel) actionLabel.textContent = "ریست برنامه";
   };
   var setupHealthCard = function () {
     var heading = Array.from(document.querySelectorAll("h2")).find(function (node) { return clean(node.textContent) === "پشتیبان‌گیری و بازیابی داده‌ها"; });
@@ -72,15 +74,78 @@
     if (!box) return;
     var card = document.createElement("section");
     card.id = "hesabno-health-card"; card.className = "hesabno-health-card";
-    card.innerHTML = '<strong>بررسی سلامت داده‌ها</strong><p>قبل از ریست یا بازیابی، مطمئن شوید بخش‌های ذخیره‌شده قابل خواندن هستند.</p><button type="button" data-health-check>بررسی سلامت داده‌ها</button><span data-health-result></span>';
-    card.querySelector("[data-health-check]").addEventListener("click", function () {
-      var keys = ["hesabno:transactions", "hesabno:accounts", "hesabno:accounts_v5", "hesabno:checks", "hesabno:check_settlement_dates", "hesabno:loans", "hesabno:installments", "hesabno:recurring_rules", "hesabno:budgets", "hesabno:fiscal_years", "hesabno:shortcuts", "hesabno:familyMembers", "hesabno:family_members", "hesabno:projects", "hesabno:homeWidgets", "hesabno:projectMeta", "hesabno:familyMemberMeta", "hesabno:payambank:inbox", "hesabno:payambank:custom_patterns", "hesabno:user_profile", "hesabno:local_snapshots", "hesabno:exported_files"];
-      var valid = 0, invalid = 0;
-      keys.forEach(function (key) { var raw = window.__safeGet ? __safeGet(key) : localStorage.getItem(key); if (!raw) return; try { JSON.parse(raw); valid += 1; } catch (error) { invalid += 1; } });
-      var result = card.querySelector("[data-health-result]");
-      result.textContent = invalid ? "خطا در " + invalid + " بخش" : valid ? valid + " بخش سالم است ✓" : "داده‌ای برای بررسی وجود ندارد";
-      result.setAttribute("data-health-state", invalid ? "invalid" : "ok");
-    });
+    card.innerHTML = '<strong>بررسی سلامت داده‌ها</strong><button type="button" data-health-check>بررسی سلامت داده‌ها</button><span data-health-result role="status"></span><div data-health-details></div>';
+    var keys = [
+      ["hesabno:transactions", "تراکنش‌ها"], ["hesabno:accounts", "حساب‌ها"], ["hesabno:accounts_v5", "حساب‌ها (نسخه ۵)"],
+      ["hesabno:checks", "چک‌ها"], ["hesabno:check_settlement_dates", "تاریخ تسویه چک‌ها"], ["hesabno:loans", "وام‌ها"],
+      ["hesabno:installments", "اقساط"], ["hesabno:recurring_rules", "قوانین دوره‌ای"], ["hesabno:budgets", "بودجه‌ها"],
+      ["hesabno:fiscal_years", "سال‌های مالی"], ["hesabno:shortcuts", "میانبرها"], ["hesabno:familyMembers", "اعضای خانواده"],
+      ["hesabno:family_members", "اعضای خانواده (نسخه دیگر)"], ["hesabno:projects", "پروژه‌ها"], ["hesabno:homeWidgets", "ابزارک‌های صفحه اصلی"],
+      ["hesabno:projectMeta", "اطلاعات پروژه‌ها"], ["hesabno:familyMemberMeta", "اطلاعات اعضای خانواده"], ["hesabno:payambank:inbox", "صندوق پیامبانک"],
+      ["hesabno:payambank:custom_patterns", "الگوهای سفارشی پیامک"], ["hesabno:user_profile", "پروفایل کاربر"],
+      ["hesabno:local_snapshots", "نسخه‌های محلی"], ["hesabno:exported_files", "فایل‌های خروجی"]
+    ];
+    var details = card.querySelector("[data-health-details]");
+    var result = card.querySelector("[data-health-result]");
+    var check = function () {
+      var valid = 0, errors = [];
+      keys.forEach(function (item) {
+        try {
+          var raw = window.localStorage.getItem(item[0]);
+          if (raw === null && window.__hesabnoMemoryStorage && Object.prototype.hasOwnProperty.call(window.__hesabnoMemoryStorage, item[0])) raw = window.__hesabnoMemoryStorage[item[0]];
+          if (raw === null || raw === undefined) return;
+          try { JSON.parse(raw); valid += 1; }
+          catch (error) { errors.push({ key: item[0], name: item[1], raw: raw }); }
+        } catch (error) { errors.push({ key: item[0], name: item[1], raw: null }); }
+      });
+      result.textContent = errors.length ? "خطا در " + errors.length + " بخش" : valid ? valid + " بخش سالم است ✓" : "داده‌ای برای بررسی وجود ندارد";
+      result.setAttribute("data-health-state", errors.length ? "invalid" : "ok");
+      details.replaceChildren();
+      errors.forEach(function (item) {
+        var row = document.createElement("div");
+        row.setAttribute("data-health-key", item.key);
+        row.style.cssText = "margin-top:10px;line-height:1.8;overflow-wrap:anywhere";
+        var name = document.createElement("strong"); name.textContent = item.name;
+        var path = document.createElement("div"); path.textContent = "کلید ذخیره‌سازی داخلی برنامه: ";
+        var key = document.createElement("bdi"); key.dir = "ltr"; key.textContent = item.key; path.appendChild(key);
+        var button = document.createElement("button"); button.type = "button"; button.textContent = "تعمیر ایمن";
+        var message = document.createElement("div"); message.setAttribute("role", "status");
+        button.addEventListener("click", function () {
+          // تنها اصلاح بدون حدس: حذف نشانگر BOM از ابتدای متن JSON معتبر.
+          if (typeof item.raw !== "string" || item.raw.charAt(0) !== "\ufeff") {
+            message.textContent = "تعمیر بدون احتمال از دست رفتن اطلاعات ممکن نیست؛ داده‌ها تغییر نکردند."; return;
+          }
+          var repaired = item.raw.slice(1);
+          try { JSON.parse(repaired); } catch (error) {
+            message.textContent = "تعمیر بدون احتمال از دست رفتن اطلاعات ممکن نیست؛ داده‌ها تغییر نکردند."; return;
+          }
+          // آداپتور بومی ممکن است پیوست‌ها را هنگام نوشتن جابه‌جا کند.
+          if ((item.key === "hesabno:transactions" || item.key === "hesabno:checks") && repaired.indexOf("data:") !== -1) {
+            message.textContent = "تعمیر ایمن این بخش با پیوست‌ها در دسترس نیست؛ داده‌ها تغییر نکردند."; return;
+          }
+          // در آداپتور SQLite، نوشتن در دو مخزن جداگانه اتمی نیست؛ تعمیر را متوقف می‌کنیم.
+          if (window.Storage && window.Storage.prototype.__hesabnoSqlAdapterInstalled) {
+            message.textContent = "تعمیر ایمن با ذخیره‌سازی بومی این دستگاه فعلاً در دسترس نیست؛ داده‌ها تغییر نکردند."; return;
+          }
+          try {
+            if (window.__hesabnoStoragePersistent === false || window.localStorage.getItem(item.key) !== item.raw ||
+                (window.__safeGet && window.__safeGet(item.key) !== item.raw)) {
+              message.textContent = "داده تغییر کرده یا ذخیره‌سازی پایدار در دسترس نیست؛ دوباره بررسی کنید."; return;
+            }
+            window.localStorage.setItem(item.key, repaired);
+            if (window.localStorage.getItem(item.key) !== repaired) throw new Error("write not confirmed");
+            check();
+            result.textContent += " — نشانگر اضافی ابتدای «" + item.name + "» حذف شد.";
+          } catch (error) {
+            // بازگرداندن تنها زمانی که مقدار همان مقدار پیشنهادی ما باشد؛ از بازنویسی تغییر جدید پرهیز می‌شود.
+            try { if (window.localStorage.getItem(item.key) === repaired) window.localStorage.setItem(item.key, item.raw); } catch (ignored) {}
+            message.textContent = "ثبت تعمیر تأیید نشد؛ وضعیت داده را بررسی کنید.";
+          }
+        });
+        row.appendChild(name); row.appendChild(path); row.appendChild(button); row.appendChild(message); details.appendChild(row);
+      });
+    };
+    card.querySelector("[data-health-check]").addEventListener("click", check);
     box.appendChild(card);
   };
   (function(){

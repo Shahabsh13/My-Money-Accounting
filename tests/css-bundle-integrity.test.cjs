@@ -115,6 +115,7 @@ test('the merge evidence artifact records a verified, equal cascade', () => {
     + (verification.formTransitions?.addedRules || 0)
     + (verification.onboardingTransitions?.addedRules || 0)
     + (verification.motionSystem?.addedRules || 0)
+    + (verification.datePickerGlassScrim?.addedRules || 0)
     - (verification.themeTypographyConsistency?.removedRules || 0);
   assert.equal(verification.currentState.rules,
     verification.cascadeEquality.rulesAfter + verification.appearanceLayer.baselineRules + documentedLaterRules,

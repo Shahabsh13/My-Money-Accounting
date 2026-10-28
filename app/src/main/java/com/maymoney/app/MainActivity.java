@@ -66,6 +66,10 @@ public class MainActivity extends ComponentActivity {
     private final Object sqlStoreLock = new Object();
     private volatile NativeSqlStoreHelper sqlStoreHelper;
     private volatile String pendingCloudBackupJson;
+    private final java.util.concurrent.atomic.AtomicBoolean manualBackupBusy = new java.util.concurrent.atomic.AtomicBoolean(false);
+    private final java.util.concurrent.ExecutorService manualBackupExecutor = java.util.concurrent.Executors.newSingleThreadExecutor();
+    private volatile byte[] pendingManualBackupData;
+    private volatile String pendingManualBackupRequest;
 
     // بررسی لایه‌های گذرا پیش از تاریخچه‌ی WebView؛ Back نباید هنگام بازبودن overlay صفحه را عوض کند.
     private static final String BACK_PREFLIGHT_JS =
@@ -122,6 +126,43 @@ public class MainActivity extends ComponentActivity {
                 Uri[] results = WebChromeClient.FileChooserParams.parseResult(result.getResultCode(), result.getData());
                 filePathCallback.onReceiveValue(results);
                 filePathCallback = null;
+            });
+
+    // پشتیبان دستی فقط در مقصد انتخاب‌شده توسط کاربر نوشته می‌شود.
+    private final ActivityResultLauncher<Intent> manualBackupPicker =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                String request = pendingManualBackupRequest;
+                byte[] payload = pendingManualBackupData;
+                pendingManualBackupRequest = null;
+                pendingManualBackupData = null;
+                Intent data = result.getData();
+                Uri uri = (result.getResultCode() == RESULT_OK && data != null) ? data.getData() : null;
+                if (request == null || payload == null) {
+                    manualBackupBusy.set(false);
+                    if (uri != null) toast("پشتیبان ذخیره نشد؛ دوباره تلاش کنید");
+                    return;
+                }
+                if (uri == null) {
+                    manualBackupBusy.set(false);
+                    notifyManualBackupResult(request, "cancelled");
+                    return;
+                }
+                try {
+                    manualBackupExecutor.execute(() -> {
+                        boolean ok = false;
+                        try (OutputStream stream = getContentResolver().openOutputStream(uri, "wt")) {
+                            if (stream == null) throw new java.io.IOException("Unable to open destination");
+                            stream.write(payload);
+                            stream.flush();
+                            ok = true;
+                        } catch (Exception ignored) { ok = false; }
+                        manualBackupBusy.set(false);
+                        notifyManualBackupResult(request, ok ? "saved" : "error", ok ? resolveManualBackupName(uri) : "");
+                    });
+                } catch (java.util.concurrent.RejectedExecutionException error) {
+                    manualBackupBusy.set(false);
+                    notifyManualBackupResult(request, "error");
+                }
             });
 
     // اتصال و ذخیره‌ی پایدار در گوگل درایو (SAF) با مجوز ماندگار
@@ -779,6 +820,7 @@ public class MainActivity extends ComponentActivity {
     @Override
     protected void onDestroy() {
         rollingBackupExecutor.shutdown(); // Let an already accepted write finish; never interrupt it.
+        manualBackupExecutor.shutdown();
         backPreflightPending = false;
         backFallbackPending = false;
         backPreflightRequestId++;
@@ -791,6 +833,30 @@ public class MainActivity extends ComponentActivity {
             webView.destroy();
         }
         super.onDestroy();
+    }
+
+    private String resolveManualBackupName(Uri uri) {
+        try (android.database.Cursor cursor = getContentResolver().query(uri,
+                new String[]{android.provider.OpenableColumns.DISPLAY_NAME}, null, null, null)) {
+            if (cursor != null && cursor.moveToFirst()) {
+                String name = cursor.getString(0);
+                if (name != null) return name;
+            }
+        } catch (Exception ignored) {}
+        return "";
+    }
+
+    private void notifyManualBackupResult(final String request, final String status) {
+        notifyManualBackupResult(request, status, "");
+    }
+
+    private void notifyManualBackupResult(final String request, final String status, final String name) {
+        runOnUiThread(() -> {
+            if (webView == null) return;
+            String script = "if(typeof window.__hesabnoOnManualBackupResult==='function')window.__hesabnoOnManualBackupResult("
+                    + org.json.JSONObject.quote(request) + "," + org.json.JSONObject.quote(status) + "," + org.json.JSONObject.quote(name) + ");";
+            try { webView.evaluateJavascript(script, null); } catch (Exception ignored) {}
+        });
     }
 
     private void notifyPermissionResultToWeb(final String permKey, final boolean granted) {
@@ -913,6 +979,38 @@ public class MainActivity extends ComponentActivity {
                     finish();
                 }
             });
+        }
+
+        /** Opens the system save picker; completion is reported asynchronously to the web page. */
+        @JavascriptInterface
+        public boolean saveManualBackup(final String name, final String json, final String request) {
+            if (json == null || json.isEmpty() || request == null || request.isEmpty()
+                    || !manualBackupBusy.compareAndSet(false, true)) return false;
+            try {
+                pendingManualBackupData = json.getBytes(java.nio.charset.StandardCharsets.UTF_8);
+                pendingManualBackupRequest = request;
+                runOnUiThread(() -> {
+                    try {
+                        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+                        intent.addCategory(Intent.CATEGORY_OPENABLE);
+                        intent.setType("application/json");
+                        intent.putExtra(Intent.EXTRA_TITLE, name == null || name.trim().isEmpty() ? "My-Money-Backup.json" : name);
+                        intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                        manualBackupPicker.launch(intent);
+                    } catch (Exception error) {
+                        pendingManualBackupData = null;
+                        pendingManualBackupRequest = null;
+                        manualBackupBusy.set(false);
+                        notifyManualBackupResult(request, "error");
+                    }
+                });
+                return true; // Accepted for selection, not yet saved.
+            } catch (Exception error) {
+                pendingManualBackupData = null;
+                pendingManualBackupRequest = null;
+                manualBackupBusy.set(false);
+                return false;
+            }
         }
 
         /**
