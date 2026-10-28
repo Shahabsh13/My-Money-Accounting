@@ -86,12 +86,22 @@ test('date picker is a bottom sheet with a blurred scrim', { timeout: 180000 }, 
   assert.equal(sheet.style.borderTopLeftRadius, '24px');
   assert.equal(sheet.style.borderBottomLeftRadius, '0', 'گوشه‌های پایین شیت باید صاف باشند');
   assert.equal(sheet.style.maxHeight, '86vh');
-  assert.equal(sheet.style.overflowY, 'auto', 'محتوای بلند تقویم باید داخل خودش اسکرول شود');
+  assert.equal(sheet.style.display, 'flex', 'شیت باید برای جداکردن ناحیهٔ روزها از نوار تأیید از flex استفاده کند');
+  assert.equal(sheet.style.flexDirection, 'column');
+  assert.equal(sheet.style.overflow, 'hidden', 'اسکرول باید به محتوای تقویم محدود بماند');
+  assert.equal(sheet.children[2].style.flex, '1 1 auto', 'ناحیهٔ روزها باید فضای باقی‌مانده را بگیرد');
+  assert.equal(sheet.children[2].style.overflowY, 'auto', 'محتوای بلند تقویم باید مستقل از نوار تأیید اسکرول شود');
   assert.equal(sheet.getAttribute('role'), 'dialog');
   assert.equal(sheet.getAttribute('aria-modal'), 'true');
   assert.equal(sheet.parentElement, backdrop, 'شیت باید فرزند مستقیم لایه باشد');
   assert.ok(sheet.querySelector('#datepicker-close-button[aria-label="بستن تقویم"]'), 'ضربدر بستن باید در سرِ شیت باشد');
-  assert.ok(sheet.querySelector('#datepicker-confirm-button'), 'دکمهٔ تأیید باید پایین تقویم باشد');
+  const confirmButton = sheet.querySelector('#datepicker-confirm-button');
+  assert.ok(confirmButton, 'دکمهٔ تأیید باید پایین تقویم باشد');
+  const confirmFooter = confirmButton.parentElement;
+  assert.equal(confirmFooter.style.flex, '0 0 auto', 'ردیف تأیید نباید با کوچک‌شدن پنل جمع شود');
+  assert.equal(confirmFooter.style.marginTop, 'auto', 'ردیف تأیید باید در انتهای شیت قرار بگیرد');
+  assert.match(confirmFooter.style.paddingBottom, /calc\(4px \+ env\(/, 'فاصلهٔ پایین تأیید باید مثل کیبورد و فقط به‌اندازهٔ safe-area باشد');
+  assert.equal(confirmFooter.style.background, 'rgb(22, 26, 35)', 'ردیف چسبیده باید زمینهٔ مات داشته باشد');
 
   const handle = sheet.firstElementChild;
   assert.ok(handle && /rounded-full/.test(handle.className), 'دسته‌ی کشیدن شیت باید وجود داشته باشد');

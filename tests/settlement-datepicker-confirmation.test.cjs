@@ -40,7 +40,18 @@ test('check settlement calendar commits only on confirmation and cancels with X'
     assert.equal(backdrop.style.justifyContent, 'center');
     assert.equal(backdrop.querySelector('#persian-datepicker-sheet').style.borderTopLeftRadius, '24px');
     assert.ok(backdrop.querySelector('[data-hesabno-settlement-close]'), 'ضربدر بستن باید وجود داشته باشد');
-    assert.ok(backdrop.querySelector('[data-hesabno-settlement-confirm]'), 'دکمهٔ تأیید باید پایین تقویم باشد');
+    const confirmButton = backdrop.querySelector('[data-hesabno-settlement-confirm]');
+    assert.ok(confirmButton, 'دکمهٔ تأیید باید پایین تقویم باشد');
+    const confirmFooter = confirmButton.parentElement;
+    const sheet = backdrop.querySelector('#persian-datepicker-sheet');
+    assert.equal(sheet.style.display, 'flex', 'شیت باید نوار تأیید را از ناحیهٔ روزها جدا کند');
+    assert.equal(sheet.style.flexDirection, 'column');
+    assert.equal(sheet.style.overflow, 'hidden');
+    assert.equal(sheet.querySelector('[data-hesabno-settlement-datepicker-body]').style.overflowY, 'auto', 'روزها باید مستقل از نوار تأیید اسکرول شوند');
+    assert.equal(confirmFooter.style.flex, '0 0 auto', 'ردیف تأیید نباید با کوچک‌شدن پنل جمع شود');
+    assert.equal(confirmFooter.style.marginTop, 'auto', 'ردیف تأیید باید در انتهای شیت قرار بگیرد');
+    assert.match(confirmFooter.style.paddingBottom, /calc\(4px \+ env\(/, 'فاصلهٔ پایین تأیید باید مثل کیبورد و فقط به‌اندازهٔ safe-area باشد');
+    assert.equal(sheet.style.paddingBottom, '0px', 'فاصلهٔ قبلیِ زیر شیت نباید دکمهٔ تأیید را از کف بلند کند');
 
     const firstDay = [...backdrop.querySelectorAll('[data-hesabno-settlement-day]')]
       .find((button) => !button.disabled && button.getAttribute('data-hesabno-settlement-day') !== String(Number(original.split('/')[2])));

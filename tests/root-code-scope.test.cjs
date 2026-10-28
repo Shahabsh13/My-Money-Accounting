@@ -243,7 +243,18 @@ test('پرداخت جایگزین چک برگشتی هیچ کد یا «کد ری
   assert.equal(datePicker.style.alignItems, 'flex-end', 'تقویم باید پایین صفحه بماند حتی بدون کلاس‌های CSS');
   assert.equal(datePicker.querySelector('#hesabno-return-datepicker-sheet').style.borderTopLeftRadius, '24px');
   assert.ok(datePicker.querySelector('[data-return-date-close]'), 'ضربدر بستن باید در بالای تقویم باشد');
-  assert.ok(datePicker.querySelector('[data-return-date-confirm]'), 'تأیید باید پایین تقویم باشد');
+  const confirmButton = datePicker.querySelector('[data-return-date-confirm]');
+  assert.ok(confirmButton, 'تأیید باید پایین تقویم باشد');
+  const confirmFooter = confirmButton.parentElement;
+  const returnSheet = datePicker.querySelector('#hesabno-return-datepicker-sheet');
+  assert.equal(returnSheet.style.display, 'flex', 'شیت باید نوار تأیید را از ناحیهٔ روزها جدا کند');
+  assert.equal(returnSheet.style.flexDirection, 'column');
+  assert.equal(returnSheet.style.overflow, 'hidden');
+  assert.equal(returnSheet.querySelector('[data-date-calendar]').style.overflowY, 'auto', 'روزها باید مستقل از نوار تأیید اسکرول شوند');
+  assert.equal(confirmFooter.style.flex, '0 0 auto', 'ردیف تأیید نباید با کوچک‌شدن پنل جمع شود');
+  assert.equal(confirmFooter.style.marginTop, 'auto', 'ردیف تأیید باید در انتهای شیت قرار بگیرد');
+  assert.match(confirmFooter.style.paddingBottom, /calc\(4px \+ env\(/, 'فاصلهٔ پایین تأیید باید مثل کیبورد و فقط به‌اندازهٔ safe-area باشد');
+  assert.equal(returnSheet.style.paddingBottom, '0px', 'فاصلهٔ قبلیِ زیر شیت نباید دکمهٔ تأیید را از کف بلند کند');
   let selectableDays = [...datePicker.querySelectorAll('[data-date-day]')].filter((button) => !button.disabled);
   if (selectableDays.length < 2) {
     click(datePicker.querySelector('[data-return-date-prev-month]'));
