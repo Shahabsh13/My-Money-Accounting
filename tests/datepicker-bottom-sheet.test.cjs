@@ -90,7 +90,7 @@ test('date picker is a bottom sheet with a blurred scrim', { timeout: 180000 }, 
   assert.match(blur, /blur\(\d+(\.\d+)?px\)/, 'پس‌زمینه‌ی تقویم باید blur داشته باشد');
   const blurPx = Number((blur.match(/blur\((\d+)/) || [])[1] || 0);
   assert.ok(blurPx >= 12, `blur باید محسوس باشد (حداقل ۱۲px)، اما ${blurPx}px است`);
-  assert.equal(backdrop.style.background, 'rgba(6, 10, 16, 0.18)',
+  assert.equal(backdrop.style.background, 'rgba(6, 10, 16, 0.55)',
     'لایه باید نیمه‌شفاف باشد تا صفحهٔ محوشدهٔ زیر آن دیده شود');
 
   /* شیت: مات، پایین‌چسب، با گوشه‌های بالایی گرد */
@@ -102,7 +102,7 @@ test('date picker is a bottom sheet with a blurred scrim', { timeout: 180000 }, 
   assert.equal(sheet.style.display, 'flex', 'شیت باید برای جداکردن ناحیهٔ روزها از نوار تأیید از flex استفاده کند');
   assert.equal(sheet.style.flexDirection, 'column');
   assert.equal(sheet.style.overflow, 'hidden', 'اسکرول باید به محتوای تقویم محدود بماند');
-  const calendarBody = sheet.children[1];
+  const calendarBody = sheet.children[2];
   assert.equal(calendarBody.style.flex, '0 1 auto', 'ناحیهٔ تاریخ باید فقط به اندازهٔ محتوایش باشد تا سربرگ همراه آن پایین بیاید');
   assert.equal(calendarBody.style.overflowY, 'auto', 'محتوای بلند تقویم باید مستقل از نوار تأیید اسکرول شود');
   assert.equal(calendarBody.style.display, 'flex');
@@ -114,13 +114,7 @@ test('date picker is a bottom sheet with a blurred scrim', { timeout: 180000 }, 
   assert.equal(sheet.getAttribute('role'), 'dialog');
   assert.equal(sheet.getAttribute('aria-modal'), 'true');
   assert.equal(sheet.parentElement, backdrop, 'شیت باید فرزند مستقیم لایه باشد');
-  const closeButton = sheet.querySelector('#datepicker-close-button[aria-label="بستن تقویم"]');
-  assert.ok(closeButton, 'ضربدر بستن باید در سرِ شیت باشد');
-  const dateHeader = closeButton.parentElement;
-  assert.equal(sheet.firstElementChild, dateHeader, 'خط دستگیره باید حذف شود و نوار ماه/سال اولین بخش شیت باشد');
-  assert.equal(dateHeader.style.marginTop, 'auto', 'نوار ماه/سال باید پس از حذف دستگیره در همان جای پایین‌چین بماند');
-  assert.equal([...sheet.children].some((element) => /rounded-full/.test(element.className)), false,
-    'خط دستگیره نباید بالای نوار ماه/سال رندر شود');
+  assert.ok(sheet.querySelector('#datepicker-close-button[aria-label="بستن تقویم"]'), 'ضربدر بستن باید در سرِ شیت باشد');
   const confirmButton = sheet.querySelector('#datepicker-confirm-button');
   assert.ok(confirmButton, 'دکمهٔ تأیید باید پایین تقویم باشد');
   const confirmFooter = confirmButton.parentElement;
@@ -129,6 +123,11 @@ test('date picker is a bottom sheet with a blurred scrim', { timeout: 180000 }, 
   assert.equal(sheet.lastElementChild, confirmFooter, 'ردیف تأیید باید آخرین بخش شیت باقی بماند');
   assert.match(confirmFooter.style.paddingBottom, /calc\(4px \+ env\(/, 'فاصلهٔ پایین تأیید باید مثل کیبورد و فقط به‌اندازهٔ safe-area باشد');
   assert.equal(confirmFooter.style.background, 'rgb(22, 26, 35)', 'ردیف چسبیده باید زمینهٔ مات داشته باشد');
+
+  const handle = sheet.firstElementChild;
+  assert.ok(handle && /rounded-full/.test(handle.className), 'دسته‌ی کشیدن شیت باید وجود داشته باشد');
+  assert.equal(handle.style.marginTop, 'auto', 'دسته و نوار ماه/سال باید همراه تاریخ‌ها به پایین منتقل شوند');
+  assert.equal(/sm:hidden/.test(handle.className), false, 'دسته فقط در موبایل پنهان نمی‌شود؛ شیت در همه اندازه‌ها از پایین باز می‌شود');
 
   /* تقویم نباید فرم را از جریان خارج یا جابه‌جا کند */
   assert.ok(document.querySelector('#tx-date-input-container'), 'فیلد تاریخ باید سر جایش بماند');

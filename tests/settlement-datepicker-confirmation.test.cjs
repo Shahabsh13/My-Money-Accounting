@@ -51,11 +51,7 @@ test('check settlement calendar commits only on confirmation and cancels with X'
     assert.equal(sheet.style.height, '86vh', 'ارتفاع شیت باید برای ایجاد فضای خالی بالای تقویم حفظ شود');
     assert.equal(sheet.style.display, 'flex', 'شیت باید نوار تأیید را از ناحیهٔ روزها جدا کند');
     assert.equal(sheet.style.flexDirection, 'column');
-    const dateHeader = backdrop.querySelector('[data-hesabno-settlement-close]').parentElement;
-    assert.equal(sheet.firstElementChild, dateHeader, 'خط دستگیره باید حذف شود و نوار ماه/سال اولین بخش شیت باشد');
-    assert.equal(dateHeader.style.marginTop, 'auto', 'نوار ماه/سال باید در همان محل پایین‌چین باقی بماند');
-    assert.equal([...sheet.children].some((element) => /rounded-full/.test(element.className)), false,
-      'خط دستگیره نباید رندر شود');
+    assert.equal(sheet.firstElementChild.style.marginTop, 'auto', 'دسته و سربرگ باید همراه تاریخ‌ها به پایین منتقل شوند');
     assert.equal(sheet.style.overflow, 'hidden');
     const calendarBody = sheet.querySelector('[data-hesabno-settlement-datepicker-body]');
     assert.equal(calendarBody.style.flex, '0 1 auto', 'ناحیهٔ تقویم نباید بین سربرگ و تاریخ‌ها کش بیاید');

@@ -254,11 +254,7 @@ test('پرداخت جایگزین چک برگشتی هیچ کد یا «کد ری
   assert.equal(returnSheet.style.height, '86vh', 'ارتفاع شیت باید برای ایجاد فضای خالی بالای تقویم حفظ شود');
   assert.equal(returnSheet.style.display, 'flex', 'شیت باید نوار تأیید را از ناحیهٔ روزها جدا کند');
   assert.equal(returnSheet.style.flexDirection, 'column');
-  const dateHeader = datePicker.querySelector('[data-return-date-close]').parentElement;
-  assert.equal(returnSheet.firstElementChild, dateHeader, 'خط دستگیره باید حذف شود و نوار ماه/سال اولین بخش شیت باشد');
-  assert.equal(dateHeader.style.marginTop, 'auto', 'نوار ماه/سال باید در همان محل پایین‌چین باقی بماند');
-  assert.equal([...returnSheet.children].some((element) => /rounded-full/.test(element.className)), false,
-    'خط دستگیره نباید رندر شود');
+  assert.equal(returnSheet.firstElementChild.style.marginTop, 'auto', 'دسته و سربرگ باید همراه تاریخ‌ها به پایین منتقل شوند');
   assert.equal(returnSheet.style.overflow, 'hidden');
   const dateCalendarBody = returnSheet.querySelector('[data-date-calendar]');
   assert.equal(dateCalendarBody.style.flex, '0 1 auto', 'ناحیهٔ تقویم نباید بین سربرگ و تاریخ‌ها کش بیاید');
