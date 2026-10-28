@@ -4767,10 +4767,10 @@ main > form.px-4.pt-4.space-y-4 section:has(#field-party) > div:not(:first-child
 
 /* Explicit semantic money colors: keep transaction amounts vivid, not contrast-auto-darkened. */
 html[data-theme="light"] [data-hesabno-transactions-page] [data-hesabno-transaction-amount][data-hesabno-amount-tone="income"] {
-  color: #00752b !important; font-size: 14px !important; line-height: 1.5 !important;
+  color: #00752b !important;
 }
 html[data-theme="light"] [data-hesabno-transactions-page] [data-hesabno-transaction-amount][data-hesabno-amount-tone="expense"] {
-  color: #c90025 !important; font-size: 14px !important; line-height: 1.5 !important;
+  color: #c90025 !important;
 }
 
 /* Advanced Apply follows the shared fixed transaction-submit geometry, not a floating footer. */

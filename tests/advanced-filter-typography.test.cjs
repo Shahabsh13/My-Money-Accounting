@@ -17,6 +17,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const { parseCss } = require('../tools/bench/css-parser.cjs');
 
 const { bootApp, closeApp, wait, normalize } = require('./helpers/app-boot.cjs');
 
@@ -87,6 +88,25 @@ test('قاعده‌های اندازهٔ انتخابگر در لایهٔ ۲۳۵
     'فیلدهای با کلاس text-sm باید ۱۴px باشند');
   assert.match(css, /html body input\.text-base,\s*html body textarea\.text-base,\s*html body select\.text-base \{ font-size: 14px !important; \}/,
     'فیلدهای قبلاً ۱۶px با کلاس text-base هم باید ۱۴px باشند');
+});
+
+test('تم روشن و تیره اندازهٔ متن‌های فشرده و مبلغ تراکنش را یکسان نگه می‌دارند', () => {
+  const index = fs.readFileSync(path.join(root, 'app/src/main/assets/index.html'), 'utf8');
+  const linkedStyles = [...index.matchAll(/rel="stylesheet"[^>]*href="([^"]+)"/g)]
+    .map((match) => match[1].split('?')[0]);
+  for (const relative of linkedStyles) {
+    const css = readAsset(relative);
+    const themeFontSizes = parseCss(css).rules.filter((rule) =>
+      /data-theme\s*=\s*["']?light/i.test(rule.selector) && /font-size\s*:/i.test(rule.body),
+    );
+    assert.deepEqual(themeFontSizes, [],
+      `${relative} نباید برای تم روشن font-size جدا از تم تیره تعریف کند`);
+  }
+
+  const appBundle = readAsset('src/scripts/067-inline.js');
+  const transactionAmountMarkup = appBundle.slice(appBundle.indexOf('data-hesabno-transaction-amount'));
+  assert.ok(transactionAmountMarkup.includes('className:`text-[12px] sm:text-[13px]'),
+    'مبلغ‌های فهرست تراکنش باید اندازهٔ پایهٔ مشترک و responsive خود را حفظ کنند');
 });
 
 test('انتخابگرهای پروژه و اعضا با برچسب‌هایشان هم‌اندازه‌اند و رویداد وجود ندارد', { timeout: 120000 }, async (t) => {

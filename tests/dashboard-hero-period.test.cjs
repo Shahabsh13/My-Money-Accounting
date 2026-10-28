@@ -63,6 +63,10 @@ test('hero card follows the selected dashboard period (today vs month)', { timeo
     normalize(element.textContent).includes('امیدوارم امروز روز خوبی داشته باشی'),
   );
   assert.ok(greeting, 'متن خوشامدگویی داشبورد باید باشد');
+  assert.equal(greeting.classList.contains('text-[10.5px]'), true,
+    'زیرنویس خوشامدگویی باید اندازهٔ اصلی کلاسش را در هر دو تم حفظ کند');
+  assert.equal(greeting.classList.contains('sm:text-[11px]'), true,
+    'اندازهٔ responsive زیرنویس خوشامدگویی باید در هر دو تم یکسان بماند');
   assert.equal(greeting.classList.contains('flex'), false,
     'قلب باید در جریان متن باشد، نه یک آیتم flex جدا که با wrap جابه‌جا شود');
   const greetingHeart = greeting.querySelector('span:last-child');

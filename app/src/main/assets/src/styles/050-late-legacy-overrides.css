@@ -1,17 +1,7 @@
 /* بسته‌ی 050-late-legacy-overrides.css | بازنویسی‌های پایانی دوره‌ی قدیم (۹۰۰–۹۷۰) که پیش از لایه‌ی ۲۳۵ لینک شده‌اند
    ادغام 5 فایل با همان ترتیب آبشار: 900-light-theme-contrast.css 950-amount-box-height.css 960-sticky-submit.css 965-bank-form-sticky-footer.css 970-note-textarea.css */
 /* = 900-light-theme-contrast.css = */
-/* حالت روشن: متن‌های خیلی ریز و نازک را خواناتر می‌کند.
-   (کنتراست رنگ در فایل src/scripts/901-light-theme-contrast.js تنظیم می‌شود) */
-html[data-theme="light"] main [class*="text-[10px]"],
-html[data-theme="light"] main [class*="text-[10.5px]"] {
-  font-size: 12px !important;
-  line-height: 1.5 !important;
-}
-html[data-theme="light"] main [class*="text-[11px]"] {
-  font-size: 12.5px !important;
-  line-height: 1.5 !important;
-}
+/* تم روشن رنگ و وزن متن‌های ریز را برای خوانایی بهتر تنظیم می‌کند؛ اندازهٔ تعیین‌شدهٔ هر کلاس در هر دو تم ثابت می‌ماند. */
 html[data-theme="light"] main span:not([class*="font-"]),
 html[data-theme="light"] main p:not([class*="font-"]),
 html[data-theme="light"] main label:not([class*="font-"]) {
