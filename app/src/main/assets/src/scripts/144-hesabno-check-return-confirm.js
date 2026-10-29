@@ -485,7 +485,7 @@
             overlay.style.justifyContent = "center";
             overlay.style.padding = "0px";
             overlay.style.setProperty("z-index", "2147483000", "important");
-            overlay.style.background = "rgba(6, 10, 16, 0.18)";
+            overlay.style.background = "rgba(2, 6, 23, 0.36)";
             overlay.style.backdropFilter = "blur(16px) saturate(120%)";
             overlay.style.webkitBackdropFilter = "blur(16px) saturate(120%)";
             overlay.style.touchAction = "none";

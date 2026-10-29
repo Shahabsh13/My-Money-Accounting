@@ -33,21 +33,21 @@
   }
   var ONBOARDING_MOTION_MS = 140;
   var ONBOARDING_NAV_GUARD_MS = 210;
-  function animateOnboardingView(view, direction) {
+  function animateOnboardingView(view) {
     if (!view) return false;
     if (!onboardingMotionAllowed()) {
       if (view.__hesabnoMotionCleanup) view.__hesabnoMotionCleanup();
       return false;
     }
-    var classes = ["hesabno-fr-view-enter-from-left", "hesabno-fr-view-enter-from-right"];
+    var motionClass = "hesabno-fr-view-fade-in";
     if (view.__hesabnoMotionCleanup) view.__hesabnoMotionCleanup();
-    classes.forEach(function (name) { if (view.classList.contains(name)) view.classList.remove(name); });
-    var animationName = direction === "next" ? "hesabno-onboarding-step-from-left" : "hesabno-onboarding-step-from-right";
+    if (view.classList.contains(motionClass)) view.classList.remove(motionClass);
+    var animationName = "hesabno-onboarding-step-fade";
     var timer;
     function cleanup() {
       window.clearTimeout(timer);
       view.removeEventListener("animationend", onAnimationEnd);
-      classes.forEach(function (name) { if (view.classList.contains(name)) view.classList.remove(name); });
+      view.classList.remove(motionClass);
       if (view.__hesabnoMotionCleanup === cleanup) view.__hesabnoMotionCleanup = null;
     }
     function onAnimationEnd(event) {
@@ -55,8 +55,8 @@
     }
     view.__hesabnoMotionCleanup = cleanup;
     view.addEventListener("animationend", onAnimationEnd);
-    // Set the entry class while hidden, before the active step can be painted.
-    view.classList.add(direction === "next" ? classes[0] : classes[1]);
+    // Fade the incoming view while hidden, before the active step can be painted.
+    view.classList.add(motionClass);
     // A generous fallback covers interrupted animations and delayed WebView frames.
     timer = window.setTimeout(cleanup, ONBOARDING_MOTION_MS + 1000);
     return true;
@@ -570,9 +570,8 @@
       var previousStep = card.getAttribute("data-hesabno-fr-active-step");
       if (onboardingStepLocked && previousStep !== stepName) return false;
       var activeView = card.querySelector('[data-hesabno-fr-view="' + stepName + '"]');
-      var stepOrder = ["restore", "profile", "permissions", "preferences"];
       if (previousStep && previousStep !== stepName && activeView) {
-        animateOnboardingView(activeView, stepOrder.indexOf(stepName) > stepOrder.indexOf(previousStep) ? "next" : "previous");
+        animateOnboardingView(activeView);
       }
       card.setAttribute("data-hesabno-fr-active-step", stepName);
       if (previousStep && previousStep !== stepName && activeView) {

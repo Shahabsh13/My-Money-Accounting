@@ -99,7 +99,7 @@ test('a rapid second Next tap cannot skip the permission step',async()=>{
   assert.equal(card.getAttribute('data-hesabno-fr-active-step'),'preferences','Next works again after the short transition guard');
  }finally{dom.window.close();}
 });
-test('first-run onboarding slides Next views from the left and Previous views from the right',async()=>{
+test('first-run onboarding fades incoming steps without horizontal movement',async()=>{
  const dom=new JSDOM('<!doctype html><html><body></body></html>',{url:'https://app.test/',runScripts:'outside-only'});
  try{
   const w=dom.window;w.localStorage.setItem('hesabno:first_run_profile_done','1');
@@ -108,12 +108,12 @@ test('first-run onboarding slides Next views from the left and Previous views fr
   const view=step=>overlay.querySelector(`[data-hesabno-fr-view="${step}"]`);
   overlay.querySelector('[data-hesabno-fr-go-profile]').click();
   await wait(25);
-  assert.ok(view('profile').classList.contains('hesabno-fr-view-enter-from-left'));
-  assert.equal(w.document.activeElement,view('profile').querySelector('h1'),'keep the first input from opening the native keyboard during the slide');
+  assert.ok(view('profile').classList.contains('hesabno-fr-view-fade-in'));
+  assert.equal(w.document.activeElement,view('profile').querySelector('h1'),'keep the first input from opening the native keyboard during the transition');
   await waitForStepMotion();
   overlay.querySelector('[data-hesabno-fr-back-restore]').click();
   await wait(25);
-  assert.ok(view('restore').classList.contains('hesabno-fr-view-enter-from-right'));
+  assert.ok(view('restore').classList.contains('hesabno-fr-view-fade-in'));
   await waitForStepMotion();
   overlay.querySelector('[data-hesabno-fr-go-profile]').click();
   await waitForStepMotion();
@@ -122,22 +122,22 @@ test('first-run onboarding slides Next views from the left and Previous views fr
   card.dispatchEvent(new w.Event('submit',{bubbles:true,cancelable:true}));
   assert.equal(card.getAttribute('data-hesabno-fr-active-step'),'permissions');
   await wait(25);
-  assert.ok(view('permissions').classList.contains('hesabno-fr-view-enter-from-left'));
+  assert.ok(view('permissions').classList.contains('hesabno-fr-view-fade-in'));
   await waitForStepMotion();
   overlay.querySelector('[data-hesabno-fr-back-profile]').click();
   await wait(25);
-  assert.ok(view('profile').classList.contains('hesabno-fr-view-enter-from-right'));
+  assert.ok(view('profile').classList.contains('hesabno-fr-view-fade-in'));
   await waitForStepMotion();
   card.dispatchEvent(new w.Event('submit',{bubbles:true,cancelable:true}));
   await waitForStepMotion();
   overlay.querySelector('[data-hesabno-fr-next-from-perms]').click();
   assert.equal(card.getAttribute('data-hesabno-fr-active-step'),'preferences');
   await wait(25);
-  assert.ok(view('preferences').classList.contains('hesabno-fr-view-enter-from-left'));
+  assert.ok(view('preferences').classList.contains('hesabno-fr-view-fade-in'));
   await waitForStepMotion();
   overlay.querySelector('[data-hesabno-fr-back-perms]').click();
   await wait(25);
-  assert.ok(view('permissions').classList.contains('hesabno-fr-view-enter-from-right'));
+  assert.ok(view('permissions').classList.contains('hesabno-fr-view-fade-in'));
  }finally{dom.window.close();}
 });
 test('first-run permissions have short copy, four accessible switches and no focus jump to the footer',async()=>{
@@ -180,9 +180,10 @@ test('first-run step transition is brief and visually apparent',()=>{
  const css=fs.readFileSync(root+'src/styles/235-hesabno-text-root-and-display-stability.css','utf8');
  assert.match(script,/ONBOARDING_MOTION_MS = 140/);
  assert.match(script,/ONBOARDING_NAV_GUARD_MS = 210/);
- assert.match(css,/from \{ opacity: \.9; transform: translate3d\(-4%, 0, 0\); \}/);
- assert.match(css,/from \{ opacity: \.9; transform: translate3d\(4%, 0, 0\); \}/);
- assert.equal((css.match(/animation: hesabno-onboarding-step-from-(?:left|right) 140ms/g)||[]).length,2);
+ assert.match(css,/@keyframes hesabno-onboarding-step-fade \{\s*from \{ opacity: \.94; \}\s*to \{ opacity: 1; \}\s*\}/);
+ assert.match(css,/animation: hesabno-onboarding-step-fade 140ms/);
+ assert.match(css,/will-change: opacity/);
+ assert.doesNotMatch(css,/hesabno-fr-view-fade-in \{[^}]*transform/);
 });
 test('compact onboarding uses a viewport-bounded card and a single scroll container',()=>{
  const {parseCss}=require('../tools/bench/css-parser.cjs');
@@ -284,22 +285,22 @@ test('first-run step animation is in place before the view becomes visible, with
   const profile=overlay.querySelector('[data-hesabno-fr-view="profile"]');
   const nativeSet=card.setAttribute.bind(card);let classBeforeActivation=false;
   card.setAttribute=(name,value)=>{
-   if(name==='data-hesabno-fr-active-step'&&value==='profile') classBeforeActivation=profile.classList.contains('hesabno-fr-view-enter-from-left');
+   if(name==='data-hesabno-fr-active-step'&&value==='profile') classBeforeActivation=profile.classList.contains('hesabno-fr-view-fade-in');
    return nativeSet(name,value);
   };
   overlay.querySelector('[data-hesabno-fr-go-profile]').click();
   assert.equal(classBeforeActivation,true,'install entry motion before changing the active step');
   assert.equal(frameRequests,0,'the entry class does not wait for requestAnimationFrame');
   assert.equal(card.getAttribute('data-hesabno-fr-active-step'),'profile');
-  assert.ok(profile.classList.contains('hesabno-fr-view-enter-from-left'));
+  assert.ok(profile.classList.contains('hesabno-fr-view-fade-in'));
   assert.equal(w.document.activeElement,profile.querySelector('h1'));
   const unrelated=new w.Event('animationend',{bubbles:true});unrelated.animationName='unrelated';profile.dispatchEvent(unrelated);
-  assert.ok(profile.classList.contains('hesabno-fr-view-enter-from-left'),'unrelated animations do not interrupt the transition');
-  const ended=new w.Event('animationend',{bubbles:true});ended.animationName='hesabno-onboarding-step-from-left';profile.dispatchEvent(ended);
-  assert.equal(profile.classList.contains('hesabno-fr-view-enter-from-left'),false,'temporary animation class is cleaned up at animation end');
+  assert.ok(profile.classList.contains('hesabno-fr-view-fade-in'),'unrelated animations do not interrupt the transition');
+  const ended=new w.Event('animationend',{bubbles:true});ended.animationName='hesabno-onboarding-step-fade';profile.dispatchEvent(ended);
+  assert.equal(profile.classList.contains('hesabno-fr-view-fade-in'),false,'temporary animation class is cleaned up at animation end');
   await waitForStepMotion();
   overlay.querySelector('[data-hesabno-fr-back-restore]').click();
-  assert.ok(overlay.querySelector('[data-hesabno-fr-view="restore"]').classList.contains('hesabno-fr-view-enter-from-right'));
+  assert.ok(overlay.querySelector('[data-hesabno-fr-view="restore"]').classList.contains('hesabno-fr-view-fade-in'));
  }finally{dom.window.close();}
 });
 
@@ -313,7 +314,7 @@ test('reduced motion skips the step animation while keeping navigation safeguard
   overlay.querySelector('[data-hesabno-fr-go-profile]').click();
   const profile=overlay.querySelector('[data-hesabno-fr-view="profile"]');
   assert.equal(card.getAttribute('data-hesabno-fr-active-step'),'profile');
-  assert.equal(profile.classList.contains('hesabno-fr-view-enter-from-left'),false);
+  assert.equal(profile.classList.contains('hesabno-fr-view-fade-in'),false);
   assert.equal(card.getAttribute('aria-busy'),'true');
   overlay.querySelector('[data-hesabno-fr-back-restore]').click();
   assert.equal(card.getAttribute('data-hesabno-fr-active-step'),'profile','guard still prevents accidental extra navigation');
@@ -332,10 +333,10 @@ test('returning to a step cancels its old cleanup; interrupted motion has a time
   overlay.querySelector('[data-hesabno-fr-go-profile]').click();await waitForStepMotion();
   overlay.querySelector('[data-hesabno-fr-back-restore]').click();await waitForStepMotion();
   overlay.querySelector('[data-hesabno-fr-go-profile]').click();
-  assert.ok(profile.classList.contains('hesabno-fr-view-enter-from-left'));
+  assert.ok(profile.classList.contains('hesabno-fr-view-fade-in'));
   await wait(650);
-  assert.ok(profile.classList.contains('hesabno-fr-view-enter-from-left'),'old timer must not clean up a new transition');
+  assert.ok(profile.classList.contains('hesabno-fr-view-fade-in'),'old timer must not clean up a new transition');
   await wait(550);
-  assert.equal(profile.classList.contains('hesabno-fr-view-enter-from-left'),false,'fallback cleans up if animationend never arrives');
+  assert.equal(profile.classList.contains('hesabno-fr-view-fade-in'),false,'fallback cleans up if animationend never arrives');
  }finally{dom.window.close();}
 });
