@@ -4923,5 +4923,5 @@ html[data-theme="light"] body #persian-datepicker-backdrop,
 html[data-theme="light"] body #hesabno-return-datepicker-backdrop,
 html.theme-light body #persian-datepicker-backdrop,
 html.theme-light body #hesabno-return-datepicker-backdrop {
-  background: rgba(248, 250, 252, .42) !important;
+  background: rgba(15, 23, 42, .42) !important;
 }

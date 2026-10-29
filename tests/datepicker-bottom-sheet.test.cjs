@@ -50,8 +50,8 @@ test('date picker CSS overrides the app-wide full-screen blur opt-out', () => {
     'هر سه تقویم باید از استثنای اختصاصی blur استفاده کنند');
   assert.match(css, /#hesabno-return-datepicker-backdrop \{[\s\S]*?background:\s*rgba\(2, 6, 23, \.36\) !important;[\s\S]*?-webkit-backdrop-filter:\s*blur\(16px\) saturate\(120%\) !important;[\s\S]*?backdrop-filter:\s*blur\(16px\) saturate\(120%\) !important;/,
     'استثنای تقویم باید قانون عمومیِ none!important را شکست دهد');
-  assert.match(css, /html\[data-theme="light"\] body #persian-datepicker-backdrop,[\s\S]*?background:\s*rgba\(248, 250, 252, \.42\) !important;/,
-    'در تم روشن رنگ پرده باید از فرمول کیبورد داخلی استفاده کند');
+  assert.match(css, /html\[data-theme="light"\] body #persian-datepicker-backdrop,[\s\S]*?background:\s*rgba\(15, 23, 42, \.42\) !important;/,
+    'در تم روشن هم پرده باید سطح سفید را به‌وضوح تیره کند، نه اینکه تقریباً سفید بماند');
 });
 
 test('date picker is a bottom sheet with a blurred scrim', { timeout: 180000 }, async (t) => {

@@ -66,7 +66,7 @@ jobs:
       - name: Verify APK contains the updated app assets
         run: |
           APK=app/build/outputs/apk/debug/app-debug.apk
-          unzip -p "$APK" assets/index.html | grep -Fq 'src/styles/235-hesabno-text-root-and-display-stability.css?v=2026102901'
+          unzip -p "$APK" assets/index.html | grep -Fq 'src/styles/235-hesabno-text-root-and-display-stability.css?v=2026102902'
           unzip -p "$APK" assets/index.html | grep -Fq 'src/scripts/067-inline.js?v=2026102816'
           unzip -p "$APK" assets/index.html | grep -Fq 'src/scripts/142-hesabno-check-settlement-date.js?v=24'
           unzip -p "$APK" assets/index.html | grep -Fq 'src/scripts/144-hesabno-check-return-confirm.js?v=23'
@@ -89,7 +89,7 @@ jobs:
           unzip -p "$APK" assets/src/styles/235-hesabno-text-root-and-display-stability.css | grep -Fq 'html body #hesabno-return-datepicker-backdrop {'
           unzip -p "$APK" assets/src/styles/235-hesabno-text-root-and-display-stability.css | grep -Fq 'backdrop-filter: blur(16px) saturate(120%) !important;'
           unzip -p "$APK" assets/src/styles/235-hesabno-text-root-and-display-stability.css | grep -Fq 'background: rgba(2, 6, 23, .36) !important;'
-          unzip -p "$APK" assets/src/styles/235-hesabno-text-root-and-display-stability.css | grep -Fq 'background: rgba(248, 250, 252, .42) !important;'
+          unzip -p "$APK" assets/src/styles/235-hesabno-text-root-and-display-stability.css | grep -Fq 'background: rgba(15, 23, 42, .42) !important;'
           unzip -p "$APK" assets/src/scripts/067-inline.js | grep -Fq 'className:"w-10 h-1 rounded-full mx-auto mb-4",style:{flex:"0 0 auto",marginTop:"auto"'
           unzip -p "$APK" assets/src/scripts/142-hesabno-check-settlement-date.js | grep -Fq 'state.sheet.style.display = "flex";'
           unzip -p "$APK" assets/src/scripts/142-hesabno-check-settlement-date.js | grep -Fq 'footer.style.flex = "0 0 auto";'
