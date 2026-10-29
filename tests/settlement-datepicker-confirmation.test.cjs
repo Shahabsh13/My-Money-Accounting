@@ -39,9 +39,9 @@ test('check settlement calendar commits only on confirmation and cancels with X'
     assert.equal(backdrop.style.alignItems, 'flex-end', 'تقویم باید در پایین صفحه قرار بگیرد حتی اگر کلاس‌های CSS بارگذاری نشوند');
     assert.equal(backdrop.style.justifyContent, 'center');
     assert.equal(backdrop.style.background, 'rgba(2, 6, 23, 0.36)',
-      'صفحهٔ زیر تقویم باید از پشت لایهٔ نیمه‌شفاف و بلرشده دیده شود');
-    assert.match(backdrop.style.backdropFilter || backdrop.style.webkitBackdropFilter || '', /blur\(16px\)/,
-      'لایهٔ پشت تقویم باید صفحهٔ زیر را blur کند');
+      'تیرگی پردهٔ تقویم باید با کیبورد داخلی یکسان باشد');
+    assert.equal(backdrop.style.backdropFilter || backdrop.style.webkitBackdropFilter || '', '',
+      'تقویم تک‌تاریخ مانند کیبورد داخلی blur واقعی ندارد');
     assert.equal(backdrop.querySelector('#persian-datepicker-sheet').style.borderTopLeftRadius, '24px');
     assert.ok(backdrop.querySelector('[data-hesabno-settlement-close]'), 'ضربدر بستن باید وجود داشته باشد');
     const confirmButton = backdrop.querySelector('[data-hesabno-settlement-confirm]');

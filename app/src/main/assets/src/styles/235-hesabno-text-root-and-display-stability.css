@@ -4910,7 +4910,7 @@ article.hesabno-focused-check-card { animation: none !important; }
   pointer-events: auto !important;
 }
 
-/* Date pickers use a visible frame and a light glass scrim outside the panel. */
+/* Base date-picker styling; single-date scrim and frame are overridden below. */
 html body #persian-datepicker-backdrop,
 html body #hesabno-return-datepicker-backdrop {
   background: rgba(2, 6, 23, .22) !important;
@@ -5018,9 +5018,16 @@ html[data-theme="light"] body #persian-datepicker-sheet [class~="grid-cols-7"][c
   color: #334155 !important;
 }
 
-/* Fallback for Android WebViews with partial backdrop-filter support: blur the app underneath the portal. */
-html body:has(#persian-datepicker-backdrop) #root {
-  filter: blur(5px) !important;
+/* Match the single-date picker scrim to the internal keypad: dim only, with no blur. */
+html body #persian-datepicker-backdrop {
+  background: rgba(2, 6, 23, .36) !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+html[data-theme="light"] body #persian-datepicker-backdrop,
+html.theme-light body #persian-datepicker-backdrop {
+  background: rgba(248, 250, 252, .42) !important;
 }
 
 /* Keep the single-date sheet clearly smaller than the viewport, while staying docked at the bottom. */

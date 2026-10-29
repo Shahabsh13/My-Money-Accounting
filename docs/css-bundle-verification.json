@@ -188,19 +188,19 @@
   "appearanceLayer": {
     "source": "task-12",
     "inBundle": "235-hesabno-text-root-and-display-stability.css",
-    "note": "Original appearance baseline: 610 rules / 131,726 bytes. Current standalone stylesheet 235 contains 703 parsed rules / 150,656 bytes after theme-aware date-picker scrims, the bottom-sheet redesign, Android WebView blur fallback, and a layout-preserving borderless single-date picker.",
-    "bytes": 150656,
-    "rules": 703,
+    "note": "Original appearance baseline: 610 rules / 131,726 bytes. Current standalone stylesheet 235 contains 704 parsed rules / 150,885 bytes after theme-aware date-picker scrims, the bottom-sheet redesign, and a layout-preserving borderless single-date picker.",
+    "bytes": 150885,
+    "rules": 704,
     "baselineBytes": 131726,
     "baselineRules": 610
   },
   "currentState": {
     "files": 10,
-    "rules": 3427,
-    "bytes": 855395,
-    "hash": "0be7fc34f3bcac7863815b7c5d334c9c2bb86a6ea704b2d8df0d7443b7ee540b",
-    "note": "Current stylesheet state on disk; 10 linked stylesheets and 3,427 parsed rules. The borderless Persian single-date picker stays docked at the bottom, now capped at 62vh/520px so its top edge sits closer to the month/year controls. A translucent blurred backdrop and Android WebView root-content fallback remain enabled.",
-    "generatedAt": "2026-10-29T17:18:09Z"
+    "rules": 3428,
+    "bytes": 855624,
+    "hash": "e858c1d1314b6914c4ba999140f43dacb67a9dd5fb5e96986349731471b0ce13",
+    "note": "Current stylesheet state on disk; 10 linked stylesheets and 3,428 parsed rules. The borderless Persian single-date picker stays docked at the bottom, with its top edge near the month/year controls. Its scrim now matches the internal keypad: the same theme-appropriate dim overlay and no real blur. The return-date range picker retains its existing frame and blur.",
+    "generatedAt": "2026-10-29T17:30:00Z"
   },
   "generatedAt": "2026-10-24T19:08:05.622Z",
   "onboardingCompact": {
@@ -252,8 +252,8 @@
     "note": "Cohesive lightweight motion timings, immediate full-page navigation, reduced-motion coverage, incremental overlay annotations, reduced expensive blur, and lightweight exit visuals."
   },
   "datePickerGlassScrim": {
-    "addedRules": 18,
-    "note": "Both date pickers retain translucent scrims and backdrop blur. The single-date Persian picker has a borderless bottom-sheet redesign and a layout-preserving hidden handle; the distinct return-date picker retains its frame. A root-content blur fallback supplements backdrop-filter on Android WebViews."
+    "addedRules": 19,
+    "note": "The single-date Persian picker matches the internal keypad scrim (theme-aware dim overlay without actual blur); its bottom sheet is borderless with a layout-preserving hidden handle. The distinct return-date picker retains its frame and 24px backdrop blur."
   },
   "themeTypographyConsistency": {
     "removedRules": 2,
