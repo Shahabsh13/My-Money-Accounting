@@ -188,8 +188,8 @@
   "appearanceLayer": {
     "source": "task-12",
     "inBundle": "235-hesabno-text-root-and-display-stability.css",
-    "note": "Original appearance baseline: 610 rules / 131,726 bytes. Current standalone stylesheet 235 contains 703 parsed rules / 150,592 bytes after theme-aware date-picker scrims and framed sheets, the single-date picker redesign, Android WebView blur fallback, and a smaller bottom sheet that exposes more of the blurred page.",
-    "bytes": 150592,
+    "note": "Original appearance baseline: 610 rules / 131,726 bytes. Current standalone stylesheet 235 contains 703 parsed rules / 150,656 bytes after the theme-aware date-picker scrims, bottom-sheet redesign, Android WebView blur fallback, and a layout-preserving borderless single-date picker.",
+    "bytes": 150656,
     "rules": 703,
     "baselineBytes": 131726,
     "baselineRules": 610
@@ -197,10 +197,10 @@
   "currentState": {
     "files": 10,
     "rules": 3427,
-    "bytes": 855331,
-    "hash": "71f2d7ed4a4c45140176a9ca91526b92fe29d0bd8a592bce6766825dc32d82ff",
-    "note": "Current stylesheet state on disk; 10 linked stylesheets and 3,427 parsed rules. The single-date Persian calendar remains docked at the bottom but is now capped at 68vh/560px so more blurred backdrop is visible. It has a distinct framed design, non-dismissing scrim, and root-content blur fallback for Android WebViews.",
-    "generatedAt": "2026-10-29T16:46:27Z"
+    "bytes": 855395,
+    "hash": "ca7c54558f07340f6caa72d1572fe7588c764fe193bf1fe5837782fe7f41407b",
+    "note": "Current stylesheet state on disk; 10 linked stylesheets and 3,427 parsed rules. The Persian single-date picker is a borderless bottom sheet capped at 68vh/560px, with a translucent blurred backdrop and a WebView blur fallback. The separate return-date picker keeps its frame.",
+    "generatedAt": "2026-10-29T17:06:58Z"
   },
   "generatedAt": "2026-10-24T19:08:05.622Z",
   "onboardingCompact": {
@@ -253,7 +253,7 @@
   },
   "datePickerGlassScrim": {
     "addedRules": 18,
-    "note": "Both date-picker sheets retain translucent blurred scrims and visible frames. The single-date Persian picker has a scoped redesign, a non-dismissing backdrop and a smaller bottom sheet to expose more of the blurred app; its hidden handle preserves layout, with a root-content blur fallback for Android WebViews."
+    "note": "Both date pickers retain translucent scrims and backdrop blur. The single-date Persian picker has a borderless bottom-sheet redesign and a layout-preserving hidden handle; the distinct return-date picker retains its frame. A root-content blur fallback supplements backdrop-filter on Android WebViews."
   },
   "themeTypographyConsistency": {
     "removedRules": 2,
