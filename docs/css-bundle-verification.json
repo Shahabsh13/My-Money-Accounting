@@ -188,19 +188,19 @@
   "appearanceLayer": {
     "source": "task-12",
     "inBundle": "235-hesabno-text-root-and-display-stability.css",
-    "note": "Original appearance baseline: 610 rules / 131,726 bytes. Current standalone stylesheet 235 contains 690 parsed rules / 146,973 bytes after theme-aware date-picker glass-scrim exceptions, clearly framed date-picker sheets, a visually hidden Persian picker handle that preserves its flex spacing, and an opacity-only onboarding fade.",
-    "bytes": 146973,
-    "rules": 690,
+    "note": "Original appearance baseline: 610 rules / 131,726 bytes. Current standalone stylesheet 235 contains 701 parsed rules / 150,137 bytes after the theme-aware date-picker scrim and framed sheets, the bottom-sheet handle was hidden without moving the layout, and the single-date picker received a scoped visual redesign.",
+    "bytes": 150137,
+    "rules": 701,
     "baselineBytes": 131726,
     "baselineRules": 610
   },
   "currentState": {
     "files": 10,
-    "rules": 3414,
-    "bytes": 851712,
-    "hash": "87b00761f871d7556117ac2efaa5ff33b3fe829224a20a3bde5bfa0f977c4871",
-    "note": "Current stylesheet state on disk; 10 linked stylesheets and 3,414 parsed rules. Both date-picker sheets have a high-contrast frame; the outside scrim is translucent with a stronger 24px blur. The Persian picker handle is visually hidden while retaining its flex spacing, so the calendar layout stays unchanged. First-run steps fade without horizontal motion; other full-screen overlays retain the Android performance opt-out.",
-    "generatedAt": "2026-10-29T15:11:00Z"
+    "rules": 3425,
+    "bytes": 854876,
+    "hash": "6dc9ef41a97ff6194f313ecdf13249de5d137cca18457172d2f7c459bae9459d",
+    "note": "Current stylesheet state on disk; 10 linked stylesheets and 3,425 parsed rules. Date-picker sheets retain the translucent 24px-blurred backdrop and visible frame. The single-date Persian picker has a refreshed surface, month/year controls, weekday row, day buttons and footer while preserving its bottom-sheet geometry; the backdrop does not dismiss it.",
+    "generatedAt": "2026-10-29T16:13:41Z"
   },
   "generatedAt": "2026-10-24T19:08:05.622Z",
   "onboardingCompact": {
@@ -252,8 +252,8 @@
     "note": "Cohesive lightweight motion timings, immediate full-page navigation, reduced-motion coverage, incremental overlay annotations, reduced expensive blur, and lightweight exit visuals."
   },
   "datePickerGlassScrim": {
-    "addedRules": 5,
-    "note": "Date-picker backdrops override the global Android full-screen blur opt-out with theme-aware 24px translucent glass scrims; both sheets have a clearly visible frame, and the Persian picker handle is visually hidden without changing layout; other overlays remain unchanged."
+    "addedRules": 16,
+    "note": "Both date-picker sheets retain the theme-aware 24px translucent glass scrim and visible frame. The Persian single-date picker has its own scoped visual treatment and hidden-but-layout-preserving handle; backdrop taps do not dismiss it."
   },
   "themeTypographyConsistency": {
     "removedRules": 2,
