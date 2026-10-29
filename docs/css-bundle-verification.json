@@ -188,19 +188,19 @@
   "appearanceLayer": {
     "source": "task-12",
     "inBundle": "235-hesabno-text-root-and-display-stability.css",
-    "note": "Original appearance baseline: 610 rules / 131,726 bytes. Current standalone stylesheet 235 contains 701 parsed rules / 150,137 bytes after the theme-aware date-picker scrim and framed sheets, the bottom-sheet handle was hidden without moving the layout, and the single-date picker received a scoped visual redesign.",
-    "bytes": 150137,
-    "rules": 701,
+    "note": "Original appearance baseline: 610 rules / 131,726 bytes. Current standalone stylesheet 235 contains 702 parsed rules / 150,334 bytes after the theme-aware date-picker scrim and framed sheets, a layout-preserving hidden handle, a scoped single-date picker redesign, and an Android WebView fallback that blurs the app beneath its portal.",
+    "bytes": 150334,
+    "rules": 702,
     "baselineBytes": 131726,
     "baselineRules": 610
   },
   "currentState": {
     "files": 10,
-    "rules": 3425,
-    "bytes": 854876,
-    "hash": "6dc9ef41a97ff6194f313ecdf13249de5d137cca18457172d2f7c459bae9459d",
-    "note": "Current stylesheet state on disk; 10 linked stylesheets and 3,425 parsed rules. Date-picker sheets retain the translucent 24px-blurred backdrop and visible frame. The single-date Persian picker has a refreshed surface, month/year controls, weekday row, day buttons and footer while preserving its bottom-sheet geometry; the backdrop does not dismiss it.",
-    "generatedAt": "2026-10-29T16:13:41Z"
+    "rules": 3426,
+    "bytes": 855073,
+    "hash": "aa7d39b936e978fd2cd392560cc940f81be82716aea83a1175b21f430b39683d",
+    "note": "Current stylesheet state on disk; 10 linked stylesheets and 3,426 parsed rules. Date-picker sheets retain the translucent 24px-blurred backdrop and visible frame. The single-date Persian picker has a refreshed surface, month/year controls, weekday row, day buttons and footer while preserving its bottom-sheet geometry; app content under it receives a blur fallback for Android WebViews.",
+    "generatedAt": "2026-10-29T16:25:00Z"
   },
   "generatedAt": "2026-10-24T19:08:05.622Z",
   "onboardingCompact": {
@@ -252,8 +252,8 @@
     "note": "Cohesive lightweight motion timings, immediate full-page navigation, reduced-motion coverage, incremental overlay annotations, reduced expensive blur, and lightweight exit visuals."
   },
   "datePickerGlassScrim": {
-    "addedRules": 16,
-    "note": "Both date-picker sheets retain the theme-aware 24px translucent glass scrim and visible frame. The Persian single-date picker has its own scoped visual treatment and hidden-but-layout-preserving handle; backdrop taps do not dismiss it."
+    "addedRules": 17,
+    "note": "Both date-picker sheets retain a theme-aware translucent glass scrim and visible frame. The Persian single-date picker has its own scoped redesign and a layout-preserving hidden handle. A root-content blur fallback supplements backdrop-filter for Android WebViews."
   },
   "themeTypographyConsistency": {
     "removedRules": 2,

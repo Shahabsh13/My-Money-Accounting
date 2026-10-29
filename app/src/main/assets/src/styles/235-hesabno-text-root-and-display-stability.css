@@ -5017,3 +5017,8 @@ html[data-theme="light"] body #persian-datepicker-sheet [class~="bg-stone-850/90
 html[data-theme="light"] body #persian-datepicker-sheet [class~="grid-cols-7"][class~="gap-y-2"] > button:not(.bg-blue-600) {
   color: #334155 !important;
 }
+
+/* Fallback for Android WebViews with partial backdrop-filter support: blur the app underneath the portal. */
+html body:has(#persian-datepicker-backdrop) #root {
+  filter: blur(5px) !important;
+}
