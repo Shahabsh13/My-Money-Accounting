@@ -188,19 +188,19 @@
   "appearanceLayer": {
     "source": "task-12",
     "inBundle": "235-hesabno-text-root-and-display-stability.css",
-    "note": "Original appearance baseline: 610 rules / 131,726 bytes. Current standalone stylesheet 235 contains 687 parsed rules / 146,238 bytes after dark- and light-theme date-picker glass-scrim exceptions were added and onboarding step slides were replaced by a fade.",
-    "bytes": 146238,
-    "rules": 687,
+    "note": "Original appearance baseline: 610 rules / 131,726 bytes. Current standalone stylesheet 235 contains 725 parsed rules / 156,161 bytes after the bottom-sheet redesign was applied consistently to all app calendars except the separate dashboard date-info calendar; date-range selection behavior remains intact.",
+    "bytes": 156161,
+    "rules": 725,
     "baselineBytes": 131726,
     "baselineRules": 610
   },
   "currentState": {
     "files": 10,
-    "rules": 3411,
-    "bytes": 850977,
-    "hash": "32d3b3f1ee9a84956769c993434ed652d1ab59259bdc6c5603df5498191a3cf5",
-    "note": "Current stylesheet state on disk; 10 linked stylesheets and 3,411 parsed rules. Date-picker overlays use theme-aware glass scrims; first-run steps fade without horizontal motion; other full-screen overlays retain the Android performance opt-out.",
-    "generatedAt": "2026-10-29T03:14:00Z"
+    "rules": 3449,
+    "bytes": 860900,
+    "hash": "149066966f3530db4d8723f3f66256364cca28923a28509c88eeedfaaa1e187d",
+    "note": "Current stylesheet state on disk; 10 linked stylesheets and 3,449 parsed rules. All non-dashboard calendar overlays use the designed bottom-sheet visual language: theme-aware keypad-matched dim scrims without blur, borderless rounded-top sheets, and compact vertical layouts. Date-range selection and date constraints remain unchanged.",
+    "generatedAt": "2026-10-29T18:20:00Z"
   },
   "generatedAt": "2026-10-24T19:08:05.622Z",
   "onboardingCompact": {
@@ -252,8 +252,8 @@
     "note": "Cohesive lightweight motion timings, immediate full-page navigation, reduced-motion coverage, incremental overlay annotations, reduced expensive blur, and lightweight exit visuals."
   },
   "datePickerGlassScrim": {
-    "addedRules": 2,
-    "note": "Date-picker backdrops override the global Android full-screen blur opt-out with theme-aware 16px glass scrims; other overlays remain unchanged."
+    "addedRules": 40,
+    "note": "All calendars except the independent dashboard date-info calendar share the designed bottom-sheet appearance. Single-date and returned-check calendars use the keypad-matched dim scrim without blur; fiscal and transaction range pickers retain from/to behavior while adopting the same bottom-sheet and scrim styling."
   },
   "themeTypographyConsistency": {
     "removedRules": 2,

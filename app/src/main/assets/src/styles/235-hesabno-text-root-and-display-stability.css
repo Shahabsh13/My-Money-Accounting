@@ -4910,18 +4910,272 @@ article.hesabno-focused-check-card { animation: none !important; }
   pointer-events: auto !important;
 }
 
-/* Date pickers intentionally keep a real glass scrim. This specific exception
-   wins over the app-wide Android performance rule that disables full-screen blur. */
+/* Base date-picker styling; single-date scrim and frame are overridden below. */
 html body #persian-datepicker-backdrop,
 html body #hesabno-return-datepicker-backdrop {
-  background: rgba(2, 6, 23, .36) !important;
-  -webkit-backdrop-filter: blur(16px) saturate(120%) !important;
-  backdrop-filter: blur(16px) saturate(120%) !important;
+  background: rgba(2, 6, 23, .22) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(120%) !important;
+  backdrop-filter: blur(24px) saturate(120%) !important;
 }
 
 html[data-theme="light"] body #persian-datepicker-backdrop,
 html[data-theme="light"] body #hesabno-return-datepicker-backdrop,
 html.theme-light body #persian-datepicker-backdrop,
 html.theme-light body #hesabno-return-datepicker-backdrop {
+  background: rgba(15, 23, 42, .18) !important;
+}
+
+html body #persian-datepicker-sheet,
+html body #hesabno-return-datepicker-sheet {
+  border: 2px solid rgba(148, 163, 184, .90) !important;
+  box-shadow: 0 -16px 44px rgba(2, 6, 23, .22), 0 0 0 1px rgba(255, 255, 255, .10) !important;
+}
+
+html[data-theme="light"] body #persian-datepicker-sheet,
+html[data-theme="light"] body #hesabno-return-datepicker-sheet,
+html.theme-light body #persian-datepicker-sheet,
+html.theme-light body #hesabno-return-datepicker-sheet {
+  border-color: rgba(71, 85, 105, .72) !important;
+  box-shadow: 0 -16px 44px rgba(15, 23, 42, .16), 0 0 0 1px rgba(255, 255, 255, .52) !important;
+}
+
+/* Hide the decorative handle while preserving its flex spacing so the calendar stays put. */
+html body #persian-datepicker-sheet > .w-10.h-1.rounded-full.mx-auto.mb-4 {
+  visibility: hidden !important;
+}
+
+/* Single-date calendar redesign: keep the established bottom-sheet geometry. */
+html body #persian-datepicker-sheet #datepicker-year-button,
+html body #persian-datepicker-sheet #datepicker-close-button {
+  min-height: 44px !important;
+  border-radius: 14px !important;
+  border-color: rgba(148, 163, 184, .38) !important;
+  background-color: #202938 !important;
+  color: #f1f5f9 !important;
+  box-shadow: 0 4px 12px rgba(2, 6, 23, .18) !important;
+}
+
+html body #persian-datepicker-sheet #datepicker-year-button + div {
+  min-height: 44px !important;
+  border-radius: 16px !important;
+  border-color: rgba(148, 163, 184, .32) !important;
+  background: linear-gradient(145deg, #273244, #1d2633) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06) !important;
+}
+
+html body #persian-datepicker-sheet [class~="bg-stone-850/90"] {
+  border: 1px solid rgba(148, 163, 184, .34) !important;
+  border-radius: 22px !important;
+  background: linear-gradient(160deg, #202a38, #19212d) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .05), 0 8px 24px rgba(2, 6, 23, .16) !important;
+}
+
+html body #persian-datepicker-sheet [class~="bg-stone-850/90"] > [class~="grid-cols-7"]:first-child {
+  margin-bottom: 10px !important;
+  padding-bottom: 8px !important;
+  border-bottom: 1px solid rgba(148, 163, 184, .18) !important;
+}
+
+html body #persian-datepicker-sheet [class~="grid-cols-7"][class~="gap-y-2"] > button {
+  min-height: 40px !important;
+  border: 1px solid transparent !important;
+  border-radius: 12px !important;
+  transition: background-color 120ms ease, border-color 120ms ease, box-shadow 120ms ease !important;
+}
+
+html body #persian-datepicker-sheet [class~="grid-cols-7"][class~="gap-y-2"] > button:hover:not(.bg-blue-600):not(:disabled) {
+  border-color: rgba(96, 165, 250, .5) !important;
+  background-color: rgba(59, 130, 246, .16) !important;
+}
+
+html body #persian-datepicker-sheet [class~="grid-cols-7"][class~="gap-y-2"] > button.bg-blue-600 {
+  border-color: rgba(191, 219, 254, .9) !important;
+  box-shadow: 0 5px 14px rgba(37, 99, 235, .38) !important;
+}
+
+html body #persian-datepicker-sheet #datepicker-today-button,
+html body #persian-datepicker-sheet #datepicker-confirm-button {
+  min-height: 44px !important;
+  border-radius: 14px !important;
+}
+
+html[data-theme="light"] body #persian-datepicker-sheet #datepicker-year-button,
+html[data-theme="light"] body #persian-datepicker-sheet #datepicker-close-button {
+  background-color: #f8fafc !important;
+  border-color: rgba(71, 85, 105, .28) !important;
+  color: #334155 !important;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, .08) !important;
+}
+
+html[data-theme="light"] body #persian-datepicker-sheet #datepicker-year-button + div,
+html[data-theme="light"] body #persian-datepicker-sheet [class~="bg-stone-850/90"] {
+  border-color: rgba(71, 85, 105, .24) !important;
+  background: linear-gradient(150deg, #ffffff, #edf3f7) !important;
+  box-shadow: inset 0 1px 0 #ffffff, 0 8px 24px rgba(15, 23, 42, .08) !important;
+}
+
+html[data-theme="light"] body #persian-datepicker-sheet [class~="grid-cols-7"][class~="gap-y-2"] > button:not(.bg-blue-600) {
+  color: #334155 !important;
+}
+
+/* Match the single-date picker scrim to the internal keypad: dim only, with no blur. */
+html body #persian-datepicker-backdrop {
+  background: rgba(2, 6, 23, .36) !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+html[data-theme="light"] body #persian-datepicker-backdrop,
+html.theme-light body #persian-datepicker-backdrop {
   background: rgba(248, 250, 252, .42) !important;
+}
+
+/* Keep the single-date sheet clearly smaller than the viewport, while staying docked at the bottom. */
+html body #persian-datepicker-sheet {
+  height: min(62vh, 520px) !important;
+  min-height: min(70vh, 400px) !important;
+  max-height: 72vh !important;
+  border: 0 !important;
+  border-color: transparent !important;
+}
+
+/* Give the independent returned-check date picker the same bottom-sheet treatment. */
+html body #hesabno-return-datepicker-backdrop {
+  background: rgba(2, 6, 23, .36) !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+html[data-theme="light"] body #hesabno-return-datepicker-backdrop,
+html.theme-light body #hesabno-return-datepicker-backdrop {
+  background: rgba(248, 250, 252, .42) !important;
+}
+
+html body #hesabno-return-datepicker-sheet {
+  height: min(62vh, 520px) !important;
+  min-height: min(70vh, 400px) !important;
+  max-height: 72vh !important;
+  border: 0 !important;
+  border-color: transparent !important;
+  border-radius: 24px 24px 0 0 !important;
+  box-shadow: 0 -16px 44px rgba(2, 6, 23, .22) !important;
+}
+
+html[data-theme="light"] body #hesabno-return-datepicker-sheet {
+  background: #eef3f6 !important;
+  color: #26343e !important;
+  box-shadow: 0 -16px 44px rgba(15, 23, 42, .16) !important;
+}
+
+html body #hesabno-return-datepicker-sheet > .w-10.h-1.rounded-full.mx-auto.mb-4 {
+  visibility: hidden !important;
+}
+
+html body #hesabno-return-datepicker-sheet [data-return-date-year],
+html body #hesabno-return-datepicker-sheet [data-return-date-close] {
+  min-height: 44px !important;
+  border-radius: 14px !important;
+  border-color: rgba(148, 163, 184, .38) !important;
+  background-color: #202938 !important;
+  color: #f1f5f9 !important;
+  box-shadow: 0 4px 12px rgba(2, 6, 23, .18) !important;
+}
+
+html body #hesabno-return-datepicker-sheet [data-return-date-year] + div {
+  min-height: 44px !important;
+  border-radius: 16px !important;
+  border-color: rgba(148, 163, 184, .32) !important;
+  background: linear-gradient(145deg, #273244, #1d2633) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06) !important;
+}
+
+html body #hesabno-return-datepicker-sheet [data-date-calendar] > [class~="bg-stone-850/90"] {
+  border: 1px solid rgba(148, 163, 184, .34) !important;
+  border-radius: 22px !important;
+  background: linear-gradient(160deg, #202a38, #19212d) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .05), 0 8px 24px rgba(2, 6, 23, .16) !important;
+}
+
+html body #hesabno-return-datepicker-sheet [data-date-calendar] [data-date-days] > button {
+  min-width: 40px !important;
+  min-height: 40px !important;
+  border: 1px solid transparent !important;
+  border-radius: 12px !important;
+}
+
+html body #hesabno-return-datepicker-sheet [data-return-date-today],
+html body #hesabno-return-datepicker-sheet [data-return-date-confirm] {
+  min-height: 44px !important;
+  border-radius: 14px !important;
+}
+
+html[data-theme="light"] body #hesabno-return-datepicker-sheet [data-return-date-year],
+html[data-theme="light"] body #hesabno-return-datepicker-sheet [data-return-date-close] {
+  background-color: #f8fafc !important;
+  border-color: rgba(71, 85, 105, .28) !important;
+  color: #334155 !important;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, .08) !important;
+}
+
+html[data-theme="light"] body #hesabno-return-datepicker-sheet [data-return-date-year] + div,
+html[data-theme="light"] body #hesabno-return-datepicker-sheet [data-date-calendar] > [class~="bg-stone-850/90"] {
+  border-color: rgba(71, 85, 105, .24) !important;
+  background: linear-gradient(150deg, #ffffff, #edf3f7) !important;
+  box-shadow: inset 0 1px 0 #ffffff, 0 8px 24px rgba(15, 23, 42, .08) !important;
+}
+
+/* Range calendars keep their start/end selection behavior, but share the same scrim and sheet visual language. */
+html body [data-hesabno-range-picker="true"] {
+  align-items: flex-end !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  background: rgba(2, 6, 23, .36) !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+html[data-theme="light"] body [data-hesabno-range-picker="true"],
+html.theme-light body [data-hesabno-range-picker="true"] {
+  background: rgba(248, 250, 252, .42) !important;
+}
+
+html body [data-hesabno-range-picker="true"] > div {
+  width: min(100%, 448px) !important;
+  height: min(76vh, 600px) !important;
+  min-height: min(62vh, 400px) !important;
+  max-height: 82vh !important;
+  border: 0 !important;
+  border-radius: 24px 24px 0 0 !important;
+  background: #161a23 !important;
+  box-shadow: 0 -16px 44px rgba(2, 6, 23, .22) !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain !important;
+}
+
+html body [data-hesabno-range-picker="true"] > div > div:first-child {
+  visibility: hidden !important;
+}
+
+html[data-theme="light"] body [data-hesabno-range-picker="true"] > div {
+  background: #eef3f6 !important;
+  color: #26343e !important;
+  box-shadow: 0 -16px 44px rgba(15, 23, 42, .16) !important;
+}
+
+html body [data-hesabno-range-picker="true"] [class~="bg-purple-600/20"] {
+  background-color: rgba(59, 130, 246, .18) !important;
+}
+
+html body [data-hesabno-range-picker="true"] [class~="border-purple-500"] {
+  border-color: rgba(96, 165, 250, .85) !important;
+}
+
+html body [data-hesabno-range-picker="true"] [class~="text-purple-200"],
+html body [data-hesabno-range-picker="true"] [class~="text-purple-400"] {
+  color: #93c5fd !important;
+}
+
+html body [data-hesabno-range-picker="true"] [class~="bg-purple-600"] {
+  background-color: #2563eb !important;
 }

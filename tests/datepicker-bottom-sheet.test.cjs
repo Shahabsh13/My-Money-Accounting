@@ -1,6 +1,6 @@
 /*
- * تقویم انتخاب تاریخ باید یک «شیت پایین» باشد با پس‌زمینه‌ی محو (blur)، نه یک بخش
- * درون جریان فرم که گزینه‌های زیرش جابه‌جا شوند.
+ * تقویم انتخاب تاریخ باید یک «شیت پایین» باشد با پرده‌ای هم‌تیرگی با کیبورد داخلی،
+ * نه یک بخش درون جریان فرم که گزینه‌های زیرش جابه‌جا شوند.
  *
  * باگ گزارش‌شده: هنگام باز شدن تقویم، بخشی از گزینه‌های فرم از زیر آن بیرون می‌آمد.
  * این آزمون باز شدن تقویم از فرم «ثبت سند هزینه» را بررسی می‌کند:
@@ -43,18 +43,26 @@ function openDatePicker(window) {
   return wait(450);
 }
 
-test('date picker CSS overrides the app-wide full-screen blur opt-out', () => {
+test('all non-dashboard calendars share the designed sheet and keypad-matched scrim', () => {
   const css = fs.readFileSync(path.join(__dirname, '..',
     'app/src/main/assets/src/styles/235-hesabno-text-root-and-display-stability.css'), 'utf8');
-  assert.match(css, /html body #persian-datepicker-backdrop,[\s\S]*?html body #hesabno-return-datepicker-backdrop/,
-    'هر سه تقویم باید از استثنای اختصاصی blur استفاده کنند');
-  assert.match(css, /#hesabno-return-datepicker-backdrop \{[\s\S]*?background:\s*rgba\(2, 6, 23, \.36\) !important;[\s\S]*?-webkit-backdrop-filter:\s*blur\(16px\) saturate\(120%\) !important;[\s\S]*?backdrop-filter:\s*blur\(16px\) saturate\(120%\) !important;/,
-    'استثنای تقویم باید قانون عمومیِ none!important را شکست دهد');
-  assert.match(css, /html\[data-theme="light"\] body #persian-datepicker-backdrop,[\s\S]*?background:\s*rgba\(248, 250, 252, \.42\) !important;/,
-    'در تم روشن رنگ پرده باید از فرمول کیبورد داخلی استفاده کند');
+  assert.match(css, /html body #persian-datepicker-backdrop \{\s*background:\s*rgba\(2, 6, 23, \.36\) !important;\s*-webkit-backdrop-filter:\s*none !important;\s*backdrop-filter:\s*none !important;/,
+    'تقویم تک‌تاریخ باید مانند کیبورد فقط پردهٔ تیره داشته باشد');
+  assert.match(css, /html body #hesabno-return-datepicker-backdrop \{\s*background:\s*rgba\(2, 6, 23, \.36\) !important;\s*-webkit-backdrop-filter:\s*none !important;\s*backdrop-filter:\s*none !important;/,
+    'تقویم تاریخ پرداخت جایگزین هم باید از همان scrim استفاده کند');
+  assert.match(css, /html body #hesabno-return-datepicker-sheet \{\s*height:\s*min\(62vh, 520px\) !important;[\s\S]*?border:\s*0 !important;/,
+    'تقویم پرداخت جایگزین باید همان شیت پایینِ بدون قاب را داشته باشد');
+  assert.match(css, /html body #persian-datepicker-sheet \{\s*height:\s*min\(62vh, 520px\) !important;[\s\S]*?max-height:\s*72vh !important;[\s\S]*?border:\s*0 !important;/,
+    'تقویم تک‌تاریخ باید پایین‌چسب و بدون قاب بماند');
+  assert.match(css, /html body \[data-hesabno-range-picker="true"\] \{[\s\S]*?align-items: flex-end !important;[\s\S]*?backdrop-filter: none !important;/,
+    'تقویم‌های بازه‌ای هم باید به شیت پایین با scrim همسان تبدیل شوند');
+  assert.match(css, /html body \[data-hesabno-range-picker="true"\] > div \{[\s\S]*?border: 0 !important;[\s\S]*?overflow-y: auto !important;/,
+    'پوستهٔ تقویم بازه‌ای باید بدون قاب باشد و محتوای انتخاب بازه را قابل‌اسکرول نگه دارد');
+  assert.doesNotMatch(css, /html body:has\(#persian-datepicker-backdrop\) #root \{\s*filter:\s*blur\(/,
+    'تقویم‌ها نباید blur جداگانه روی ریشهٔ برنامه اعمال کنند');
 });
 
-test('date picker is a bottom sheet with a blurred scrim', { timeout: 180000 }, async (t) => {
+test('date picker is a bottom sheet with the keypad-matched dim scrim', { timeout: 180000 }, async (t) => {
   if (!hasJsdom) return t.skip('jsdom در دسترس نیست');
 
   const dom = await bootApp({ storage: { 'hesabno:first_run_profile_done': '1' } });
@@ -87,13 +95,11 @@ test('date picker is a bottom sheet with a blurred scrim', { timeout: 180000 }, 
   assert.equal(sheet.style.marginRight, 'auto', 'عرض محدود شیت باید در viewport افقی وسط‌چین شود');
   assert.equal(backdrop.style.zIndex, '2147483000', 'لایهٔ تقویم باید روی دکمهٔ ثبت فرم قرار بگیرد');
 
-  /* پس‌زمینه‌ی محو */
-  const blur = backdrop.style.backdropFilter || backdrop.style.webkitBackdropFilter || '';
-  assert.match(blur, /blur\(\d+(\.\d+)?px\)/, 'پس‌زمینه‌ی تقویم باید blur داشته باشد');
-  const blurPx = Number((blur.match(/blur\((\d+)/) || [])[1] || 0);
-  assert.ok(blurPx >= 12, `blur باید محسوس باشد (حداقل ۱۲px)، اما ${blurPx}px است`);
+  /* scrim matches the internal keypad: dim, without a real blur */
+  assert.equal(backdrop.style.backdropFilter || backdrop.style.webkitBackdropFilter || '', '',
+    'تقویم تک‌تاریخ نباید blur واقعی داشته باشد، درست مثل کیبورد داخلی');
   assert.equal(backdrop.style.background, 'rgba(2, 6, 23, 0.36)',
-    'لایه باید نیمه‌شفاف باشد تا صفحهٔ محوشدهٔ زیر آن دیده شود');
+    'لایهٔ تقویم باید همان تیرگی ۳۶٪ کیبورد را داشته باشد');
 
   /* شیت: مات، پایین‌چسب، با گوشه‌های بالایی گرد */
   assert.equal(sheet.style.background, 'rgb(22, 26, 35)', 'شیت باید پس‌زمینه‌ی مات داشته باشد (کلاس bg-[#161a23] در CSS تولید نمی‌شد)');
