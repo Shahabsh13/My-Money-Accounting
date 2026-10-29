@@ -188,19 +188,19 @@
   "appearanceLayer": {
     "source": "task-12",
     "inBundle": "235-hesabno-text-root-and-display-stability.css",
-    "note": "Original appearance baseline: 610 rules / 131,726 bytes. Current standalone stylesheet 235 contains 687 parsed rules / 146,235 bytes after theme-aware date-picker glass-scrim exceptions and an opacity-only onboarding fade.",
-    "bytes": 146235,
-    "rules": 687,
+    "note": "Original appearance baseline: 610 rules / 131,726 bytes. Current standalone stylesheet 235 contains 689 parsed rules / 146,767 bytes after theme-aware date-picker glass-scrim exceptions, framed date-picker sheets, and an opacity-only onboarding fade.",
+    "bytes": 146767,
+    "rules": 689,
     "baselineBytes": 131726,
     "baselineRules": 610
   },
   "currentState": {
     "files": 10,
-    "rules": 3411,
-    "bytes": 850974,
-    "hash": "d951467a6e5c0a6122d94d97f6f2798add3a38e0c09d13180cc9fe64afd7108d",
-    "note": "Current stylesheet state on disk; 10 linked stylesheets and 3,411 parsed rules. Date-picker overlays use a dim, theme-safe glass scrim; first-run steps fade without horizontal motion; other full-screen overlays retain the Android performance opt-out.",
-    "generatedAt": "2026-10-29T03:14:00Z"
+    "rules": 3413,
+    "bytes": 851506,
+    "hash": "380a76baad1ab038cf30ae6d2d3e1290cc4bd95844b6fe48235949ca40ea90f6",
+    "note": "Current stylesheet state on disk; 10 linked stylesheets and 3,413 parsed rules. Both date-picker sheets have a defined border; the outside scrim is translucent and blurred. First-run steps fade without horizontal motion; other full-screen overlays retain the Android performance opt-out.",
+    "generatedAt": "2026-10-29T14:54:45Z"
   },
   "generatedAt": "2026-10-24T19:08:05.622Z",
   "onboardingCompact": {
@@ -252,8 +252,8 @@
     "note": "Cohesive lightweight motion timings, immediate full-page navigation, reduced-motion coverage, incremental overlay annotations, reduced expensive blur, and lightweight exit visuals."
   },
   "datePickerGlassScrim": {
-    "addedRules": 2,
-    "note": "Date-picker backdrops override the global Android full-screen blur opt-out with theme-aware 16px glass scrims; other overlays remain unchanged."
+    "addedRules": 4,
+    "note": "Date-picker backdrops override the global Android full-screen blur opt-out with theme-aware 18px translucent glass scrims; both date-picker sheets now have a visible border; other overlays remain unchanged."
   },
   "themeTypographyConsistency": {
     "removedRules": 2,

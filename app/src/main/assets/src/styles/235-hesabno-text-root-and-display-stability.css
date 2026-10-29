@@ -4910,18 +4910,31 @@ article.hesabno-focused-check-card { animation: none !important; }
   pointer-events: auto !important;
 }
 
-/* Date pickers intentionally keep a real glass scrim. This specific exception
-   wins over the app-wide Android performance rule that disables full-screen blur. */
+/* Date pickers use a visible frame and a light glass scrim outside the panel. */
 html body #persian-datepicker-backdrop,
 html body #hesabno-return-datepicker-backdrop {
-  background: rgba(2, 6, 23, .36) !important;
-  -webkit-backdrop-filter: blur(16px) saturate(120%) !important;
-  backdrop-filter: blur(16px) saturate(120%) !important;
+  background: rgba(2, 6, 23, .30) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(120%) !important;
+  backdrop-filter: blur(18px) saturate(120%) !important;
 }
 
 html[data-theme="light"] body #persian-datepicker-backdrop,
 html[data-theme="light"] body #hesabno-return-datepicker-backdrop,
 html.theme-light body #persian-datepicker-backdrop,
 html.theme-light body #hesabno-return-datepicker-backdrop {
-  background: rgba(15, 23, 42, .42) !important;
+  background: rgba(15, 23, 42, .30) !important;
+}
+
+html body #persian-datepicker-sheet,
+html body #hesabno-return-datepicker-sheet {
+  border: 1px solid rgba(148, 163, 184, .58) !important;
+  box-shadow: 0 -16px 44px rgba(2, 6, 23, .22), 0 0 0 1px rgba(255, 255, 255, .10) !important;
+}
+
+html[data-theme="light"] body #persian-datepicker-sheet,
+html[data-theme="light"] body #hesabno-return-datepicker-sheet,
+html.theme-light body #persian-datepicker-sheet,
+html.theme-light body #hesabno-return-datepicker-sheet {
+  border-color: rgba(71, 85, 105, .42) !important;
+  box-shadow: 0 -16px 44px rgba(15, 23, 42, .16), 0 0 0 1px rgba(255, 255, 255, .52) !important;
 }

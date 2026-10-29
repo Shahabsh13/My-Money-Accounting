@@ -48,10 +48,12 @@ test('date picker CSS overrides the app-wide full-screen blur opt-out', () => {
     'app/src/main/assets/src/styles/235-hesabno-text-root-and-display-stability.css'), 'utf8');
   assert.match(css, /html body #persian-datepicker-backdrop,[\s\S]*?html body #hesabno-return-datepicker-backdrop/,
     'هر سه تقویم باید از استثنای اختصاصی blur استفاده کنند');
-  assert.match(css, /#hesabno-return-datepicker-backdrop \{[\s\S]*?background:\s*rgba\(2, 6, 23, \.36\) !important;[\s\S]*?-webkit-backdrop-filter:\s*blur\(16px\) saturate\(120%\) !important;[\s\S]*?backdrop-filter:\s*blur\(16px\) saturate\(120%\) !important;/,
-    'استثنای تقویم باید قانون عمومیِ none!important را شکست دهد');
-  assert.match(css, /html\[data-theme="light"\] body #persian-datepicker-backdrop,[\s\S]*?background:\s*rgba\(15, 23, 42, \.42\) !important;/,
-    'در تم روشن هم پرده باید سطح سفید را به‌وضوح تیره کند، نه اینکه تقریباً سفید بماند');
+  assert.match(css, /html body #persian-datepicker-backdrop,[\s\S]*?backdrop-filter:\s*blur\(18px\) saturate\(120%\) !important;/,
+    'فضای بیرون پنل باید شفاف و محو بماند');
+  assert.match(css, /html\[data-theme="light"\] body #persian-datepicker-backdrop,[\s\S]*?background:\s*rgba\(15, 23, 42, \.30\) !important;/,
+    'scrim روشن باید شفاف باشد تا محوشدن محتوای پشت تقویم دیده شود');
+  assert.match(css, /html body #persian-datepicker-sheet,\s*html body #hesabno-return-datepicker-sheet \{[^}]*border:\s*1px solid rgba\(148, 163, 184, \.58\) !important;/,
+    'هر دو شیت تقویم باید قاب واضح داشته باشند');
 });
 
 test('date picker is a bottom sheet with a blurred scrim', { timeout: 180000 }, async (t) => {
