@@ -5022,3 +5022,10 @@ html[data-theme="light"] body #persian-datepicker-sheet [class~="grid-cols-7"][c
 html body:has(#persian-datepicker-backdrop) #root {
   filter: blur(5px) !important;
 }
+
+/* Keep the single-date sheet clearly smaller than the viewport, while staying docked at the bottom. */
+html body #persian-datepicker-sheet {
+  height: min(68vh, 560px) !important;
+  min-height: min(76vh, 420px) !important;
+  max-height: 76vh !important;
+}
