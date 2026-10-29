@@ -93,12 +93,19 @@ test('switching icon categories keeps the emoji grid at a fixed height', () => {
   );
 });
 
-test('selecting an icon preserves vertical touch scrolling in the emoji grid', () => {
+test('account icon category strip preserves horizontal touch scroll alongside the vertical emoji grid', () => {
   const bundle = fs.readFileSync('app/src/main/assets/src/scripts/067-inline.js', 'utf8');
   assert.ok(bundle.includes('overflow-y-auto no-scrollbar hesabno-icon-selector-grid'));
   assert.ok(
     bundle.includes('style:{touchAction:"pan-y",WebkitOverflowScrolling:"touch",overscrollBehaviorY:"contain"}'),
     'the selected icon grid must keep native vertical touch and momentum scrolling enabled',
+  );
+  assert.ok(bundle.includes('data-hesabno-account-icon-categories":"true"'));
+  assert.ok(bundle.includes("justify-center transition ${x.picture===K?"), "selected icons must not inherit a touch-active shrink transform");
+  assert.ok(!bundle.includes("justify-center transition active:scale-90 ${x.picture===K?"), "touch selection must not leave an icon visually compressed");
+  assert.ok(
+    bundle.includes('style:{touchAction:"pan-x pan-y",WebkitOverflowScrolling:"touch",overscrollBehaviorX:"contain"}'),
+    'the category chip strip must preserve native horizontal touch scrolling',
   );
 });
 
