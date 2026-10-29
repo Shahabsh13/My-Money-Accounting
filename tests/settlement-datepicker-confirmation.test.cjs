@@ -54,8 +54,8 @@ test('check settlement calendar commits only on confirmation and cancels with X'
     assert.equal(sheet.firstElementChild.style.marginTop, 'auto', 'دسته و سربرگ باید همراه تاریخ‌ها به پایین منتقل شوند');
     assert.equal(sheet.style.overflow, 'hidden');
     const calendarBody = sheet.querySelector('[data-hesabno-settlement-datepicker-body]');
-    assert.equal(calendarBody.style.flex, '0 1 auto', 'ناحیهٔ تقویم نباید بین سربرگ و تاریخ‌ها کش بیاید');
-    assert.equal(calendarBody.style.overflowY, 'auto', 'روزها باید مستقل از نوار تأیید اسکرول شوند');
+    assert.equal(calendarBody.style.flex, '0 0 auto', 'تمام ردیف‌های تقویم باید بدون جمع‌شدن دیده شوند');
+    assert.equal(calendarBody.style.overflowY, 'visible', 'تقویم تسویه نباید اسکرول داخلی داشته باشد');
     assert.equal(calendarBody.style.display, 'flex');
     assert.equal(calendarBody.style.flexDirection, 'column');
     assert.equal(calendarBody.style.paddingBottom, '0px', 'پایین‌ترین ردیف تاریخ باید به لبهٔ داخلی کادر برسد');

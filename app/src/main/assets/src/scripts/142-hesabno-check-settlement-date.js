@@ -417,9 +417,9 @@
       if (handle) { handle.style.flex = "0 0 auto"; handle.style.marginTop = "auto"; }
       if (header) header.style.flex = "0 0 auto";
       var calendarBody = state.sheet.querySelector("[data-hesabno-settlement-datepicker-body]");
-      calendarBody.style.flex = "0 1 auto";
-      calendarBody.style.minHeight = "0";
-      calendarBody.style.overflowY = "auto";
+      calendarBody.style.flex = "0 0 auto";
+      calendarBody.style.minHeight = "max-content";
+      calendarBody.style.overflowY = "visible";
       calendarBody.style.display = "flex";
       calendarBody.style.flexDirection = "column";
       calendarBody.style.paddingBottom = "0px";

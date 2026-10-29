@@ -52,8 +52,10 @@ test('all non-dashboard calendars share the designed sheet and keypad-matched sc
     'تقویم تاریخ پرداخت جایگزین هم باید از همان scrim استفاده کند');
   assert.match(css, /html body #hesabno-return-datepicker-sheet \{\s*height:\s*min\(62vh, 520px\) !important;[\s\S]*?border:\s*0 !important;/,
     'تقویم پرداخت جایگزین باید همان شیت پایینِ بدون قاب را داشته باشد');
-  assert.match(css, /html body #persian-datepicker-sheet \{\s*height:\s*min\(62vh, 520px\) !important;[\s\S]*?max-height:\s*72vh !important;[\s\S]*?border:\s*0 !important;/,
-    'تقویم تک‌تاریخ باید پایین‌چسب و بدون قاب بماند');
+  assert.match(css, /html body #persian-datepicker-sheet \{\s*height:\s*min\(68vh, 580px\) !important;[\s\S]*?max-height:\s*78vh !important;[\s\S]*?border:\s*0 !important;/,
+    'تقویم تک‌تاریخ باید کمی بلندتر، پایین‌چسب و بدون قاب باشد');
+  assert.match(css, /html body #persian-datepicker-sheet > div:nth-child\(3\),[\s\S]*?overflow-y: visible !important;[\s\S]*?overflow-x: visible !important;/,
+    'نمایش روزهای ماه نباید در ناحیه‌ای اسکرول‌شونده قرار بگیرد');
   assert.match(css, /html body \[data-hesabno-range-picker="true"\] \{[\s\S]*?align-items: flex-end !important;[\s\S]*?backdrop-filter: none !important;/,
     'تقویم‌های بازه‌ای هم باید به شیت پایین با scrim همسان تبدیل شوند');
   assert.match(css, /html body \[data-hesabno-range-picker="true"\] > div \{[\s\S]*?border: 0 !important;[\s\S]*?overflow-y: auto !important;/,
@@ -109,10 +111,10 @@ test('date picker is a bottom sheet with the keypad-matched dim scrim', { timeou
   assert.equal(sheet.style.height, '86vh', 'ارتفاع شیت باید برای ایجاد فضای خالی بالای تقویم حفظ شود');
   assert.equal(sheet.style.display, 'flex', 'شیت باید برای جداکردن ناحیهٔ روزها از نوار تأیید از flex استفاده کند');
   assert.equal(sheet.style.flexDirection, 'column');
-  assert.equal(sheet.style.overflow, 'hidden', 'اسکرول باید به محتوای تقویم محدود بماند');
+  assert.equal(sheet.style.overflow, 'hidden', 'شیت باید بیرون از محدودهٔ خودش را پنهان کند و نوار تأیید را ثابت نگه دارد');
   const calendarBody = sheet.children[2];
-  assert.equal(calendarBody.style.flex, '0 1 auto', 'ناحیهٔ تاریخ باید فقط به اندازهٔ محتوایش باشد تا سربرگ همراه آن پایین بیاید');
-  assert.equal(calendarBody.style.overflowY, 'auto', 'محتوای بلند تقویم باید مستقل از نوار تأیید اسکرول شود');
+  assert.equal(calendarBody.style.flex, '0 0 auto', 'تمام ردیف‌های روز باید در شیت جا بگیرند و جمع نشوند');
+  assert.equal(calendarBody.style.overflowY, 'visible', 'ماه کامل بدون ناحیهٔ اسکرول‌شونده نمایش داده شود');
   assert.equal(calendarBody.style.display, 'flex');
   assert.equal(calendarBody.style.flexDirection, 'column');
   assert.equal(calendarBody.style.paddingBottom, '0px', 'پایین‌ترین ردیف تاریخ باید به لبهٔ داخلی کادر برسد');

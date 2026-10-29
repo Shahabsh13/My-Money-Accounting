@@ -5030,13 +5030,22 @@ html.theme-light body #persian-datepicker-backdrop {
   background: rgba(248, 250, 252, .42) !important;
 }
 
-/* Keep the single-date sheet clearly smaller than the viewport, while staying docked at the bottom. */
+/* Slightly taller single-date sheet; show the whole month grid without an inner scroll area. */
 html body #persian-datepicker-sheet {
-  height: min(62vh, 520px) !important;
-  min-height: min(70vh, 400px) !important;
-  max-height: 72vh !important;
+  height: min(68vh, 580px) !important;
+  min-height: min(74vh, 460px) !important;
+  max-height: 78vh !important;
   border: 0 !important;
   border-color: transparent !important;
+}
+
+html body #persian-datepicker-sheet > div:nth-child(3),
+html body #persian-datepicker-sheet > div:nth-child(3) > [class~="bg-stone-850/90"] {
+  flex: 0 0 auto !important;
+  min-height: max-content !important;
+  overflow: visible !important;
+  overflow-y: visible !important;
+  overflow-x: visible !important;
 }
 
 /* Give the independent returned-check date picker the same bottom-sheet treatment. */
