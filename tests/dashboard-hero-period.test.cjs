@@ -120,3 +120,30 @@ test('hero card follows the selected dashboard period (today vs month)', { timeo
   const closeButton = document.querySelector('[title="بستن"]');
   assert.ok(closeButton || buttonByText(document, 'بستن'), 'دکمه‌ی بستن مودال باید وجود داشته باشد');
 });
+
+test('large dashboard balances shrink enough to stay clear of the wallet icon', { timeout: 90000 }, async (t) => {
+  if (!hasJsdom) return t.skip('jsdom در دسترس نیست');
+
+  const account = {
+    id: 990101,
+    group: 'bank',
+    code: '990101',
+    name: 'حساب آزمایشی',
+    active: true,
+    initialBalance: 89817000000,
+  };
+  const accounts = JSON.stringify([account]);
+  const dom = await bootApp({ storage: {
+    'hesabno:accounts_v5': accounts,
+    'hesabno:accounts': accounts,
+    'hesabno:default_accounts_v2': '1',
+    'hesabno:currency': 'rial',
+  } });
+  t.after(() => closeApp(dom));
+
+  const amount = dom.window.document.querySelector('.hero-balance-value');
+  assert.ok(amount, 'موجودی کل باید در کارت داشبورد نمایش داده شود');
+  assert.equal(amount.textContent, '۸۹،۸۱۷،۰۰۰،۰۰۰', 'مقدار مالی نباید برای جا شدن کوتاه یا حذف شود');
+  assert.equal(amount.style.fontSize, 'clamp(0.68rem, 2.7vw, 0.82rem)',
+    'عدد بلند باید در عرض موبایل کوچک شود تا روی آیکن کیف پول نیفتد');
+});
