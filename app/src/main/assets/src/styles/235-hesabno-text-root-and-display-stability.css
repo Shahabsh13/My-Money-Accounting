@@ -4787,26 +4787,17 @@ html[data-theme="light"] body .hesabno-advanced-filter > .hesabno-filter-submit-
 html body .hesabno-filter-submit-footer button { pointer-events: auto; }
 body:has(.hesabno-advanced-filter) nav.fixed { visibility: hidden; pointer-events: none; }
 
-/* First-run form steps enter in the navigation direction: forward from left, Back from right. */
-@keyframes hesabno-onboarding-step-from-left {
-  from { opacity: .9; transform: translate3d(-4%, 0, 0); }
-  to { opacity: 1; transform: translate3d(0, 0, 0); }
+/* First-run steps use a brief opacity-only fade; the form does not slide horizontally. */
+@keyframes hesabno-onboarding-step-fade {
+  from { opacity: .94; }
+  to { opacity: 1; }
 }
-@keyframes hesabno-onboarding-step-from-right {
-  from { opacity: .9; transform: translate3d(4%, 0, 0); }
-  to { opacity: 1; transform: translate3d(0, 0, 0); }
-}
-#hesabno-first-run .hesabno-fr-view-enter-from-left {
-  animation: hesabno-onboarding-step-from-left 140ms cubic-bezier(.2, .8, .2, 1) both !important;
-  will-change: transform, opacity;
-}
-#hesabno-first-run .hesabno-fr-view-enter-from-right {
-  animation: hesabno-onboarding-step-from-right 140ms cubic-bezier(.2, .8, .2, 1) both !important;
-  will-change: transform, opacity;
+#hesabno-first-run .hesabno-fr-view-fade-in {
+  animation: hesabno-onboarding-step-fade 140ms cubic-bezier(.2, .8, .2, 1) both !important;
+  will-change: opacity;
 }
 @media (prefers-reduced-motion: reduce) {
-  #hesabno-first-run .hesabno-fr-view-enter-from-left,
-  #hesabno-first-run .hesabno-fr-view-enter-from-right {
+  #hesabno-first-run .hesabno-fr-view-fade-in {
     animation: none !important;
     will-change: auto;
   }
@@ -4923,7 +4914,14 @@ article.hesabno-focused-check-card { animation: none !important; }
    wins over the app-wide Android performance rule that disables full-screen blur. */
 html body #persian-datepicker-backdrop,
 html body #hesabno-return-datepicker-backdrop {
-  background: rgba(6, 10, 16, .18) !important;
+  background: rgba(2, 6, 23, .36) !important;
   -webkit-backdrop-filter: blur(16px) saturate(120%) !important;
   backdrop-filter: blur(16px) saturate(120%) !important;
+}
+
+html[data-theme="light"] body #persian-datepicker-backdrop,
+html[data-theme="light"] body #hesabno-return-datepicker-backdrop,
+html.theme-light body #persian-datepicker-backdrop,
+html.theme-light body #hesabno-return-datepicker-backdrop {
+  background: rgba(248, 250, 252, .42) !important;
 }

@@ -38,7 +38,7 @@ test('check settlement calendar commits only on confirmation and cancels with X'
     assert.equal(backdrop.style.display, 'flex');
     assert.equal(backdrop.style.alignItems, 'flex-end', 'تقویم باید در پایین صفحه قرار بگیرد حتی اگر کلاس‌های CSS بارگذاری نشوند');
     assert.equal(backdrop.style.justifyContent, 'center');
-    assert.equal(backdrop.style.background, 'rgba(6, 10, 16, 0.18)',
+    assert.equal(backdrop.style.background, 'rgba(2, 6, 23, 0.36)',
       'صفحهٔ زیر تقویم باید از پشت لایهٔ نیمه‌شفاف و بلرشده دیده شود');
     assert.match(backdrop.style.backdropFilter || backdrop.style.webkitBackdropFilter || '', /blur\(16px\)/,
       'لایهٔ پشت تقویم باید صفحهٔ زیر را blur کند');

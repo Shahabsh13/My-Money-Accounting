@@ -5,22 +5,19 @@ const path = require('node:path');
 const { bootApp, closeApp, buttonByText, wait, normalize } = require('./helpers/app-boot.cjs');
 
 const source = fs.readFileSync(path.join(__dirname, '../app/src/main/assets/src/scripts/067-inline.js'), 'utf8');
-const field = (doc, name) => doc.querySelector(`[data-fiscal-date="${name}"]`);
-const sheet = doc => doc.querySelector('#persian-datepicker-sheet');
-const day = (doc, label) => [...sheet(doc).querySelectorAll('button')].find(button => normalize(button.textContent) === label);
+const rangeButton = (doc, name) => doc.querySelector(`[data-fiscal-date-range="${name}"]`);
+const rangePicker = doc => doc.querySelector('[data-hesabno-range-picker="true"]');
+const rangeDay = (doc, label) => [...rangePicker(doc).querySelectorAll('button')]
+  .find(button => normalize(button.textContent) === label);
 
-async function chooseAndConfirm(doc, label) {
-  const button = day(doc, label);
-  assert.ok(button, `روز ${label} در تقویم پیدا شود`);
+async function pickRangeEndpoint(doc, label) {
+  const button = rangeDay(doc, label);
+  assert.ok(button, `روز ${label} در تقویم بازه پیدا شود`);
   button.click();
-  await wait(80);
-  assert.ok(sheet(doc), 'با انتخاب روز، تقویم تا تأیید باز می‌ماند');
-  doc.querySelector('#datepicker-confirm-button').click();
   await wait(100);
-  assert.equal(sheet(doc), null);
 }
 
-test('new fiscal-year start and end dates open separate single-date calendars and save independently', async () => {
+test('new fiscal period and fiscal year use one from-to range calendar', { timeout: 180000 }, async () => {
   const dom = await bootApp({ storage: { 'hesabno:first_run_intro_done': '1', 'hesabno:first_run_profile_done': '1' } });
   try {
     const w = dom.window, d = w.document;
@@ -28,38 +25,44 @@ test('new fiscal-year start and end dates open separate single-date calendars an
     const entry = [...d.querySelectorAll('button')].find(button => normalize(button.textContent).includes('سال مالی و دوره‌های مالی'));
     assert.ok(entry); entry.click(); await wait(350);
     d.querySelector('button[title="تعریف دوره مالی جدید"]').click(); await wait(200);
-    const start = field(d, 'manual-start'), end = field(d, 'manual-end');
-    assert.ok(start && end); assert.equal(start.tagName, 'BUTTON'); assert.equal(end.tagName, 'BUTTON');
-    assert.equal(start.getAttribute('aria-haspopup'), 'dialog');
-    assert.equal(end.getAttribute('aria-haspopup'), 'dialog');
-    assert.equal(start.getAttribute('aria-label'), 'تاریخ شروع دوره مالی');
-    assert.equal(end.getAttribute('aria-label'), 'تاریخ پایان دوره مالی');
-    const year = Number(normalize(start.textContent).split('/')[0]);
-    const originalEnd = normalize(end.textContent);
 
-    start.click(); await wait(150);
-    assert.ok(sheet(d)); assert.equal(d.querySelectorAll('#persian-datepicker-sheet').length, 1);
-    await chooseAndConfirm(d, '۲');
-    assert.equal(normalize(field(d, 'manual-start').textContent), `${year}/01/02`);
-    assert.equal(normalize(field(d, 'manual-end').textContent), originalEnd, 'انتخاب شروع نباید پایان را تغییر دهد');
+    const range = rangeButton(d, 'manual');
+    assert.ok(range, 'فرم دوره مالی یک دکمهٔ بازهٔ شروع تا پایان دارد');
+    assert.equal(range.getAttribute('aria-haspopup'), 'dialog');
+    assert.equal(range.getAttribute('aria-label'), 'بازهٔ دوره مالی از تا');
+    assert.equal(d.querySelector('[data-fiscal-date="manual-start"]'), null);
+    assert.equal(d.querySelector('[data-fiscal-date="manual-end"]'), null);
+    const initial = normalize(range.textContent).match(/(\d{4})\/(\d{2})\/\d{2}/);
+    assert.ok(initial, 'تاریخ شروع بازه روی دکمه نمایش داده شود');
+    const [, year, month] = initial;
 
-    field(d, 'manual-end').click(); await wait(150);
-    assert.ok(sheet(d));
-    await chooseAndConfirm(d, '۲۰');
-    assert.equal(normalize(field(d, 'manual-end').textContent), `${year}/12/20`);
-    assert.equal(normalize(field(d, 'manual-start').textContent), `${year}/01/02`, 'انتخاب پایان نباید شروع را تغییر دهد');
+    range.click(); await wait(180);
+    assert.ok(rangePicker(d), 'با لمس بازه، تقویم دو مرحله‌ای از-تا باز شود');
+    assert.match(normalize(rangePicker(d).textContent), /از تاریخ/);
+    await pickRangeEndpoint(d, '۲');
+    assert.ok(rangePicker(d), 'پس از انتخاب تاریخ شروع، تقویم برای انتخاب پایان باز بماند');
+    assert.match(normalize(rangePicker(d).textContent), /تا تاریخ/);
+    await pickRangeEndpoint(d, '۲۰');
+    assert.equal(rangePicker(d), null, 'با انتخاب تاریخ پایان، بازه ثبت و تقویم بسته شود');
+
+    const updatedRange = normalize(rangeButton(d, 'manual').textContent);
+    assert.ok(updatedRange.includes(`${year}/${month}/02`));
+    assert.ok(updatedRange.includes(`${year}/${month}/20`));
     buttonByText(d, 'ثبت دوره مالی').click(); await wait(250);
     const saved = JSON.parse(w.localStorage.getItem('hesabno:fiscal_years')).find(row => row.title === `سال مالی ${year}`);
-    assert.ok(saved); assert.equal(saved.startDate, `${year}/01/02`); assert.equal(saved.endDate, `${year}/12/20`);
+    assert.ok(saved); assert.equal(saved.startDate, `${year}/${month}/02`); assert.equal(saved.endDate, `${year}/${month}/20`);
   } finally { closeApp(dom); }
 });
 
-test('manual closing wizard maps both date fields to their independent picker state', () => {
-  for (const name of ['wizard-start', 'wizard-end', 'manual-start', 'manual-end']) {
-    assert.ok(source.includes(`data-fiscal-date":"${name}"`), `${name} field uses a calendar button`);
-    assert.ok(source.includes(`setFiscalPicker("${name}")`), `${name} field opens its own calendar`);
-  }
-  assert.ok(source.includes('fiscalPicker==="wizard-start"?Q(fe):ae(fe)'), 'wizard calendar updates only its selected start or end value');
-  assert.ok(source.includes('fiscalPicker==="manual-start"?Ee(fe):fiscalPicker==="manual-end"?Ce(fe)'), 'new-year calendar updates only its selected start or end value');
-  assert.ok(source.includes('expandYearRange:!0'), 'calendar exposes a broad year range for future fiscal periods');
+test('wizard-created fiscal year also maps its start and end to a single range picker', () => {
+  assert.ok(source.includes('data-fiscal-date-range":"wizard"'), 'ویزارد سال مالی جدید یک دکمهٔ بازه دارد');
+  assert.ok(source.includes('setFiscalPicker("wizard-range")'));
+  assert.ok(source.includes('startDate:fiscalPicker==="manual-range"?ke:K'));
+  assert.ok(source.includes('endDate:fiscalPicker==="manual-range"?xe:he'));
+  assert.ok(source.includes('onConfirm:(fe,qe)=>{fiscalPicker==="manual-range"?(Ee(fe),Ce(qe)):(Q(fe),ae(qe)),setFiscalPicker(null)}'),
+    'انتخاب بازه، شروع و پایان همان فرم را با هم ذخیره می‌کند');
+  assert.equal(source.includes('data-fiscal-date":"wizard-start"'), false);
+  assert.equal(source.includes('data-fiscal-date":"wizard-end"'), false);
+  assert.equal(source.includes('data-fiscal-date":"manual-start"'), false);
+  assert.equal(source.includes('data-fiscal-date":"manual-end"'), false);
 });

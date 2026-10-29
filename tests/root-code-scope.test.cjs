@@ -241,7 +241,7 @@ test('پرداخت جایگزین چک برگشتی هیچ کد یا «کد ری
   assert.equal(datePicker.style.top, '0px');
   assert.equal(datePicker.style.bottom, '0px');
   assert.equal(datePicker.style.alignItems, 'flex-end', 'تقویم باید پایین صفحه بماند حتی بدون کلاس‌های CSS');
-  assert.equal(datePicker.style.background, 'rgba(6, 10, 16, 0.18)',
+  assert.equal(datePicker.style.background, 'rgba(2, 6, 23, 0.36)',
     'صفحهٔ زیر تقویم باید از پشت لایهٔ نیمه‌شفاف و بلرشده دیده شود');
   assert.match(datePicker.style.backdropFilter || datePicker.style.webkitBackdropFilter || '', /blur\(16px\)/,
     'لایهٔ پشت تقویم باید صفحهٔ زیر را blur کند');
