@@ -62,8 +62,8 @@ test('date picker CSS overrides the app-wide full-screen blur opt-out', () => {
     'روزهای تقویم تک‌تاریخ باید دکمه‌های بازطراحی‌شده و هم‌اندازه داشته باشند');
   assert.match(css, /html body:has\(#persian-datepicker-backdrop\) #root \{\s*filter:\s*blur\(5px\) !important;/,
     'برای WebViewهایی که backdrop-filter را ناقص پشتیبانی می‌کنند، محتوای زیر پنل هم blur شود');
-  assert.match(css, /html body #persian-datepicker-sheet \{\s*height:\s*min\(68vh, 560px\) !important;[\s\S]*?max-height:\s*76vh !important;[\s\S]*?border:\s*0 !important;/,
-    'شیت تک‌تاریخ باید کوتاه‌تر، پایین‌چسب و بدون قاب دور باشد');
+  assert.match(css, /html body #persian-datepicker-sheet \{\s*height:\s*min\(62vh, 520px\) !important;[\s\S]*?max-height:\s*72vh !important;[\s\S]*?border:\s*0 !important;/,
+    'لبهٔ بالای شیت تک‌تاریخ باید به سربرگ نزدیک باشد و قاب دور نداشته باشد');
 });
 
 test('date picker is a bottom sheet with a blurred scrim', { timeout: 180000 }, async (t) => {

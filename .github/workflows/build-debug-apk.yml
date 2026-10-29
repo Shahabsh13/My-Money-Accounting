@@ -66,7 +66,7 @@ jobs:
       - name: Verify APK contains the updated app assets
         run: |
           APK=app/build/outputs/apk/debug/app-debug.apk
-          unzip -p "$APK" assets/index.html | grep -Fq 'src/styles/235-hesabno-text-root-and-display-stability.css?v=2026102909'
+          unzip -p "$APK" assets/index.html | grep -Fq 'src/styles/235-hesabno-text-root-and-display-stability.css?v=2026102910'
           unzip -p "$APK" assets/index.html | grep -Fq 'src/scripts/067-inline.js?v=2026102816'
           unzip -p "$APK" assets/index.html | grep -Fq 'src/scripts/142-hesabno-check-settlement-date.js?v=24'
           unzip -p "$APK" assets/index.html | grep -Fq 'src/scripts/144-hesabno-check-return-confirm.js?v=23'
@@ -96,7 +96,7 @@ jobs:
           unzip -p "$APK" assets/src/styles/235-hesabno-text-root-and-display-stability.css | grep -Fq 'min-height: 40px !important;'
           unzip -p "$APK" assets/src/styles/235-hesabno-text-root-and-display-stability.css | grep -Fq 'html body:has(#persian-datepicker-backdrop) #root {'
           unzip -p "$APK" assets/src/styles/235-hesabno-text-root-and-display-stability.css | grep -Fq 'filter: blur(5px) !important;'
-          unzip -p "$APK" assets/src/styles/235-hesabno-text-root-and-display-stability.css | grep -Fq 'height: min(68vh, 560px) !important;'
+          unzip -p "$APK" assets/src/styles/235-hesabno-text-root-and-display-stability.css | grep -Fq 'height: min(62vh, 520px) !important;'
           unzip -p "$APK" assets/src/styles/235-hesabno-text-root-and-display-stability.css | grep -Fq 'border: 0 !important;'
           unzip -p "$APK" assets/src/styles/235-hesabno-text-root-and-display-stability.css | grep -Fq 'background: rgba(2, 6, 23, .22) !important;'
           unzip -p "$APK" assets/src/styles/235-hesabno-text-root-and-display-stability.css | grep -Fq 'background: rgba(15, 23, 42, .18) !important;'

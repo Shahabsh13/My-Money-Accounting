@@ -188,7 +188,7 @@
   "appearanceLayer": {
     "source": "task-12",
     "inBundle": "235-hesabno-text-root-and-display-stability.css",
-    "note": "Original appearance baseline: 610 rules / 131,726 bytes. Current standalone stylesheet 235 contains 703 parsed rules / 150,656 bytes after the theme-aware date-picker scrims, bottom-sheet redesign, Android WebView blur fallback, and a layout-preserving borderless single-date picker.",
+    "note": "Original appearance baseline: 610 rules / 131,726 bytes. Current standalone stylesheet 235 contains 703 parsed rules / 150,656 bytes after theme-aware date-picker scrims, the bottom-sheet redesign, Android WebView blur fallback, and a layout-preserving borderless single-date picker.",
     "bytes": 150656,
     "rules": 703,
     "baselineBytes": 131726,
@@ -198,9 +198,9 @@
     "files": 10,
     "rules": 3427,
     "bytes": 855395,
-    "hash": "ca7c54558f07340f6caa72d1572fe7588c764fe193bf1fe5837782fe7f41407b",
-    "note": "Current stylesheet state on disk; 10 linked stylesheets and 3,427 parsed rules. The Persian single-date picker is a borderless bottom sheet capped at 68vh/560px, with a translucent blurred backdrop and a WebView blur fallback. The separate return-date picker keeps its frame.",
-    "generatedAt": "2026-10-29T17:06:58Z"
+    "hash": "0be7fc34f3bcac7863815b7c5d334c9c2bb86a6ea704b2d8df0d7443b7ee540b",
+    "note": "Current stylesheet state on disk; 10 linked stylesheets and 3,427 parsed rules. The borderless Persian single-date picker stays docked at the bottom, now capped at 62vh/520px so its top edge sits closer to the month/year controls. A translucent blurred backdrop and Android WebView root-content fallback remain enabled.",
+    "generatedAt": "2026-10-29T17:18:09Z"
   },
   "generatedAt": "2026-10-24T19:08:05.622Z",
   "onboardingCompact": {
