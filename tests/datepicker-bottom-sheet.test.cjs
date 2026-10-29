@@ -43,27 +43,23 @@ function openDatePicker(window) {
   return wait(450);
 }
 
-test('single-date picker scrim matches the internal keypad without changing the range picker', () => {
+test('all non-dashboard calendars share the designed sheet and keypad-matched scrim', () => {
   const css = fs.readFileSync(path.join(__dirname, '..',
     'app/src/main/assets/src/styles/235-hesabno-text-root-and-display-stability.css'), 'utf8');
-  assert.match(css, /html body #persian-datepicker-backdrop,\s*html body #hesabno-return-datepicker-backdrop \{[^}]*backdrop-filter:\s*blur\(24px\) saturate\(120%\) !important;/,
-    'قاب بازه‌ای باید blur قبلی خود را حفظ کند');
   assert.match(css, /html body #persian-datepicker-backdrop \{\s*background:\s*rgba\(2, 6, 23, \.36\) !important;\s*-webkit-backdrop-filter:\s*none !important;\s*backdrop-filter:\s*none !important;/,
-    'تقویم تک‌تاریخ باید دقیقاً مانند کیبورد فقط پردهٔ تیره داشته باشد');
-  assert.match(css, /html\[data-theme="light"\] body #persian-datepicker-backdrop,[\s\S]*?background:\s*rgba\(248, 250, 252, \.42\) !important;/,
-    'در تم روشن، scrim تقویم باید با scrim روشن کیبورد یکسان باشد');
-  assert.match(css, /html body #persian-datepicker-sheet,\s*html body #hesabno-return-datepicker-sheet \{[^}]*border:\s*2px solid rgba\(148, 163, 184, \.90\) !important;/,
-    'هر دو شیت تقویم باید قاب واضح داشته باشند');
-  assert.match(css, /#persian-datepicker-sheet > \.w-10\.h-1\.rounded-full\.mx-auto\.mb-4 \{\s*visibility:\s*hidden !important;/,
-    'خط دستگیرهٔ بالای تقویم اصلی باید نامرئی شود، بدون جابه‌جایی چیدمان');
-  assert.match(css, /html body #persian-datepicker-sheet \[class~="bg-stone-850\/90"\] \{[\s\S]*?background: linear-gradient\(160deg, #202a38, #19212d\) !important;/,
-    'بازطراحی فقط باید سطح تقویم تک‌تاریخ را هدف بگیرد');
-  assert.match(css, /html body #persian-datepicker-sheet \[class~="grid-cols-7"\]\[class~="gap-y-2"\] > button \{[\s\S]*?min-height: 40px !important;/,
-    'روزهای تقویم تک‌تاریخ باید دکمه‌های بازطراحی‌شده و هم‌اندازه داشته باشند');
-  assert.doesNotMatch(css, /html body:has\(#persian-datepicker-backdrop\) #root \{\s*filter:\s*blur\(/,
-    'تقویم تک‌تاریخ نباید blur جداگانه روی ریشهٔ برنامه اعمال کند');
+    'تقویم تک‌تاریخ باید مانند کیبورد فقط پردهٔ تیره داشته باشد');
+  assert.match(css, /html body #hesabno-return-datepicker-backdrop \{\s*background:\s*rgba\(2, 6, 23, \.36\) !important;\s*-webkit-backdrop-filter:\s*none !important;\s*backdrop-filter:\s*none !important;/,
+    'تقویم تاریخ پرداخت جایگزین هم باید از همان scrim استفاده کند');
+  assert.match(css, /html body #hesabno-return-datepicker-sheet \{\s*height:\s*min\(62vh, 520px\) !important;[\s\S]*?border:\s*0 !important;/,
+    'تقویم پرداخت جایگزین باید همان شیت پایینِ بدون قاب را داشته باشد');
   assert.match(css, /html body #persian-datepicker-sheet \{\s*height:\s*min\(62vh, 520px\) !important;[\s\S]*?max-height:\s*72vh !important;[\s\S]*?border:\s*0 !important;/,
-    'لبهٔ بالای شیت تک‌تاریخ باید به سربرگ نزدیک باشد و قاب دور نداشته باشد');
+    'تقویم تک‌تاریخ باید پایین‌چسب و بدون قاب بماند');
+  assert.match(css, /html body \[data-hesabno-range-picker="true"\] \{[\s\S]*?align-items: flex-end !important;[\s\S]*?backdrop-filter: none !important;/,
+    'تقویم‌های بازه‌ای هم باید به شیت پایین با scrim همسان تبدیل شوند');
+  assert.match(css, /html body \[data-hesabno-range-picker="true"\] > div \{[\s\S]*?border: 0 !important;[\s\S]*?overflow-y: auto !important;/,
+    'پوستهٔ تقویم بازه‌ای باید بدون قاب باشد و محتوای انتخاب بازه را قابل‌اسکرول نگه دارد');
+  assert.doesNotMatch(css, /html body:has\(#persian-datepicker-backdrop\) #root \{\s*filter:\s*blur\(/,
+    'تقویم‌ها نباید blur جداگانه روی ریشهٔ برنامه اعمال کنند');
 });
 
 test('date picker is a bottom sheet with the keypad-matched dim scrim', { timeout: 180000 }, async (t) => {

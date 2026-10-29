@@ -242,9 +242,9 @@ test('پرداخت جایگزین چک برگشتی هیچ کد یا «کد ری
   assert.equal(datePicker.style.bottom, '0px');
   assert.equal(datePicker.style.alignItems, 'flex-end', 'تقویم باید پایین صفحه بماند حتی بدون کلاس‌های CSS');
   assert.equal(datePicker.style.background, 'rgba(2, 6, 23, 0.36)',
-    'صفحهٔ زیر تقویم باید از پشت لایهٔ نیمه‌شفاف و بلرشده دیده شود');
-  assert.match(datePicker.style.backdropFilter || datePicker.style.webkitBackdropFilter || '', /blur\(16px\)/,
-    'لایهٔ پشت تقویم باید صفحهٔ زیر را blur کند');
+    'پردهٔ تقویم پرداخت جایگزین باید همان تیرگی ۳۶٪ را داشته باشد');
+  assert.equal(datePicker.style.backdropFilter || datePicker.style.webkitBackdropFilter || '', '',
+    'تقویم پرداخت جایگزین هم باید مانند تقویم طراحی‌شده بدون blur واقعی باشد');
   assert.equal(datePicker.querySelector('#hesabno-return-datepicker-sheet').style.borderTopLeftRadius, '24px');
   assert.ok(datePicker.querySelector('[data-return-date-close]'), 'ضربدر بستن باید در بالای تقویم باشد');
   const confirmButton = datePicker.querySelector('[data-return-date-confirm]');
