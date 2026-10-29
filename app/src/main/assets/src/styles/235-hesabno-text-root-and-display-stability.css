@@ -4939,7 +4939,7 @@ html.theme-light body #hesabno-return-datepicker-sheet {
   box-shadow: 0 -16px 44px rgba(15, 23, 42, .16), 0 0 0 1px rgba(255, 255, 255, .52) !important;
 }
 
-/* The month picker is a sheet, not a draggable drawer: hide its decorative handle. */
+/* Hide the decorative handle while preserving its flex spacing so the calendar stays put. */
 html body #persian-datepicker-sheet > .w-10.h-1.rounded-full.mx-auto.mb-4 {
-  display: none !important;
+  visibility: hidden !important;
 }

@@ -54,7 +54,7 @@ test('date picker CSS overrides the app-wide full-screen blur opt-out', () => {
     'scrim روشن باید شفاف باشد تا محوشدن محتوای پشت تقویم دیده شود');
   assert.match(css, /html body #persian-datepicker-sheet,\s*html body #hesabno-return-datepicker-sheet \{[^}]*border:\s*2px solid rgba\(148, 163, 184, \.90\) !important;/,
     'هر دو شیت تقویم باید قاب واضح داشته باشند');
-  assert.match(css, /#persian-datepicker-sheet > \.w-10\.h-1\.rounded-full\.mx-auto\.mb-4 \{\s*display:\s*none !important;/,
+  assert.match(css, /#persian-datepicker-sheet > \.w-10\.h-1\.rounded-full\.mx-auto\.mb-4 \{\s*visibility:\s*hidden !important;/,
     'خط دستگیرهٔ بالای تقویم اصلی باید حذف شود');
 });
 
