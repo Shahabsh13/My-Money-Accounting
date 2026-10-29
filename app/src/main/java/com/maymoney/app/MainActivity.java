@@ -917,7 +917,7 @@ public class MainActivity extends ComponentActivity {
             if (granted) {
                 if (pendingNotifTitle != null || pendingNotifMessage != null) {
                     String t = pendingNotifTitle != null ? pendingNotifTitle : "وقتشه حسابامونو صاف کنیم";
-                    String m = pendingNotifMessage != null ? pendingNotifMessage : "یادآوری ثبت روزانه";
+                    String m = pendingNotifMessage != null ? pendingNotifMessage : "وقتشه حسابامونو صاف کنیم";
                     String tgt = pendingNotifTarget != null ? pendingNotifTarget : "home";
                     pendingNotifTitle = null;
                     pendingNotifMessage = null;
@@ -1600,7 +1600,7 @@ public class MainActivity extends ComponentActivity {
         /**
          * ارسال اعلان سیستمی اندروید با متن ثابت روزانه:
          * عنوان اصلی: «وقتشه حسابامونو صاف کنیم»
-         * زیرنویس ریز: «یادآوری ثبت روزانه»
+         * متن اعلان: «وقتشه حسابامونو صاف کنیم»
          */
         @JavascriptInterface
         public String getNotificationHistoryJson() {
@@ -1621,7 +1621,7 @@ public class MainActivity extends ComponentActivity {
                     ? "وقتشه حسابامونو صاف کنیم"
                     : title.trim();
             final String safeMessage = (message == null || message.trim().isEmpty())
-                    ? "یادآوری ثبت روزانه"
+                    ? "وقتشه حسابامونو صاف کنیم"
                     : message.trim();
             final String safeTarget = (targetPage == null || targetPage.trim().isEmpty())
                     ? "home"
@@ -1765,7 +1765,7 @@ public class MainActivity extends ComponentActivity {
                     String message = prefs.getString("daily_reminder_message", "");
                     postStaticNotification(context,
                             title == null || title.trim().isEmpty() ? "یادآوری ثبت روزانه" : title,
-                            message == null || message.trim().isEmpty() ? "تراکنش‌های امروز را ثبت کنید." : message);
+                            message == null || message.trim().isEmpty() ? "وقتشه حسابامونو صاف کنیم" : message);
                 }
                 deliverFinancialReminders(context);
             } else if (!Intent.ACTION_BOOT_COMPLETED.equals(action)

@@ -962,7 +962,7 @@ test('dashboard widgets and transaction card icons use CSS appearance rules with
         ]));
         assert.equal(duplicateSmsCount, 0, 'پیامک بانکی تکراری نباید دوباره اضافه شود');
 
-        // ۲۰. متن ثابت اعلان روزانه («وقتشه حسابامونو صاف کنیم» و زیرنویس «یادآوری ثبت روزانه») و ارسال به پل اعلان اندروید
+        // ۲۰. متن ثابت اعلان روزانه («وقتشه حسابامونو صاف کنیم» به‌عنوان عنوان و متن) و ارسال به پل اعلان اندروید
         let lastNotifSent = null;
         window.HnBridge.showNotification = (title, body) => {
           lastNotifSent = { title, body };
@@ -970,13 +970,13 @@ test('dashboard widgets and transaction card icons use CSS appearance rules with
         };
         const savedRem = window.__hesabnoGetReminderCustomText();
         assert.equal(savedRem.title, 'وقتشه حسابامونو صاف کنیم');
-        assert.equal(savedRem.body, 'یادآوری ثبت روزانه');
+        assert.equal(savedRem.body, 'وقتشه حسابامونو صاف کنیم');
         const sendRes = window.__hesabnoSendCustomNotification();
         assert.equal(sendRes.ok, true);
         assert.deepEqual(lastNotifSent, {
           title: 'وقتشه حسابامونو صاف کنیم',
-          body: 'یادآوری ثبت روزانه',
-        }, 'اعلان روزانه باید دقیقاً با عنوان «وقتشه حسابامونو صاف کنیم» و زیرنویس «یادآوری ثبت روزانه» ارسال شود');
+          body: 'وقتشه حسابامونو صاف کنیم',
+        }, 'اعلان روزانه باید دقیقاً با عنوان و متن «وقتشه حسابامونو صاف کنیم» ارسال شود');
 
         // ۲۱. اعلان ۴ روز عدم ورود به برنامه («حساب کتاب رفته مرخصی؟😂» و زیرنویس «بیا دوباره مرتبش کنیم»)
         const inactCfg = window.__hesabnoGetInactivityReminderText();
