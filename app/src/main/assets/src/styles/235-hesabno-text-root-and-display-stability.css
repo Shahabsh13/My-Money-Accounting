@@ -4923,7 +4923,14 @@ article.hesabno-focused-check-card { animation: none !important; }
    wins over the app-wide Android performance rule that disables full-screen blur. */
 html body #persian-datepicker-backdrop,
 html body #hesabno-return-datepicker-backdrop {
-  background: rgba(6, 10, 16, .18) !important;
+  background: rgba(2, 6, 23, .36) !important;
   -webkit-backdrop-filter: blur(16px) saturate(120%) !important;
   backdrop-filter: blur(16px) saturate(120%) !important;
+}
+
+html[data-theme="light"] body #persian-datepicker-backdrop,
+html[data-theme="light"] body #hesabno-return-datepicker-backdrop,
+html.theme-light body #persian-datepicker-backdrop,
+html.theme-light body #hesabno-return-datepicker-backdrop {
+  background: rgba(248, 250, 252, .42) !important;
 }

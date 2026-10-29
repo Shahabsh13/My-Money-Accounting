@@ -393,7 +393,7 @@
       backdrop.style.justifyContent = "center";
       backdrop.style.padding = "0px";
       backdrop.style.zIndex = "2147483000";
-      backdrop.style.background = "rgba(6, 10, 16, 0.18)";
+      backdrop.style.background = "rgba(2, 6, 23, 0.36)";
       backdrop.style.backdropFilter = "blur(16px) saturate(120%)";
       backdrop.style.webkitBackdropFilter = "blur(16px) saturate(120%)";
       backdrop.style.touchAction = "none";
