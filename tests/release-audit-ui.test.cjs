@@ -67,6 +67,52 @@ test('backup screen presents a compact reset action without the old description'
   assert.ok([...d.querySelectorAll('h3')].some(node=>normalize(node.textContent)==='ریست برنامه'));
   assert.ok(buttonByText(d,'پشتیبان‌گیری و ریست برنامه'));
   assert.ok(buttonByText(d,'ریست بدون پشتیبان'));
+
+  const firstRunState={
+   'hesabno:first_run_intro_done':'true',
+   'hesabno:first_run_profile_done':'true',
+   'hesabno:first_run_profile_in_progress':'true',
+   'hesabno:user_profile':JSON.stringify({name:'پروفایل قبلی'}),
+   'hesabno:permissions':JSON.stringify({sms:true}),
+   'hesabno:lock':'true',
+   'hesabno:pin':'1234',
+   'hesabno:biometric':'true',
+   'hesabno:transactions':JSON.stringify([{id:'old-record'}])
+  };
+  for(const [key,value] of Object.entries(firstRunState))storage.setItem(key,value);
+  let backupAttempts=0;
+  dom.window.HnBridge={saveBackup:()=>{backupAttempts++;return true;}};
+  buttonByText(d,'پشتیبان‌گیری و ریست برنامه').click();
+  let pinDialog=d.getElementById('hesabno-reset-pin-dialog');
+  assert.ok(pinDialog,'backup reset asks for the active PIN before creating a backup');
+  assert.equal(pinDialog.querySelector('input').type,'password','the reauthorization PIN is masked');
+  pinDialog.querySelector('[data-hesabno-reset-pin-cancel]').click();
+  assert.ok(d.querySelector('[data-hesabno-complete-reset="true"]'),'cancel returns to the reset choices');
+  assert.equal(backupAttempts,0,'cancel must not start a backup');
+  assert.equal(storage.getItem('hesabno:transactions'),firstRunState['hesabno:transactions']);
+
+  buttonByText(d,'ریست بدون پشتیبان').click();
+  pinDialog=d.getElementById('hesabno-reset-pin-dialog');
+  assert.ok(pinDialog,'reset without backup also asks for the active PIN');
+  pinDialog.querySelector('input').value='0000';
+  pinDialog.querySelector('input').dispatchEvent(new dom.window.Event('input',{bubbles:true}));
+  pinDialog.querySelector('[data-hesabno-reset-pin-submit]').click();
+  assert.match(pinDialog.querySelector('[role="alert"]').textContent,/PIN واردشده درست نیست/);
+  assert.equal(storage.getItem('hesabno:lock'),'true','a wrong PIN must leave the app lock active');
+  assert.equal(storage.getItem('hesabno:transactions'),firstRunState['hesabno:transactions'],'a wrong PIN must leave user data untouched');
+  pinDialog.querySelector('input').value='۱۲۳۴';
+  pinDialog.querySelector('input').dispatchEvent(new dom.window.Event('input',{bubbles:true}));
+  pinDialog.querySelector('[data-hesabno-reset-pin-submit]').click();
+  await wait(300);
+  assert.equal(d.getElementById('hesabno-reset-pin-dialog'),null,'a valid PIN closes the confirmation dialog');
+  for(const key of Object.keys(firstRunState))assert.equal(storage.getItem(key),null,`${key} must be cleared by reset`);
+  assert.ok(storage.getItem('hesabno:reset_safety_backup'),'reset safety backup remains available');
+
+  const fresh=await bootApp({storage:Object.fromEntries(Array.from({length:storage.length},(_,i)=>storage.key(i)).filter(Boolean).map(key=>[key,storage.getItem(key)]))});
+  try{
+   assert.ok(fresh.window.document.getElementById('hesabno-intro-tour'),'after reset/reload the new-user intro is shown');
+   assert.equal(fresh.window.document.querySelector('[data-hesabno-app-lock]'),null,'a stale app lock must not cover onboarding');
+  }finally{closeApp(fresh);}
  }finally{closeApp(dom);}
 });
 

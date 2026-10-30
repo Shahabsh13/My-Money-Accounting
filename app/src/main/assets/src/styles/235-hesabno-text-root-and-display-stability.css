@@ -5205,7 +5205,7 @@ html body [data-hesabno-security-settings="true"] {
 
 html body [data-hesabno-security-settings="true"] > [data-hesabno-security-card="true"] {
   flex-shrink: 1 !important;
-  max-height: var(--hesabno-security-card-max-height, calc(100dvh - 32px)) !important;
+  max-height: var(--hesabno-security-card-max-height, min(80vh, 600px)) !important;
   overflow-x: hidden !important;
   overflow-y: auto !important;
   overscroll-behavior: contain !important;

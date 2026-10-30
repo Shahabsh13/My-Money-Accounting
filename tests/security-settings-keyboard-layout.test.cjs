@@ -59,7 +59,8 @@ test('security settings dialog follows Android visible viewport and restores its
   await wait();
 
   assert.equal(dialog.style.getPropertyValue('--hesabno-security-viewport-height'), '740px');
-  assert.equal(card.style.getPropertyValue('--hesabno-security-card-max-height'), '708px');
+  assert.equal(card.style.getPropertyValue('--hesabno-security-card-max-height'), '592px');
+  assert.ok(592 < 740, 'the settings card must remain windowed with visible space around it');
 
   viewport.height = 350;
   viewport.offsetTop = 16;
@@ -68,7 +69,7 @@ test('security settings dialog follows Android visible viewport and restores its
   await wait();
   assert.equal(dialog.style.getPropertyValue('--hesabno-security-viewport-top'), '16px');
   assert.equal(dialog.style.getPropertyValue('--hesabno-security-viewport-height'), '350px');
-  assert.equal(card.style.getPropertyValue('--hesabno-security-card-max-height'), '318px',
+  assert.equal(card.style.getPropertyValue('--hesabno-security-card-max-height'), '280px',
     'the settings card must become internally scrollable instead of expanding beyond the keyboard-visible area');
 
   viewport.height = 740;
@@ -76,12 +77,12 @@ test('security settings dialog follows Android visible viewport and restores its
   viewport.dispatchEvent(new Event('resize'));
   await wait();
   assert.equal(dialog.style.getPropertyValue('--hesabno-security-viewport-height'), '740px');
-  assert.equal(card.style.getPropertyValue('--hesabno-security-card-max-height'), '708px',
-    'the dialog must recover its normal centered layout after the keyboard closes');
+  assert.equal(card.style.getPropertyValue('--hesabno-security-card-max-height'), '592px',
+    'the dialog must recover its normal centered, windowed layout after the keyboard closes');
 });
 
 test('security settings dialog is explicitly marked and bounded to the live viewport', () => {
-  assert.ok(index.includes('src/scripts/239-hesabno-security-dialog-viewport.js?v=1'));
+  assert.ok(index.includes('src/scripts/239-hesabno-security-dialog-viewport.js?v=2'));
   assert.ok(bundle.includes('data-hesabno-security-settings'));
   assert.ok(bundle.includes('data-hesabno-security-card'));
   assert.match(styles, /\[data-hesabno-security-settings="true"\][\s\S]*?height:\s*var\(--hesabno-security-viewport-height/);
