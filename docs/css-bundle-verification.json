@@ -188,21 +188,21 @@
   "appearanceLayer": {
     "source": "task-12",
     "inBundle": "235-hesabno-text-root-and-display-stability.css",
-    "note": "Original appearance baseline: 610 rules / 131,726 bytes. Current standalone stylesheet 235 contains 728 parsed rules / 157,413 bytes, including viewport-bounded security settings; all non-dashboard calendar overlays retain the shared bottom-sheet style and fiscal-period range behavior.",
-    "bytes": 157413,
-    "rules": 728,
+    "note": "Original appearance baseline: 610 rules / 131,726 bytes. Current standalone stylesheet 235 contains 729 parsed rules / 157,551 bytes, including viewport-bounded security settings and the hidden localStorage-only backup status card; all non-dashboard calendar overlays retain the shared bottom-sheet style and fiscal-period range behavior.",
+    "bytes": 157551,
+    "rules": 729,
     "baselineBytes": 131726,
     "baselineRules": 610
   },
   "currentState": {
     "files": 10,
-    "rules": 3452,
-    "bytes": 862152,
-    "hash": "919d4224bff45357eada4594348199d2b2ebbc7521a46e1aff22c83472ad2b7e",
-    "note": "Current stylesheet state on disk; 10 linked stylesheets and 3,452 parsed rules. Non-dashboard calendars use the shared bottom-sheet design; the security settings dialog is bounded to the visible viewport. Historical cascade-equivalence proof remains unchanged.",
-    "generatedAt": "2026-10-30T00:00:00Z"
+    "rules": 3453,
+    "bytes": 862290,
+    "hash": "9b4a5ce50026d8134c2e69756b0e1106eeb5ce145f86d5f53d911d2e7d6d9751",
+    "note": "Current stylesheet state on disk; 10 linked stylesheets and 3,453 parsed rules. Non-dashboard calendars use the shared bottom-sheet design; the security settings dialog is bounded to the visible viewport, and the backup storage status card is hidden. Historical cascade-equivalence proof remains unchanged.",
+    "generatedAt": "2026-10-31T00:00:00Z"
   },
-  "generatedAt": "2026-10-24T19:08:05.622Z",
+  "generatedAt": "2026-10-31T00:00:00.000Z",
   "onboardingCompact": {
     "note": "Intentional compact first-run UI; historical cascade-equality proof unchanged.",
     "addedRules": 4
@@ -263,5 +263,9 @@
     "addedRules": 3,
     "addedBytes": 1252,
     "note": "Viewport-bounded security settings dialog leaves visible space around the card and shrinks safely while the Android keyboard is open."
+  },
+  "storageStatusCardSuppression": {
+    "addedRules": 1,
+    "note": "Hide the localStorage-only status widget in the backup UI; the storage and backup/restore implementation remains unchanged."
   }
 }

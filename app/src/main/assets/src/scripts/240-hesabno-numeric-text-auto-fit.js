@@ -172,7 +172,6 @@
 
   window.addEventListener("resize", scanAll, { passive: true });
   window.addEventListener("orientationchange", scanAll, { passive: true });
-  document.addEventListener("click", scanAll, true);
   if (document.fonts && document.fonts.ready && typeof document.fonts.ready.then === "function") {
     document.fonts.ready.then(scanAll).catch(function () {});
   }

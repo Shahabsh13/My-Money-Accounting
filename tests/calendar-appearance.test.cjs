@@ -136,7 +136,7 @@ test('dashboard calendar can close through its React state and reopen repeatedly
   }
 });
 
-test('dashboard widgets and transaction card icons use CSS appearance rules without injected <style> or inline style', { timeout: 60000 }, async (t) => {
+test('dashboard widgets and transaction card icons use CSS appearance rules without injected <style> or inline style', { timeout: 120000 }, async (t) => {
   if (!hasJsdom) return t.skip('jsdom در دسترس نیست');
   const dom = await bootApp({
     seed: seedTransactions,

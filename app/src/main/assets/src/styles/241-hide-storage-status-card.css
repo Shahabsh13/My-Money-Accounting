@@ -1,4 +1,0 @@
-/* This legacy widget measures localStorage quota, not total Android app storage. */
-#hesabno-storage-status-card {
-  display: none !important;
-}

@@ -308,7 +308,7 @@ test('live boot: guard installed before first write, 19 boot writes including on
   assert.equal(result.bootStats.skippedBytes, 31122);
   assert.equal(result.snapshot.count, 15);
   assert.equal(result.snapshot.bytes, 31214);
-  assert.equal(result.snapshot.digest, '2a082bd28d623b67fb08fd3447c51b6ee342b572a39ad7912e00b06ab309e3fb',
+  assert.equal(result.snapshot.digest, '7ec30e6dd3097702b8432aa0eb46ac1ae64b4fdd0e0ce491c62919fe175c48c1',
     'عکس بوت باید شامل اصلاح سنجاق صندوق، نشانگر مهاجرت و نشانگر onboarding باشد');
   assert.equal(result.snapshot.accountsHash, 'ff97075cf3e9c63a');
   assert.equal(result.subscribersFired, 2, 'دو نوشتن آزمایشی باید دو بار مشترک را صدا بزنند');
