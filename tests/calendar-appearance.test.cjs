@@ -962,7 +962,7 @@ test('dashboard widgets and transaction card icons use CSS appearance rules with
         ]));
         assert.equal(duplicateSmsCount, 0, 'پیامک بانکی تکراری نباید دوباره اضافه شود');
 
-        // ۲۰. متن ثابت اعلان روزانه («وقتشه حسابامونو صاف کنیم» و زیرنویس «یادآوری ثبت روزانه») و ارسال به پل اعلان اندروید
+        // ۲۰. متن ثابت اعلان روزانه («وقتشه حسابامونو صاف کنیم» به‌عنوان عنوان و متن) و ارسال به پل اعلان اندروید
         let lastNotifSent = null;
         window.HnBridge.showNotification = (title, body) => {
           lastNotifSent = { title, body };
@@ -970,13 +970,13 @@ test('dashboard widgets and transaction card icons use CSS appearance rules with
         };
         const savedRem = window.__hesabnoGetReminderCustomText();
         assert.equal(savedRem.title, 'وقتشه حسابامونو صاف کنیم');
-        assert.equal(savedRem.body, 'یادآوری ثبت روزانه');
+        assert.equal(savedRem.body, 'وقتشه حسابامونو صاف کنیم');
         const sendRes = window.__hesabnoSendCustomNotification();
         assert.equal(sendRes.ok, true);
         assert.deepEqual(lastNotifSent, {
           title: 'وقتشه حسابامونو صاف کنیم',
-          body: 'یادآوری ثبت روزانه',
-        }, 'اعلان روزانه باید دقیقاً با عنوان «وقتشه حسابامونو صاف کنیم» و زیرنویس «یادآوری ثبت روزانه» ارسال شود');
+          body: 'وقتشه حسابامونو صاف کنیم',
+        }, 'اعلان روزانه باید دقیقاً با عنوان و متن «وقتشه حسابامونو صاف کنیم» ارسال شود');
 
         // ۲۱. اعلان ۴ روز عدم ورود به برنامه («حساب کتاب رفته مرخصی؟😂» و زیرنویس «بیا دوباره مرتبش کنیم»)
         const inactCfg = window.__hesabnoGetInactivityReminderText();
@@ -1380,6 +1380,17 @@ test('dashboard widgets and transaction card icons use CSS appearance rules with
 
         const lockOverlay = document.getElementById('hesabno-app-lock-overlay');
         assert.ok(lockOverlay, 'لایه قفل امنیتی برنامه باید نمایش داده شود');
+        assert.ok(lockOverlay.classList.contains('bg-stone-950'),
+          'پس‌زمینهٔ کاملاً مات و سازگار با تم باید محتوای مالی پشت قفل را بپوشاند');
+        assert.equal(lockOverlay.parentElement, document.body,
+          'قفل باید با portal بیرون از اسکرولر داشبورد رندر شود تا تمام صفحه را بپوشاند');
+        assert.ok(lockOverlay.classList.contains('z-[999]'),
+          'قفل باید بالاتر از نوار پایین و دیگر لایه‌های برنامه نمایش داده شود');
+        const lockBaseCss = fs.readFileSync(path.join(root, 'app/src/main/assets/src/styles/010-core-base.css'), 'utf8');
+        assert.ok(lockBaseCss.includes('.bg-stone-950{background-color:var(--color-stone-950)}'),
+          'پس‌زمینهٔ قفل باید از کلاس CSS تولیدشده استفاده کند تا ناخواسته شفاف نشود');
+        assert.ok(lockBaseCss.includes('z-index:999'),
+          'قفل باید از مقدار z-index موجود در CSS تولیدشده استفاده کند');
         const bioUnlockBtn = document.getElementById('hesabno-biometric-unlock-btn');
         assert.ok(bioUnlockBtn, 'دکمه «بازگشایی با اثر انگشت» باید در قفل برنامه وجود داشته باشد');
 
@@ -1417,13 +1428,32 @@ test('dashboard widgets and transaction card icons use CSS appearance rules with
         await wait(30);
         assert.ok(document.getElementById('hesabno-app-lock-overlay'),
           'پاسخ غیر Boolean از callback اثر انگشت نباید قفل را باز کند');
+        window.__hesabnoOnBiometricAuthResult(true);
+        await wait(30);
+        assert.ok(document.getElementById('hesabno-app-lock-overlay'),
+          'فراخوانی مستقیم callback موفق بدون مدرک یک‌بارمصرف Native نباید قفل را باز کند');
 
-        // فقط پاسخ موفق واقعیِ Bridge می‌تواند قفل را باز کند.
-        window.HnBridge = { authenticateBiometric: () => window.__hesabnoOnBiometricAuthResult(true) };
+        // فقط مدرک یک‌بارمصرفی که Native پس از احراز هویت موفق صادر می‌کند قفل را باز می‌کند.
+        let biometricProof = false;
+        window.HnBridge = {
+          authenticateBiometric: () => window.__hesabnoOnBiometricAuthResult(true),
+          consumeBiometricUnlockProof: () => {
+            const authenticated = biometricProof;
+            biometricProof = false;
+            return authenticated;
+          },
+        };
+        biometricProof = true;
         document.getElementById('hesabno-biometric-unlock-btn').click();
         await wait(50);
         assert.equal(document.getElementById('hesabno-app-lock-overlay'), null,
           'فقط نتیجه موفق احراز هویت زیستی باید قفل برنامه را باز کند');
+        window.__hesabnoLockApp();
+        await wait(40);
+        window.__hesabnoOnBiometricAuthResult(true);
+        await wait(30);
+        assert.ok(document.getElementById('hesabno-app-lock-overlay'),
+          'مدرک احراز هویت زیستی باید یک‌بارمصرف باشد و قابل بازپخش نباشد');
         window.__safeSet('hesabno:lock', 'false');
 
         /* ۳۲. تب بیشتر: نمایش نسخه دقیق نرم‌افزار در پایین تب بیشتر به جای «نسخه همراه» */

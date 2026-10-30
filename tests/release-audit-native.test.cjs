@@ -80,13 +80,23 @@ test('CI sdkmanager discovery avoids SIGPIPE and license pipeline preserves sdkm
 });
 
 
+
+test('native biometric prompt declares the platform permissions it requires',()=>{
+ const manifest=fs.readFileSync('app/src/main/AndroidManifest.xml','utf8');
+ assert.ok(manifest.includes('<uses-permission android:name="android.permission.USE_BIOMETRIC" />'));
+ assert.ok(manifest.includes('<uses-permission android:name="android.permission.USE_FINGERPRINT" android:maxSdkVersion="28" />'));
+ assert.ok(java.includes('android.hardware.biometrics.BiometricPrompt'));
+ assert.ok(java.includes('onAuthenticationSucceeded('));
+});
+
 test('APK update uses fresh asset cache keys and increments the Android app version', () => {
  const index=fs.readFileSync('app/src/main/assets/index.html','utf8');
  const version=fs.readFileSync('version.properties','utf8');
  for(const asset of [
-  'src/styles/235-hesabno-text-root-and-display-stability.css?v=2026102912',
-  'src/scripts/067-inline.js?v=2026102912',
-  'src/scripts/142-hesabno-check-settlement-date.js?v=25',
+  'src/styles/235-hesabno-text-root-and-display-stability.css?v=2026102913',
+  'src/scripts/067-inline.js?v=2026103005',
+  'src/scripts/227-modal-scroll-lock.js?v=2026103001',
+  'src/scripts/142-hesabno-check-settlement-date.js?v=26',
   'src/scripts/144-hesabno-check-return-confirm.js?v=24',
   'src/scripts/214-hesabno-numeric-keyboard.js?v=2026102801',
   'src/scripts/225-hesabno-colorful-keypad.js?v=6'

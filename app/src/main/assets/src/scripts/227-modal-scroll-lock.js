@@ -2,7 +2,7 @@
 (function () {
   'use strict';
   var selector = '[role="dialog"], [aria-modal="true"], [data-hn-dialog], [data-hesabno-dashboard-hero-modal], #hesabno-first-run, div.fixed.inset-0';
-  var active = null, locked = [], lastY = null;
+  var active = null, locked = [], lastX = null, lastY = null;
   var lockProps = ['overflow', 'overflow-x', 'overflow-y', 'overscroll-behavior', 'overscroll-behavior-x', 'overscroll-behavior-y'];
   function visible(el) {
     for (var p = el; p && p.nodeType === 1; p = p.parentElement) {
@@ -38,7 +38,7 @@
   function sync() {
     var next = modal();
     if (next === active) return;
-    unlock(); active = next; lastY = null;
+    unlock(); active = next; lastX = null; lastY = null;
     if (!active) return;
     // Do not reposition body: overflow locks preserve the current document and nested scroll offsets.
     document.querySelectorAll('html, body, body *').forEach(function (el) {
@@ -54,33 +54,44 @@
       el.style.setProperty('overscroll-behavior', 'none', 'important');
     });
   }
-  function canScroll(target, delta) {
+  function canScroll(target, deltaX, deltaY) {
     if (!active || !active.contains(target)) return false;
+    var horizontal = Math.abs(deltaX) > Math.abs(deltaY);
+    if (deltaX === 0 && deltaY === 0) return true;
     for (var el = target.nodeType === 1 ? target : target.parentElement; el; el = el.parentElement) {
       var style = getComputedStyle(el);
-      if (/auto|scroll|overlay/.test(style.overflowY + style.overflow) && el.scrollHeight > el.clientHeight) {
-        if (delta < 0 && el.scrollTop > 0) return true;
-        if (delta > 0 && el.scrollTop + el.clientHeight < el.scrollHeight - 1) return true;
+      if (horizontal) {
+        // Let nested horizontal controls (for example account-icon categories) keep
+        // receiving sideways gestures even when their vertical parent is at an edge.
+        if (/auto|scroll|overlay/.test(style.overflowX + style.overflow) && el.scrollWidth > el.clientWidth + 1) return true;
+      } else if (/auto|scroll|overlay/.test(style.overflowY + style.overflow) && el.scrollHeight > el.clientHeight) {
+        if (deltaY < 0 && el.scrollTop > 0) return true;
+        if (deltaY > 0 && el.scrollTop + el.clientHeight < el.scrollHeight - 1) return true;
       }
       if (el === active) break;
     }
     return false;
   }
-  function block(event, delta) {
+  function block(event, deltaX, deltaY) {
     sync();
-    if (active && !canScroll(event.target, delta) && event.cancelable) event.preventDefault();
+    if (active && !canScroll(event.target, deltaX, deltaY) && event.cancelable) event.preventDefault();
   }
-  document.addEventListener('touchstart', function (e) { lastY = e.touches.length === 1 ? e.touches[0].clientY : null; }, {capture: true, passive: true});
+  document.addEventListener('touchstart', function (e) {
+    lastX = e.touches.length === 1 ? e.touches[0].clientX : null;
+    lastY = e.touches.length === 1 ? e.touches[0].clientY : null;
+  }, {capture: true, passive: true});
   document.addEventListener('touchmove', function (e) {
-    if (e.touches.length !== 1 || lastY === null) return;
-    var y = e.touches[0].clientY, delta = lastY - y; lastY = y;
-    block(e, delta);
+    if (e.touches.length !== 1 || lastX === null || lastY === null) return;
+    var x = e.touches[0].clientX, y = e.touches[0].clientY;
+    var deltaX = lastX - x, deltaY = lastY - y;
+    lastX = x; lastY = y;
+    block(e, deltaX, deltaY);
   }, {capture: true, passive: false});
-  document.addEventListener('wheel', function (e) { block(e, e.deltaY); }, {capture: true, passive: false});
+  document.addEventListener('wheel', function (e) { block(e, e.deltaX, e.deltaY); }, {capture: true, passive: false});
   document.addEventListener('keydown', function (e) {
     if (!active || !['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Home', 'End', ' '].includes(e.key)) return;
     if (e.target.closest && e.target.closest('input, textarea, select, [contenteditable="true"]') && active.contains(e.target)) return;
-    block(e, ['ArrowUp', 'PageUp', 'Home'].includes(e.key) || (e.key === ' ' && e.shiftKey) ? -1 : 1);
+    block(e, 0, ['ArrowUp', 'PageUp', 'Home'].includes(e.key) || (e.key === ' ' && e.shiftKey) ? -1 : 1);
   }, true);
   if (window.__hesabnoDom && typeof window.__hesabnoDom.watch === 'function') {
     var queued = false;

@@ -16,6 +16,8 @@
     <uses-feature android:name="android.hardware.telephony" android:required="false" />
 
     <!-- ارسال اعلان و یادآوری‌های مالی و روزانه با متن دلخواه کاربر (اندروید ۱۳+) -->
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+    <uses-permission android:name="android.permission.USE_FINGERPRINT" android:maxSdkVersion="28" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 

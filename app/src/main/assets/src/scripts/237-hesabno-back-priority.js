@@ -14,6 +14,92 @@
 (function () {
   "use strict";
 
+  /* قفل برنامه یک modal واقعی است: کنترل‌های زیرین نباید با فوکوس/کیبورد/کلیک قابل دسترسی بمانند. */
+  var lockRoot = null;
+  var lockRootHadInert = false;
+  var lockRootAriaHidden = null;
+  function activeAppLock() {
+    return document.querySelector('[data-hesabno-app-lock="true"]');
+  }
+  function firstLockControl(lock) {
+    return lock && lock.querySelector('button:not([disabled]),[tabindex="0"]');
+  }
+  function focusLock(lock) {
+    var control = firstLockControl(lock);
+    if (control && typeof control.focus === "function") control.focus();
+  }
+  function syncAppLockBarrier() {
+    var lock = activeAppLock();
+    var root = document.getElementById("root");
+    if (lock && root) {
+      if (lockRoot !== root) {
+        releaseAppLockBarrier();
+        lockRoot = root;
+        lockRootHadInert = root.hasAttribute("inert");
+        lockRootAriaHidden = root.getAttribute("aria-hidden");
+      }
+      root.setAttribute("inert", "");
+      root.setAttribute("aria-hidden", "true");
+      lock.setAttribute("role", "dialog");
+      lock.setAttribute("aria-modal", "true");
+      lock.setAttribute("aria-label", "قفل امنیتی برنامه");
+      if (!lock.contains(document.activeElement)) focusLock(lock);
+      return;
+    }
+    releaseAppLockBarrier();
+  }
+  function releaseAppLockBarrier() {
+    if (!lockRoot) return;
+    if (lockRootHadInert) lockRoot.setAttribute("inert", "");
+    else lockRoot.removeAttribute("inert");
+    if (lockRootAriaHidden == null) lockRoot.removeAttribute("aria-hidden");
+    else lockRoot.setAttribute("aria-hidden", lockRootAriaHidden);
+    lockRoot = null;
+    lockRootHadInert = false;
+    lockRootAriaHidden = null;
+  }
+  function blockOutsideLock(event) {
+    var lock = activeAppLock();
+    if (!lock || lock.contains(event.target)) return;
+    if (event.cancelable) event.preventDefault();
+    event.stopImmediatePropagation();
+    if (event.type === "focusin") focusLock(lock);
+  }
+  ["click", "pointerdown", "touchstart", "submit", "contextmenu", "focusin"].forEach(function (type) {
+    document.addEventListener(type, blockOutsideLock, true);
+  });
+  document.addEventListener("keydown", function (event) {
+    var lock = activeAppLock();
+    if (!lock) return;
+    var target = event.target;
+    if (!lock.contains(target) || event.key === "Escape" || event.key === "BrowserBack" || event.key === "GoBack" ||
+        event.key === "Backspace" || event.altKey && event.key === "ArrowLeft") {
+      if (event.cancelable) event.preventDefault();
+      event.stopImmediatePropagation();
+      if (!lock.contains(target)) focusLock(lock);
+      return;
+    }
+    if (event.key === "Tab") {
+      var controls = lock.querySelectorAll('button:not([disabled]),[tabindex="0"]');
+      if (!controls.length) { event.preventDefault(); return; }
+      var first = controls[0], last = controls[controls.length - 1];
+      if (event.shiftKey && (target === first || !lock.contains(target))) {
+        event.preventDefault(); last.focus();
+      } else if (!event.shiftKey && (target === last || !lock.contains(target))) {
+        event.preventDefault(); first.focus();
+      }
+    }
+  }, true);
+  if (document.body && window.__hesabnoDom && typeof window.__hesabnoDom.watch === "function") {
+    window.__hesabnoDom.watch(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["data-hesabno-app-lock"],
+    }, syncAppLockBarrier);
+  }
+  syncAppLockBarrier();
+
   var KEYPAD_ID = "hesabno-amount-keyboard";
   var KEYPAD_BACKDROP_ID = KEYPAD_ID + "-backdrop";
   var DATE_PICKER_SELECTOR = "#persian-datepicker-backdrop,[data-hesabno-settlement-datepicker],[data-hesabno-return-date-picker]";

@@ -34,6 +34,8 @@ test('hardware back returns primary tabs home but respects inner-page back first
   assert.ok(navigationHistory.indexOf('var back = detailBackButton();') < navigationHistory.indexOf('var nav = root.querySelector("nav.fixed");'),
     'inner-page state must be detected before reading the active primary tab');
   assert.ok(navigationHistory.includes('var detailBack = detailBackButton();'));
+  assert.ok(navigationHistory.includes('button[aria-label^="بازگشت"]'),
+    'descriptive page-header Back labels must be recognized when primary tabs are hidden');
   assert.ok(navigationHistory.includes('holdBackNavigation("");\n      detailBack.click();\n      return true;'),
     'Back inside a subpage should click that page’s own back button first');
   assert.match(navigationHistory, /activeLabel && activeLabel !== labels\.home && homeButton/,

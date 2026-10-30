@@ -8,16 +8,29 @@
   var navigatingBack = false;
   var clean = function (value) { return String(value || "").replace(/\s+/g, " ").trim(); };
   var labels = { home: "خانه", transactions: "تراکنش‌ها", reports: "گزارش‌ها", more: "بیشتر" };
+  var isVisibleButton = function (button) {
+    return button && !button.closest('.hidden') && typeof button.getClientRects === "function" && button.getClientRects().length;
+  };
   var detailBackButton = function () {
+    /* این دو صفحه مستقل از React و بیرون از #root به body افزوده می‌شوند. */
+    var projectPage = document.getElementById("hesabno-project-family-page");
+    var projectBack = projectPage && projectPage.querySelector('button[data-hpf-action="back"]');
+    if (isVisibleButton(projectBack)) return projectBack;
+    var familyReport = document.getElementById("hesabno-family-project-report");
+    var reportClose = familyReport && familyReport.querySelector('button[data-hfr-action="close"]');
+    if (isVisibleButton(reportClose)) return reportClose;
+
     var vqClose = root.querySelector('div.absolute.inset-0.z-50 header button[aria-label="بستن"]');
-    if (vqClose && !vqClose.closest('.hidden') && typeof vqClose.getClientRects === "function" && vqClose.getClientRects().length) return vqClose;
+    if (isVisibleButton(vqClose)) return vqClose;
     var stmtClose = root.querySelector('.hesabno-account-statement-panel button[title="بستن پنل صورتحساب"]');
-    if (stmtClose && !stmtClose.closest('.hidden') && typeof stmtClose.getClientRects === "function" && stmtClose.getClientRects().length) return stmtClose;
+    if (isVisibleButton(stmtClose)) return stmtClose;
     var heroModalClose = root.querySelector('[data-hesabno-dashboard-hero-modal="true"] header button');
-    if (heroModalClose && !heroModalClose.closest('.hidden') && typeof heroModalClose.getClientRects === "function" && heroModalClose.getClientRects().length) return heroModalClose;
-    var main = root.querySelector("main");
-    var back = main && main.querySelector('button[aria-label="بازگشت"], button[title="بازگشت"]');
-    if (back && !back.closest('.hidden') && typeof back.getClientRects === "function" && back.getClientRects().length) return back;
+    if (isVisibleButton(heroModalClose)) return heroModalClose;
+    var backButtons = root.querySelectorAll('button[aria-label^="بازگشت"], button[title^="بازگشت"], button[aria-label^="برگشت"], button[title^="برگشت"]');
+    for (var i = 0; i < backButtons.length; i += 1) {
+      if (isVisibleButton(backButtons[i])) return backButtons[i];
+    }
+
     return null;
   };
   var current = function () {

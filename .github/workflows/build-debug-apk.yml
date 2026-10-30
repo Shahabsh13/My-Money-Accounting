@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - build/debug-apk-workflow
+      - arena/c34c8c3f-my-money-accounting
   pull_request:
     branches:
       - main
@@ -66,14 +67,18 @@ jobs:
       - name: Verify APK contains the updated app assets
         run: |
           APK=app/build/outputs/apk/debug/app-debug.apk
-          unzip -p "$APK" assets/index.html | grep -Fq 'src/styles/235-hesabno-text-root-and-display-stability.css?v=2026102912'
-          unzip -p "$APK" assets/index.html | grep -Fq 'src/scripts/067-inline.js?v=2026102912'
-          unzip -p "$APK" assets/index.html | grep -Fq 'src/scripts/142-hesabno-check-settlement-date.js?v=25'
+          unzip -p "$APK" assets/index.html | grep -Fq 'src/styles/235-hesabno-text-root-and-display-stability.css?v=2026102913'
+          unzip -p "$APK" assets/index.html | grep -Fq 'src/scripts/067-inline.js?v=2026103005'
+          unzip -p "$APK" assets/index.html | grep -Fq 'src/scripts/142-hesabno-check-settlement-date.js?v=26'
           unzip -p "$APK" assets/index.html | grep -Fq 'src/scripts/144-hesabno-check-return-confirm.js?v=24'
           unzip -p "$APK" assets/index.html | grep -Fq 'src/scripts/214-hesabno-numeric-keyboard.js?v=2026102801'
           unzip -p "$APK" assets/index.html | grep -Fq 'src/scripts/225-hesabno-colorful-keypad.js?v=6'
           unzip -p "$APK" assets/src/scripts/067-inline.js | grep -Fq 'style:{fontWeight:900}'
+          unzip -p "$APK" assets/index.html | grep -Fq 'src/scripts/227-modal-scroll-lock.js?v=2026103001'
+          unzip -p "$APK" assets/src/scripts/227-modal-scroll-lock.js | grep -Fq 'el.scrollWidth > el.clientWidth + 1'
+          unzip -p "$APK" assets/src/scripts/067-inline.js | grep -Fq 'data-hesabno-account-icon-categories'
           unzip -p "$APK" assets/src/scripts/067-inline.js | grep -Fq 'style:{fontSize:"9px"}'
+          unzip -p "$APK" assets/src/scripts/067-inline.js | grep -Fq 'clamp(0.68rem, 2.7vw, 0.82rem)'
           unzip -p "$APK" assets/src/scripts/067-inline.js | grep -Fq 'style:{position:"fixed",left:0,right:0,bottom:0,marginLeft:"auto",marginRight:"auto",zIndex:1'
           unzip -p "$APK" assets/src/scripts/067-inline.js | grep -Fq 'inline-block align-middle text-stone-400 text-xs leading-none'
           unzip -p "$APK" assets/src/scripts/067-inline.js | grep -Fq 'Q.some(ae=>ae.id===y)?"z-40":"z-10"'
@@ -89,7 +94,7 @@ jobs:
           unzip -p "$APK" assets/src/styles/235-hesabno-text-root-and-display-stability.css | grep -Fq 'html body #hesabno-return-datepicker-backdrop {'
           unzip -p "$APK" assets/src/styles/235-hesabno-text-root-and-display-stability.css | grep -Fq 'html body #persian-datepicker-sheet,'
           unzip -p "$APK" assets/src/styles/235-hesabno-text-root-and-display-stability.css | grep -Fq 'html body #hesabno-return-datepicker-sheet {'
-          unzip -p "$APK" assets/src/styles/235-hesabno-text-root-and-display-stability.css | grep -Fq 'height: min(62vh, 520px) !important;'
+          unzip -p "$APK" assets/src/styles/235-hesabno-text-root-and-display-stability.css | grep -Fq 'height: min(68vh, 580px) !important;'
           unzip -p "$APK" assets/src/styles/235-hesabno-text-root-and-display-stability.css | grep -Fq 'html body [data-hesabno-range-picker="true"] {'
           unzip -p "$APK" assets/src/styles/235-hesabno-text-root-and-display-stability.css | grep -Fq 'height: min(76vh, 600px) !important;'
           unzip -p "$APK" assets/src/styles/235-hesabno-text-root-and-display-stability.css | grep -Fq '#persian-datepicker-sheet > .w-10.h-1.rounded-full.mx-auto.mb-4 {'
