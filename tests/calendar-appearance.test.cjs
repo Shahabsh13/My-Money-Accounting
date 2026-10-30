@@ -1382,9 +1382,15 @@ test('dashboard widgets and transaction card icons use CSS appearance rules with
         assert.ok(lockOverlay, 'لایه قفل امنیتی برنامه باید نمایش داده شود');
         assert.ok(lockOverlay.classList.contains('bg-stone-950'),
           'پس‌زمینهٔ کاملاً مات و سازگار با تم باید محتوای مالی پشت قفل را بپوشاند');
+        assert.equal(lockOverlay.parentElement, document.body,
+          'قفل باید با portal بیرون از اسکرولر داشبورد رندر شود تا تمام صفحه را بپوشاند');
+        assert.ok(lockOverlay.classList.contains('z-[999]'),
+          'قفل باید بالاتر از نوار پایین و دیگر لایه‌های برنامه نمایش داده شود');
         const lockBaseCss = fs.readFileSync(path.join(root, 'app/src/main/assets/src/styles/010-core-base.css'), 'utf8');
         assert.ok(lockBaseCss.includes('.bg-stone-950{background-color:var(--color-stone-950)}'),
           'پس‌زمینهٔ قفل باید از کلاس CSS تولیدشده استفاده کند تا ناخواسته شفاف نشود');
+        assert.ok(lockBaseCss.includes('z-index:999'),
+          'قفل باید از مقدار z-index موجود در CSS تولیدشده استفاده کند');
         const bioUnlockBtn = document.getElementById('hesabno-biometric-unlock-btn');
         assert.ok(bioUnlockBtn, 'دکمه «بازگشایی با اثر انگشت» باید در قفل برنامه وجود داشته باشد');
 
