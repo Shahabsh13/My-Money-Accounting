@@ -89,7 +89,8 @@
     /* ── داخلی (نشانگر، پشتیبان موقت، وضعیت ابزار) ── */
     { key: "hesabno:accounts_backup_old", backend: "local", type: "json", scope: "internal", backup: false, owner: "004", note: "پشتیبان موقت انتقال کلید حساب" },
     { key: "hesabno:check-system-accounts-v1", backend: "local", type: "raw", scope: "internal", backup: false, owner: "000b", note: "«done» پس از ایجاد حساب‌های سیستمی" },
-    { key: "hesabno:default_cash_unpinned_v1", backend: "local", type: "json", scope: "internal", backup: false, owner: "000c", note: "نشانگر یک‌باره برداشتن سنجاق پیش‌فرض صندوق؛ سنجاق دستی بعدی حفظ می‌شود" },
+    { key: "hesabno:default_cash_unpinned_v1", backend: "local", type: "json", scope: "internal", backup: false, owner: "000c", note: "نشانگر قدیمی مهاجرت سنجاق پیش‌فرض؛ هنگام اصلاح بعدی پاک می‌شود" },
+    { key: "hesabno:default_cash_unpinned_v2", backend: "local", type: "json", scope: "internal", backup: false, owner: "000c", note: "نشانگر اصلاح دوباره سنجاق کارخانه‌ای صندوق؛ امکان سنجاق دستی پس از آن حفظ می‌شود" },
     { key: "hesabno:default_accounts_v2", backend: "local", type: "json", scope: "internal", backup: false, owner: "000", note: "نشانگر کاشت حساب‌های پیش‌فرض" },
     { key: "hesabno:first_run_profile_in_progress", backend: "local", type: "raw", scope: "internal", backup: false, owner: "217", note: "جلوگیری از دور زدن مراحل اجباری شروع کار پس از reload یا بازیابی پشتیبان" },
     { key: "hesabno:last_backup_date", backend: "local", type: "raw", scope: "internal", backup: true, owner: "067" },

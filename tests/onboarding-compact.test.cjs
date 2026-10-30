@@ -248,16 +248,37 @@ test('account lists keep pinned quick-access panels but omit root-code labels',(
  assert.ok(shell.includes('سنجاق‌شده‌ها (دسترسی سریع)'));
  assert.ok(shell.includes('افزودن حساب جدید'),'account creation remains available');
 });
+test('fresh-install and support-reset account defaults begin with no pinned accounts',()=>{
+ const dom=new JSDOM('',{url:'https://app.test/',runScripts:'outside-only'});
+ try{
+  const w=dom.window;
+  w.eval(fs.readFileSync(root+'src/scripts/000-default-accounts.js','utf8'));
+  const freshAccounts=JSON.parse(w.localStorage.getItem('hesabno:accounts_v5'));
+  assert.ok(freshAccounts.length>0,'the fresh-install chart of accounts is initialized');
+  assert.ok(freshAccounts.every(account=>account.pinned!==true),'fresh-install defaults must not pin any account');
+ }finally{dom.window.close();}
+ const resetSource=fs.readFileSync(root+'src/scripts/108-hesabno-complete-reset-flow.js','utf8');
+ const match=resetSource.match(/var defaultAccountsJson = ("(?:\\.|[^"\\])*");/);
+ assert.ok(match,'support reset exposes its account defaults');
+ const resetAccounts=JSON.parse(JSON.parse(match[1]));
+ assert.ok(resetAccounts.every(account=>account.pinned!==true),'support reset must return to an unpinned default account list');
+});
 test('default cash unpin migration preserves other pins and allows later manual repinning',()=>{
  const dom=new JSDOM('',{url:'https://app.test/',runScripts:'outside-only'});
  try{
  const w=dom.window,code=fs.readFileSync(root+'src/scripts/000c-unpin-default-cash.js','utf8');
  const accounts=[{id:201,group:'cash',code:'11001',pinned:true},{id:202,group:'cash',code:'11002',pinned:true},{id:203,group:'bank',code:'12001',pinned:true}];
- w.localStorage.setItem('hesabno:accounts_v5',JSON.stringify(accounts));w.eval(code);
+ w.localStorage.setItem('hesabno:default_cash_unpinned_v1','1');
+ w.localStorage.setItem('hesabno:accounts_v5',JSON.stringify(accounts));
+ w.localStorage.setItem('hesabno:accounts',JSON.stringify(accounts));
+ w.eval(code);
  const result=JSON.parse(w.localStorage.getItem('hesabno:accounts_v5'));
  assert.deepEqual(result.map(a=>a.pinned),[false,true,true]);
+ assert.deepEqual(JSON.parse(w.localStorage.getItem('hesabno:accounts')).map(a=>a.pinned),[false,true,true]);
+ assert.equal(w.localStorage.getItem('hesabno:default_cash_unpinned_v1'),null,'the old migration marker is cleaned');
+ assert.equal(w.localStorage.getItem('hesabno:default_cash_unpinned_v2'),'1');
  result[0].pinned=true;w.localStorage.setItem('hesabno:accounts_v5',JSON.stringify(result));w.eval(code);
- assert.equal(JSON.parse(w.localStorage.getItem('hesabno:accounts_v5'))[0].pinned,true);
+ assert.equal(JSON.parse(w.localStorage.getItem('hesabno:accounts_v5'))[0].pinned,true,'manual repinning remains allowed after migration');
  }finally{dom.window.close();}
 });
 test('profile onboarding has one short heading, no branding or progress copy, and two navigation actions',()=>{

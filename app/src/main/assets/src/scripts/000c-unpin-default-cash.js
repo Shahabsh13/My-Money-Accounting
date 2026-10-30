@@ -1,7 +1,8 @@
-/* One-time correction: only remove the default cash pin, preserving user accounts and other pins. */
+/* One-time correction: remove a previously seeded cash pin, preserve user pins, and then allow manual repinning. */
 (function () {
   'use strict';
-  var flag = 'hesabno:default_cash_unpinned_v1';
+  var legacyFlag = 'hesabno:default_cash_unpinned_v1';
+  var flag = 'hesabno:default_cash_unpinned_v2';
   try {
     if (localStorage.getItem(flag) === '1') return;
     ['hesabno:accounts_v5', 'hesabno:accounts'].forEach(function (key) {
@@ -19,5 +20,6 @@
       if (changed) localStorage.setItem(key, JSON.stringify(accounts));
     });
     localStorage.setItem(flag, '1');
+    localStorage.removeItem(legacyFlag);
   } catch (ignored) { /* Retry after a failed storage write. */ }
 })();
