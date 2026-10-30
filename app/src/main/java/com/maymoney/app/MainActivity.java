@@ -67,6 +67,8 @@ public class MainActivity extends ComponentActivity {
     private volatile NativeSqlStoreHelper sqlStoreHelper;
     private volatile String pendingCloudBackupJson;
     private final java.util.concurrent.atomic.AtomicBoolean manualBackupBusy = new java.util.concurrent.atomic.AtomicBoolean(false);
+    // One-use proof: only a successful Android BiometricPrompt callback may authorize the WebView unlock.
+    private final java.util.concurrent.atomic.AtomicBoolean biometricUnlockProof = new java.util.concurrent.atomic.AtomicBoolean(false);
     private final java.util.concurrent.ExecutorService manualBackupExecutor = java.util.concurrent.Executors.newSingleThreadExecutor();
     private volatile byte[] pendingManualBackupData;
     private volatile String pendingManualBackupRequest;
@@ -90,7 +92,7 @@ public class MainActivity extends ComponentActivity {
             + "return null;var labels=['بازگشت','برگشت','انصراف','بستن'];var list=scope.querySelectorAll('button,[role=\"butto"
             + "n\"]');for(var i=list.length-1;i>=0;i--){var el=list[i];if(!visible(el))continue;var vals=[el.getAttribute('ari"
             + "a-label'),el.getAttribute('title'),el.innerText,el.textContent];for(var j=0;j<vals.length;j++){var label=Strin"
-            + "g(vals[j]||'').replace(/\\s+/g,' ').trim();if(labels.indexOf(label)!==-1)return el;}}return null;}\ntry{if(typeof window.__hesabnoDismissExitDialog==='function'&&window.__hesabnoDismissExitDialog()){done();return;}}catch(e){}\ntry{var fr=d"
+            + "g(vals[j]||'').replace(/\\s+/g,' ').trim();if(labels.indexOf(label)!==-1||label.indexOf('بازگشت')===0||label.indexOf('برگشت')===0)return el;}}return null;}\ntry{if(typeof window.__hesabnoDismissExitDialog==='function'&&window.__hesabnoDismissExitDialog()){done();return;}}catch(e){}\ntry{var fr=d"
             + "ocument.getElementById('hesabno-first-run');if(fr){fr.parentNode.removeChild(fr);done();return;}}catch(e){}\ntr"
             // ۱) کیبورد داخلی مبلغ باز است؟ فقط همان بسته شود و صفحه دست‌نخورده بماند.
             + "y{if(typeof window.__hesabnoCloseAmountKeyboard==='function'&&window.__hesabnoCloseAmountKeyboard()){done();return;}}catch(e){}\ntr"
@@ -99,7 +101,7 @@ public class MainActivity extends ComponentActivity {
             + "y{var h=window.__hesabnoNavigateBack;if(typeof h==='function'&&h()){done();return;}}catch(e){}\ntry{var layers="
             + "document.querySelectorAll('.hesabno-fullpage-layer,[role=\"dialog\"],[aria-modal=\"true\"]');for(var i=layers.leng"
             + "th-1;i>=0;i--){if(!visible(layers[i]))continue;var lb=findBackButton(layers[i]);if(lb){lb.click();done();retur"
-            + "n;}}var b=findBackButton(document.querySelector('main')||document);if(b){b.click();done();return;}}catch(e){}\n"
+            + "n;}}var b=findBackButton(document.querySelector('#root')||document);if(b){b.click();done();return;}}catch(e){}\n"
             + "try{if(typeof window.__hesabnoConfirmExit==='function'){window.__hesabnoConfirmExit();done();return;}var shouldExit=window.confirm('آیا می‌خواهید از برنامه خارج شوید؟');done();if(shouldExit&&window.HnBridge)"
             + "window.HnBridge.exitApp();}catch(e){done();}\n})();";
 
@@ -1465,10 +1467,36 @@ public class MainActivity extends ComponentActivity {
         }
 
         /**
+         * مدرک یک‌بارمصرفی که فقط callback موفق Android BiometricPrompt صادر می‌کند.
+         * فراخوانی مستقیم callback جاوااسکریپت بدون این مدرک قفل را باز نمی‌کند.
+         */
+        @JavascriptInterface
+        public boolean consumeBiometricUnlockProof() {
+            return biometricUnlockProof.compareAndSet(true, false);
+        }
+
+        private void deliverBiometricAuthResult(boolean authenticated) {
+            biometricUnlockProof.set(authenticated);
+            if (webView == null) {
+                biometricUnlockProof.set(false);
+                return;
+            }
+            try {
+                webView.evaluateJavascript(
+                        "if(window.__hesabnoOnBiometricAuthResult)window.__hesabnoOnBiometricAuthResult(" + authenticated + ");",
+                        null
+                );
+            } catch (Exception ignored) {
+                biometricUnlockProof.set(false);
+            }
+        }
+
+        /**
          * بازگشایی قفل برنامه با حسگر اثر انگشت / تشخیص چهره سیستمی اندروید (API 28+).
          */
         @JavascriptInterface
         public boolean authenticateBiometric() {
+            biometricUnlockProof.set(false);
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -1483,12 +1511,7 @@ public class MainActivity extends ComponentActivity {
                                                     new android.content.DialogInterface.OnClickListener() {
                                                         @Override
                                                         public void onClick(android.content.DialogInterface dialog, int which) {
-                                                            if (webView != null) {
-                                                                webView.evaluateJavascript(
-                                                                        "if(window.__hesabnoOnBiometricAuthResult)window.__hesabnoOnBiometricAuthResult(false);",
-                                                                        null
-                                                                );
-                                                            }
+                                                            deliverBiometricAuthResult(false);
                                                         }
                                                     })
                                             .build();
@@ -1497,47 +1520,22 @@ public class MainActivity extends ComponentActivity {
                                         @Override
                                         public void onAuthenticationSucceeded(
                                                 android.hardware.biometrics.BiometricPrompt.AuthenticationResult result) {
-                                            if (webView != null) {
-                                                webView.evaluateJavascript(
-                                                        "if(window.__hesabnoOnBiometricAuthResult)window.__hesabnoOnBiometricAuthResult(true);",
-                                                        null
-                                                );
-                                            }
+                                            deliverBiometricAuthResult(true);
                                         }
 
                                         @Override
                                         public void onAuthenticationFailed() {
-                                            if (webView != null) {
-                                                webView.evaluateJavascript(
-                                                        "if(window.__hesabnoOnBiometricAuthResult)window.__hesabnoOnBiometricAuthResult(false);",
-                                                        null
-                                                );
-                                            }
+                                            deliverBiometricAuthResult(false);
                                         }
 
                                         @Override
                                         public void onAuthenticationError(int errorCode, CharSequence errString) {
-                                            if (webView != null) {
-                                                webView.evaluateJavascript(
-                                                        "if(window.__hesabnoOnBiometricAuthResult)window.__hesabnoOnBiometricAuthResult(false);",
-                                                        null
-                                                );
-                                            }
+                                            deliverBiometricAuthResult(false);
                                         }
                                     });
-                        } else if (webView != null) {
-                            webView.evaluateJavascript(
-                                    "if(window.__hesabnoOnBiometricAuthResult)window.__hesabnoOnBiometricAuthResult(false);",
-                                    null
-                            );
-                        }
+                        } else deliverBiometricAuthResult(false);
                     } catch (Exception ignored) {
-                        if (webView != null) {
-                            webView.evaluateJavascript(
-                                    "if(window.__hesabnoOnBiometricAuthResult)window.__hesabnoOnBiometricAuthResult(false);",
-                                    null
-                            );
-                        }
+                        deliverBiometricAuthResult(false);
                     }
                 }
             });

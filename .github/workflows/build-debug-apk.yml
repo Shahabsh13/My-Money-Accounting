@@ -68,7 +68,7 @@ jobs:
         run: |
           APK=app/build/outputs/apk/debug/app-debug.apk
           unzip -p "$APK" assets/index.html | grep -Fq 'src/styles/235-hesabno-text-root-and-display-stability.css?v=2026102913'
-          unzip -p "$APK" assets/index.html | grep -Fq 'src/scripts/067-inline.js?v=2026103004'
+          unzip -p "$APK" assets/index.html | grep -Fq 'src/scripts/067-inline.js?v=2026103005'
           unzip -p "$APK" assets/index.html | grep -Fq 'src/scripts/142-hesabno-check-settlement-date.js?v=26'
           unzip -p "$APK" assets/index.html | grep -Fq 'src/scripts/144-hesabno-check-return-confirm.js?v=24'
           unzip -p "$APK" assets/index.html | grep -Fq 'src/scripts/214-hesabno-numeric-keyboard.js?v=2026102801'

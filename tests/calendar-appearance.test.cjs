@@ -1428,13 +1428,32 @@ test('dashboard widgets and transaction card icons use CSS appearance rules with
         await wait(30);
         assert.ok(document.getElementById('hesabno-app-lock-overlay'),
           'پاسخ غیر Boolean از callback اثر انگشت نباید قفل را باز کند');
+        window.__hesabnoOnBiometricAuthResult(true);
+        await wait(30);
+        assert.ok(document.getElementById('hesabno-app-lock-overlay'),
+          'فراخوانی مستقیم callback موفق بدون مدرک یک‌بارمصرف Native نباید قفل را باز کند');
 
-        // فقط پاسخ موفق واقعیِ Bridge می‌تواند قفل را باز کند.
-        window.HnBridge = { authenticateBiometric: () => window.__hesabnoOnBiometricAuthResult(true) };
+        // فقط مدرک یک‌بارمصرفی که Native پس از احراز هویت موفق صادر می‌کند قفل را باز می‌کند.
+        let biometricProof = false;
+        window.HnBridge = {
+          authenticateBiometric: () => window.__hesabnoOnBiometricAuthResult(true),
+          consumeBiometricUnlockProof: () => {
+            const authenticated = biometricProof;
+            biometricProof = false;
+            return authenticated;
+          },
+        };
+        biometricProof = true;
         document.getElementById('hesabno-biometric-unlock-btn').click();
         await wait(50);
         assert.equal(document.getElementById('hesabno-app-lock-overlay'), null,
           'فقط نتیجه موفق احراز هویت زیستی باید قفل برنامه را باز کند');
+        window.__hesabnoLockApp();
+        await wait(40);
+        window.__hesabnoOnBiometricAuthResult(true);
+        await wait(30);
+        assert.ok(document.getElementById('hesabno-app-lock-overlay'),
+          'مدرک احراز هویت زیستی باید یک‌بارمصرف باشد و قابل بازپخش نباشد');
         window.__safeSet('hesabno:lock', 'false');
 
         /* ۳۲. تب بیشتر: نمایش نسخه دقیق نرم‌افزار در پایین تب بیشتر به جای «نسخه همراه» */

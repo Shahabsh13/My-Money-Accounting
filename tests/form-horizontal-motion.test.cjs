@@ -101,27 +101,31 @@ test('form Back reaches the app close handler immediately without a page exit de
   assert.doesNotMatch(main.className, /hesabno-form-transition-/,'Back does not wait for a page-level exit animation');
 });
 
-test('detail Back navigation runs immediately and transaction Back reaches its native handler', () => {
+test('title-only Back reaches its app handler; transaction Back stays scoped to the composer', () => {
   const dom = new JSDOM('<div id="root"><main><header><button id="detail-back" title="بازگشت">بازگشت</button></header></main></div>', {
     runScripts: 'outside-only',
   });
   try {
     const { window } = dom;
-    let navigateCalls = 0;
-    window.__hesabnoNavigateBack = () => { navigateCalls += 1; return true; };
+    let holdCalls = 0;
+    window.__hesabnoHoldBackNavigation = () => { holdCalls += 1; return true; };
     window.eval(sideMotionScript);
-    const detailEvent = new window.MouseEvent('click', { bubbles: true, cancelable: true });
-    window.document.getElementById('detail-back').dispatchEvent(detailEvent);
-    assert.equal(navigateCalls, 1, 'custom navigation history runs synchronously on Back');
-    assert.equal(detailEvent.defaultPrevented, true);
-
     const main = window.document.querySelector('main');
+    let routeClosed = 0;
+    const detailBack = window.document.getElementById('detail-back');
+    detailBack.addEventListener('click', () => { routeClosed += 1; });
+    const detailEvent = new window.MouseEvent('click', { bubbles: true, cancelable: true });
+    detailBack.dispatchEvent(detailEvent);
+    assert.equal(routeClosed, 1, 'the title-only Back click must reach its original app handler');
+    assert.equal(holdCalls, 1, 'Back-stack bookkeeping is held without replacing the click');
+    assert.equal(detailEvent.defaultPrevented, false);
+
     main.innerHTML = '<header><button id="transaction-back" title="بازگشت">بازگشت</button></header><form><input id="field-amount-input"></form>';
     let nativeCalls = 0;
     window.document.getElementById('transaction-back').addEventListener('click', () => { nativeCalls += 1; });
     window.document.getElementById('transaction-back').click();
     assert.equal(nativeCalls, 1, 'transaction Back is not intercepted by the generic page handler');
-    assert.equal(navigateCalls, 1);
+    assert.equal(holdCalls, 1, 'transaction Back does not alter the page-navigation stack');
   } finally { dom.window.close(); }
 });
 

@@ -42,13 +42,16 @@ test('preflight closes only transient layers in priority order and invalidates s
   const start = activity.indexOf('private static final String BACK_PREFLIGHT_JS');
   const end = activity.indexOf('// اگر برنامه‌ی وب بتواند برگشت', start);
   const preflightScript = activity.slice(start, end);
+  const lockGuard = preflightScript.indexOf('[data-hesabno-app-lock=true]');
   const priorities = [
     '__hesabnoDismissExitDialog',
     'hesabno-first-run',
     '__hesabnoCloseAmountKeyboard',
     '__hesabnoCloseTopLayer',
   ].map((marker) => preflightScript.indexOf(marker));
-  assert.ok(priorities.every((position) => position >= 0));
+  assert.ok(lockGuard >= 0 && priorities.every((position) => position >= 0));
+  assert.ok(priorities.every((position) => lockGuard < position),
+    'قفل امنیتی باید پیش از بستن هر پنجره یا رفتن به تاریخچه بررسی شود');
   assert.deepEqual(priorities, [...priorities].sort((a, b) => a - b));
 
   assert.match(activity, /backPreflightRequestId\+\+/);
