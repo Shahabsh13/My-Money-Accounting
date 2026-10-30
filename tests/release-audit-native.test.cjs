@@ -94,6 +94,7 @@ test('APK update uses fresh asset cache keys and increments the Android app vers
  const version=fs.readFileSync('version.properties','utf8');
  for(const asset of [
   'src/styles/235-hesabno-text-root-and-display-stability.css?v=2026103014',
+  'src/styles/241-hide-storage-status-card.css?v=1',
   'src/scripts/067-inline.js?v=2026103008',
   'src/scripts/000c-unpin-default-cash.js?v=2026103002',
   'src/scripts/108-hesabno-complete-reset-flow.js?v=21',
