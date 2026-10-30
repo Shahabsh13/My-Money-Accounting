@@ -7,7 +7,10 @@
   function visible(el) {
     for (var p = el; p && p.nodeType === 1; p = p.parentElement) {
       var style = getComputedStyle(p);
-      if (p.hidden || style.display === 'none' || style.visibility === 'hidden') return false;
+      var opacity = parseFloat(style.opacity);
+      if (p.hidden || p.hasAttribute('inert') || p.getAttribute('aria-hidden') === 'true' ||
+          style.display === 'none' || style.visibility === 'hidden' || style.pointerEvents === 'none' ||
+          Number.isFinite(opacity) && opacity <= 0.01) return false;
     }
     return el.isConnected;
   }

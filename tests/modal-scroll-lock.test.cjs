@@ -20,6 +20,19 @@ test('modal locks document and nested background scroll, retaining the exact pos
  assert.equal(h.page.scrollTop,123);assert.equal(h.wheel(h.page,50),false);
  }finally{h.dom.window.close();}
 });
+test('aria-hidden decorative full-screen ghosts never acquire the modal scroll lock',()=>{
+ const h=setup();try{
+ const ghost=h.w.document.createElement('div');
+ ghost.className='fixed inset-0';ghost.setAttribute('aria-hidden','true');
+ ghost.style.cssText='position:fixed;inset:0;z-index:999;opacity:0;pointer-events:none';
+ h.w.document.body.appendChild(ghost);h.w.__hesabnoSyncModalScrollLock();
+ assert.equal(h.wheel(h.page,50),true,'the real dialog remains active while the decorative ghost is present');
+ h.modal.remove();h.w.__hesabnoSyncModalScrollLock();
+ assert.equal(h.w.document.body.style.overflow,'','closing the real dialog should unlock the page');
+ assert.equal(h.wheel(h.page,50),false,'an aria-hidden exit ghost must not relock the page');
+ }finally{h.dom.window.close();}
+});
+
 test('dialog contents scroll normally but cannot chain through either edge into the background',()=>{
  const h=setup();try{
  h.scroller.scrollTop=50;assert.equal(h.wheel(h.scroller,40),false);assert.equal(h.wheel(h.scroller,-40),false);

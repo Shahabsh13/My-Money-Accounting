@@ -94,10 +94,13 @@ test('APK update uses fresh asset cache keys and increments the Android app vers
  const version=fs.readFileSync('version.properties','utf8');
  for(const asset of [
   'src/styles/235-hesabno-text-root-and-display-stability.css?v=2026103014',
-  'src/scripts/067-inline.js?v=2026103007',
-  'src/scripts/108-hesabno-complete-reset-flow.js?v=20',
+  'src/styles/241-hide-storage-status-card.css?v=1',
+  'src/scripts/067-inline.js?v=2026103008',
+  'src/scripts/000c-unpin-default-cash.js?v=2026103002',
+  'src/scripts/108-hesabno-complete-reset-flow.js?v=21',
   'src/scripts/239-hesabno-security-dialog-viewport.js?v=2',
-  'src/scripts/227-modal-scroll-lock.js?v=2026103001',
+  'src/scripts/240-hesabno-numeric-text-auto-fit.js?v=1',
+  'src/scripts/227-modal-scroll-lock.js?v=2026103002',
   'src/scripts/142-hesabno-check-settlement-date.js?v=26',
   'src/scripts/144-hesabno-check-return-confirm.js?v=24',
   'src/scripts/214-hesabno-numeric-keyboard.js?v=2026102801',
