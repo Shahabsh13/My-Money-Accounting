@@ -34,6 +34,35 @@ test('live restore rolls back the failing current key as well as prior keys',()=
  const window={__safeGet:k=>store.get(k)??null,__safeSet(k,v){store.set(k,v);if(fail){fail=false;throw Error('adapter mutated before throwing');}},__safeRemove:k=>store.delete(k),setTimeout(){}};
  vm.runInNewContext(core,{window});const data=window.__hesabnoCaptureResetData();data['hesabno:accounts_v5']='new';assert.equal(window.__hesabnoRestoreResetData(data),false);assert.equal(store.get('hesabno:accounts_v5'),'old');
 });
+test('support reset clears first-run and lock state so the fresh-install intro can run again',()=>{
+ const source=fs.readFileSync(base+'src/scripts/108-hesabno-complete-reset-flow.js','utf8');
+ const start=source.indexOf('var clearKeys = backupKeys.slice();');
+ const end=source.indexOf('    var defaultAccountsJson =',start);
+ assert.ok(start>=0&&end>start);
+ const resetState=source.slice(start,end);
+ const removed=[];
+ vm.runInNewContext(resetState+';resetOnboardingState();',{backupKeys:[],removeRaw:key=>removed.push(key)});
+ assert.deepEqual(removed,[
+  'hesabno:first_run_intro_done','hesabno:first_run_profile_done','hesabno:first_run_profile_in_progress',
+  'hesabno:permissions','hesabno:lock','hesabno:pin','hesabno:biometric'
+ ]);
+ const clearStart=source.indexOf('var clearUserData = function () {');
+ const clearEnd=source.indexOf('    var finishReset = function () {',clearStart);
+ assert.ok(source.slice(clearStart,clearEnd).includes('resetOnboardingState();'),
+  'the no-backup and backup-confirmed reset paths must clear onboarding state before reload');
+ assert.ok(source.includes('window.__hesabnoSoftReload();'), 'reset must reload so the initial onboarding screens mount');
+ const authStart=source.indexOf('var requestResetPin = function');
+ const authEnd=source.indexOf('    var clean = function',authStart);
+ const auth=source.slice(authStart,authEnd);
+ assert.ok(auth.includes('readRaw("hesabno:lock") !== "true" || !/^\\d{4}$/.test(storedPin)'),
+  'only an active lock with a valid four-digit PIN should require reauthorization');
+ assert.ok(auth.includes('type="password"')&&auth.includes('data-hesabno-reset-pin-cancel'),
+  'the reauthorization field is masked and can be cancelled back to the reset options');
+ assert.ok(source.includes('requestResetPin(function () { finishReset(); }, action);'),
+  'reset without backup must require PIN authorization before deleting data');
+ assert.ok(source.includes('requestResetPin(function () {')&&source.includes('}, backup);'),
+  'backup reset must require PIN authorization before starting backup');
+});
 test('browser system-notification tap marks only its matching inbox record read',()=>{
  const {center}=notifications();center.add({title:'A',body:'one',target:'home'});center.add({title:'B',body:'two',target:'home'});
  assert.equal(center.handleWebClick('A','one','home'),true);

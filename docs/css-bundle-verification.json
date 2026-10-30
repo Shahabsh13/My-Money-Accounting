@@ -188,19 +188,19 @@
   "appearanceLayer": {
     "source": "task-12",
     "inBundle": "235-hesabno-text-root-and-display-stability.css",
-    "note": "Original appearance baseline: 610 rules / 131,726 bytes. Current standalone stylesheet 235 contains 725 parsed rules / 156,161 bytes after the bottom-sheet redesign was applied consistently to all app calendars except the separate dashboard date-info calendar; date-range selection behavior remains intact.",
-    "bytes": 156161,
-    "rules": 725,
+    "note": "Original appearance baseline: 610 rules / 131,726 bytes. Current standalone stylesheet 235 contains 728 parsed rules / 157,413 bytes, including viewport-bounded security settings; all non-dashboard calendar overlays retain the shared bottom-sheet style and fiscal-period range behavior.",
+    "bytes": 157413,
+    "rules": 728,
     "baselineBytes": 131726,
     "baselineRules": 610
   },
   "currentState": {
     "files": 10,
-    "rules": 3449,
-    "bytes": 860900,
-    "hash": "149066966f3530db4d8723f3f66256364cca28923a28509c88eeedfaaa1e187d",
-    "note": "Current stylesheet state on disk; 10 linked stylesheets and 3,449 parsed rules. All non-dashboard calendar overlays use the designed bottom-sheet visual language: theme-aware keypad-matched dim scrims without blur, borderless rounded-top sheets, and compact vertical layouts. Date-range selection and date constraints remain unchanged.",
-    "generatedAt": "2026-10-29T18:20:00Z"
+    "rules": 3452,
+    "bytes": 862152,
+    "hash": "919d4224bff45357eada4594348199d2b2ebbc7521a46e1aff22c83472ad2b7e",
+    "note": "Current stylesheet state on disk; 10 linked stylesheets and 3,452 parsed rules. Non-dashboard calendars use the shared bottom-sheet design; the security settings dialog is bounded to the visible viewport. Historical cascade-equivalence proof remains unchanged.",
+    "generatedAt": "2026-10-30T00:00:00Z"
   },
   "generatedAt": "2026-10-24T19:08:05.622Z",
   "onboardingCompact": {
@@ -258,5 +258,10 @@
   "themeTypographyConsistency": {
     "removedRules": 2,
     "note": "Remove light-theme-only font-size inflation for compact labels and transaction amounts so class-defined sizes remain identical in light and dark modes."
+  },
+  "securitySettingsViewport": {
+    "addedRules": 3,
+    "addedBytes": 1252,
+    "note": "Viewport-bounded security settings dialog leaves visible space around the card and shrinks safely while the Android keyboard is open."
   }
 }

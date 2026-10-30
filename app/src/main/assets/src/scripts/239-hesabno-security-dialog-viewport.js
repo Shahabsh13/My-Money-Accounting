@@ -28,7 +28,7 @@
     if (card) {
       card.style.setProperty(
         "--hesabno-security-card-max-height",
-        Math.max(120, viewport.height - 32) + "px"
+        Math.max(1, Math.min(600, Math.round(viewport.height * 0.8))) + "px"
       );
     }
   }
@@ -60,8 +60,12 @@
     if (event.target && event.target.id === "hesabno-security-pin-input") scheduleSettledSyncs();
   }, true);
 
-  if (document.body && window.MutationObserver) {
-    new MutationObserver(scheduleSync).observe(document.body, { childList: true, subtree: true });
-  }
+  document.addEventListener("click", function (event) {
+    var target = event.target;
+    if (target && target.closest && (target.closest("#setting-row-security") || target.closest(DIALOG_SELECTOR))) {
+      scheduleSettledSyncs();
+    }
+  }, true);
+
   scheduleSync();
 })();

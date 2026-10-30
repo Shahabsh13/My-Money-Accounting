@@ -30,9 +30,21 @@ jobs:
         run: npm ci
 
       - name: Run accounting and UI regression tests
-        run: npm test
+        shell: bash
+        run: |
+          set +e
+          npm test > /tmp/accounting-tests.log 2>&1
+          test_status=$?
+          cat /tmp/accounting-tests.log
+          if [ "$test_status" -ne 0 ]; then
+            grep -E '^not ok |^✖ ' /tmp/accounting-tests.log | while IFS= read -r failure; do
+              echo "::error::$failure"
+            done
+          fi
+          exit "$test_status"
 
   build-debug-apk:
+    if: github.event_name != 'pull_request' || !contains(github.event.pull_request.title, '[no-apk]')
     name: Build debug APK
     runs-on: ubuntu-latest
     env:
@@ -68,9 +80,16 @@ jobs:
         run: |
           APK=app/build/outputs/apk/debug/app-debug.apk
           unzip -p "$APK" assets/index.html | grep -Fq 'src/styles/235-hesabno-text-root-and-display-stability.css?v=2026103014'
-          unzip -p "$APK" assets/index.html | grep -Fq 'src/scripts/067-inline.js?v=2026103005'
-          unzip -p "$APK" assets/index.html | grep -Fq 'src/scripts/239-hesabno-security-dialog-viewport.js?v=1'
+          unzip -p "$APK" assets/index.html | grep -Fq 'src/scripts/067-inline.js?v=2026103007'
+          unzip -p "$APK" assets/index.html | grep -Fq 'src/scripts/108-hesabno-complete-reset-flow.js?v=20'
+          unzip -p "$APK" assets/src/scripts/108-hesabno-complete-reset-flow.js | grep -Fq 'resetOnboardingState'
+          unzip -p "$APK" assets/src/scripts/108-hesabno-complete-reset-flow.js | grep -Fq 'requestResetPin'
+          unzip -p "$APK" assets/index.html | grep -Fq 'src/scripts/239-hesabno-security-dialog-viewport.js?v=2'
           unzip -p "$APK" assets/src/scripts/067-inline.js | grep -Fq 'data-hesabno-security-settings'
+          unzip -p "$APK" assets/src/scripts/067-inline.js | grep -Fq 'disabled:!hnSecurityPinReady&&!B'
+          unzip -p "$APK" assets/src/scripts/067-inline.js | grep -Fq '✓ رمزها مطابقت دارند'
+          unzip -p "$APK" assets/src/scripts/067-inline.js | grep -Fq 'data-hesabno-pin-visibility'
+          unzip -p "$APK" assets/src/scripts/067-inline.js | grep -Fq 'if(enabled&&!/^\d{4}$/.test(savedPin))'
           unzip -p "$APK" assets/src/scripts/239-hesabno-security-dialog-viewport.js | grep -Fq 'visualViewport'
           unzip -p "$APK" assets/src/styles/235-hesabno-text-root-and-display-stability.css | grep -Fq 'data-hesabno-security-card'
           unzip -p "$APK" assets/index.html | grep -Fq 'src/scripts/142-hesabno-check-settlement-date.js?v=26'
