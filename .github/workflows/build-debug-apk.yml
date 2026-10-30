@@ -79,9 +79,9 @@ jobs:
       - name: Verify APK contains the updated app assets
         run: |
           APK=app/build/outputs/apk/debug/app-debug.apk
-          unzip -p "$APK" assets/index.html | grep -Fq 'src/styles/235-hesabno-text-root-and-display-stability.css?v=2026103014'
-          unzip -p "$APK" assets/index.html | grep -Fq 'src/styles/241-hide-storage-status-card.css?v=1'
-          unzip -p "$APK" assets/src/styles/241-hide-storage-status-card.css | grep -Fq 'display: none !important'
+          unzip -p "$APK" assets/index.html | grep -Fq 'src/styles/235-hesabno-text-root-and-display-stability.css?v=2026103015'
+          unzip -p "$APK" assets/src/styles/235-hesabno-text-root-and-display-stability.css | grep -Fq '#hesabno-storage-status-card {'
+          unzip -p "$APK" assets/src/styles/235-hesabno-text-root-and-display-stability.css | grep -Fq 'display: none !important;'
           unzip -p "$APK" assets/index.html | grep -Fq 'src/scripts/067-inline.js?v=2026103008'
           unzip -p "$APK" assets/index.html | grep -Fq 'src/scripts/000c-unpin-default-cash.js?v=2026103002'
           unzip -p "$APK" assets/src/scripts/000c-unpin-default-cash.js | grep -Fq 'hesabno:default_cash_unpinned_v2'
@@ -89,7 +89,7 @@ jobs:
           unzip -p "$APK" assets/src/scripts/108-hesabno-complete-reset-flow.js | grep -Fq 'resetOnboardingState'
           unzip -p "$APK" assets/src/scripts/108-hesabno-complete-reset-flow.js | grep -Fq 'requestResetPin'
           unzip -p "$APK" assets/index.html | grep -Fq 'src/scripts/239-hesabno-security-dialog-viewport.js?v=2'
-          unzip -p "$APK" assets/index.html | grep -Fq 'src/scripts/240-hesabno-numeric-text-auto-fit.js?v=1'
+          unzip -p "$APK" assets/index.html | grep -Fq 'src/scripts/240-hesabno-numeric-text-auto-fit.js?v=2'
           unzip -p "$APK" assets/src/scripts/240-hesabno-numeric-text-auto-fit.js | grep -Fq 'data-hesabno-unified-number-font'
           unzip -p "$APK" assets/src/scripts/240-hesabno-numeric-text-auto-fit.js | grep -Fq 'MIN_FONT_SIZE'
           unzip -p "$APK" assets/src/scripts/067-inline.js | grep -Fq 'data-hesabno-security-settings'

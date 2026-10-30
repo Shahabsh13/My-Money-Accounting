@@ -72,8 +72,11 @@ test('long rendered numbers shrink to their box and grow back when space returns
 
 test('auto-fit layer is wired into the Android asset entry point and uses the shared observer', () => {
   const index = fs.readFileSync(path.join(root, 'app/src/main/assets/index.html'), 'utf8');
-  assert.ok(index.includes('src/scripts/240-hesabno-numeric-text-auto-fit.js?v=1'));
+  assert.ok(index.includes('src/scripts/240-hesabno-numeric-text-auto-fit.js?v=2'));
   assert.ok(autoFit.includes('window.__hesabnoDom.watch'));
   assert.ok(autoFit.includes('window.addEventListener("resize"'));
-  assert.ok(autoFit.includes('document.addEventListener("click", scanAll, true)'));
+  assert.ok(autoFit.includes('record.addedNodes.forEach(schedule)'),
+    'newly rendered numeric content should be fitted through the shared DOM observer');
+  assert.equal(autoFit.includes('document.addEventListener("click", scanAll, true)'), false,
+    'clicks must not trigger an expensive full-document fit scan');
 });

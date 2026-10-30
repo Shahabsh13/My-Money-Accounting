@@ -325,14 +325,15 @@ test('local snapshots strip recursive local_snapshots/exported_files and restore
     'ge() باید از تو در تو شدن نقاط بازگشت و تاریخچه‌ی خروجی‌ها جلوگیری کند'
   );
   const storageStatusStyle = fs.readFileSync(
-    path.join(root, 'app/src/main/assets/src/styles/241-hide-storage-status-card.css'),
+    path.join(root, 'app/src/main/assets/src/styles/235-hesabno-text-root-and-display-stability.css'),
     'utf8'
   );
   const index = fs.readFileSync(path.join(root, 'app/src/main/assets/index.html'), 'utf8');
-  assert.match(coreBundle, /id:"hesabno-storage-status-card"/, 'نشانگر کارت قدیمی برای سازگاری در bundle باقی مانده است');
+  assert.match(coreBundle, /id:"hesabno-storage-status-card"/, 'کارت قدیمی در bundle برای پشتیبان‌گیری باقی مانده است');
   assert.match(storageStatusStyle, /#hesabno-storage-status-card\s*\{\s*display:\s*none\s*!important;/,
     'کارت سنجش localStorage نباید به‌عنوان فضای کل برنامه نمایش داده شود');
-  assert.ok(index.includes('src/styles/241-hide-storage-status-card.css?v=1'), 'قانون حذف کارت باید بارگذاری شود');
+  assert.ok(index.includes('src/styles/235-hesabno-text-root-and-display-stability.css?v=2026103015'),
+    'قانون حذف کارت باید از لایهٔ استایل اصلی بارگذاری شود');
   assert.match(
     coreBundle,
     /انتخاب فایل پشتیبان از دستگاه/,

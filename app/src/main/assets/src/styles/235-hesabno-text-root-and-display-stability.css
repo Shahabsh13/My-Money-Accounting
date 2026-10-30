@@ -5211,3 +5211,8 @@ html body [data-hesabno-security-settings="true"] > [data-hesabno-security-card=
   overscroll-behavior: contain !important;
   -webkit-overflow-scrolling: touch !important;
 }
+
+/* This card reported localStorage usage, not total Android app storage. */
+#hesabno-storage-status-card {
+  display: none !important;
+}
