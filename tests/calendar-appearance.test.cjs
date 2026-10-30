@@ -1380,6 +1380,11 @@ test('dashboard widgets and transaction card icons use CSS appearance rules with
 
         const lockOverlay = document.getElementById('hesabno-app-lock-overlay');
         assert.ok(lockOverlay, 'لایه قفل امنیتی برنامه باید نمایش داده شود');
+        assert.ok(lockOverlay.classList.contains('bg-stone-950'),
+          'پس‌زمینهٔ کاملاً مات و سازگار با تم باید محتوای مالی پشت قفل را بپوشاند');
+        const lockBaseCss = fs.readFileSync(path.join(root, 'app/src/main/assets/src/styles/010-core-base.css'), 'utf8');
+        assert.ok(lockBaseCss.includes('.bg-stone-950{background-color:var(--color-stone-950)}'),
+          'پس‌زمینهٔ قفل باید از کلاس CSS تولیدشده استفاده کند تا ناخواسته شفاف نشود');
         const bioUnlockBtn = document.getElementById('hesabno-biometric-unlock-btn');
         assert.ok(bioUnlockBtn, 'دکمه «بازگشایی با اثر انگشت» باید در قفل برنامه وجود داشته باشد');
 
