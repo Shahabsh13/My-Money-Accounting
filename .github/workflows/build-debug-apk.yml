@@ -30,7 +30,18 @@ jobs:
         run: npm ci
 
       - name: Run accounting and UI regression tests
-        run: npm test
+        shell: bash
+        run: |
+          set +e
+          npm test > /tmp/accounting-tests.log 2>&1
+          test_status=$?
+          cat /tmp/accounting-tests.log
+          if [ "$test_status" -ne 0 ]; then
+            grep -E '^not ok |^✖ ' /tmp/accounting-tests.log | while IFS= read -r failure; do
+              echo "::error::$failure"
+            done
+          fi
+          exit "$test_status"
 
   build-debug-apk:
     if: github.event_name != 'pull_request' || !contains(github.event.pull_request.title, '[no-apk]')
