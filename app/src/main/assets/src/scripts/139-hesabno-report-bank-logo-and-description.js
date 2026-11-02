@@ -15,11 +15,11 @@
       } catch (error) {}
       return Array.isArray(window.__HESABNO_DEFAULT_ACCOUNTS) ? window.__HESABNO_DEFAULT_ACCOUNTS : [];
     };
-    var findCounterpartyAccount = function (displayName) {
+    var findCounterpartyAccount = function (displayName, accountList) {
       var target = normalizeAccountName(displayName);
       if (!target) return null;
       var strippedTarget = target.replace(/^بانک\s+/, "");
-      var accounts = readAccounts();
+      var accounts = Array.isArray(accountList) ? accountList : readAccounts();
       return accounts.find(function (item) {
         return item && (normalizeAccountName(item.name) === target || (item.bankName && normalizeAccountName(item.bankName) === target));
       }) || accounts.find(function (item) {
@@ -27,8 +27,8 @@
         return name && name === strippedTarget;
       }) || null;
     };
-    var selectedBankName = function (displayName) {
-      var account = findCounterpartyAccount(displayName);
+    var selectedBankName = function (displayName, account) {
+      if (arguments.length < 2) account = findCounterpartyAccount(displayName);
       return clean(account && (account.bankName || account.selectedBank || account.bank || account.linkedBank));
     };
     var resolveBank = function (value) {
@@ -86,7 +86,17 @@
     var digits = function (value) {
       return String(value || "").replace(/[۰-۹]/g, function (digit) { return String("۰۱۲۳۴۵۶۷۸۹".indexOf(digit)); }).replace(/[^0-9]/g, "");
     };
-    var manualDescription = function (row, card) {
+    var indexTransactionsByAmount = function () {
+      var index = Object.create(null);
+      readTransactions().forEach(function (item) {
+        var amount = digits(item && item.amount);
+        if (!amount) return;
+        if (!index[amount]) index[amount] = [];
+        index[amount].push(item);
+      });
+      return index;
+    };
+    var manualDescription = function (row, card, getTransactionIndex) {
       var current = row.querySelector(".hesabno-simple-report-description");
       if (current) return clean(current.textContent);
       if (!card) return "";
@@ -94,13 +104,13 @@
       var bank = clean((row.querySelector(".hesabno-simple-report-bank") || {}).textContent);
       var amountNode = row.querySelector(".hesabno-simple-report-amount");
       var amount = digits(amountNode && amountNode.textContent);
-      var candidates = readTransactions().filter(function (item) {
-        var account = clean(item && (item.account || item.bank || item.bankName || item.linkedBank));
-        var itemAmount = digits(item && item.amount);
-        var category = clean(item && (item.title || item.category));
-        return amount && itemAmount === amount && (!bank || account.includes(bank) || bank.includes(account)) && (!title || category === title);
+      if (!amount) return "";
+      var candidates = getTransactionIndex()[amount] || [];
+      var item = candidates.find(function (candidate) {
+        var account = clean(candidate && (candidate.account || candidate.bank || candidate.bankName || candidate.linkedBank));
+        var category = clean(candidate && (candidate.title || candidate.category));
+        return (!bank || account.includes(bank) || bank.includes(account)) && (!title || category === title);
       });
-      var item = candidates[0];
       var value = clean(item && (item.description || item.note || item.memo));
       if (!value || value === title || value === clean(item && (item.title || item.category))) return "";
       return value;
@@ -109,12 +119,22 @@
     var ensureStyle = function () {};
     var decorate = function () {
       ensureStyle();
+      var transactionIndex = null;
+      var accountList = null;
+      var getTransactionIndex = function () {
+        if (!transactionIndex) transactionIndex = indexTransactionsByAmount();
+        return transactionIndex;
+      };
+      var getAccountList = function () {
+        if (!accountList) accountList = readAccounts();
+        return accountList;
+      };
       document.querySelectorAll(".hesabno-report-transaction-row").forEach(function (row) {
         var bank = row.querySelector(".hesabno-simple-report-bank");
         if (!bank) return;
         var displayName = bank.getAttribute("title") || bank.textContent;
-        var account = findCounterpartyAccount(displayName);
-        var key = resolveBank(selectedBankName(displayName) || (account && (account.bankName || account.name)) || displayName);
+        var account = findCounterpartyAccount(displayName, getAccountList());
+        var key = resolveBank(selectedBankName(displayName, account) || (account && (account.bankName || account.name)) || displayName);
         var glyph = key ? "" : resolveAccountGlyph(displayName, account);
         var markId = key || ("glyph:" + glyph);
         var buildMark = function () {
@@ -136,7 +156,7 @@
           }
         }
         var card = row.closest(".hesabno-report-transaction-card");
-        var description = manualDescription(row, card);
+        var description = manualDescription(row, card, getTransactionIndex);
         var box = row.querySelector(".hesabno-simple-report-row-box") || row;
         if (description && !row.querySelector(".hesabno-simple-report-description")) {
           var node = document.createElement("div");

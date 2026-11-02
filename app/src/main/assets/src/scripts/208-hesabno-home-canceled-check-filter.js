@@ -22,7 +22,11 @@
       /برگشت|مسترد|returned|refund|bounc|dishonor/i.test(status);
   };
   var sync = function () {
-    var canceled = new Set(readTransactions().filter(excluded).map(function (transaction) {
+    // Read and parse the stored list once per sync. Rows without a visible document
+    // number use the title fallback below; re-reading storage inside each row made
+    // this O(rows × JSON.parse) on busy dashboards.
+    var excludedTransactions = readTransactions().filter(excluded);
+    var canceled = new Set(excludedTransactions.map(function (transaction) {
       return digits(transaction.documentNumber || transaction.id);
     }).filter(Boolean));
     document.querySelectorAll("main section").forEach(function (section) {
@@ -42,8 +46,8 @@
         if (!id) {
           var title = row.querySelector("p.font-bold");
           var label = clean(title && title.textContent).toLocaleLowerCase();
-          var matches = readTransactions().filter(function (transaction) {
-            return excluded(transaction) && label && label === clean(transaction.title || transaction.description).toLocaleLowerCase();
+          var matches = excludedTransactions.filter(function (transaction) {
+            return label && label === clean(transaction.title || transaction.description).toLocaleLowerCase();
           });
           hide = matches.length === 1;
         }
