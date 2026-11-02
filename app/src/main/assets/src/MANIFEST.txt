@@ -135,7 +135,7 @@
 136	script	src/scripts/136-hesabno-check-fee-policy.js	1280 bytes
 137	script	src/scripts/137-hesabno-loan-preview-clarity.js	8426 bytes
 138	script	src/scripts/138-hesabno-check-card-status-colors.js	4553 bytes
-139	script	src/scripts/139-hesabno-report-bank-logo-and-description.js	7026 bytes
+139	script	src/scripts/139-hesabno-report-bank-logo-and-description.js	9499 bytes
 140	script	src/scripts/140-hesabno-check-card-layout.js	20566 bytes
 141	style	src/styles/141-hesabno-restore-transaction-check-status.css	174 bytes
 142	script	src/scripts/142-hesabno-check-settlement-date.js	44451 bytes
@@ -189,9 +189,9 @@
 190	script	src/scripts/190-hesabno-daily-report-account-label-dedupe.js	3811 bytes
 191	script	src/scripts/191-hesabno-donut-category-icons.js	3958 bytes
 192	script	src/scripts/192-hesabno-transaction-account-detail-wrap.js	1803 bytes
-193	script	src/scripts/193-hesabno-loan-installment-form-cleanup.js	4578 bytes
+193	script	src/scripts/193-hesabno-loan-installment-form-cleanup.js	4007 bytes
 194	script	src/scripts/194-hesabno-loan-linked-transaction-actions.js	8649 bytes
-195	script	src/scripts/195-hesabno-loan-purchase-status-tabs.js	13674 bytes
+195	script	src/scripts/195-hesabno-loan-purchase-status-tabs.js	14475 bytes
 196	style	src/styles/196-hesabno-installment-purchase-cleanup.css	146 bytes
 197	script	src/scripts/197-hesabno-installment-purchase-cleanup-script.js	1776 bytes
 198	script	src/scripts/198-hesabno-accessible-form-fields.js	5008 bytes
@@ -204,7 +204,7 @@
 205	script	src/scripts/205-hesabno-reset-safety-restore.js	1635 bytes
 206	style	src/styles/206-hesabno-day-line-style.css	1178 bytes
 207	script	src/scripts/207-hesabno-day-line.js	2472 bytes
-208	script	src/scripts/208-hesabno-home-canceled-check-filter.js	4390 bytes
+208	script	src/scripts/208-hesabno-home-canceled-check-filter.js	5165 bytes
 209	style	src/styles/209-hesabno-hide-user-and-fast-tabs.css	372 bytes
 210	script	src/scripts/210-hesabno-user-section-guard.js	1494 bytes
 218	script	src/scripts/218-hesabno-hide-compound-correction-action.js	1537 bytes

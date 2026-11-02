@@ -17,8 +17,9 @@
       var upperTab = findButton(main, "وام و تسهیلات");
       var height = upperTab && upperTab.getBoundingClientRect().height;
       if (!height) return;
+      var value = height + "px";
       Array.from(main.querySelectorAll('[data-hesabno-status-button="true"]')).forEach(function (button) {
-        button.style.setProperty("--hesabno-status-tab-height", height + "px");
+        if (button.style.getPropertyValue("--hesabno-status-tab-height") !== value) button.style.setProperty("--hesabno-status-tab-height", value);
       });
     };
     var hide = function (node) {
@@ -67,8 +68,8 @@
         (selected ? "bg-purple-500/20 text-purple-300 border border-purple-500/40" : "bg-stone-800/80 text-stone-400 border border-stone-700/60");
     };
     var purchaseCards = function (main) {
-      return Array.from(main.querySelectorAll("div")).filter(function (node) {
-        return node.classList.contains("rounded-3xl") && node.classList.contains("p-4") && clean(node.textContent).includes("تاریخ ثبت:");
+      return Array.from(main.querySelectorAll("div.rounded-3xl.p-4")).filter(function (node) {
+        return clean(node.textContent).includes("تاریخ ثبت:");
       });
     };
     // Reuse the app's all-items filter, then hide settled cards for the active view.
@@ -76,8 +77,9 @@
       var cards = purchaseCards(main), activeCount = 0;
       cards.forEach(function (card) {
         var completed = Array.from(card.querySelectorAll("span")).some(function (node) { return clean(node.textContent) === "تسویه شده"; });
-        if (purchaseMode === "active" && completed) card.style.display = "none";
-        else { card.style.display = ""; if (!completed) activeCount += 1; }
+        var display = purchaseMode === "active" && completed ? "none" : "";
+        if (card.style.display !== display) card.style.display = display;
+        if (display !== "none" && !completed) activeCount += 1;
       });
       var empty = main.querySelector("[data-hesabno-active-purchases-empty]");
       if (cards.length && purchaseMode === "active" && activeCount === 0) {
@@ -143,8 +145,10 @@
               if (currentList) currentList.click();
             });
           }
-          backButton.className = "w-full py-2.5 px-3 rounded-xl bg-purple-500/10 text-purple-700 border border-purple-500/25 text-xs font-bold flex items-center justify-center transition";
-          backButton.textContent = isPurchase ? "بازگشت به فهرست خریدها" : "بازگشت به فهرست وام‌ها";
+          var backButtonClass = "w-full py-2.5 px-3 rounded-xl bg-purple-500/10 text-purple-700 border border-purple-500/25 text-xs font-bold flex items-center justify-center transition";
+          if (backButton.className !== backButtonClass) backButton.className = backButtonClass;
+          var backButtonText = isPurchase ? "بازگشت به فهرست خریدها" : "بازگشت به فهرست وام‌ها";
+          if (backButton.textContent !== backButtonText) backButton.textContent = backButtonText;
           if (backButton.parentElement !== hiddenTabs.parentElement || backButton.previousElementSibling !== hiddenTabs) hiddenTabs.after(backButton);
         } else if (backButton) backButton.remove();
       }
@@ -156,12 +160,13 @@
           hide(allLoans);
           var loanStatusBar = activeLoans.parentElement;
           if (completedLoans && completedLoans.parentElement === loanStatusBar) {
-            loanStatusBar.className = "grid grid-cols-2 gap-1.5 p-1 bg-stone-800/90 border border-stone-700/70 rounded-2xl w-full";
-            loanStatusBar.setAttribute("data-hesabno-loan-status-bar", "true");
-            activeLoans.setAttribute("data-hesabno-status-button", "true");
-            completedLoans.setAttribute("data-hesabno-status-button", "true");
-            activeLoans.classList.add("w-full");
-            completedLoans.classList.add("w-full");
+            var loanBarClass = "grid grid-cols-2 gap-1.5 p-1 bg-stone-800/90 border border-stone-700/70 rounded-2xl w-full";
+            if (loanStatusBar.className !== loanBarClass) loanStatusBar.className = loanBarClass;
+            if (loanStatusBar.getAttribute("data-hesabno-loan-status-bar") !== "true") loanStatusBar.setAttribute("data-hesabno-loan-status-bar", "true");
+            if (activeLoans.getAttribute("data-hesabno-status-button") !== "true") activeLoans.setAttribute("data-hesabno-status-button", "true");
+            if (completedLoans.getAttribute("data-hesabno-status-button") !== "true") completedLoans.setAttribute("data-hesabno-status-button", "true");
+            if (!activeLoans.classList.contains("w-full")) activeLoans.classList.add("w-full");
+            if (!completedLoans.classList.contains("w-full")) completedLoans.classList.add("w-full");
           }
           var activeText = "در حال پرداخت (" + countFrom(activeLoans).toLocaleString("fa-IR") + ")";
           if (activeLoans.textContent !== activeText) activeLoans.textContent = activeText;
@@ -187,22 +192,27 @@
         makePurchaseTab(bar, "active");
         makePurchaseTab(bar, "completed");
       }
-      bar.className = "grid grid-cols-2 gap-1.5 p-1 bg-stone-800/90 border border-stone-700/70 rounded-2xl w-full";
+      var purchaseBarClass = "grid grid-cols-2 gap-1.5 p-1 bg-stone-800/90 border border-stone-700/70 rounded-2xl w-full";
+      if (bar.className !== purchaseBarClass) bar.className = purchaseBarClass;
       if (bar.parentElement !== originalBar.parentElement || bar.previousElementSibling !== originalBar) originalBar.after(bar);
       var activeTab = bar.querySelector('[data-hesabno-purchase-status="active"]');
       var completedTab = bar.querySelector('[data-hesabno-purchase-status="completed"]');
       var totalCount = countFrom(allPurchases), completedCount = countFrom(completedPurchases);
       if (activeTab) {
-        activeTab.className = statusClass(purchaseMode === "active");
+        var activeClass = statusClass(purchaseMode === "active");
+        if (activeTab.className !== activeClass) activeTab.className = activeClass;
         var activeText = "در حال پرداخت (" + Math.max(0, totalCount - completedCount).toLocaleString("fa-IR") + ")";
         if (activeTab.textContent !== activeText) activeTab.textContent = activeText;
-        activeTab.setAttribute("aria-selected", purchaseMode === "active" ? "true" : "false");
+        var activeSelected = purchaseMode === "active" ? "true" : "false";
+        if (activeTab.getAttribute("aria-selected") !== activeSelected) activeTab.setAttribute("aria-selected", activeSelected);
       }
       if (completedTab) {
-        completedTab.className = statusClass(purchaseMode === "completed");
+        var completedClass = statusClass(purchaseMode === "completed");
+        if (completedTab.className !== completedClass) completedTab.className = completedClass;
         var completedText = "تسویه شده (" + completedCount.toLocaleString("fa-IR") + ")";
         if (completedTab.textContent !== completedText) completedTab.textContent = completedText;
-        completedTab.setAttribute("aria-selected", purchaseMode === "completed" ? "true" : "false");
+        var completedSelected = purchaseMode === "completed" ? "true" : "false";
+        if (completedTab.getAttribute("aria-selected") !== completedSelected) completedTab.setAttribute("aria-selected", completedSelected);
       }
       if (main.dataset.hesabnoPurchaseStatusTabsReady !== "true") {
         main.dataset.hesabnoPurchaseStatusTabsReady = "true";
