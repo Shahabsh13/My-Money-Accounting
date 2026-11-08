@@ -26,7 +26,7 @@
   }
   function extract(text,template) {
     var body=normalize(text);
-    if(/رمز|کد ورود|یکبار مصرف|یک بار مصرف/.test(body))return null;
+    if(/رمز|کد ورود|یکبار مصرف|یک بار مصرف|کد تایید|کد تائید|کد فعالسازی|کد فعال سازی|کد اعتبارسنجی/.test(body))return null;
     var lines=body.split(/\r?\n/).map(function(l){return l.trim();});
     var movement=lines.map(function(l){return l.split(/مانده|موجودی/)[0].trim();}).filter(Boolean);
     // Priority is across the whole message, not simply the first numeric-looking line.
@@ -44,6 +44,11 @@
     var signed=readNumber(value);if(signed===null||signed===0)return null;
     var direction=/^-|-$/.test(value)?'expense':/^\+|\+$/.test(value)?'income':null;
     if(template&&['income','expense'].indexOf(template.typeRule)!==-1)direction=template.typeRule;
+    if(!direction){
+      var lineInc=/واریز|بستانکار|حقوق|نشست|سود/.test(amountLine);
+      var lineOut=/برداشت|خرید|بدهکار|کسر|پرید|پرداخت/.test(amountLine);
+      if(lineInc!==lineOut)direction=lineInc?'income':'expense';
+    }
     if(!direction){
       var incoming,outgoing;
       if(template&&(template.incomeKeywords||template.expenseKeywords)){

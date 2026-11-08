@@ -603,5 +603,157 @@
         "kind": "reported-real-format-numbers-changed"
       }
     ]
+  },
+  {
+    "id": "maskan",
+    "name": "بانک مسکن",
+    "keywords": [
+      "مسکن"
+    ],
+    "senders": [
+      "MASKAN",
+      "MaskanBank",
+      "BankMaskan",
+      "+98200014"
+    ],
+    "samples": [
+      {
+        "text": "بانک مسکن\nواریز: ۴٬۵۰۰٬۰۰۰ ریال\nحساب: ۱۲۳۴\nمانده: ۱۸٬۵۰۰٬۰۰۰ ریال",
+        "sender": "MASKAN",
+        "type": "income",
+        "amount": 4500000,
+        "balance": 18500000,
+        "source": "https://github.com/Shahabsh13/My-Money-Accounting/blob/main/docs/BANK-SMS-SAMPLES.md",
+        "kind": "reported-real-format-numbers-changed"
+      },
+      {
+        "text": "بانک مسکن\nبرداشت: ۱٬۲۰۰٬۰۰۰ ریال\nحساب: ۱۲۳۴\nمانده: ۱۷٬۳۰۰٬۰۰۰ ریال",
+        "sender": "MASKAN",
+        "type": "expense",
+        "amount": 1200000,
+        "balance": 17300000,
+        "source": "https://github.com/Shahabsh13/My-Money-Accounting/blob/main/docs/BANK-SMS-SAMPLES.md",
+        "kind": "reported-real-format-numbers-changed"
+      }
+    ]
+  },
+  {
+    "id": "eghtesad-novin",
+    "name": "بانک اقتصاد نوین",
+    "keywords": [
+      "اقتصاد نوین"
+    ],
+    "senders": [
+      "EN Bank",
+      "ENBank",
+      "ENBANK",
+      "+98200055"
+    ],
+    "samples": [
+      {
+        "text": "بانک اقتصاد نوین\nواریز: ۳٬۰۰۰٬۰۰۰ ریال\nحساب: ۸۸۹۰\nمانده: ۲۵٬۰۰۰٬۰۰۰ ریال",
+        "sender": "ENBank",
+        "type": "income",
+        "amount": 3000000,
+        "balance": 25000000,
+        "source": "https://github.com/Shahabsh13/My-Money-Accounting/blob/main/docs/BANK-SMS-SAMPLES.md",
+        "kind": "reported-real-format-numbers-changed"
+      }
+    ]
+  },
+  {
+    "id": "sina",
+    "name": "بانک سینا",
+    "keywords": [
+      "سینا"
+    ],
+    "senders": [
+      "SINA",
+      "SinaBank",
+      "BankSina",
+      "+98200059"
+    ],
+    "samples": [
+      {
+        "text": "بانک سینا\nواریز: ۲٬۰۰۰٬۰۰۰ ریال\nکارت: ****\nمانده: ۳۴٬۰۰۰٬۰۰۰ ریال",
+        "sender": "SinaBank",
+        "type": "income",
+        "amount": 2000000,
+        "balance": 34000000,
+        "source": "https://github.com/Shahabsh13/My-Money-Accounting/blob/main/docs/BANK-SMS-SAMPLES.md",
+        "kind": "reported-real-format-numbers-changed"
+      }
+    ]
+  },
+  {
+    "id": "dey",
+    "name": "بانک دی",
+    "keywords": [
+      "بانک دی"
+    ],
+    "senders": [
+      "DAY",
+      "DayBank",
+      "DAYBANK",
+      "+98200066"
+    ],
+    "samples": [
+      {
+        "text": "بانک دی\nواریز: ۱٬۵۰۰٬۰۰۰ ریال\nکارت: ****\nمانده: ۲۲٬۰۰۰٬۰۰۰ ریال",
+        "sender": "DayBank",
+        "type": "income",
+        "amount": 1500000,
+        "balance": 22000000,
+        "source": "https://github.com/Shahabsh13/My-Money-Accounting/blob/main/docs/BANK-SMS-SAMPLES.md",
+        "kind": "reported-real-format-numbers-changed"
+      }
+    ]
+  },
+  {
+    "id": "gardeshgari",
+    "name": "بانک گردشگری",
+    "keywords": [
+      "گردشگری"
+    ],
+    "senders": [
+      "GARDESHGARI",
+      "TourismBank",
+      "+98200064"
+    ],
+    "samples": [
+      {
+        "text": "بانک گردشگری\nواریز: ۸٬۰۰۰٬۰۰۰ ریال\nحساب: ۱۲۳۴\nمانده: ۴۵٬۰۰۰٬۰۰۰ ریال",
+        "sender": "TourismBank",
+        "type": "income",
+        "amount": 8000000,
+        "balance": 45000000,
+        "source": "https://github.com/Shahabsh13/My-Money-Accounting/blob/main/docs/BANK-SMS-SAMPLES.md",
+        "kind": "reported-real-format-numbers-changed"
+      }
+    ]
+  },
+  {
+    "id": "vpod",
+    "name": "ویپاد",
+    "keywords": [
+      "ویپاد",
+      "ترابانک پاسارگاد"
+    ],
+    "senders": [
+      "Vpod",
+      "VPOD",
+      "vpod"
+    ],
+    "samples": [
+      {
+        "text": "ویپاد\nواریز: ۵٬۰۰۰٬۰۰۰ ریال\nموجودی: ۱۲٬۰۰۰٬۰۰۰ ریال",
+        "sender": "Vpod",
+        "type": "income",
+        "amount": 5000000,
+        "balance": 12000000,
+        "source": "https://github.com/Shahabsh13/My-Money-Accounting/blob/main/docs/BANK-SMS-SAMPLES.md",
+        "kind": "reported-real-format-numbers-changed"
+      }
+    ]
   }
 ];})(typeof window!=="undefined"?window:globalThis);
