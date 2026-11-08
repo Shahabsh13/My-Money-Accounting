@@ -14,7 +14,17 @@
     if(byName.length===1)return byName[0];
     if(byName.length>1)return byName.find(function(b){return b.id==='blu';})||null;
     var bySender=banks.filter(function(b){return address&&b.senders.some(function(s){return s.replace(/\s/g,'').toLowerCase()===address;});});
-    return bySender.length===1?bySender[0]:null;
+    if(bySender.length===1)return bySender[0];
+    if(/حساب\s*[:：]?\s*\d{10}/.test(body)&&/\d{2}\/\d{2}\/\d{2}-\d{2}:\d{2}/.test(body)){
+      return banks.find(function(b){return b.id==='mellat';})||null;
+    }
+    if(/\d{3}\.\d{3}\.\d{5,8}\.\d/.test(body)){
+      return banks.find(function(b){return b.id==='pasargad';})||null;
+    }
+    if(/(?:^|\s)10\.\d{6,9}\.\d/.test(body)){
+      return banks.find(function(b){return b.id==='resalat';})||null;
+    }
+    return null;
   }
   function escapeRegex(value) { return value.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); }
   var NUMBER='([+-]?\\d+(?:\\.\\d+)?[+-]?)';
@@ -58,13 +68,13 @@
       if(incoming===outgoing)return null;
       direction=incoming?'income':'expense';
     }
-    var amount=Math.abs(signed),balanceMatch=body.match(new RegExp('(?:مانده|موجودی)(?:\\s+کارت)?\\s*[:：]?\\s*'+NUMBER));
+    var amount=Math.abs(signed),balanceMatch=body.match(new RegExp('(?:مانده|موجودی)(?:\\s+(?:کارت|حساب))?\\s*[:：]?\\s*'+NUMBER));
     var balance=balanceMatch?readNumber(balanceMatch[1]):undefined;
     if(balance===null)return null;
     var unitText=/ریال|تومان/.test(amountLine)?amountLine:body;
     if(/تومان/.test(unitText)&&!/ریال/.test(unitText)){amount*=10;if(balance!==undefined)balance*=10;}
     if(!Number.isSafeInteger(amount)||(balance!==undefined&&!Number.isSafeInteger(balance)))return null;
-    var account=body.match(/حساب\s*[:：]?\s*([\d./-]+)/),card=body.match(/کارت\s*[:：]?\s*([\d*]+)/);
+    var account=body.match(/(?<!مانده\s*)حساب\s*[:：]?\s*([\d./-]+)/),card=body.match(/کارت\s*[:：]?\s*([\d*]+)/);
     return {type:direction,amount:amount,balance:balance,accountNumber:account?account[1]:undefined,cardNumber:card?card[1]:undefined};
   }
   function result(text,values,name,id,custom){
@@ -73,7 +83,16 @@
       description:name+' - '+(values.type==='income'?'واریز':'برداشت'),isCustomPattern:custom,
       matchedPatternId:id,receivedAt:'امروز',isRegistered:false},values);
   }
-  function parse(text,sender) {var bank=identify(text,sender);return bank?result(text,extract(text,null),bank.name,'builtin-'+bank.id,false):null;}
+  function parse(text,sender) {
+    var bank=identify(text,sender);
+    if(bank)return result(text,extract(text,null),bank.name,'builtin-'+bank.id,false);
+    var body=normalize(text);
+    if((/واریز|برداشت/.test(body))&&(/(?:مانده|موجودی|حساب|کارت)/.test(body))){
+      var values=extract(text,null);
+      return values?result(text,values,'سایر بانک‌ها','builtin-generic',false):null;
+    }
+    return null;
+  }
   function parseCustom(text,template) {return result(text,extract(text,template),template.bankName,template.id,true);}
   root.HnBankSmsLibrary={normalize:normalize,identify:identify,parse:parse,parseCustom:parseCustom,names:function(){return (root.HnBankSmsSamples||[]).map(function(b){return b.name;});}};
 })(typeof window!=='undefined'?window:globalThis);
