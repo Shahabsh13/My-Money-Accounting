@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shamsi_date/shamsi_date.dart';
 
+import 'domain/numbers.dart' as numbers;
 import 'models/account_model.dart';
 import 'models/transaction_model.dart';
 import 'services/database_helper.dart';
@@ -85,13 +86,7 @@ class _MainScreenState extends State<MainScreen> {
 
   String _formatMoney(double amount) {
     if (_hideNumbers) return '••••••';
-    final rounded = amount.round().abs();
-    final formatted = rounded.toString().replaceAllMapped(
-          RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-          (Match m) => '${m[1]}،',
-        );
-    final prefix = amount < 0 ? '-' : '';
-    return _toPersianDigit('$prefix$formatted');
+    return numbers.formatAmount(amount);
   }
 
   double get _totalBalance => _accounts.fold(0.0, (sum, a) => sum + a.balance);

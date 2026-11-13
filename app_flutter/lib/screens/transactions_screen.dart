@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shamsi_date/shamsi_date.dart';
+import '../domain/numbers.dart' as numbers;
 import '../models/account_model.dart';
 import '../models/transaction_model.dart';
 import '../services/database_helper.dart';
@@ -48,9 +49,8 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
   }
 
   String _formatMoney(double amount) {
-    final clean = amount.toInt().abs().toString();
-    final reg = RegExp(r'\B(?=(\d{3})+(?!\d))');
-    return _toPersianDigit(clean.replaceAll(reg, ','));
+    // Signs in this screen are rendered separately from the amount.
+    return numbers.formatAmount(amount.abs());
   }
 
   String _getCategoryEmoji(String category) {

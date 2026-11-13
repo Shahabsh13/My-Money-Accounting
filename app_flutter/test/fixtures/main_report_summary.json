@@ -1,0 +1,649 @@
+{
+  "results": [
+    {
+      "scenarioIndex": 0,
+      "installments": [
+        {
+          "status": "pending",
+          "amount": 0
+        },
+        {
+          "status": "overdue",
+          "amount": 75
+        },
+        {
+          "status": "paid",
+          "amount": 999
+        },
+        {
+          "status": "canceled",
+          "amount": 1000
+        }
+      ],
+      "expected": {
+        "totalIncome": -275,
+        "totalExpense": -105,
+        "netSavings": -170,
+        "totalLiquidAssets": 842,
+        "liquidBalances": {
+          "بانک ملی": -447,
+          "کیف نقدی": 1233,
+          "بانک فرزند": 56
+        },
+        "totalReceivables": 992,
+        "totalPayables": 0,
+        "personBalances": {
+          "علی": {
+            "balance": 510,
+            "status": "debtor"
+          }
+        },
+        "totalRemainingInstallments": 75,
+        "totalNetWorth": 1759
+      }
+    },
+    {
+      "scenarioIndex": 1,
+      "installments": [
+        {
+          "status": "pending",
+          "amount": 10
+        },
+        {
+          "status": "overdue",
+          "amount": 75
+        },
+        {
+          "status": "paid",
+          "amount": 999
+        },
+        {
+          "status": "canceled",
+          "amount": 1000
+        }
+      ],
+      "expected": {
+        "totalIncome": -346,
+        "totalExpense": 58,
+        "netSavings": -404,
+        "totalLiquidAssets": 1768,
+        "liquidBalances": {
+          "بانک ملی": 962,
+          "کیف نقدی": 319,
+          "بانک فرزند": 487
+        },
+        "totalReceivables": 325,
+        "totalPayables": 455,
+        "personBalances": {
+          "علی": {
+            "balance": -34,
+            "status": "creditor"
+          }
+        },
+        "totalRemainingInstallments": 85,
+        "totalNetWorth": 1553
+      }
+    },
+    {
+      "scenarioIndex": 2,
+      "installments": [
+        {
+          "status": "pending",
+          "amount": 20
+        },
+        {
+          "status": "overdue",
+          "amount": 75
+        },
+        {
+          "status": "paid",
+          "amount": 999
+        },
+        {
+          "status": "canceled",
+          "amount": 1000
+        }
+      ],
+      "expected": {
+        "totalIncome": -1317,
+        "totalExpense": -70,
+        "netSavings": -1247,
+        "totalLiquidAssets": 1874,
+        "liquidBalances": {
+          "بانک ملی": 807,
+          "کیف نقدی": 528,
+          "بانک فرزند": 539
+        },
+        "totalReceivables": 610,
+        "totalPayables": 545,
+        "personBalances": {
+          "علی": {
+            "balance": 71,
+            "status": "debtor"
+          }
+        },
+        "totalRemainingInstallments": 95,
+        "totalNetWorth": 1844
+      }
+    },
+    {
+      "scenarioIndex": 3,
+      "installments": [
+        {
+          "status": "pending",
+          "amount": 30
+        },
+        {
+          "status": "overdue",
+          "amount": 75
+        },
+        {
+          "status": "paid",
+          "amount": 999
+        },
+        {
+          "status": "canceled",
+          "amount": 1000
+        }
+      ],
+      "expected": {
+        "totalIncome": -810,
+        "totalExpense": 253,
+        "netSavings": -1063,
+        "totalLiquidAssets": 1385,
+        "liquidBalances": {
+          "بانک ملی": 135,
+          "کیف نقدی": 1168,
+          "بانک فرزند": 82
+        },
+        "totalReceivables": 462,
+        "totalPayables": 1294,
+        "personBalances": {
+          "علی": {
+            "balance": -3,
+            "status": "creditor"
+          }
+        },
+        "totalRemainingInstallments": 105,
+        "totalNetWorth": 448
+      }
+    },
+    {
+      "scenarioIndex": 4,
+      "installments": [
+        {
+          "status": "pending",
+          "amount": 40
+        },
+        {
+          "status": "overdue",
+          "amount": 75
+        },
+        {
+          "status": "paid",
+          "amount": 999
+        },
+        {
+          "status": "canceled",
+          "amount": 1000
+        }
+      ],
+      "expected": {
+        "totalIncome": -313,
+        "totalExpense": -444,
+        "netSavings": 131,
+        "totalLiquidAssets": 1773,
+        "liquidBalances": {
+          "بانک ملی": 1619,
+          "کیف نقدی": -80,
+          "بانک فرزند": 234
+        },
+        "totalReceivables": 1420,
+        "totalPayables": 387,
+        "personBalances": {
+          "علی": {
+            "balance": 802,
+            "status": "debtor"
+          }
+        },
+        "totalRemainingInstallments": 115,
+        "totalNetWorth": 2691
+      }
+    },
+    {
+      "scenarioIndex": 5,
+      "installments": [
+        {
+          "status": "pending",
+          "amount": 50
+        },
+        {
+          "status": "overdue",
+          "amount": 75
+        },
+        {
+          "status": "paid",
+          "amount": 999
+        },
+        {
+          "status": "canceled",
+          "amount": 1000
+        }
+      ],
+      "expected": {
+        "totalIncome": -6,
+        "totalExpense": -1114,
+        "netSavings": 1108,
+        "totalLiquidAssets": 1287,
+        "liquidBalances": {
+          "بانک ملی": 679,
+          "کیف نقدی": 326,
+          "بانک فرزند": 282
+        },
+        "totalReceivables": 1383,
+        "totalPayables": 284,
+        "personBalances": {
+          "علی": {
+            "balance": 562,
+            "status": "debtor"
+          }
+        },
+        "totalRemainingInstallments": 125,
+        "totalNetWorth": 2261
+      }
+    },
+    {
+      "scenarioIndex": 6,
+      "installments": [
+        {
+          "status": "pending",
+          "amount": 60
+        },
+        {
+          "status": "overdue",
+          "amount": 75
+        },
+        {
+          "status": "paid",
+          "amount": 999
+        },
+        {
+          "status": "canceled",
+          "amount": 1000
+        }
+      ],
+      "expected": {
+        "totalIncome": -247,
+        "totalExpense": -701,
+        "netSavings": 454,
+        "totalLiquidAssets": 1942,
+        "liquidBalances": {
+          "بانک ملی": 1199,
+          "کیف نقدی": 313,
+          "بانک فرزند": 430
+        },
+        "totalReceivables": 1430,
+        "totalPayables": 528,
+        "personBalances": {
+          "علی": {
+            "balance": 759,
+            "status": "debtor"
+          }
+        },
+        "totalRemainingInstallments": 135,
+        "totalNetWorth": 2709
+      }
+    },
+    {
+      "scenarioIndex": 7,
+      "installments": [
+        {
+          "status": "pending",
+          "amount": 70
+        },
+        {
+          "status": "overdue",
+          "amount": 75
+        },
+        {
+          "status": "paid",
+          "amount": 999
+        },
+        {
+          "status": "canceled",
+          "amount": 1000
+        }
+      ],
+      "expected": {
+        "totalIncome": 125,
+        "totalExpense": -225,
+        "netSavings": 350,
+        "totalLiquidAssets": -1187,
+        "liquidBalances": {
+          "بانک ملی": -339,
+          "کیف نقدی": -777,
+          "بانک فرزند": -71
+        },
+        "totalReceivables": 929,
+        "totalPayables": 405,
+        "personBalances": {
+          "علی": {
+            "balance": 454,
+            "status": "debtor"
+          }
+        },
+        "totalRemainingInstallments": 145,
+        "totalNetWorth": -808
+      }
+    },
+    {
+      "scenarioIndex": 8,
+      "installments": [
+        {
+          "status": "pending",
+          "amount": 80
+        },
+        {
+          "status": "overdue",
+          "amount": 75
+        },
+        {
+          "status": "paid",
+          "amount": 999
+        },
+        {
+          "status": "canceled",
+          "amount": 1000
+        }
+      ],
+      "expected": {
+        "totalIncome": -197,
+        "totalExpense": -51,
+        "netSavings": -146,
+        "totalLiquidAssets": 2218,
+        "liquidBalances": {
+          "بانک ملی": 1154,
+          "کیف نقدی": 140,
+          "بانک فرزند": 924
+        },
+        "totalReceivables": 389,
+        "totalPayables": 706,
+        "personBalances": {
+          "علی": {
+            "balance": -245,
+            "status": "creditor"
+          }
+        },
+        "totalRemainingInstallments": 155,
+        "totalNetWorth": 1746
+      }
+    },
+    {
+      "scenarioIndex": 9,
+      "installments": [
+        {
+          "status": "pending",
+          "amount": 90
+        },
+        {
+          "status": "overdue",
+          "amount": 75
+        },
+        {
+          "status": "paid",
+          "amount": 999
+        },
+        {
+          "status": "canceled",
+          "amount": 1000
+        }
+      ],
+      "expected": {
+        "totalIncome": -1168,
+        "totalExpense": -711,
+        "netSavings": -457,
+        "totalLiquidAssets": 279,
+        "liquidBalances": {
+          "بانک ملی": -89,
+          "کیف نقدی": 562,
+          "بانک فرزند": -194
+        },
+        "totalReceivables": 1156,
+        "totalPayables": 847,
+        "personBalances": {
+          "علی": {
+            "balance": -160,
+            "status": "creditor"
+          }
+        },
+        "totalRemainingInstallments": 165,
+        "totalNetWorth": 423
+      }
+    },
+    {
+      "scenarioIndex": 10,
+      "installments": [
+        {
+          "status": "pending",
+          "amount": 100
+        },
+        {
+          "status": "overdue",
+          "amount": 75
+        },
+        {
+          "status": "paid",
+          "amount": 999
+        },
+        {
+          "status": "canceled",
+          "amount": 1000
+        }
+      ],
+      "expected": {
+        "totalIncome": -216,
+        "totalExpense": -217,
+        "netSavings": 1,
+        "totalLiquidAssets": -199,
+        "liquidBalances": {
+          "بانک ملی": -81,
+          "کیف نقدی": -10,
+          "بانک فرزند": -108
+        },
+        "totalReceivables": 1092,
+        "totalPayables": 72,
+        "personBalances": {
+          "علی": {
+            "balance": 522,
+            "status": "debtor"
+          }
+        },
+        "totalRemainingInstallments": 175,
+        "totalNetWorth": 646
+      }
+    },
+    {
+      "scenarioIndex": 11,
+      "installments": [
+        {
+          "status": "pending",
+          "amount": 110
+        },
+        {
+          "status": "overdue",
+          "amount": 75
+        },
+        {
+          "status": "paid",
+          "amount": 999
+        },
+        {
+          "status": "canceled",
+          "amount": 1000
+        }
+      ],
+      "expected": {
+        "totalIncome": -201,
+        "totalExpense": 195,
+        "netSavings": -396,
+        "totalLiquidAssets": 1569,
+        "liquidBalances": {
+          "بانک ملی": 437,
+          "کیف نقدی": 679,
+          "بانک فرزند": 453
+        },
+        "totalReceivables": 518,
+        "totalPayables": 646,
+        "personBalances": {
+          "علی": {
+            "balance": -112,
+            "status": "creditor"
+          }
+        },
+        "totalRemainingInstallments": 185,
+        "totalNetWorth": 1256
+      }
+    }
+  ],
+  "standalone": [
+    {
+      "accounts": [
+        {
+          "id": 1,
+          "name": "بانک",
+          "group": "bank",
+          "active": true,
+          "initialBalance": 100
+        },
+        {
+          "id": 2,
+          "name": "غیرفعال",
+          "group": "bank",
+          "active": false,
+          "initialBalance": 900
+        },
+        {
+          "id": 3,
+          "name": "طلبکار",
+          "group": "person",
+          "active": true,
+          "initialBalance": -40
+        },
+        {
+          "id": 4,
+          "name": "بدهکار",
+          "group": "person",
+          "active": true,
+          "initialBalance": 30
+        },
+        {
+          "id": 5,
+          "name": "تسویه",
+          "group": "person",
+          "active": true,
+          "initialBalance": 0
+        },
+        {
+          "id": 6,
+          "name": "خوراک",
+          "group": "expense",
+          "active": true
+        }
+      ],
+      "transactions": [
+        {
+          "id": 1,
+          "type": "income",
+          "amount": 60,
+          "method": "check",
+          "check": {
+            "status": "in_progress"
+          },
+          "account": "بانک",
+          "category": "بدهکار"
+        },
+        {
+          "id": 2,
+          "type": "expense",
+          "amount": 20,
+          "method": "check",
+          "check": {
+            "status": "issued"
+          },
+          "account": "بانک",
+          "category": "خوراک",
+          "feeAmount": 3
+        },
+        {
+          "id": 3,
+          "type": "expense",
+          "amount": 5,
+          "method": "check",
+          "check": {
+            "status": "cleared"
+          },
+          "account": "بانک",
+          "category": "خوراک"
+        }
+      ],
+      "installments": [
+        {
+          "status": "pending",
+          "amount": 11
+        },
+        {
+          "status": "overdue",
+          "amount": 13
+        },
+        {
+          "status": "paid",
+          "amount": 300
+        }
+      ],
+      "expected": {
+        "totalIncome": 0,
+        "totalExpense": 28,
+        "netSavings": -28,
+        "totalLiquidAssets": 92,
+        "liquidBalances": {
+          "بانک": 92
+        },
+        "totalReceivables": 60,
+        "totalPayables": 90,
+        "personBalances": {
+          "طلبکار": {
+            "balance": -40,
+            "status": "creditor"
+          },
+          "بدهکار": {
+            "balance": -30,
+            "status": "creditor"
+          },
+          "تسویه": {
+            "balance": 0,
+            "status": "settled"
+          }
+        },
+        "totalRemainingInstallments": 24,
+        "totalNetWorth": 38
+      }
+    },
+    {
+      "accounts": [],
+      "transactions": [],
+      "installments": [],
+      "expected": {
+        "totalIncome": 0,
+        "totalExpense": 0,
+        "netSavings": 0,
+        "totalLiquidAssets": 0,
+        "liquidBalances": {},
+        "totalReceivables": 0,
+        "totalPayables": 0,
+        "personBalances": {},
+        "totalRemainingInstallments": 0,
+        "totalNetWorth": 0
+      }
+    }
+  ]
+}

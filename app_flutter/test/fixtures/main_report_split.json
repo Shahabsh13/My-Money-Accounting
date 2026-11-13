@@ -1,0 +1,7002 @@
+{
+  "accounts": [
+    {
+      "id": 1,
+      "name": "حقوق",
+      "group": "income"
+    },
+    {
+      "id": 2,
+      "name": "خوراک",
+      "group": "expense"
+    },
+    {
+      "id": 3,
+      "name": "علی",
+      "group": "person"
+    },
+    {
+      "id": 4,
+      "name": "بانک",
+      "group": "bank"
+    },
+    {
+      "id": 5,
+      "name": "درآمد تکراری",
+      "group": "expense"
+    },
+    {
+      "id": 6,
+      "name": "درآمد تکراری",
+      "group": "income"
+    }
+  ],
+  "cases": [
+    {
+      "name": "income/حقوق/false/null/0",
+      "transaction": {
+        "type": "income",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 100,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/حقوق/false/null/17",
+      "transaction": {
+        "type": "income",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 100,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "income/حقوق/false/cleared/0",
+      "transaction": {
+        "type": "income",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 100,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/حقوق/false/cleared/17",
+      "transaction": {
+        "type": "income",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 100,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "income/حقوق/false/bounced/0",
+      "transaction": {
+        "type": "income",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/حقوق/false/bounced/17",
+      "transaction": {
+        "type": "income",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "income/حقوق/false/returned/0",
+      "transaction": {
+        "type": "income",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/حقوق/false/returned/17",
+      "transaction": {
+        "type": "income",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "income/حقوق/false/in_progress/0",
+      "transaction": {
+        "type": "income",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 100,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/حقوق/false/in_progress/17",
+      "transaction": {
+        "type": "income",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 100,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "income/حقوق/true/null/0",
+      "transaction": {
+        "type": "income",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 100,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/حقوق/true/null/17",
+      "transaction": {
+        "type": "income",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 100,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "income/حقوق/true/cleared/0",
+      "transaction": {
+        "type": "income",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 100,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/حقوق/true/cleared/17",
+      "transaction": {
+        "type": "income",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 100,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "income/حقوق/true/bounced/0",
+      "transaction": {
+        "type": "income",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/حقوق/true/bounced/17",
+      "transaction": {
+        "type": "income",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "income/حقوق/true/returned/0",
+      "transaction": {
+        "type": "income",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/حقوق/true/returned/17",
+      "transaction": {
+        "type": "income",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "income/حقوق/true/in_progress/0",
+      "transaction": {
+        "type": "income",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 100,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/حقوق/true/in_progress/17",
+      "transaction": {
+        "type": "income",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 100,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "income/خوراک/false/null/0",
+      "transaction": {
+        "type": "income",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -100,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/خوراک/false/null/17",
+      "transaction": {
+        "type": "income",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -83,
+        "fee": 17
+      }
+    },
+    {
+      "name": "income/خوراک/false/cleared/0",
+      "transaction": {
+        "type": "income",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -100,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/خوراک/false/cleared/17",
+      "transaction": {
+        "type": "income",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -83,
+        "fee": 17
+      }
+    },
+    {
+      "name": "income/خوراک/false/bounced/0",
+      "transaction": {
+        "type": "income",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/خوراک/false/bounced/17",
+      "transaction": {
+        "type": "income",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "income/خوراک/false/returned/0",
+      "transaction": {
+        "type": "income",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/خوراک/false/returned/17",
+      "transaction": {
+        "type": "income",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "income/خوراک/false/in_progress/0",
+      "transaction": {
+        "type": "income",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -100,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/خوراک/false/in_progress/17",
+      "transaction": {
+        "type": "income",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -83,
+        "fee": 17
+      }
+    },
+    {
+      "name": "income/خوراک/true/null/0",
+      "transaction": {
+        "type": "income",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -100,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/خوراک/true/null/17",
+      "transaction": {
+        "type": "income",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -117,
+        "fee": -17
+      }
+    },
+    {
+      "name": "income/خوراک/true/cleared/0",
+      "transaction": {
+        "type": "income",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -100,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/خوراک/true/cleared/17",
+      "transaction": {
+        "type": "income",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -117,
+        "fee": -17
+      }
+    },
+    {
+      "name": "income/خوراک/true/bounced/0",
+      "transaction": {
+        "type": "income",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/خوراک/true/bounced/17",
+      "transaction": {
+        "type": "income",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "income/خوراک/true/returned/0",
+      "transaction": {
+        "type": "income",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/خوراک/true/returned/17",
+      "transaction": {
+        "type": "income",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "income/خوراک/true/in_progress/0",
+      "transaction": {
+        "type": "income",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -100,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/خوراک/true/in_progress/17",
+      "transaction": {
+        "type": "income",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -117,
+        "fee": -17
+      }
+    },
+    {
+      "name": "income/علی/false/null/0",
+      "transaction": {
+        "type": "income",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/علی/false/null/17",
+      "transaction": {
+        "type": "income",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "income/علی/false/cleared/0",
+      "transaction": {
+        "type": "income",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/علی/false/cleared/17",
+      "transaction": {
+        "type": "income",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "income/علی/false/bounced/0",
+      "transaction": {
+        "type": "income",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/علی/false/bounced/17",
+      "transaction": {
+        "type": "income",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "income/علی/false/returned/0",
+      "transaction": {
+        "type": "income",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/علی/false/returned/17",
+      "transaction": {
+        "type": "income",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "income/علی/false/in_progress/0",
+      "transaction": {
+        "type": "income",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/علی/false/in_progress/17",
+      "transaction": {
+        "type": "income",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "income/علی/true/null/0",
+      "transaction": {
+        "type": "income",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -100,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/علی/true/null/17",
+      "transaction": {
+        "type": "income",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -117,
+        "fee": -17
+      }
+    },
+    {
+      "name": "income/علی/true/cleared/0",
+      "transaction": {
+        "type": "income",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -100,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/علی/true/cleared/17",
+      "transaction": {
+        "type": "income",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -117,
+        "fee": -17
+      }
+    },
+    {
+      "name": "income/علی/true/bounced/0",
+      "transaction": {
+        "type": "income",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/علی/true/bounced/17",
+      "transaction": {
+        "type": "income",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "income/علی/true/returned/0",
+      "transaction": {
+        "type": "income",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/علی/true/returned/17",
+      "transaction": {
+        "type": "income",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "income/علی/true/in_progress/0",
+      "transaction": {
+        "type": "income",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -100,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/علی/true/in_progress/17",
+      "transaction": {
+        "type": "income",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -117,
+        "fee": -17
+      }
+    },
+    {
+      "name": "income/بانک/false/null/0",
+      "transaction": {
+        "type": "income",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/بانک/false/null/17",
+      "transaction": {
+        "type": "income",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "income/بانک/false/cleared/0",
+      "transaction": {
+        "type": "income",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/بانک/false/cleared/17",
+      "transaction": {
+        "type": "income",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "income/بانک/false/bounced/0",
+      "transaction": {
+        "type": "income",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/بانک/false/bounced/17",
+      "transaction": {
+        "type": "income",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "income/بانک/false/returned/0",
+      "transaction": {
+        "type": "income",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/بانک/false/returned/17",
+      "transaction": {
+        "type": "income",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "income/بانک/false/in_progress/0",
+      "transaction": {
+        "type": "income",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/بانک/false/in_progress/17",
+      "transaction": {
+        "type": "income",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "income/بانک/true/null/0",
+      "transaction": {
+        "type": "income",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -100,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/بانک/true/null/17",
+      "transaction": {
+        "type": "income",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -117,
+        "fee": -17
+      }
+    },
+    {
+      "name": "income/بانک/true/cleared/0",
+      "transaction": {
+        "type": "income",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -100,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/بانک/true/cleared/17",
+      "transaction": {
+        "type": "income",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -117,
+        "fee": -17
+      }
+    },
+    {
+      "name": "income/بانک/true/bounced/0",
+      "transaction": {
+        "type": "income",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/بانک/true/bounced/17",
+      "transaction": {
+        "type": "income",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "income/بانک/true/returned/0",
+      "transaction": {
+        "type": "income",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/بانک/true/returned/17",
+      "transaction": {
+        "type": "income",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "income/بانک/true/in_progress/0",
+      "transaction": {
+        "type": "income",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -100,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/بانک/true/in_progress/17",
+      "transaction": {
+        "type": "income",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -117,
+        "fee": -17
+      }
+    },
+    {
+      "name": "income/نامشخص/false/null/0",
+      "transaction": {
+        "type": "income",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 100,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/نامشخص/false/null/17",
+      "transaction": {
+        "type": "income",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 100,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "income/نامشخص/false/cleared/0",
+      "transaction": {
+        "type": "income",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 100,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/نامشخص/false/cleared/17",
+      "transaction": {
+        "type": "income",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 100,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "income/نامشخص/false/bounced/0",
+      "transaction": {
+        "type": "income",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/نامشخص/false/bounced/17",
+      "transaction": {
+        "type": "income",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "income/نامشخص/false/returned/0",
+      "transaction": {
+        "type": "income",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/نامشخص/false/returned/17",
+      "transaction": {
+        "type": "income",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "income/نامشخص/false/in_progress/0",
+      "transaction": {
+        "type": "income",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 100,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/نامشخص/false/in_progress/17",
+      "transaction": {
+        "type": "income",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 100,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "income/نامشخص/true/null/0",
+      "transaction": {
+        "type": "income",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -100,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/نامشخص/true/null/17",
+      "transaction": {
+        "type": "income",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -117,
+        "fee": -17
+      }
+    },
+    {
+      "name": "income/نامشخص/true/cleared/0",
+      "transaction": {
+        "type": "income",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -100,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/نامشخص/true/cleared/17",
+      "transaction": {
+        "type": "income",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -117,
+        "fee": -17
+      }
+    },
+    {
+      "name": "income/نامشخص/true/bounced/0",
+      "transaction": {
+        "type": "income",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/نامشخص/true/bounced/17",
+      "transaction": {
+        "type": "income",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "income/نامشخص/true/returned/0",
+      "transaction": {
+        "type": "income",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/نامشخص/true/returned/17",
+      "transaction": {
+        "type": "income",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "income/نامشخص/true/in_progress/0",
+      "transaction": {
+        "type": "income",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -100,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/نامشخص/true/in_progress/17",
+      "transaction": {
+        "type": "income",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -117,
+        "fee": -17
+      }
+    },
+    {
+      "name": "income/ درآمد تکراری /false/null/0",
+      "transaction": {
+        "type": "income",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 100,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/ درآمد تکراری /false/null/17",
+      "transaction": {
+        "type": "income",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 100,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "income/ درآمد تکراری /false/cleared/0",
+      "transaction": {
+        "type": "income",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 100,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/ درآمد تکراری /false/cleared/17",
+      "transaction": {
+        "type": "income",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 100,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "income/ درآمد تکراری /false/bounced/0",
+      "transaction": {
+        "type": "income",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/ درآمد تکراری /false/bounced/17",
+      "transaction": {
+        "type": "income",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "income/ درآمد تکراری /false/returned/0",
+      "transaction": {
+        "type": "income",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/ درآمد تکراری /false/returned/17",
+      "transaction": {
+        "type": "income",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "income/ درآمد تکراری /false/in_progress/0",
+      "transaction": {
+        "type": "income",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 100,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/ درآمد تکراری /false/in_progress/17",
+      "transaction": {
+        "type": "income",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 100,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "income/ درآمد تکراری /true/null/0",
+      "transaction": {
+        "type": "income",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 100,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/ درآمد تکراری /true/null/17",
+      "transaction": {
+        "type": "income",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 100,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "income/ درآمد تکراری /true/cleared/0",
+      "transaction": {
+        "type": "income",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 100,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/ درآمد تکراری /true/cleared/17",
+      "transaction": {
+        "type": "income",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 100,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "income/ درآمد تکراری /true/bounced/0",
+      "transaction": {
+        "type": "income",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/ درآمد تکراری /true/bounced/17",
+      "transaction": {
+        "type": "income",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "income/ درآمد تکراری /true/returned/0",
+      "transaction": {
+        "type": "income",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/ درآمد تکراری /true/returned/17",
+      "transaction": {
+        "type": "income",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "income/ درآمد تکراری /true/in_progress/0",
+      "transaction": {
+        "type": "income",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 100,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "income/ درآمد تکراری /true/in_progress/17",
+      "transaction": {
+        "type": "income",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 100,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "expense/حقوق/false/null/0",
+      "transaction": {
+        "type": "expense",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": -100,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/حقوق/false/null/17",
+      "transaction": {
+        "type": "expense",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": -100,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "expense/حقوق/false/cleared/0",
+      "transaction": {
+        "type": "expense",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": -100,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/حقوق/false/cleared/17",
+      "transaction": {
+        "type": "expense",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": -100,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "expense/حقوق/false/bounced/0",
+      "transaction": {
+        "type": "expense",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/حقوق/false/bounced/17",
+      "transaction": {
+        "type": "expense",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "expense/حقوق/false/returned/0",
+      "transaction": {
+        "type": "expense",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/حقوق/false/returned/17",
+      "transaction": {
+        "type": "expense",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "expense/حقوق/false/in_progress/0",
+      "transaction": {
+        "type": "expense",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": -100,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/حقوق/false/in_progress/17",
+      "transaction": {
+        "type": "expense",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": -100,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "expense/حقوق/true/null/0",
+      "transaction": {
+        "type": "expense",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": -100,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/حقوق/true/null/17",
+      "transaction": {
+        "type": "expense",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": -100,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "expense/حقوق/true/cleared/0",
+      "transaction": {
+        "type": "expense",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": -100,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/حقوق/true/cleared/17",
+      "transaction": {
+        "type": "expense",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": -100,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "expense/حقوق/true/bounced/0",
+      "transaction": {
+        "type": "expense",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/حقوق/true/bounced/17",
+      "transaction": {
+        "type": "expense",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "expense/حقوق/true/returned/0",
+      "transaction": {
+        "type": "expense",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/حقوق/true/returned/17",
+      "transaction": {
+        "type": "expense",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "expense/حقوق/true/in_progress/0",
+      "transaction": {
+        "type": "expense",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": -100,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/حقوق/true/in_progress/17",
+      "transaction": {
+        "type": "expense",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": -100,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "expense/خوراک/false/null/0",
+      "transaction": {
+        "type": "expense",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 100,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/خوراک/false/null/17",
+      "transaction": {
+        "type": "expense",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 117,
+        "fee": 17
+      }
+    },
+    {
+      "name": "expense/خوراک/false/cleared/0",
+      "transaction": {
+        "type": "expense",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 100,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/خوراک/false/cleared/17",
+      "transaction": {
+        "type": "expense",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 117,
+        "fee": 17
+      }
+    },
+    {
+      "name": "expense/خوراک/false/bounced/0",
+      "transaction": {
+        "type": "expense",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/خوراک/false/bounced/17",
+      "transaction": {
+        "type": "expense",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "expense/خوراک/false/returned/0",
+      "transaction": {
+        "type": "expense",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/خوراک/false/returned/17",
+      "transaction": {
+        "type": "expense",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "expense/خوراک/false/in_progress/0",
+      "transaction": {
+        "type": "expense",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 100,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/خوراک/false/in_progress/17",
+      "transaction": {
+        "type": "expense",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 117,
+        "fee": 17
+      }
+    },
+    {
+      "name": "expense/خوراک/true/null/0",
+      "transaction": {
+        "type": "expense",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 100,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/خوراک/true/null/17",
+      "transaction": {
+        "type": "expense",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 83,
+        "fee": -17
+      }
+    },
+    {
+      "name": "expense/خوراک/true/cleared/0",
+      "transaction": {
+        "type": "expense",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 100,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/خوراک/true/cleared/17",
+      "transaction": {
+        "type": "expense",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 83,
+        "fee": -17
+      }
+    },
+    {
+      "name": "expense/خوراک/true/bounced/0",
+      "transaction": {
+        "type": "expense",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/خوراک/true/bounced/17",
+      "transaction": {
+        "type": "expense",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "expense/خوراک/true/returned/0",
+      "transaction": {
+        "type": "expense",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/خوراک/true/returned/17",
+      "transaction": {
+        "type": "expense",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "expense/خوراک/true/in_progress/0",
+      "transaction": {
+        "type": "expense",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 100,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/خوراک/true/in_progress/17",
+      "transaction": {
+        "type": "expense",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 83,
+        "fee": -17
+      }
+    },
+    {
+      "name": "expense/علی/false/null/0",
+      "transaction": {
+        "type": "expense",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/علی/false/null/17",
+      "transaction": {
+        "type": "expense",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "expense/علی/false/cleared/0",
+      "transaction": {
+        "type": "expense",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/علی/false/cleared/17",
+      "transaction": {
+        "type": "expense",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "expense/علی/false/bounced/0",
+      "transaction": {
+        "type": "expense",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/علی/false/bounced/17",
+      "transaction": {
+        "type": "expense",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "expense/علی/false/returned/0",
+      "transaction": {
+        "type": "expense",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/علی/false/returned/17",
+      "transaction": {
+        "type": "expense",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "expense/علی/false/in_progress/0",
+      "transaction": {
+        "type": "expense",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/علی/false/in_progress/17",
+      "transaction": {
+        "type": "expense",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "expense/علی/true/null/0",
+      "transaction": {
+        "type": "expense",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": -100,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/علی/true/null/17",
+      "transaction": {
+        "type": "expense",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": -100,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "expense/علی/true/cleared/0",
+      "transaction": {
+        "type": "expense",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": -100,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/علی/true/cleared/17",
+      "transaction": {
+        "type": "expense",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": -100,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "expense/علی/true/bounced/0",
+      "transaction": {
+        "type": "expense",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/علی/true/bounced/17",
+      "transaction": {
+        "type": "expense",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "expense/علی/true/returned/0",
+      "transaction": {
+        "type": "expense",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/علی/true/returned/17",
+      "transaction": {
+        "type": "expense",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "expense/علی/true/in_progress/0",
+      "transaction": {
+        "type": "expense",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": -100,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/علی/true/in_progress/17",
+      "transaction": {
+        "type": "expense",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": -100,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "expense/بانک/false/null/0",
+      "transaction": {
+        "type": "expense",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/بانک/false/null/17",
+      "transaction": {
+        "type": "expense",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "expense/بانک/false/cleared/0",
+      "transaction": {
+        "type": "expense",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/بانک/false/cleared/17",
+      "transaction": {
+        "type": "expense",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "expense/بانک/false/bounced/0",
+      "transaction": {
+        "type": "expense",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/بانک/false/bounced/17",
+      "transaction": {
+        "type": "expense",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "expense/بانک/false/returned/0",
+      "transaction": {
+        "type": "expense",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/بانک/false/returned/17",
+      "transaction": {
+        "type": "expense",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "expense/بانک/false/in_progress/0",
+      "transaction": {
+        "type": "expense",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/بانک/false/in_progress/17",
+      "transaction": {
+        "type": "expense",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "expense/بانک/true/null/0",
+      "transaction": {
+        "type": "expense",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": -100,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/بانک/true/null/17",
+      "transaction": {
+        "type": "expense",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": -100,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "expense/بانک/true/cleared/0",
+      "transaction": {
+        "type": "expense",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": -100,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/بانک/true/cleared/17",
+      "transaction": {
+        "type": "expense",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": -100,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "expense/بانک/true/bounced/0",
+      "transaction": {
+        "type": "expense",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/بانک/true/bounced/17",
+      "transaction": {
+        "type": "expense",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "expense/بانک/true/returned/0",
+      "transaction": {
+        "type": "expense",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/بانک/true/returned/17",
+      "transaction": {
+        "type": "expense",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "expense/بانک/true/in_progress/0",
+      "transaction": {
+        "type": "expense",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": -100,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/بانک/true/in_progress/17",
+      "transaction": {
+        "type": "expense",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": -100,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "expense/نامشخص/false/null/0",
+      "transaction": {
+        "type": "expense",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 100,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/نامشخص/false/null/17",
+      "transaction": {
+        "type": "expense",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 117,
+        "fee": 17
+      }
+    },
+    {
+      "name": "expense/نامشخص/false/cleared/0",
+      "transaction": {
+        "type": "expense",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 100,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/نامشخص/false/cleared/17",
+      "transaction": {
+        "type": "expense",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 117,
+        "fee": 17
+      }
+    },
+    {
+      "name": "expense/نامشخص/false/bounced/0",
+      "transaction": {
+        "type": "expense",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/نامشخص/false/bounced/17",
+      "transaction": {
+        "type": "expense",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "expense/نامشخص/false/returned/0",
+      "transaction": {
+        "type": "expense",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/نامشخص/false/returned/17",
+      "transaction": {
+        "type": "expense",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "expense/نامشخص/false/in_progress/0",
+      "transaction": {
+        "type": "expense",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 100,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/نامشخص/false/in_progress/17",
+      "transaction": {
+        "type": "expense",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 117,
+        "fee": 17
+      }
+    },
+    {
+      "name": "expense/نامشخص/true/null/0",
+      "transaction": {
+        "type": "expense",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": -100,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/نامشخص/true/null/17",
+      "transaction": {
+        "type": "expense",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": -100,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "expense/نامشخص/true/cleared/0",
+      "transaction": {
+        "type": "expense",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": -100,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/نامشخص/true/cleared/17",
+      "transaction": {
+        "type": "expense",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": -100,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "expense/نامشخص/true/bounced/0",
+      "transaction": {
+        "type": "expense",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/نامشخص/true/bounced/17",
+      "transaction": {
+        "type": "expense",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "expense/نامشخص/true/returned/0",
+      "transaction": {
+        "type": "expense",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/نامشخص/true/returned/17",
+      "transaction": {
+        "type": "expense",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "expense/نامشخص/true/in_progress/0",
+      "transaction": {
+        "type": "expense",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": -100,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/نامشخص/true/in_progress/17",
+      "transaction": {
+        "type": "expense",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": -100,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "expense/ درآمد تکراری /false/null/0",
+      "transaction": {
+        "type": "expense",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": -100,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/ درآمد تکراری /false/null/17",
+      "transaction": {
+        "type": "expense",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": -100,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "expense/ درآمد تکراری /false/cleared/0",
+      "transaction": {
+        "type": "expense",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": -100,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/ درآمد تکراری /false/cleared/17",
+      "transaction": {
+        "type": "expense",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": -100,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "expense/ درآمد تکراری /false/bounced/0",
+      "transaction": {
+        "type": "expense",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/ درآمد تکراری /false/bounced/17",
+      "transaction": {
+        "type": "expense",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "expense/ درآمد تکراری /false/returned/0",
+      "transaction": {
+        "type": "expense",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/ درآمد تکراری /false/returned/17",
+      "transaction": {
+        "type": "expense",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "expense/ درآمد تکراری /false/in_progress/0",
+      "transaction": {
+        "type": "expense",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": -100,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/ درآمد تکراری /false/in_progress/17",
+      "transaction": {
+        "type": "expense",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": -100,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "expense/ درآمد تکراری /true/null/0",
+      "transaction": {
+        "type": "expense",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": -100,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/ درآمد تکراری /true/null/17",
+      "transaction": {
+        "type": "expense",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": -100,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "expense/ درآمد تکراری /true/cleared/0",
+      "transaction": {
+        "type": "expense",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": -100,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/ درآمد تکراری /true/cleared/17",
+      "transaction": {
+        "type": "expense",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": -100,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "expense/ درآمد تکراری /true/bounced/0",
+      "transaction": {
+        "type": "expense",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/ درآمد تکراری /true/bounced/17",
+      "transaction": {
+        "type": "expense",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "expense/ درآمد تکراری /true/returned/0",
+      "transaction": {
+        "type": "expense",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/ درآمد تکراری /true/returned/17",
+      "transaction": {
+        "type": "expense",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "expense/ درآمد تکراری /true/in_progress/0",
+      "transaction": {
+        "type": "expense",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": -100,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "expense/ درآمد تکراری /true/in_progress/17",
+      "transaction": {
+        "type": "expense",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": -100,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "transfer/حقوق/false/null/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/حقوق/false/null/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "transfer/حقوق/false/cleared/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/حقوق/false/cleared/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "transfer/حقوق/false/bounced/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/حقوق/false/bounced/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "transfer/حقوق/false/returned/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/حقوق/false/returned/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "transfer/حقوق/false/in_progress/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/حقوق/false/in_progress/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "transfer/حقوق/true/null/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/حقوق/true/null/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "transfer/حقوق/true/cleared/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/حقوق/true/cleared/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "transfer/حقوق/true/bounced/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/حقوق/true/bounced/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "transfer/حقوق/true/returned/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/حقوق/true/returned/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "transfer/حقوق/true/in_progress/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/حقوق/true/in_progress/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "حقوق",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "transfer/خوراک/false/null/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/خوراک/false/null/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "transfer/خوراک/false/cleared/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/خوراک/false/cleared/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "transfer/خوراک/false/bounced/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/خوراک/false/bounced/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "transfer/خوراک/false/returned/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/خوراک/false/returned/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "transfer/خوراک/false/in_progress/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/خوراک/false/in_progress/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "transfer/خوراک/true/null/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/خوراک/true/null/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "transfer/خوراک/true/cleared/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/خوراک/true/cleared/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "transfer/خوراک/true/bounced/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/خوراک/true/bounced/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "transfer/خوراک/true/returned/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/خوراک/true/returned/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "transfer/خوراک/true/in_progress/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/خوراک/true/in_progress/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "خوراک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "transfer/علی/false/null/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/علی/false/null/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "transfer/علی/false/cleared/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/علی/false/cleared/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "transfer/علی/false/bounced/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/علی/false/bounced/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "transfer/علی/false/returned/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/علی/false/returned/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "transfer/علی/false/in_progress/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/علی/false/in_progress/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "transfer/علی/true/null/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/علی/true/null/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "transfer/علی/true/cleared/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/علی/true/cleared/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "transfer/علی/true/bounced/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/علی/true/bounced/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "transfer/علی/true/returned/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/علی/true/returned/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "transfer/علی/true/in_progress/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/علی/true/in_progress/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "علی",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "transfer/بانک/false/null/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/بانک/false/null/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "transfer/بانک/false/cleared/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/بانک/false/cleared/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "transfer/بانک/false/bounced/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/بانک/false/bounced/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "transfer/بانک/false/returned/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/بانک/false/returned/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "transfer/بانک/false/in_progress/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/بانک/false/in_progress/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "transfer/بانک/true/null/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/بانک/true/null/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "transfer/بانک/true/cleared/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/بانک/true/cleared/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "transfer/بانک/true/bounced/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/بانک/true/bounced/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "transfer/بانک/true/returned/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/بانک/true/returned/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "transfer/بانک/true/in_progress/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/بانک/true/in_progress/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "بانک",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "transfer/نامشخص/false/null/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/نامشخص/false/null/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "transfer/نامشخص/false/cleared/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/نامشخص/false/cleared/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "transfer/نامشخص/false/bounced/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/نامشخص/false/bounced/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "transfer/نامشخص/false/returned/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/نامشخص/false/returned/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "transfer/نامشخص/false/in_progress/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/نامشخص/false/in_progress/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "transfer/نامشخص/true/null/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/نامشخص/true/null/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "transfer/نامشخص/true/cleared/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/نامشخص/true/cleared/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "transfer/نامشخص/true/bounced/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/نامشخص/true/bounced/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "transfer/نامشخص/true/returned/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/نامشخص/true/returned/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "transfer/نامشخص/true/in_progress/0",
+      "transaction": {
+        "type": "transfer",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/نامشخص/true/in_progress/17",
+      "transaction": {
+        "type": "transfer",
+        "category": "نامشخص",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "transfer/ درآمد تکراری /false/null/0",
+      "transaction": {
+        "type": "transfer",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/ درآمد تکراری /false/null/17",
+      "transaction": {
+        "type": "transfer",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "transfer/ درآمد تکراری /false/cleared/0",
+      "transaction": {
+        "type": "transfer",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/ درآمد تکراری /false/cleared/17",
+      "transaction": {
+        "type": "transfer",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "transfer/ درآمد تکراری /false/bounced/0",
+      "transaction": {
+        "type": "transfer",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/ درآمد تکراری /false/bounced/17",
+      "transaction": {
+        "type": "transfer",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "transfer/ درآمد تکراری /false/returned/0",
+      "transaction": {
+        "type": "transfer",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/ درآمد تکراری /false/returned/17",
+      "transaction": {
+        "type": "transfer",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "transfer/ درآمد تکراری /false/in_progress/0",
+      "transaction": {
+        "type": "transfer",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": false,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/ درآمد تکراری /false/in_progress/17",
+      "transaction": {
+        "type": "transfer",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": false,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 17,
+        "fee": 17
+      }
+    },
+    {
+      "name": "transfer/ درآمد تکراری /true/null/0",
+      "transaction": {
+        "type": "transfer",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/ درآمد تکراری /true/null/17",
+      "transaction": {
+        "type": "transfer",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "transfer/ درآمد تکراری /true/cleared/0",
+      "transaction": {
+        "type": "transfer",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/ درآمد تکراری /true/cleared/17",
+      "transaction": {
+        "type": "transfer",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "cleared"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "transfer/ درآمد تکراری /true/bounced/0",
+      "transaction": {
+        "type": "transfer",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/ درآمد تکراری /true/bounced/17",
+      "transaction": {
+        "type": "transfer",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "bounced"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "transfer/ درآمد تکراری /true/returned/0",
+      "transaction": {
+        "type": "transfer",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/ درآمد تکراری /true/returned/17",
+      "transaction": {
+        "type": "transfer",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "returned"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "transfer/ درآمد تکراری /true/in_progress/0",
+      "transaction": {
+        "type": "transfer",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 0,
+        "isReversal": true,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "transfer/ درآمد تکراری /true/in_progress/17",
+      "transaction": {
+        "type": "transfer",
+        "category": " درآمد تکراری ",
+        "amount": 100,
+        "feeAmount": 17,
+        "isReversal": true,
+        "check": {
+          "status": "in_progress"
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -17,
+        "fee": -17
+      }
+    },
+    {
+      "name": "compound-false",
+      "transaction": {
+        "type": "transfer",
+        "isCompound": true,
+        "isReversal": false,
+        "feeAmount": 7,
+        "compoundSources": [
+          {
+            "account": "حقوق",
+            "amount": "400"
+          },
+          {
+            "account": "بانک",
+            "amount": 55
+          }
+        ],
+        "compoundDestinations": [
+          {
+            "account": "خوراک",
+            "amount": 130
+          },
+          {
+            "account": "علی",
+            "amount": 50
+          }
+        ]
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 400,
+        "expense": 137,
+        "fee": 7
+      }
+    },
+    {
+      "name": "refund-false-income",
+      "transaction": {
+        "type": "income",
+        "amount": 100,
+        "isRefundReceipt": true,
+        "isReversal": false,
+        "feeAmount": 5,
+        "refundCategoryGroup": "income"
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 100,
+        "expense": 5,
+        "fee": 5
+      }
+    },
+    {
+      "name": "refund-false-expense",
+      "transaction": {
+        "type": "income",
+        "amount": 100,
+        "isRefundReceipt": true,
+        "isReversal": false,
+        "feeAmount": 5,
+        "refundCategoryGroup": "expense"
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -95,
+        "fee": 5
+      }
+    },
+    {
+      "name": "refund-false-null",
+      "transaction": {
+        "type": "income",
+        "amount": 100,
+        "isRefundReceipt": true,
+        "isReversal": false,
+        "feeAmount": 5,
+        "refundCategoryGroup": null
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -95,
+        "fee": 5
+      }
+    },
+    {
+      "name": "refund-source-false-خوراک",
+      "transaction": {
+        "type": "income",
+        "amount": 100,
+        "isRefundReceipt": true,
+        "isReversal": false,
+        "reversalOfDocNumber": "23"
+      },
+      "allTransactions": [
+        {
+          "type": "expense",
+          "documentNumber": 23,
+          "category": "خوراک"
+        }
+      ],
+      "expected": {
+        "income": 0,
+        "expense": -100,
+        "fee": 0
+      }
+    },
+    {
+      "name": "refund-source-false-حقوق",
+      "transaction": {
+        "type": "income",
+        "amount": 100,
+        "isRefundReceipt": true,
+        "isReversal": false,
+        "reversalOfDocNumber": "23"
+      },
+      "allTransactions": [
+        {
+          "type": "expense",
+          "documentNumber": 23,
+          "category": "حقوق"
+        }
+      ],
+      "expected": {
+        "income": 100,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "refund-source-false-علی",
+      "transaction": {
+        "type": "income",
+        "amount": 100,
+        "isRefundReceipt": true,
+        "isReversal": false,
+        "reversalOfDocNumber": "23"
+      },
+      "allTransactions": [
+        {
+          "type": "expense",
+          "documentNumber": 23,
+          "category": "علی"
+        }
+      ],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "canceled-false",
+      "transaction": {
+        "type": "income",
+        "amount": 100,
+        "feeAmount": 8,
+        "isReversal": false,
+        "check": {
+          "status": "in_progress",
+          "debtCanceled": true
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": 8,
+        "fee": 8
+      }
+    },
+    {
+      "name": "compound-true",
+      "transaction": {
+        "type": "transfer",
+        "isCompound": true,
+        "isReversal": true,
+        "feeAmount": 7,
+        "compoundSources": [
+          {
+            "account": "حقوق",
+            "amount": "400"
+          },
+          {
+            "account": "بانک",
+            "amount": 55
+          }
+        ],
+        "compoundDestinations": [
+          {
+            "account": "خوراک",
+            "amount": 130
+          },
+          {
+            "account": "علی",
+            "amount": 50
+          }
+        ]
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": -400,
+        "expense": -137,
+        "fee": -7
+      }
+    },
+    {
+      "name": "refund-true-income",
+      "transaction": {
+        "type": "income",
+        "amount": 100,
+        "isRefundReceipt": true,
+        "isReversal": true,
+        "feeAmount": 5,
+        "refundCategoryGroup": "income"
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 100,
+        "expense": -5,
+        "fee": -5
+      }
+    },
+    {
+      "name": "refund-true-expense",
+      "transaction": {
+        "type": "income",
+        "amount": 100,
+        "isRefundReceipt": true,
+        "isReversal": true,
+        "feeAmount": 5,
+        "refundCategoryGroup": "expense"
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -105,
+        "fee": -5
+      }
+    },
+    {
+      "name": "refund-true-null",
+      "transaction": {
+        "type": "income",
+        "amount": 100,
+        "isRefundReceipt": true,
+        "isReversal": true,
+        "feeAmount": 5,
+        "refundCategoryGroup": null
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -105,
+        "fee": -5
+      }
+    },
+    {
+      "name": "refund-source-true-خوراک",
+      "transaction": {
+        "type": "income",
+        "amount": 100,
+        "isRefundReceipt": true,
+        "isReversal": true,
+        "reversalOfDocNumber": "23"
+      },
+      "allTransactions": [
+        {
+          "type": "expense",
+          "documentNumber": 23,
+          "category": "خوراک"
+        }
+      ],
+      "expected": {
+        "income": 0,
+        "expense": -100,
+        "fee": 0
+      }
+    },
+    {
+      "name": "refund-source-true-حقوق",
+      "transaction": {
+        "type": "income",
+        "amount": 100,
+        "isRefundReceipt": true,
+        "isReversal": true,
+        "reversalOfDocNumber": "23"
+      },
+      "allTransactions": [
+        {
+          "type": "expense",
+          "documentNumber": 23,
+          "category": "حقوق"
+        }
+      ],
+      "expected": {
+        "income": 100,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "refund-source-true-علی",
+      "transaction": {
+        "type": "income",
+        "amount": 100,
+        "isRefundReceipt": true,
+        "isReversal": true,
+        "reversalOfDocNumber": "23"
+      },
+      "allTransactions": [
+        {
+          "type": "expense",
+          "documentNumber": 23,
+          "category": "علی"
+        }
+      ],
+      "expected": {
+        "income": 0,
+        "expense": 0,
+        "fee": 0
+      }
+    },
+    {
+      "name": "canceled-true",
+      "transaction": {
+        "type": "income",
+        "amount": 100,
+        "feeAmount": 8,
+        "isReversal": true,
+        "check": {
+          "status": "in_progress",
+          "debtCanceled": true
+        }
+      },
+      "allTransactions": [],
+      "expected": {
+        "income": 0,
+        "expense": -8,
+        "fee": -8
+      }
+    }
+  ]
+}
