@@ -1,0 +1,352 @@
+[
+  {
+    "value": 0,
+    "format": null,
+    "expected": "۰"
+  },
+  {
+    "value": 1,
+    "format": null,
+    "expected": "۱"
+  },
+  {
+    "value": -1,
+    "format": null,
+    "expected": "-۱"
+  },
+  {
+    "value": 123,
+    "format": null,
+    "expected": "۱۲۳"
+  },
+  {
+    "value": 999,
+    "format": null,
+    "expected": "۹۹۹"
+  },
+  {
+    "value": 1000,
+    "format": null,
+    "expected": "۱،۰۰۰"
+  },
+  {
+    "value": 1234567,
+    "format": null,
+    "expected": "۱،۲۳۴،۵۶۷"
+  },
+  {
+    "value": -1234567,
+    "format": null,
+    "expected": "-۱،۲۳۴،۵۶۷"
+  },
+  {
+    "value": 1234.5,
+    "format": null,
+    "expected": "۱،۲۳۵"
+  },
+  {
+    "value": -1234.5,
+    "format": null,
+    "expected": "-۱،۲۳۵"
+  },
+  {
+    "value": 0.4,
+    "format": null,
+    "expected": "۰"
+  },
+  {
+    "value": -0.4,
+    "format": null,
+    "expected": "-۰"
+  },
+  {
+    "value": 999.5,
+    "format": null,
+    "expected": "۱،۰۰۰"
+  },
+  {
+    "value": 1000000000,
+    "format": null,
+    "expected": "۱،۰۰۰،۰۰۰،۰۰۰"
+  },
+  {
+    "value": 0,
+    "format": "slash",
+    "expected": "۰"
+  },
+  {
+    "value": 1,
+    "format": "slash",
+    "expected": "۱"
+  },
+  {
+    "value": -1,
+    "format": "slash",
+    "expected": "-۱"
+  },
+  {
+    "value": 123,
+    "format": "slash",
+    "expected": "۱۲۳"
+  },
+  {
+    "value": 999,
+    "format": "slash",
+    "expected": "۹۹۹"
+  },
+  {
+    "value": 1000,
+    "format": "slash",
+    "expected": "۱/۰۰۰"
+  },
+  {
+    "value": 1234567,
+    "format": "slash",
+    "expected": "۱/۲۳۴/۵۶۷"
+  },
+  {
+    "value": -1234567,
+    "format": "slash",
+    "expected": "-۱/۲۳۴/۵۶۷"
+  },
+  {
+    "value": 1234.5,
+    "format": "slash",
+    "expected": "۱/۲۳۵"
+  },
+  {
+    "value": -1234.5,
+    "format": "slash",
+    "expected": "-۱/۲۳۵"
+  },
+  {
+    "value": 0.4,
+    "format": "slash",
+    "expected": "۰"
+  },
+  {
+    "value": -0.4,
+    "format": "slash",
+    "expected": "-۰"
+  },
+  {
+    "value": 999.5,
+    "format": "slash",
+    "expected": "۱/۰۰۰"
+  },
+  {
+    "value": 1000000000,
+    "format": "slash",
+    "expected": "۱/۰۰۰/۰۰۰/۰۰۰"
+  },
+  {
+    "value": 0,
+    "format": "space",
+    "expected": "۰"
+  },
+  {
+    "value": 1,
+    "format": "space",
+    "expected": "۱"
+  },
+  {
+    "value": -1,
+    "format": "space",
+    "expected": "-۱"
+  },
+  {
+    "value": 123,
+    "format": "space",
+    "expected": "۱۲۳"
+  },
+  {
+    "value": 999,
+    "format": "space",
+    "expected": "۹۹۹"
+  },
+  {
+    "value": 1000,
+    "format": "space",
+    "expected": "۱ ۰۰۰"
+  },
+  {
+    "value": 1234567,
+    "format": "space",
+    "expected": "۱ ۲۳۴ ۵۶۷"
+  },
+  {
+    "value": -1234567,
+    "format": "space",
+    "expected": "-۱ ۲۳۴ ۵۶۷"
+  },
+  {
+    "value": 1234.5,
+    "format": "space",
+    "expected": "۱ ۲۳۵"
+  },
+  {
+    "value": -1234.5,
+    "format": "space",
+    "expected": "-۱ ۲۳۵"
+  },
+  {
+    "value": 0.4,
+    "format": "space",
+    "expected": "۰"
+  },
+  {
+    "value": -0.4,
+    "format": "space",
+    "expected": "-۰"
+  },
+  {
+    "value": 999.5,
+    "format": "space",
+    "expected": "۱ ۰۰۰"
+  },
+  {
+    "value": 1000000000,
+    "format": "space",
+    "expected": "۱ ۰۰۰ ۰۰۰ ۰۰۰"
+  },
+  {
+    "value": 0,
+    "format": "standard",
+    "expected": "۰"
+  },
+  {
+    "value": 1,
+    "format": "standard",
+    "expected": "۱"
+  },
+  {
+    "value": -1,
+    "format": "standard",
+    "expected": "-۱"
+  },
+  {
+    "value": 123,
+    "format": "standard",
+    "expected": "۱۲۳"
+  },
+  {
+    "value": 999,
+    "format": "standard",
+    "expected": "۹۹۹"
+  },
+  {
+    "value": 1000,
+    "format": "standard",
+    "expected": "۱,۰۰۰"
+  },
+  {
+    "value": 1234567,
+    "format": "standard",
+    "expected": "۱,۲۳۴,۵۶۷"
+  },
+  {
+    "value": -1234567,
+    "format": "standard",
+    "expected": "-۱,۲۳۴,۵۶۷"
+  },
+  {
+    "value": 1234.5,
+    "format": "standard",
+    "expected": "۱,۲۳۵"
+  },
+  {
+    "value": -1234.5,
+    "format": "standard",
+    "expected": "-۱,۲۳۵"
+  },
+  {
+    "value": 0.4,
+    "format": "standard",
+    "expected": "۰"
+  },
+  {
+    "value": -0.4,
+    "format": "standard",
+    "expected": "-۰"
+  },
+  {
+    "value": 999.5,
+    "format": "standard",
+    "expected": "۱,۰۰۰"
+  },
+  {
+    "value": 1000000000,
+    "format": "standard",
+    "expected": "۱,۰۰۰,۰۰۰,۰۰۰"
+  },
+  {
+    "value": 0,
+    "format": "unknown",
+    "expected": "۰"
+  },
+  {
+    "value": 1,
+    "format": "unknown",
+    "expected": "۱"
+  },
+  {
+    "value": -1,
+    "format": "unknown",
+    "expected": "-۱"
+  },
+  {
+    "value": 123,
+    "format": "unknown",
+    "expected": "۱۲۳"
+  },
+  {
+    "value": 999,
+    "format": "unknown",
+    "expected": "۹۹۹"
+  },
+  {
+    "value": 1000,
+    "format": "unknown",
+    "expected": "۱،۰۰۰"
+  },
+  {
+    "value": 1234567,
+    "format": "unknown",
+    "expected": "۱،۲۳۴،۵۶۷"
+  },
+  {
+    "value": -1234567,
+    "format": "unknown",
+    "expected": "-۱،۲۳۴،۵۶۷"
+  },
+  {
+    "value": 1234.5,
+    "format": "unknown",
+    "expected": "۱،۲۳۵"
+  },
+  {
+    "value": -1234.5,
+    "format": "unknown",
+    "expected": "-۱،۲۳۵"
+  },
+  {
+    "value": 0.4,
+    "format": "unknown",
+    "expected": "۰"
+  },
+  {
+    "value": -0.4,
+    "format": "unknown",
+    "expected": "-۰"
+  },
+  {
+    "value": 999.5,
+    "format": "unknown",
+    "expected": "۱،۰۰۰"
+  },
+  {
+    "value": 1000000000,
+    "format": "unknown",
+    "expected": "۱،۰۰۰،۰۰۰،۰۰۰"
+  }
+]

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-
+import '../domain/numbers.dart' as numbers;
 import '../data/bank_data.dart';
 import '../models/account_model.dart';
 import '../models/transaction_model.dart';
@@ -44,7 +43,7 @@ class _AccountsScreenState extends State<AccountsScreen> {
   double get _totalBalance => _accounts.fold(0.0, (sum, a) => sum + a.balance);
 
   String _formatMoney(double amount) {
-    return NumberFormat('#,###', 'en_US').format(amount.toInt());
+    return numbers.formatAmount(amount);
   }
 
   String _toPersianDigit(String input) {
@@ -75,56 +74,6 @@ class _AccountsScreenState extends State<AccountsScreen> {
         onSaved: _loadData,
       ),
     );
-  }
-
-  Future<void> _deleteAccount(Account account) async {
-    final confirm = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: const Color(0xFF1C1917),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-        title: const Row(
-          children: [
-            Icon(Icons.warning_amber_rounded, color: Color(0xFFEF4444)),
-            SizedBox(width: 8),
-            Text('حذف حساب بانکی', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white)),
-          ],
-        ),
-        content: Text(
-          'آیا از حذف حساب «${account.title}» مطمئن هستید؟ تمام تراکنش‌های وابسته به این حساب نیز حذف خواهند شد.',
-          style: const TextStyle(fontSize: 13, color: Color(0xFFD6D3D1), height: 1.6),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('انصراف', style: TextStyle(color: Color(0xFFA8A29E))),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFEF4444),
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            ),
-            child: const Text('حذف شود'),
-          ),
-        ],
-      ),
-    );
-
-    if (confirm == true && account.id != null) {
-      await DatabaseHelper.instance.deleteAccount(account.id!);
-      _loadData();
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('حساب «${account.title}» حذف شد', style: const TextStyle(fontFamily: 'Vazirmatn')),
-            backgroundColor: const Color(0xFFEF4444),
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
-      }
-    }
   }
 
   void _showAccountStatement(Account account) {
@@ -529,7 +478,10 @@ class _AccountsScreenState extends State<AccountsScreen> {
                                     label: const Text('ویرایش', style: TextStyle(fontSize: 11, color: Color(0xFFFBBF24))),
                                   ),
                                   TextButton.icon(
-                                    onPressed: () => _deleteAccount(acc),
+                                    // Do not delete financial history before the main app's rules are ported.
+                                    onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text('حذف حساب هنوز مطابق نسخه اصلی پیاده‌سازی نشده است.')),
+                                    ),
                                     icon: const Icon(Icons.delete_outline_rounded, size: 16, color: Color(0xFFEF4444)),
                                     label: const Text('حذف', style: TextStyle(fontSize: 11, color: Color(0xFFEF4444))),
                                   ),
